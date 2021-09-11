@@ -110,7 +110,7 @@ const PixelProcessor::State PixelProcessor::update(const vk::GraphicsState &pipe
 		state.backStencil = pipelineState.getBackStencil();
 	}
 
-	if(pipelineState.depthBufferActive(attachments))
+	if(pipelineState.depthTestActive(attachments))
 	{
 		state.depthTestActive = true;
 		state.depthCompareMode = pipelineState.getDepthCompareMode();
@@ -136,7 +136,7 @@ const PixelProcessor::State PixelProcessor::update(const vk::GraphicsState &pipe
 		}
 	}
 
-	state.depthBoundsTestActive = pipelineState.depthBoundsTestActive();
+	state.depthBoundsTestActive = pipelineState.depthBoundsTestActive(attachments);
 	state.minDepthBounds = pipelineState.getMinDepthBounds();
 	state.maxDepthBounds = pipelineState.getMaxDepthBounds();
 

@@ -186,9 +186,9 @@ struct GraphicsState
 
 	int colorWriteActive(int index, const Attachments &attachments) const;
 	bool depthWriteActive(const Attachments &attachments) const;
-	bool depthBufferActive(const Attachments &attachments) const;
+	bool depthTestActive(const Attachments &attachments) const;
 	bool stencilActive(const Attachments &attachments) const;
-	bool depthBoundsTestActive() const;
+	bool depthBoundsTestActive(const Attachments &attachments) const;
 
 private:
 	inline bool hasDynamicState(VkDynamicState dynamicState) const { return (dynamicStateFlags & (1 << dynamicState)) != 0; }
@@ -231,7 +231,7 @@ private:
 	// Pixel processor states
 	bool rasterizerDiscard = false;
 	bool depthBoundsTestEnable = false;
-	bool depthBufferEnable = false;
+	bool depthTestEnable = false;
 	VkCompareOp depthCompareMode = VK_COMPARE_OP_NEVER;
 	bool depthWriteEnable = false;
 	bool depthClampEnable = false;
