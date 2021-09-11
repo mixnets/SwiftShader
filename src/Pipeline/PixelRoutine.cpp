@@ -322,7 +322,10 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 						writeDepth(zBuffer, x, zMask, samples);
 					}
 
-					rasterOperation(cBuffer, x, sMask, zMask, cMask, samples);
+					if(!earlyFragmentTests)
+					{
+						rasterOperation(cBuffer, x, sMask, zMask, cMask, samples);
+					}
 
 					occlusionSampleCount(zMask, sMask, samples);
 				}
