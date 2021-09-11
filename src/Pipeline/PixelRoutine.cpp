@@ -85,7 +85,6 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 	Int zMask[4];  // Depth mask
 	Int sMask[4];  // Stencil mask
-	Float4 unclampedZ[4];
 
 	for(int invocation = 0; invocation < invocationCount; invocation++)
 	{
@@ -125,12 +124,6 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 				if(state.depthBias)
 				{
 					z[q] += *Pointer<Float4>(primitive + OFFSET(Primitive, zBias), 16);
-				}
-
-				unclampedZ[q] = z[q];
-				if(state.depthClamp)
-				{
-					z[q] = Min(Max(z[q], Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
 				}
 			}
 		}
@@ -239,7 +232,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 					}
 				}
 
-				setBuiltins(x, y, unclampedZ, w, cMask, samples);
+				setBuiltins(x, y, z, w, cMask, samples);
 
 				for(uint32_t i = 0; i < state.numClipDistances; i++)
 				{
@@ -580,13 +573,20 @@ Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, 
 		return true;
 	}
 
+	Float4 zf = z;
+
+	if(state.depthClamp)
+	{
+		zf = Min(Max(z, Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
+	}
+
 	if(state.depthFormat == VK_FORMAT_D16_UNORM)
 	{
-		return depthTest16(zBuffer, q, x, z, sMask, zMask, cMask);
+		return depthTest16(zBuffer, q, x, zf, sMask, zMask, cMask);
 	}
 	else
 	{
-		return depthTest32F(zBuffer, q, x, z, sMask, zMask, cMask);
+		return depthTest32F(zBuffer, q, x, zf, sMask, zMask, cMask);
 	}
 }
 
