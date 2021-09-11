@@ -128,10 +128,6 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 				}
 
 				unclampedZ[q] = z[q];
-				if(state.depthClamp)
-				{
-					z[q] = Min(Max(z[q], Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
-				}
 			}
 		}
 
@@ -141,6 +137,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 		{
 			for(unsigned int q : samples)
 			{
+				z[q] = clampDepth(z[q]);
 				depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
 				depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 			}
@@ -310,6 +307,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 				{
 					for(unsigned int q : samples)
 					{
+						z[q] = clampDepth(z[q]);
 						depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
 						depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 					}
@@ -573,6 +571,16 @@ Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x
 	return zMask != 0;
 }
 
+Float4 PixelRoutine::clampDepth(const Float4 &z)
+{
+	if(!state.depthClamp)
+	{
+		return z;
+	}
+
+	return Min(Max(z, Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
+}
+
 Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
 {
 	if(!state.depthTestActive)
@@ -580,13 +588,16 @@ Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, 
 		return true;
 	}
 
-	if(state.depthFormat == VK_FORMAT_D16_UNORM)
+	switch(state.depthFormat)
 	{
+	case VK_FORMAT_D16_UNORM:
 		return depthTest16(zBuffer, q, x, z, sMask, zMask, cMask);
-	}
-	else
-	{
+	case VK_FORMAT_D32_SFLOAT:
+	case VK_FORMAT_D32_SFLOAT_S8_UINT:
 		return depthTest32F(zBuffer, q, x, z, sMask, zMask, cMask);
+	default:
+		UNSUPPORTED("Depth format: %d", int(state.depthFormat));
+		return false;
 	}
 }
 
@@ -629,7 +640,19 @@ void PixelRoutine::depthBoundsTest(const Pointer<Byte> &zBuffer, int q, const In
 {
 	if(state.depthBoundsTestActive)
 	{
-		Int4 zTest = (state.depthFormat == VK_FORMAT_D16_UNORM) ? depthBoundsTest16(zBuffer, q, x) : depthBoundsTest32F(zBuffer, q, x);
+		Int4 zTest;
+		switch(state.depthFormat)
+		{
+		case VK_FORMAT_D16_UNORM:
+			zTest = depthBoundsTest16(zBuffer, q, x);
+			break;
+		case VK_FORMAT_D32_SFLOAT:
+			zTest = depthBoundsTest32F(zBuffer, q, x);
+			break;
+		default:
+			UNSUPPORTED("Depth format: %d", int(state.depthFormat));
+			break;
+		}
 
 		if(!state.depthTestActive)
 		{
@@ -723,17 +746,19 @@ void PixelRoutine::writeDepth(Pointer<Byte> &zBuffer, const Int &x, const Int zM
 
 	for(unsigned int q : samples)
 	{
-		if(state.depthFormat == VK_FORMAT_D16_UNORM)
+		switch(state.depthFormat)
 		{
+		case VK_FORMAT_D16_UNORM:
 			writeDepth16(zBuffer, q, x, z[q], zMask[q]);
-		}
-		else if(state.depthFormat == VK_FORMAT_D32_SFLOAT ||
-		        state.depthFormat == VK_FORMAT_D32_SFLOAT_S8_UINT)
-		{
+			break;
+		case VK_FORMAT_D32_SFLOAT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
 			writeDepth32F(zBuffer, q, x, z[q], zMask[q]);
-		}
-		else
+			break;
+		default:
 			UNSUPPORTED("Depth format: %d", int(state.depthFormat));
+			break;
+		}
 	}
 }
 
