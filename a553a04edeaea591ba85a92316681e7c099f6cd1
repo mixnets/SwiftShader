@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dc5c86b8_a09fa877",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-09-13T15:36:37Z",
+      "side": 1,
+      "message": "I\u0027ve put the template in the cpp file and stamped out instances of the function for each VK Structure Type libVulkan checks the feature support for.\n\nUnlike getProperties, where each type requires specific knowledge about the property struct in order to create the function, hasExtendedFeatures (as it\u0027s been renamed per Nicolas\u0027 suggestion) doesn\u0027t rely on knowledge about the type it\u0027s processing. So I think a template is the best choice for this problem since it minimizes code duplication.",
+      "parentUuid": "88411ace_5ee67dc8",
+      "range": {
+        "startLine": 42,
+        "startChar": 1,
+        "endLine": 42,
+        "endChar": 51
+      },
+      "revId": "a553a04edeaea591ba85a92316681e7c099f6cd1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b443dc39_eb90472a",
         "filename": "src/Vulkan/VkPhysicalDevice.hpp",
         "patchSetId": 2
