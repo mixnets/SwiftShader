@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4982ff12_a4af9ba6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-13T15:50:35Z",
+      "side": 1,
+      "message": "Looks great! Please make sure to create a follow-up for the remaining improvements that were identified.",
+      "revId": "6c54212a66c46d90e64a720ad960300890554bb7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

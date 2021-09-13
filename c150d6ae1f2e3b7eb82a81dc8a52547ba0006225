@@ -310,6 +310,30 @@
       },
       "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "665c6609_47a62f83",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1040,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-13T15:50:35Z",
+      "side": 1,
+      "message": "Right, makes sense to keep that symmetry with other objects being explicitly destroyed when something went wrong.",
+      "parentUuid": "7f38e9dd_d5166cc7",
+      "range": {
+        "startLine": 1034,
+        "startChar": 1,
+        "endLine": 1040,
+        "endChar": 2
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
