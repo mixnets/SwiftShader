@@ -26,6 +26,12 @@ config("swiftshader_llvm_reactor_private_config") {
     ]
   } else {
     cflags = [ "-Wno-unused-local-typedef" ]
+
+    if (is_clang) {
+      cflags += [
+        "-Wno-deprecated-declarations",  # b/198636514 (LLVM 10.0)
+      ]
+    }
   }
 }
 
