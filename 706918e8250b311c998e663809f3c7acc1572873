@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2409d798_e0cf0040",
+        "filename": "src/Reactor/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-14T20:55:43Z",
+      "side": 1,
+      "message": "Uber-nit: should probably be formatted:\ncflags +\u003d [ \"-Wno-deprecated-declarations\" ]  # b/198636514 (LLVM 10.0)\nWe should probably run \u0027git cl format\u0027 from a chrome repo on this file.",
+      "range": {
+        "startLine": 31,
+        "startChar": 6,
+        "endLine": 33,
+        "endChar": 7
+      },
+      "revId": "706918e8250b311c998e663809f3c7acc1572873",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
