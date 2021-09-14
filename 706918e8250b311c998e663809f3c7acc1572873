@@ -22,6 +22,30 @@
       },
       "revId": "706918e8250b311c998e663809f3c7acc1572873",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58a94ba4_e85a35e3",
+        "filename": "src/Reactor/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-14T21:06:00Z",
+      "side": 1,
+      "message": "Ironically that changed a few things in this file, except this part. 8-)\n\nWhen I removed the comment or placed  it after the closing square bracket, it did format it the way you wrote. Since the comment applies to the one flag and not the whole list, and this makes it consistent with more flags that could be added, I\u0027ll leave things as-is for this change.",
+      "parentUuid": "2409d798_e0cf0040",
+      "range": {
+        "startLine": 31,
+        "startChar": 6,
+        "endLine": 33,
+        "endChar": 7
+      },
+      "revId": "706918e8250b311c998e663809f3c7acc1572873",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
