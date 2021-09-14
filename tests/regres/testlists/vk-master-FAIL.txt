@@ -1,4 +1,5 @@
 dEQP-VK.api.driver_properties.conformance_version
+dEQP-VK.api.version_check.entry_points
 dEQP-VK.graphicsfuzz.stable-colorgrid-modulo-float-mat-determinant-clamp
 dEQP-VK.graphicsfuzz.stable-mergesort-clamped-conditional-bit-shift
 dEQP-VK.graphicsfuzz.stable-quicksort-conditional-bitwise-or-clamp
