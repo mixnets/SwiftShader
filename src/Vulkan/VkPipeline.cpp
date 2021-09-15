@@ -134,15 +134,16 @@ std::shared_ptr<sw::SpirvShader> createShader(
 	                                         spirv, key.getRenderPass(), key.getSubpassIndex(), robustBufferAccess, dbgctx);
 }
 
-std::shared_ptr<sw::ComputeProgram> createProgram(vk::Device *device, const vk::PipelineCache::ComputeProgramKey &key)
+std::shared_ptr<sw::ComputeProgram> createProgram(vk::Device *device, std::shared_ptr<sw::SpirvShader> shader, const vk::PipelineLayout *layout)
 {
 	MARL_SCOPED_EVENT("createProgram");
 
-	vk::DescriptorSet::Bindings descriptorSets;  // FIXME(b/129523279): Delay code generation until invoke time.
+	vk::DescriptorSet::Bindings descriptorSets;  // TODO(b/129523279): Delay code generation until dispatch time.
 	// TODO(b/119409619): use allocator.
-	auto program = std::make_shared<sw::ComputeProgram>(device, key.getShader(), key.getLayout(), descriptorSets);
+	auto program = std::make_shared<sw::ComputeProgram>(device, shader, layout, descriptorSets);
 	program->generate();
 	program->finalize("ComputeProgram");
+
 	return program;
 }
 
@@ -307,17 +308,17 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 
 	shader = createShader(shaderKey, module, spirv, robustBufferAccess, dbgctx);
 
+	const PipelineCache::ComputeProgramKey programKey(shader->getSerialID(), layout->identifier);
+
 	if(pPipelineCache)
 	{
-		const PipelineCache::ComputeProgramKey programKey(shader.get(), layout);
 		program = pPipelineCache->getOrCreateComputeProgram(programKey, [&] {
-			return createProgram(device, programKey);
+			return createProgram(device, shader, layout);
 		});
 	}
 	else
 	{
-		const PipelineCache::ComputeProgramKey programKey(shader.get(), layout);
-		program = createProgram(device, programKey);
+		program = createProgram(device, shader, layout);
 	}
 }
 
