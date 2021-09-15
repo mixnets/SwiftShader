@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ceee32b7_a23289a7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-15T04:58:57Z",
+      "side": 1,
+      "message": "This addresses a concern I had at https://swiftshader-review.googlesource.com/c/SwiftShader/+/54408/comments/d63a8525_195c2b76. While there are still two places where the clamp is performed after this change, at least it\u0027s clear that only one of them will be executed, depending on the earlyFragmentTests Boolean value.",
+      "revId": "b331969b5a90de0772d02c4c39bf4429a2f3f5d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
