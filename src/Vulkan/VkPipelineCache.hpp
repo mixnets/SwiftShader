@@ -54,29 +54,32 @@ public:
 
 	struct SpirvShaderKey
 	{
-		SpirvShaderKey(const VkShaderStageFlagBits pipelineStage,
-		               const std::string &entryPointName,
-		               const std::vector<uint32_t> &insns,
-		               const vk::RenderPass *renderPass,
-		               const uint32_t subpassIndex,
-		               const vk::SpecializationInfo &specializationInfo);
+		SpirvShaderKey(  //const VkShaderStageFlagBits pipelineStage,
+		    //const std::string &entryPointName,
+		    const std::vector<uint32_t> &insns,
+		    //const vk::RenderPass *renderPass,
+		    //const uint32_t subpassIndex,
+		    const vk::SpecializationInfo &specializationInfo,
+		    bool optimize);
 
 		bool operator<(const SpirvShaderKey &other) const;
 
-		const VkShaderStageFlagBits &getPipelineStage() const { return pipelineStage; }
-		const std::string &getEntryPointName() const { return entryPointName; }
+		//const VkShaderStageFlagBits &getPipelineStage() const { return pipelineStage; }
+		//const std::string &getEntryPointName() const { return entryPointName; }
 		const std::vector<uint32_t> &getInsns() const { return insns; }
-		const vk::RenderPass *getRenderPass() const { return renderPass; }
-		uint32_t getSubpassIndex() const { return subpassIndex; }
+		//const vk::RenderPass *getRenderPass() const { return renderPass; }
+		//uint32_t getSubpassIndex() const { return subpassIndex; }
 		const VkSpecializationInfo *getSpecializationInfo() const { return specializationInfo.get(); }
+		bool getOptimization() const { return optimize; }
 
 	private:
-		const VkShaderStageFlagBits pipelineStage;
-		const std::string entryPointName;
+		//const VkShaderStageFlagBits pipelineStage;
+		//const std::string entryPointName;
 		const std::vector<uint32_t> insns;
-		const vk::RenderPass *renderPass;
-		const uint32_t subpassIndex;
+		//const vk::RenderPass *renderPass;
+		//const uint32_t subpassIndex;
 		const vk::SpecializationInfo specializationInfo;
+		const bool optimize;
 	};
 
 	// getOrCreateShader() queries the cache for a shader with the given key.
@@ -85,7 +88,7 @@ public:
 	// Function must be a function of the signature:
 	//     std::shared_ptr<sw::SpirvShader>()
 	template<typename Function>
-	inline std::shared_ptr<sw::SpirvShader> getOrCreateShader(const PipelineCache::SpirvShaderKey &key, Function &&create);
+	inline std::shared_ptr<std::vector<uint32_t>> getOrCreateShader(const PipelineCache::SpirvShaderKey &key, Function &&create);
 
 	struct ComputeProgramKey
 	{
@@ -130,7 +133,7 @@ private:
 	uint8_t *data = nullptr;
 
 	marl::mutex spirvShadersMutex;
-	std::map<SpirvShaderKey, std::shared_ptr<sw::SpirvShader>> spirvShaders GUARDED_BY(spirvShadersMutex);
+	std::map<SpirvShaderKey, std::shared_ptr<std::vector<uint32_t>>> spirvShaders GUARDED_BY(spirvShadersMutex);
 
 	marl::mutex computeProgramsMutex;
 	std::map<ComputeProgramKey, std::shared_ptr<sw::ComputeProgram>> computePrograms GUARDED_BY(computeProgramsMutex);
@@ -155,7 +158,7 @@ std::shared_ptr<sw::ComputeProgram> PipelineCache::getOrCreateComputeProgram(con
 }
 
 template<typename Function>
-std::shared_ptr<sw::SpirvShader> PipelineCache::getOrCreateShader(const PipelineCache::SpirvShaderKey &key, Function &&create)
+std::shared_ptr<std::vector<uint32_t>> PipelineCache::getOrCreateShader(const PipelineCache::SpirvShaderKey &key, Function &&create)
 {
 	marl::lock lock(spirvShadersMutex);
 

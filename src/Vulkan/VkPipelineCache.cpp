@@ -17,55 +17,62 @@
 
 namespace vk {
 
-PipelineCache::SpirvShaderKey::SpirvShaderKey(const VkShaderStageFlagBits pipelineStage,
-                                              const std::string &entryPointName,
-                                              const std::vector<uint32_t> &insns,
-                                              const vk::RenderPass *renderPass,
-                                              const uint32_t subpassIndex,
-                                              const vk::SpecializationInfo &specializationInfo)
-    : pipelineStage(pipelineStage)
-    , entryPointName(entryPointName)
-    , insns(insns)
-    , renderPass(renderPass)
-    , subpassIndex(subpassIndex)
+PipelineCache::SpirvShaderKey::SpirvShaderKey(  //const VkShaderStageFlagBits pipelineStage,
+    //const std::string &entryPointName,
+    const std::vector<uint32_t> &insns,
+    //const vk::RenderPass *renderPass,
+    //const uint32_t subpassIndex,
+    const vk::SpecializationInfo &specializationInfo,
+    bool optimize)
+    :  //pipelineStage(pipelineStage)
+       // , entryPointName(entryPointName)
+    insns(insns)
+    // , renderPass(renderPass)
+    //, subpassIndex(subpassIndex)
     , specializationInfo(specializationInfo)
+    , optimize(optimize)
 {
 }
 
 bool PipelineCache::SpirvShaderKey::operator<(const SpirvShaderKey &other) const
 {
-	if(pipelineStage != other.pipelineStage)
-	{
-		return pipelineStage < other.pipelineStage;
-	}
+	//if(pipelineStage != other.pipelineStage)
+	//{
+	//	return pipelineStage < other.pipelineStage;
+	//}
 
-	if(renderPass != other.renderPass)
-	{
-		return renderPass < other.renderPass;
-	}
+	//if(renderPass != other.renderPass)
+	//{
+	//	return renderPass < other.renderPass;
+	//}
 
-	if(subpassIndex != other.subpassIndex)
-	{
-		return subpassIndex < other.subpassIndex;
-	}
+	//if(subpassIndex != other.subpassIndex)
+	//{
+	//	return subpassIndex < other.subpassIndex;
+	//}
 
 	if(insns.size() != other.insns.size())
 	{
 		return insns.size() < other.insns.size();
 	}
 
-	if(entryPointName.size() != other.entryPointName.size())
+	//if(entryPointName.size() != other.entryPointName.size())
+	//{
+	//	return entryPointName.size() < other.entryPointName.size();
+	//}
+
+	//int cmp = memcmp(entryPointName.c_str(), other.entryPointName.c_str(), entryPointName.size());
+	//if(cmp != 0)
+	//{
+	//	return cmp < 0;
+	//}
+
+	if(optimize != other.optimize)
 	{
-		return entryPointName.size() < other.entryPointName.size();
+		return !optimize && other.optimize;
 	}
 
-	int cmp = memcmp(entryPointName.c_str(), other.entryPointName.c_str(), entryPointName.size());
-	if(cmp != 0)
-	{
-		return cmp < 0;
-	}
-
-	cmp = memcmp(insns.data(), other.insns.data(), insns.size() * sizeof(uint32_t));
+	int cmp = memcmp(insns.data(), other.insns.data(), insns.size() * sizeof(uint32_t));
 	if(cmp != 0)
 	{
 		return cmp < 0;
