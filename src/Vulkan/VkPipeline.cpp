@@ -103,10 +103,8 @@ sw::SpirvBinary preprocessSpirv(
 	return optimized;
 }
 
-std::shared_ptr<sw::SpirvShader> createShader(
+sw::SpirvBinary optimizeSpirv(
     const vk::PipelineCache::SpirvShaderKey &key,
-    const vk::ShaderModule *module,
-    bool robustBufferAccess,
     const std::shared_ptr<vk::dbg::Context> &dbgctx)
 {
 	// Do not optimize the shader if we have a debugger context.
@@ -117,13 +115,23 @@ std::shared_ptr<sw::SpirvShader> createShader(
 	auto code = preprocessSpirv(key.getInsns(), key.getSpecializationInfo(), optimize);
 	ASSERT(code.size() > 0);
 
+	return code;
+}
+
+std::shared_ptr<sw::SpirvShader> createShader(
+    const vk::PipelineCache::SpirvShaderKey &key,
+    const vk::ShaderModule *module,
+    const sw::SpirvBinary &spirv,
+    bool robustBufferAccess,
+    const std::shared_ptr<vk::dbg::Context> &dbgctx)
+{
 	// If the pipeline has specialization constants, assume they're unique and
 	// use a new serial ID so the shader gets recompiled.
 	uint32_t codeSerialID = (key.getSpecializationInfo() ? vk::ShaderModule::nextSerialID() : module->getSerialID());
 
 	// TODO(b/119409619): use allocator.
 	return std::make_shared<sw::SpirvShader>(codeSerialID, key.getPipelineStage(), key.getEntryPointName().c_str(),
-	                                         code, key.getRenderPass(), key.getSubpassIndex(), robustBufferAccess, dbgctx);
+	                                         spirv, key.getRenderPass(), key.getSubpassIndex(), robustBufferAccess, dbgctx);
 }
 
 std::shared_ptr<sw::ComputeProgram> createProgram(vk::Device *device, const vk::PipelineCache::ComputeProgramKey &key)
@@ -235,19 +243,24 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 		                                        vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass,
 		                                        pStage->pSpecializationInfo);
 		auto pipelineStage = key.getPipelineStage();
+		auto dbgctx = device->getDebuggerContext();
+
+		sw::SpirvBinary spirv;
 
 		if(pPipelineCache)
 		{
-			auto shader = pPipelineCache->getOrCreateShader(key, [&] {
-				return createShader(key, module, robustBufferAccess, device->getDebuggerContext());
+			spirv = pPipelineCache->getOrOptimizeSpirv(key, [&] {
+				return optimizeSpirv(key, dbgctx);
 			});
-			setShader(pipelineStage, shader);
 		}
 		else
 		{
-			auto shader = createShader(key, module, robustBufferAccess, device->getDebuggerContext());
-			setShader(pipelineStage, shader);
+			spirv = optimizeSpirv(key, dbgctx);
 		}
+
+		auto shader = createShader(key, module, spirv, robustBufferAccess, dbgctx);
+
+		setShader(pipelineStage, shader);
 	}
 }
 
@@ -277,12 +290,25 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 
 	const PipelineCache::SpirvShaderKey shaderKey(
 	    stage.stage, stage.pName, module->getCode(), nullptr, 0, stage.pSpecializationInfo);
+	auto dbgctx = device->getDebuggerContext();
+
+	sw::SpirvBinary spirv;
+
 	if(pPipelineCache)
 	{
-		shader = pPipelineCache->getOrCreateShader(shaderKey, [&] {
-			return createShader(shaderKey, module, robustBufferAccess, device->getDebuggerContext());
+		spirv = pPipelineCache->getOrOptimizeSpirv(shaderKey, [&] {
+			return optimizeSpirv(shaderKey, dbgctx);
 		});
+	}
+	else
+	{
+		spirv = optimizeSpirv(shaderKey, dbgctx);
+	}
 
+	shader = createShader(shaderKey, module, spirv, robustBufferAccess, dbgctx);
+
+	if(pPipelineCache)
+	{
 		const PipelineCache::ComputeProgramKey programKey(shader.get(), layout);
 		program = pPipelineCache->getOrCreateComputeProgram(programKey, [&] {
 			return createProgram(device, programKey);
@@ -290,7 +316,6 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	}
 	else
 	{
-		shader = createShader(shaderKey, module, robustBufferAccess, device->getDebuggerContext());
 		const PipelineCache::ComputeProgramKey programKey(shader.get(), layout);
 		program = createProgram(device, programKey);
 	}
