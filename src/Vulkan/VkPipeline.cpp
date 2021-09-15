@@ -111,22 +111,6 @@ sw::SpirvBinary optimizeSpirv(const vk::PipelineCache::SpirvShaderKey &key)
 	return code;
 }
 
-std::shared_ptr<sw::SpirvShader> createShader(
-    const vk::PipelineCache::SpirvShaderKey &key,
-    const vk::ShaderModule *module,
-    const sw::SpirvBinary &spirv,
-    bool robustBufferAccess,
-    const std::shared_ptr<vk::dbg::Context> &dbgctx)
-{
-	// If the pipeline has specialization constants, assume they're unique and
-	// use a new serial ID so the shader gets recompiled.
-	uint32_t codeSerialID = (key.getSpecializationInfo() ? vk::ShaderModule::nextSerialID() : module->getSerialID());
-
-	// TODO(b/119409619): use allocator.
-	return std::make_shared<sw::SpirvShader>(codeSerialID, key.getPipelineStage(), key.getEntryPointName().c_str(),
-	                                         spirv, key.getRenderPass(), key.getSubpassIndex(), robustBufferAccess, dbgctx);
-}
-
 std::shared_ptr<sw::ComputeProgram> createProgram(vk::Device *device, const vk::PipelineCache::ComputeProgramKey &key)
 {
 	MARL_SCOPED_EVENT("createProgram");
@@ -238,10 +222,7 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 		const bool optimize = !dbgctx;
 
 		const ShaderModule *module = vk::Cast(pStage->module);
-		const PipelineCache::SpirvShaderKey key(pStage->stage, pStage->pName, module->getCode(),
-		                                        vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass,
-		                                        pStage->pSpecializationInfo, optimize);
-		auto pipelineStage = key.getPipelineStage();
+		const PipelineCache::SpirvShaderKey key(module->getCode(), pStage->pSpecializationInfo, optimize);
 
 		sw::SpirvBinary spirv;
 
@@ -256,9 +237,15 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 			spirv = optimizeSpirv(key);
 		}
 
-		auto shader = createShader(key, module, spirv, robustBufferAccess, dbgctx);
+		// If the pipeline has specialization constants, assume they're unique and
+		// use a new serial ID so the shader gets recompiled.
+		uint32_t codeSerialID = (key.getSpecializationInfo() ? vk::ShaderModule::nextSerialID() : module->getSerialID());
 
-		setShader(pipelineStage, shader);
+		// TODO(b/119409619): use allocator.
+		auto shader = std::make_shared<sw::SpirvShader>(codeSerialID, pStage->stage, pStage->pName, spirv,
+		                                                vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass, robustBufferAccess, dbgctx);
+
+		setShader(pStage->stage, shader);
 	}
 }
 
@@ -292,8 +279,7 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	// instructions.
 	const bool optimize = !dbgctx;
 
-	const PipelineCache::SpirvShaderKey shaderKey(
-	    stage.stage, stage.pName, module->getCode(), nullptr, 0, stage.pSpecializationInfo, optimize);
+	const PipelineCache::SpirvShaderKey shaderKey(module->getCode(), stage.pSpecializationInfo, optimize);
 
 	sw::SpirvBinary spirv;
 
@@ -308,7 +294,13 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 		spirv = optimizeSpirv(shaderKey);
 	}
 
-	shader = createShader(shaderKey, module, spirv, robustBufferAccess, dbgctx);
+	// If the pipeline has specialization constants, assume they're unique and
+	// use a new serial ID so the shader gets recompiled.
+	uint32_t codeSerialID = (stage.pSpecializationInfo ? vk::ShaderModule::nextSerialID() : module->getSerialID());
+
+	// TODO(b/119409619): use allocator.
+	shader = std::make_shared<sw::SpirvShader>(codeSerialID, stage.stage, stage.pName, spirv,
+	                                           nullptr, 0, robustBufferAccess, dbgctx);
 
 	if(pPipelineCache)
 	{
