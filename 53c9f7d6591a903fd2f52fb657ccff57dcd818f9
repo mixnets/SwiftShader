@@ -16,6 +16,24 @@
       "message": "This change itself is fine, as long as we\u0027re sure we want to recompile cached shaders.",
       "revId": "53c9f7d6591a903fd2f52fb657ccff57dcd818f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce29fb05_0cf26108",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-16T20:54:33Z",
+      "side": 1,
+      "message": "Yep, it\u0027s not a full recompile, just the analysis work done in the SpirvShader constructor.",
+      "parentUuid": "c6c25685_b037dcc4",
+      "revId": "53c9f7d6591a903fd2f52fb657ccff57dcd818f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
