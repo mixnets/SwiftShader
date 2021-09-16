@@ -16,6 +16,24 @@
       "message": "Isn\u0027t this less efficient if you reuse the same entry point?\nShould we cache both the optimized SPIR-V and the shader compilation result?",
       "revId": "e85bf7e30b339e1ffa168d6448a0ec0ff7ee165b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1442a018_07d31b6a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-16T20:54:33Z",
+      "side": 1,
+      "message": "Fair question! Fortunately, the construction of SpirvShader is cheap. It only does a linear pass over the instructions to gather some basic information. Previously I had just assumed that to have a low cost, but I ran an experiment where the construction of SprivShader is repeated 10.000 times, and the execution time of vk-unittests went up from 8.5 seconds to 77 seconds. When instead running spirv-opt 100 times, execution time was 158 seconds (all Debug builds).\n\nSo this change from caching SpirvBinary instead of SpirvShader has a less than 1% effect on the scenario where the same entry point is reused. In contrast, it enables shader modules with multiple entry points to no longer redundantly go through spirv-opt, which can make a massive difference.\n\nNote that we still cache ComputeProgram too, which is a fully compiled compute shader. It\u0027s important for a handful of dEQP tests. And for graphics pipelines we still have RoutineCache\u003c\u003e\u0027s to avoid redundant Reactor compiles.",
+      "parentUuid": "28cc266d_d767ad0d",
+      "revId": "e85bf7e30b339e1ffa168d6448a0ec0ff7ee165b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
