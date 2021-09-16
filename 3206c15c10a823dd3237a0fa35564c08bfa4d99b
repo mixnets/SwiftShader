@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef05354f_184aaa22",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-16T18:10:32Z",
+      "side": 1,
+      "message": "Looks good! I think Alexis\u0027 concern has also been addressed, but I\u0027ll let him double-check and +2.",
+      "revId": "3206c15c10a823dd3237a0fa35564c08bfa4d99b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
