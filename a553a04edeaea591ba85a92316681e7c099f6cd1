@@ -48,6 +48,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fee97181_150ce54c",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-16T18:48:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "dc5c86b8_a09fa877",
+      "range": {
+        "startLine": 42,
+        "startChar": 1,
+        "endLine": 42,
+        "endChar": 51
+      },
+      "revId": "a553a04edeaea591ba85a92316681e7c099f6cd1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b443dc39_eb90472a",
