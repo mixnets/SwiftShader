@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28cc266d_d767ad0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-16T14:34:21Z",
+      "side": 1,
+      "message": "Isn\u0027t this less efficient if you reuse the same entry point?\nShould we cache both the optimized SPIR-V and the shader compilation result?",
+      "revId": "e85bf7e30b339e1ffa168d6448a0ec0ff7ee165b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
