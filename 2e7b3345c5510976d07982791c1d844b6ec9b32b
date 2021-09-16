@@ -22,6 +22,30 @@
       },
       "revId": "2e7b3345c5510976d07982791c1d844b6ec9b32b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d556cdc3_d6970612",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-16T14:29:43Z",
+      "side": 1,
+      "message": "Note that we already have mechanisms to do this in vk::Device, like the SamplerIndexer.",
+      "parentUuid": "98ab087d_1c7af99d",
+      "range": {
+        "startLine": 21,
+        "startChar": 31,
+        "endLine": 23,
+        "endChar": 61
+      },
+      "revId": "2e7b3345c5510976d07982791c1d844b6ec9b32b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
