@@ -22,6 +22,30 @@
       },
       "revId": "5a63bc5f46da6da4c3c01d96471292d9896456c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "591dae89_47547084",
+        "filename": "src/Vulkan/VkPipelineCache.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-16T20:54:33Z",
+      "side": 1,
+      "message": "Yes. I wanted to keep the same pattern of comparing against `other`. A single term looked weird. I\u0027m fairly certain Clang can eliminate this, but even if not it\u0027s insignificant.",
+      "parentUuid": "9fa3aac6_64b92e58",
+      "range": {
+        "startLine": 79,
+        "startChar": 18,
+        "endLine": 79,
+        "endChar": 36
+      },
+      "revId": "5a63bc5f46da6da4c3c01d96471292d9896456c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
