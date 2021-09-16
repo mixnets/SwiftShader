@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "457dd836_ba56ac80",
+        "filename": "src/Pipeline/SpirvBinary.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-16T19:56:24Z",
+      "side": 1,
+      "message": "Good eye!",
+      "parentUuid": "bd928957_702526c3",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 44
+      },
+      "revId": "2471dd73bf7c423b4e8ad9ce8ee0ce770e384e26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3075e892_78a8b1f4",
@@ -47,6 +71,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a8357f1_482487f8",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-16T19:56:24Z",
+      "side": 1,
+      "message": "Any optimizing compiler would eliminate the explicit division and implicit multiplication, but I went with your suggestion because the spec does not appear to demand that VkSpecializationMapEntry::offset is a multiple of 4. Alignment requirements for CPU-side data depend on those of the \"host processor\".",
+      "parentUuid": "3075e892_78a8b1f4",
+      "range": {
+        "startLine": 65,
+        "startChar": 31,
+        "endLine": 65,
+        "endChar": 83
+      },
+      "revId": "2471dd73bf7c423b4e8ad9ce8ee0ce770e384e26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "61f66663_c1dc126f",
@@ -60,6 +108,30 @@
       "writtenOn": "2021-09-16T14:20:43Z",
       "side": 1,
       "message": "Same",
+      "range": {
+        "startLine": 66,
+        "startChar": 78,
+        "endLine": 66,
+        "endChar": 119
+      },
+      "revId": "2471dd73bf7c423b4e8ad9ce8ee0ce770e384e26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c28a24c_eea95c5a",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-16T19:56:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "61f66663_c1dc126f",
       "range": {
         "startLine": 66,
         "startChar": 78,
