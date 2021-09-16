@@ -46,6 +46,30 @@
       },
       "revId": "2e7b3345c5510976d07982791c1d844b6ec9b32b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cee27b72_bd7863be",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-16T20:54:33Z",
+      "side": 1,
+      "message": "Yes, that was actually my first thought, but it would add the overhead of a couple of map lookups, when we already know the pointer and just need to pass it through (as done explicitly in this change). It\u0027s an issue of limiting the lifetime of the pointer, and I think my suggestion on b/200143775 might work without adding overhead.",
+      "parentUuid": "d556cdc3_d6970612",
+      "range": {
+        "startLine": 21,
+        "startChar": 31,
+        "endLine": 23,
+        "endChar": 61
+      },
+      "revId": "2e7b3345c5510976d07982791c1d844b6ec9b32b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
