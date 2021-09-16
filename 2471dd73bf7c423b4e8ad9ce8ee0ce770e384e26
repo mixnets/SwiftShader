@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd928957_702526c3",
+        "filename": "src/Pipeline/SpirvBinary.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-16T14:20:43Z",
+      "side": 1,
+      "message": "This should be removed before landing",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 44
+      },
+      "revId": "2471dd73bf7c423b4e8ad9ce8ee0ce770e384e26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3075e892_78a8b1f4",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-16T14:20:43Z",
+      "side": 1,
+      "message": "Nit: It looks more readable to me with:\nspecializationData + (entry.offset / sizeof(uint32_t))\n\nAlso, you could remove the 2 \"/ sizeof(uint32_t)\" by doing the pointer math on a uint8_t* pointer. I know that means adding reinterpret_casts, but they don\u0027t incur any runtime cost. Anyway, just minor style differences.",
+      "range": {
+        "startLine": 65,
+        "startChar": 31,
+        "endLine": 65,
+        "endChar": 83
+      },
+      "revId": "2471dd73bf7c423b4e8ad9ce8ee0ce770e384e26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "61f66663_c1dc126f",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-16T14:20:43Z",
+      "side": 1,
+      "message": "Same",
+      "range": {
+        "startLine": 66,
+        "startChar": 78,
+        "endLine": 66,
+        "endChar": 119
+      },
+      "revId": "2471dd73bf7c423b4e8ad9ce8ee0ce770e384e26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
