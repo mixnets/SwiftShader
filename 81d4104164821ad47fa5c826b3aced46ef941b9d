@@ -22,6 +22,30 @@
       },
       "revId": "81d4104164821ad47fa5c826b3aced46ef941b9d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84ca3502_a1f2caa2",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-16T15:40:09Z",
+      "side": 1,
+      "message": "Sean, could you check if the test that hits this combination still exists in the latest dEQP-VK? It might have been added by accident and corrected already. If not, please see if there are comments which explain its existence. We might just be waiting on the spec to get updated. But if nobody seems aware of this, please file a bug at gitlab.khronos.org/Tracker/vk-gl-cts/issues. The Validation Layer might also need an update to catch this.\n\nI think this change can land without handling this format. It\u0027s fine to hit UNSUPPORTED() for cases where the application doesn\u0027t follow the spec. It\u0027s unusual for dEQP to be that application, but we shouldn\u0027t make exceptions for it when we think it\u0027s wrong.",
+      "parentUuid": "6d23a4ca_15610abf",
+      "range": {
+        "startLine": 229,
+        "startChar": 7,
+        "endLine": 229,
+        "endChar": 39
+      },
+      "revId": "81d4104164821ad47fa5c826b3aced46ef941b9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
