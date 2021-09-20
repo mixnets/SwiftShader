@@ -46,6 +46,30 @@
       },
       "revId": "81d4104164821ad47fa5c826b3aced46ef941b9d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c820c47_c92cb385",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-09-20T17:36:53Z",
+      "side": 1,
+      "message": "The spec states in 33.1.1 Compatible formats of planes of multi-planar formats:\n\n\u003e Individual planes of multi-planar formats are compatible with single-plane formats if they occupy the same number of bits per texel block. In the following table, individual planes of a multi-planar format are compatible with the format listed against the relevant plane index for that multi-planar format, and any format compatible with the listed single-plane format according to [Format Compatibility Classes](https://www.khronos.org/registry/vulkan/specs/1.2/html/chap33.html#formats-compatibility-classes).\n\nSince r8g8_unorm is a format that\u0027s compatible with r4g4b4a4_unorm_pack16, that means r4g4b4a4 is also a compatible format with plane 1 of the g8_r8b8 format.\n\nSo I believe my code is actually valid here?",
+      "parentUuid": "84ca3502_a1f2caa2",
+      "range": {
+        "startLine": 229,
+        "startChar": 7,
+        "endLine": 229,
+        "endChar": 39
+      },
+      "revId": "81d4104164821ad47fa5c826b3aced46ef941b9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
