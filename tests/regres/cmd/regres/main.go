@@ -549,7 +549,7 @@ func (r *regres) testLatest(change *changeInfo, test *test, d deqpBuild) (*deqp.
 	if matches := additionalTestsRE.FindAllStringSubmatch(change.commitMessage, -1); len(matches) > 0 {
 		log.Println("Change description contains additional test patterns")
 
-		// Change specifies additional tests to try. Load the full test list.
+		// Change specifies additional tests to try.  Load the full test list.
 		fullTestLists, err := test.loadTestLists(fullTestListRelPath)
 		if err != nil {
 			return nil, nil, cause.Wrap(err, "Failed to load '%s'", change.latest)
