@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c4e6dbe_2f5add6b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 26
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-21T14:59:22Z",
+      "side": 1,
+      "message": "The failure of dEQP-VK.api.version_check.entry_points is still a mystery. I can\u0027t reproduce it. It only happens when doing a full Regres run on my workstation, not on the CloudTop system. CI test runs are not affected. b/182287812 didn\u0027t make a difference. It appears it might be sensitive to the order in which tests are run.\n\nAnyway, since we have have real new passing tests, I\u0027ll manually alter this change to not include the failure, and land that.",
+      "revId": "e6d9c531b29626d4c6030f08ac06a71709ae3890",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
