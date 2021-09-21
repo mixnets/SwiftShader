@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1552200_cf08b766",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-21T03:14:24Z",
+      "side": 1,
+      "message": "This change doesn\u0027t fully achieve the goal of ensuring that only information stored in the cache (i.e. ComputeProgramTag) is used as state for generating the compute program. ComputeProgramKey could have new members added which are not, or not fully, represented by the Tag.\n\nIt\u0027s still better than the old code though, because now the process of obtaining a unique tag is centralized into the ComputeProgramKey::getTag() method instead of being done much less clearly inside ComputePipeline::compileShaders().\n\nOne way to make it practically foolproof is to only ever store the unique integer identifiers in the Key object, but then we need to do map lookups to obtain the shader and layout object pointers from them, even though we have those pointers already available...",
+      "revId": "1116e6d0302c5db7c83e2e901ab2f1d00d7ddc1e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
