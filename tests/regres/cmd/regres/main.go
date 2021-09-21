@@ -541,15 +541,15 @@ var additionalTestsRE = regexp.MustCompile(`\n\s*Test[s]?:\s*([^\s]+)[^\n]*`)
 
 func (r *regres) testLatest(change *changeInfo, test *test, d deqpBuild) (*deqp.Results, testlist.Lists, error) {
 	// Get the test results for the latest patchset in the change.
-	testlists, err := test.loadTestLists(ciTestListRelPath)
+	testlists, err := test.loadTestLists(fullTestListRelPath)
 	if err != nil {
 		return nil, nil, cause.Wrap(err, "Failed to load '%s'", change.latest)
 	}
 
-	if matches := additionalTestsRE.FindAllStringSubmatch(change.commitMessage, -1); len(matches) > 0 {
+	/*if matches := additionalTestsRE.FindAllStringSubmatch(change.commitMessage, -1); len(matches) > 0 {
 		log.Println("Change description contains additional test patterns")
 
-		// Change specifies additional tests to try. Load the full test list.
+		// Change specifies additional tests to try.  Load the full test list.
 		fullTestLists, err := test.loadTestLists(fullTestListRelPath)
 		if err != nil {
 			return nil, nil, cause.Wrap(err, "Failed to load '%s'", change.latest)
@@ -567,7 +567,7 @@ func (r *regres) testLatest(change *changeInfo, test *test, d deqpBuild) (*deqp.
 				testlists = append(testlists, filtered...)
 			}
 		}
-	}
+	}*/
 
 	cachePath := test.resultsCachePath(testlists, d)
 
