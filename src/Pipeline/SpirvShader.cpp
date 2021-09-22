@@ -76,6 +76,7 @@ SpirvShader::SpirvShader(
 		{
 		case spv::OpEntryPoint:
 			{
+				ASSERT(executionModel == spv::ExecutionModelMax);
 				executionModel = spv::ExecutionModel(insn.word(1));
 				auto id = Function::ID(insn.word(2));
 				auto name = insn.string(3);
