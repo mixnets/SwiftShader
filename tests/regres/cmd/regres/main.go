@@ -1174,7 +1174,7 @@ func (t *test) run(testLists testlist.Lists, d deqpBuild) (*deqp.Results, error)
 		TempDir:   tempDir,
 		TestLists: testLists,
 		Env: []string{
-			"LD_LIBRARY_PATH=" + t.buildDir + ":" + os.Getenv("LD_LIBRARY_PATH"),
+			"LD_LIBRARY_PATH=" + filepath.Join(t.buildDir, "Linux"),
 			"VK_ICD_FILENAMES=" + swiftshaderICDJSON,
 			"DISPLAY=" + os.Getenv("DISPLAY"),
 			"LIBC_FATAL_STDERR_=1", // Put libc explosions into logs.
