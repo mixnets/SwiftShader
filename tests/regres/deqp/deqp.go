@@ -329,6 +329,7 @@ nextTest:
 			"--deqp-shadercache=disable",
 			"--deqp-log-images=disable",
 			"--deqp-log-shader-sources=disable",
+            "--deqp-log-decompiled-spirv=disable",
 			"--deqp-log-flush=disable",
 			"--deqp-log-filename="+logPath,
 			"-n="+name)
