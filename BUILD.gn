@@ -15,7 +15,7 @@
 import("src/Reactor/reactor.gni")
 
 config("swiftshader_config") {
-  cflags = [ "-Wno-shadow" ]
+  cflags = []
   defines = []
   asmflags = []
 
@@ -28,6 +28,10 @@ config("swiftshader_config") {
         [ "NO_SANITIZE_FUNCTION=__attribute__((no_sanitize(\"function\")))" ]
   } else {
     defines += [ "NO_SANITIZE_FUNCTION=" ]
+  }
+
+  if (is_clang) {
+    cflags += [ "-Wno-shadow" ]
   }
 
   if (is_win) {
