@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//build/config/ozone.gni")
 import("../swiftshader.gni")
 
 config("WSI_metal_weak_framework") {
@@ -33,7 +34,7 @@ swiftshader_source_set("WSI") {
     "VkSwapchainKHR.hpp",
   ]
 
-  if (is_linux || is_chromeos) {
+  if ((is_linux || is_chromeos) && ozone_platform_x11) {
     sources += [
       "XcbSurfaceKHR.cpp",
       "XcbSurfaceKHR.hpp",
