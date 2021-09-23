@@ -39,6 +39,30 @@
       },
       "revId": "755b78dc66b2362621a78b6964a9df3af94e960c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "41e99578_95615fac",
+        "filename": "BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 100991
+      },
+      "writtenOn": "2021-09-23T14:43:59Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/57388",
+      "parentUuid": "0db42dd7_b4974ccf",
+      "range": {
+        "startLine": 18,
+        "startChar": 11,
+        "endLine": 18,
+        "endChar": 28
+      },
+      "revId": "755b78dc66b2362621a78b6964a9df3af94e960c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
