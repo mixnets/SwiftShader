@@ -22,6 +22,30 @@
       },
       "revId": "d79414afbfc2928857c555558f4b5507149d0892",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "699bf3c5_79d96830",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-24T12:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8de02d08_be599990",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 38
+      },
+      "revId": "d79414afbfc2928857c555558f4b5507149d0892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
