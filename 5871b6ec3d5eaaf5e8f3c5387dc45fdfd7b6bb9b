@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6293c0a2_33349d63",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-24T19:15:44Z",
+      "side": 1,
+      "message": "Verified to still work well with Regres not using the Vulkan Loader: https://swiftshader-review.googlesource.com/c/SwiftShader/+/57348\n\nHits UNIMPLEMENTED(\"b/148240133: pCreateInfo-\u003eenabledLayerCount !\u003d 0\") as expected.",
+      "revId": "5871b6ec3d5eaaf5e8f3c5387dc45fdfd7b6bb9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
