@@ -762,7 +762,7 @@ public:
 	};
 
 	std::unordered_map<Object::ID, DescriptorDecorations> descriptorDecorations;
-	std::vector<VkFormat> inputAttachmentFormats;
+	std::vector<vk::Format> inputAttachmentFormats;
 
 	struct InterfaceComponent
 	{
