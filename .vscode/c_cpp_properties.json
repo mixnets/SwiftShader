@@ -8,17 +8,10 @@
                 "VERIFY_LLVM_IR=1"
             ],
             "includePath": [
-                "${workspaceFolder}/build/spirv-tools-ext/include",
-                "${workspaceFolder}/include",
-                "${workspaceFolder}/src",
-                "${workspaceFolder}/third_party/benchmark/include",
-                "${workspaceFolder}/third_party/cppdap/include",
-                "${workspaceFolder}/third_party/llvm-10.0/configs/common/include",
-                "${workspaceFolder}/third_party/llvm-10.0/configs/windows/include",
-                "${workspaceFolder}/third_party/llvm-10.0/llvm/include",
-                "${workspaceFolder}/third_party/marl/include",
-                "${workspaceFolder}/third_party/SPIRV-Headers/include",
-                "${workspaceFolder}/third_party/SPIRV-Tools/include"
+                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/tests/**",
+                "${workspaceFolder}/third_party/**"
             ],
             "cStandard": "c11",
             "cppStandard": "c++17"
@@ -31,17 +24,10 @@
                 "VERIFY_LLVM_IR=1"
             ],
             "includePath": [
-                "${workspaceFolder}/build/spirv-tools-ext/include",
-                "${workspaceFolder}/include",
-                "${workspaceFolder}/src",
-                "${workspaceFolder}/third_party/benchmark/include",
-                "${workspaceFolder}/third_party/cppdap/include",
-                "${workspaceFolder}/third_party/llvm-10.0/configs/common/include",
-                "${workspaceFolder}/third_party/llvm-10.0/configs/windows/include",
-                "${workspaceFolder}/third_party/llvm-10.0/llvm/include",
-                "${workspaceFolder}/third_party/marl/include",
-                "${workspaceFolder}/third_party/SPIRV-Headers/include",
-                "${workspaceFolder}/third_party/SPIRV-Tools/include"
+                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/tests/**",
+                "${workspaceFolder}/third_party/**"
             ],
             "cStandard": "c11",
             "cppStandard": "c++17"
@@ -54,16 +40,10 @@
                 "VERIFY_LLVM_IR=1"
             ],
             "includePath": [
-                "${workspaceFolder}/include",
-                "${workspaceFolder}/src",
-                "${workspaceFolder}/third_party/benchmark/include",
-                "${workspaceFolder}/third_party/cppdap/include",
-                "${workspaceFolder}/third_party/llvm-10.0/configs/common/include",
-                "${workspaceFolder}/third_party/llvm-10.0/configs/windows/include",
-                "${workspaceFolder}/third_party/llvm-10.0/llvm/include",
-                "${workspaceFolder}/third_party/marl/include",
-                "${workspaceFolder}/third_party/SPIRV-Headers/include",
-                "${workspaceFolder}/third_party/SPIRV-Tools/include"
+                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/tests/**",
+                "${workspaceFolder}/third_party/**"
             ],
             "cStandard": "c11",
             "cppStandard": "c++17"
