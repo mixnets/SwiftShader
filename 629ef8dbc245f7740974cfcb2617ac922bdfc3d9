@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b15384a5_958cb1e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-25T06:53:38Z",
+      "side": 1,
+      "message": "This is due to locally applying https://swiftshader-review.googlesource.com/c/SwiftShader/+/57348.",
+      "revId": "629ef8dbc245f7740974cfcb2617ac922bdfc3d9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
