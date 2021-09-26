@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e32a436c_5d7cec3c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-26T00:50:13Z",
+      "side": 1,
+      "message": "Excellent, thanks!\n\nWe can probably refactor a few things since we now have for 4444 formats and nearly identical code paths, but let\u0027s keep that for a follow-up change.",
+      "revId": "4e15a8a8627602c94e4b0e9911bf7273b4f36cfb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a205e6ab_ec4a2e29",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1801,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-26T00:50:13Z",
+      "side": 1,
+      "message": "Nice refactoring!",
+      "range": {
+        "startLine": 1801,
+        "startChar": 3,
+        "endLine": 1801,
+        "endChar": 9
+      },
+      "revId": "4e15a8a8627602c94e4b0e9911bf7273b4f36cfb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
