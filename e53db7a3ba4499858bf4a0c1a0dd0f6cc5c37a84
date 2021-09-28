@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1cd9ba44_4f6a715f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-28T14:32:53Z",
+      "side": 1,
+      "message": "The last Patchset was run with https://swiftshader-review.googlesource.com/c/SwiftShader/+/57348 applied locally.",
+      "revId": "e53db7a3ba4499858bf4a0c1a0dd0f6cc5c37a84",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bff39a7a_02db5d4e",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 22568,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-28T14:32:53Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/57428",
+      "range": {
+        "startLine": 22568,
+        "startChar": 86,
+        "endLine": 22568,
+        "endChar": 96
+      },
+      "revId": "e53db7a3ba4499858bf4a0c1a0dd0f6cc5c37a84",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "02b21249_8b04276d",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 165837,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-28T14:32:53Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/51470",
+      "range": {
+        "startLine": 165837,
+        "startChar": 61,
+        "endLine": 165837,
+        "endChar": 67
+      },
+      "revId": "e53db7a3ba4499858bf4a0c1a0dd0f6cc5c37a84",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "514ffc70_3f1b0664",
+        "filename": "tests/regres/testlists/vk-master-UNIMPLEMENTED.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-28T14:32:53Z",
+      "side": 1,
+      "message": "This is expected: https://swiftshader-review.googlesource.com/c/SwiftShader/+/57348",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 56
+      },
+      "revId": "e53db7a3ba4499858bf4a0c1a0dd0f6cc5c37a84",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
