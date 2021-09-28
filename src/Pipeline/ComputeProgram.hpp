@@ -46,12 +46,12 @@ class ComputeProgram : public Coroutine<SpirvShader::YieldResult(
                            int32_t subgroupCount)>
 {
 public:
-	ComputeProgram(vk::Device *device, std::shared_ptr<SpirvShader> spirvShader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets);
+	ComputeProgram(vk::Device *device, const SpirvShader *spirvShader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets);
 
 	virtual ~ComputeProgram();
 
 	// generate builds the shader program.
-	void generate();
+	//void generate();
 
 	// run executes the compute shader routine for all workgroups.
 	void run(
@@ -63,27 +63,18 @@ public:
 	    uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ);
 
 protected:
-	void emit(SpirvRoutine *routine);
-	void setWorkgroupBuiltins(Pointer<Byte> data, SpirvRoutine *routine, Int workgroupID[3]);
-	void setSubgroupBuiltins(Pointer<Byte> data, SpirvRoutine *routine, Int workgroupID[3], SIMD::Int localInvocationIndex, Int subgroupIndex);
-
-	struct Data
-	{
-		vk::DescriptorSet::Bindings descriptorSets;
-		vk::DescriptorSet::DynamicOffsets descriptorDynamicOffsets;
-		uint4 numWorkgroups;               // [x, y, z, 0]
-		uint4 workgroupSize;               // [x, y, z, 0]
-		uint32_t invocationsPerSubgroup;   // SPIR-V: "SubgroupSize"
-		uint32_t subgroupsPerWorkgroup;    // SPIR-V: "NumSubgroups"
-		uint32_t invocationsPerWorkgroup;  // Total number of invocations per workgroup.
-		vk::Pipeline::PushConstantStorage pushConstants;
-		const Constants *constants;
-	};
+	void emit(SpirvRoutine *routine, const SpirvShader *spirvShader);
+	void setWorkgroupBuiltins(const SpirvShader *spirvShader, Pointer<Byte> data, SpirvRoutine *routine, Int workgroupID[3]);
+	void setSubgroupBuiltins(const SpirvShader *spirvShader, Pointer<Byte> data, SpirvRoutine *routine, Int workgroupID[3], SIMD::Int localInvocationIndex, Int subgroupIndex);
 
 	vk::Device *const device;
-	const std::shared_ptr<SpirvShader> shader;
 	const vk::PipelineLayout *const pipelineLayout;  // Reference held by vk::Pipeline
 	const vk::DescriptorSet::Bindings &descriptorSets;
+
+	const SpirvShader::ExecutionModes executionModes;
+	const size_t workgroupMemorySize;
+	const bool containsControlBarriers;
+	const bool containsImageWrite;
 };
 
 }  // namespace sw

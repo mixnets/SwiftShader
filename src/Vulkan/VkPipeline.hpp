@@ -17,6 +17,7 @@
 
 #include "Device/Context.hpp"
 #include "Vulkan/VkPipelineCache.hpp"
+
 #include <memory>
 
 namespace sw {
@@ -108,12 +109,12 @@ public:
 
 	bool containsImageWrite() const;
 
-	const std::shared_ptr<sw::SpirvShader> getShader(const VkShaderStageFlagBits &stage) const;
+	const sw::SpirvShader *getShader(const VkShaderStageFlagBits &stage) const;
 
 private:
-	void setShader(const VkShaderStageFlagBits &stage, const std::shared_ptr<sw::SpirvShader> spirvShader);
-	std::shared_ptr<sw::SpirvShader> vertexShader;
-	std::shared_ptr<sw::SpirvShader> fragmentShader;
+	void setShader(const VkShaderStageFlagBits &stage, std::unique_ptr<sw::SpirvShader> &&spirvShader);
+	std::unique_ptr<sw::SpirvShader> vertexShader;
+	std::unique_ptr<sw::SpirvShader> fragmentShader;
 
 	const GraphicsState state;
 
@@ -149,7 +150,7 @@ public:
 	         vk::Pipeline::PushConstantStorage const &pushConstants);
 
 protected:
-	std::shared_ptr<sw::SpirvShader> shader;
+	//std::shared_ptr<sw::SpirvShader> shader;
 	std::shared_ptr<sw::ComputeProgram> program;
 };
 
