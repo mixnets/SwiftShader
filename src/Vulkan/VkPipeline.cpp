@@ -107,14 +107,13 @@ sw::SpirvBinary optimizeSpirv(const vk::PipelineCache::SpirvBinaryKey &key)
 	return optimized;
 }
 
-std::shared_ptr<sw::ComputeProgram> createProgram(vk::Device *device, std::shared_ptr<sw::SpirvShader> shader, const vk::PipelineLayout *layout)
+std::shared_ptr<sw::ComputeProgram> createProgram(vk::Device *device, const vk::PipelineCache::ComputeProgramKey &key)
 {
 	MARL_SCOPED_EVENT("createProgram");
 
 	vk::DescriptorSet::Bindings descriptorSets;  // TODO(b/129523279): Delay code generation until dispatch time.
 	// TODO(b/119409619): use allocator.
-	auto program = std::make_shared<sw::ComputeProgram>(device, shader, layout, descriptorSets);
-	program->generate();
+	auto program = std::make_shared<sw::ComputeProgram>(device, key.shader, key.layout, descriptorSets);
 	program->finalize("ComputeProgram");
 
 	return program;
@@ -168,18 +167,18 @@ bool GraphicsPipeline::containsImageWrite() const
 	       (fragmentShader.get() && fragmentShader->containsImageWrite());
 }
 
-void GraphicsPipeline::setShader(const VkShaderStageFlagBits &stage, const std::shared_ptr<sw::SpirvShader> spirvShader)
+void GraphicsPipeline::setShader(const VkShaderStageFlagBits &stage, std::unique_ptr<sw::SpirvShader> &&spirvShader)
 {
 	switch(stage)
 	{
 	case VK_SHADER_STAGE_VERTEX_BIT:
 		ASSERT(vertexShader.get() == nullptr);
-		vertexShader = spirvShader;
+		vertexShader = std::move(spirvShader);
 		break;
 
 	case VK_SHADER_STAGE_FRAGMENT_BIT:
 		ASSERT(fragmentShader.get() == nullptr);
-		fragmentShader = spirvShader;
+		fragmentShader = std::move(spirvShader);
 		break;
 
 	default:
@@ -188,17 +187,17 @@ void GraphicsPipeline::setShader(const VkShaderStageFlagBits &stage, const std::
 	}
 }
 
-const std::shared_ptr<sw::SpirvShader> GraphicsPipeline::getShader(const VkShaderStageFlagBits &stage) const
+const sw::SpirvShader *GraphicsPipeline::getShader(const VkShaderStageFlagBits &stage) const
 {
 	switch(stage)
 	{
 	case VK_SHADER_STAGE_VERTEX_BIT:
-		return vertexShader;
+		return vertexShader.get();
 	case VK_SHADER_STAGE_FRAGMENT_BIT:
-		return fragmentShader;
+		return fragmentShader.get();
 	default:
 		UNSUPPORTED("Unsupported stage");
-		return fragmentShader;
+		return nullptr;
 	}
 }
 
@@ -239,10 +238,10 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 		uint32_t codeSerialID = (key.getSpecializationInfo() ? vk::ShaderModule::nextSerialID() : module->getSerialID());
 
 		// TODO(b/119409619): use allocator.
-		auto shader = std::make_shared<sw::SpirvShader>(codeSerialID, pStage->stage, pStage->pName, spirv,
+		auto shader = std::make_unique<sw::SpirvShader>(codeSerialID, pStage->stage, pStage->pName, spirv,
 		                                                vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass, robustBufferAccess, dbgctx);
 
-		setShader(pStage->stage, shader);
+		setShader(pStage->stage, std::move(shader));
 	}
 }
 
@@ -253,7 +252,6 @@ ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo *pCreateInfo,
 
 void ComputePipeline::destroyPipeline(const VkAllocationCallbacks *pAllocator)
 {
-	shader.reset();
 	program.reset();
 }
 
@@ -267,7 +265,6 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	auto &stage = pCreateInfo->stage;
 	const ShaderModule *module = vk::Cast(stage.module);
 
-	ASSERT(shader.get() == nullptr);
 	ASSERT(program.get() == nullptr);
 
 	auto dbgctx = device->getDebuggerContext();
@@ -295,21 +292,20 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	// use a new serial ID so the shader gets recompiled.
 	uint32_t codeSerialID = (stage.pSpecializationInfo ? vk::ShaderModule::nextSerialID() : module->getSerialID());
 
-	// TODO(b/119409619): use allocator.
-	shader = std::make_shared<sw::SpirvShader>(codeSerialID, stage.stage, stage.pName, spirv,
-	                                           nullptr, 0, robustBufferAccess, dbgctx);
+	sw::SpirvShader shader(codeSerialID, stage.stage, stage.pName, spirv,
+	                       nullptr, 0, robustBufferAccess, dbgctx);
 
-	const PipelineCache::ComputeProgramKey programKey(shader->getSerialID(), layout->identifier);
+	const PipelineCache::ComputeProgramKey programKey(&shader, layout);
 
 	if(pPipelineCache)
 	{
 		program = pPipelineCache->getOrCreateComputeProgram(programKey, [&] {
-			return createProgram(device, shader, layout);
+			return createProgram(device, programKey);
 		});
 	}
 	else
 	{
-		program = createProgram(device, shader, layout);
+		program = createProgram(device, programKey);
 	}
 }
 

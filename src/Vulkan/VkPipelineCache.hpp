@@ -79,15 +79,38 @@ public:
 	template<typename Function>
 	inline sw::SpirvBinary getOrOptimizeSpirv(const PipelineCache::SpirvBinaryKey &key, Function &&create);
 
-	struct ComputeProgramKey
+	// This 'tag' structure contains integer identifiers which uniquely represent the objects
+	// in the 'key' stucture below which are used as specialization state during ComputeProgram
+	// compilation, avoiding the risk of accessing dangling pointers.
+	struct ComputeProgramTag
 	{
-		ComputeProgramKey(uint64_t shaderIdentifier, uint32_t pipelineLayoutIdentifier);
+		ComputeProgramTag(uint64_t shaderIdentifier, uint32_t pipelineLayoutIdentifier)
+		    : shaderIdentifier(shaderIdentifier)
+		    , pipelineLayoutIdentifier(pipelineLayoutIdentifier)
+		{}
 
-		bool operator<(const ComputeProgramKey &other) const;
+		bool operator<(const ComputeProgramTag &other) const;
 
 	private:
 		const uint64_t shaderIdentifier;
 		const uint32_t pipelineLayoutIdentifier;
+	};
+
+	struct ComputeProgramKey
+	{
+		ComputeProgramKey(const sw::SpirvShader *shader, const vk::PipelineLayout *layout)
+		    : shader(shader)
+		    , layout(layout)
+		{}
+
+		// Returns a 'tag' which uniquely represents the fields in this struct, which are used
+		// as code generation specialization state, but may not live as long as the cache entries.
+		ComputeProgramTag getTag() const;
+
+		// These fields are weak pointers because they must only be used during ComputeProgram
+		// creation/compilation. Only the 'tag' gets stored in the cache.
+		const sw::SpirvShader *const shader;
+		const vk::PipelineLayout *const layout;
 	};
 
 	// getOrCreateComputeProgram() queries the cache for a compute program with
@@ -116,7 +139,7 @@ private:
 	std::map<SpirvBinaryKey, sw::SpirvBinary> spirvShaders GUARDED_BY(spirvShadersMutex);
 
 	marl::mutex computeProgramsMutex;
-	std::map<ComputeProgramKey, std::shared_ptr<sw::ComputeProgram>> computePrograms GUARDED_BY(computeProgramsMutex);
+	std::map<ComputeProgramTag, std::shared_ptr<sw::ComputeProgram>> computePrograms GUARDED_BY(computeProgramsMutex);
 };
 
 static inline PipelineCache *Cast(VkPipelineCache object)
@@ -129,14 +152,16 @@ std::shared_ptr<sw::ComputeProgram> PipelineCache::getOrCreateComputeProgram(con
 {
 	marl::lock lock(computeProgramsMutex);
 
-	auto it = computePrograms.find(key);
+	auto tag = key.getTag();
+
+	auto it = computePrograms.find(tag);
 	if(it != computePrograms.end())
 	{
 		return it->second;
 	}
 
 	auto created = create();
-	computePrograms.emplace(key, created);
+	computePrograms.emplace(tag, created);
 
 	return created;
 }

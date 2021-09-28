@@ -205,8 +205,8 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	{
 		MARL_SCOPED_EVENT("update");
 
-		const sw::SpirvShader *fragmentShader = pipeline->getShader(VK_SHADER_STAGE_FRAGMENT_BIT).get();
-		const sw::SpirvShader *vertexShader = pipeline->getShader(VK_SHADER_STAGE_VERTEX_BIT).get();
+		const sw::SpirvShader *fragmentShader = pipeline->getShader(VK_SHADER_STAGE_FRAGMENT_BIT);
+		const sw::SpirvShader *vertexShader = pipeline->getShader(VK_SHADER_STAGE_VERTEX_BIT);
 
 		const vk::Attachments attachments = pipeline->getAttachments();
 
