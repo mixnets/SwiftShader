@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "440cfbdb_0b46f204",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-29T16:34:17Z",
+      "side": 1,
+      "message": "Thanks Yi! Feel free to manually set Verified+1, and submit. The Kokoro failure is benign (we use b/197177755 syntax to refer to Buganizer issues, to discern them from Monorail issues used by Chromium).",
+      "revId": "9b3e13e82799fbe8a23cce0826091feff67594d3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
