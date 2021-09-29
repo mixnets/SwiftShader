@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "015da9ee_84473ffe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-29T15:37:53Z",
+      "side": 1,
+      "message": "This is a safe way to detect MSan errors before we land https://swiftshader-review.googlesource.com/c/SwiftShader/+/53028",
+      "revId": "1bccce31e701a1011b6c351abfaafba1c2131898",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
