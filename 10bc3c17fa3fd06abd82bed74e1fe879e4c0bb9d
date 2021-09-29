@@ -39,6 +39,30 @@
       },
       "revId": "10bc3c17fa3fd06abd82bed74e1fe879e4c0bb9d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "933443b0_3451123e",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 4
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 7273
+      },
+      "writtenOn": "2021-09-29T12:30:01Z",
+      "side": 1,
+      "message": "I\u0027m not sure we want this to be enabled for cast [1]. If so, I can change that to if (ozone_platform_x11).\n\n[1] https://source.chromium.org/chromium/chromium/src/+/main:build/config/ozone.gni;l\u003d83?q\u003dozone.gni\u0026ss\u003dchromium%2Fchromium%2Fsrc",
+      "parentUuid": "d04fa2cf_6c2df54e",
+      "range": {
+        "startLine": 22,
+        "startChar": 2,
+        "endLine": 22,
+        "endChar": 56
+      },
+      "revId": "10bc3c17fa3fd06abd82bed74e1fe879e4c0bb9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
