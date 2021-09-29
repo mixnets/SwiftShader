@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "102260c4_4e157bdd",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-29T12:16:12Z",
+      "side": 1,
+      "message": "Nit: I feel like this should be the result of a centralized function since we do the same thing in vk::Format::sliceB(). Should this computation also include \"sw::align\u003c16\u003e\"?",
+      "range": {
+        "startLine": 66,
+        "startChar": 27,
+        "endLine": 66,
+        "endChar": 42
+      },
+      "revId": "da62624f00d334f82d32d2df627999d9e83516b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
