@@ -16,6 +16,29 @@
       "message": "please review now :) thanks",
       "revId": "10bc3c17fa3fd06abd82bed74e1fe879e4c0bb9d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d04fa2cf_6c2df54e",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 4
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-29T12:25:15Z",
+      "side": 1,
+      "message": "Any reason not to make this simply:\n  if (ozone_platform_x11) {\n\n?\n(same for other file, obviously)",
+      "range": {
+        "startLine": 22,
+        "startChar": 2,
+        "endLine": 22,
+        "endChar": 56
+      },
+      "revId": "10bc3c17fa3fd06abd82bed74e1fe879e4c0bb9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
