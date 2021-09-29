@@ -53,6 +53,14 @@ struct SamplerFunction
 	const bool sample;
 };
 
+struct LOD
+{
+	Float lod;
+	Float anisotropy;
+	Float4 uDelta;
+	Float4 vDelta;
+};
+
 class SamplerCore
 {
 public:
@@ -62,17 +70,17 @@ public:
 
 private:
 	Float4 applySwizzle(const Vector4f &c, VkComponentSwizzle swizzle, bool integer);
-	Short4 offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOffset, bool wrap, int count, Float &lod);
-	Vector4s sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, SamplerFunction function);
-	Vector4s sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, bool secondLOD, SamplerFunction function);
-	Vector4s sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function);
-	Vector4s sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function);
-	Vector4s sample3D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function);
-	Vector4f sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, SamplerFunction function);
-	Vector4f sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, bool secondLOD, SamplerFunction function);
-	Vector4f sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function);
-	Vector4f sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function);
-	Vector4f sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function);
+	Short4 offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOffset, bool wrap, int count, const Float &lod);
+	Vector4s sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const LOD &lod, SamplerFunction function);
+	Vector4s sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const LOD &lod, bool secondLOD, SamplerFunction function);
+	Vector4s sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD, SamplerFunction function);
+	Vector4s sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD, SamplerFunction function);
+	Vector4s sample3D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD, SamplerFunction function);
+	Vector4f sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const LOD &lod, SamplerFunction function);
+	Vector4f sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const LOD &lod, bool secondLOD, SamplerFunction function);
+	Vector4f sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD, SamplerFunction function);
+	Vector4f sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD, SamplerFunction function);
+	Vector4f sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &dRef, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD, SamplerFunction function);
 	void computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &dsx, Float4 &dsy, SamplerFunction function);
 	void computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &u, Float4 &v, Float4 &dsx, Float4 &dsy, SamplerFunction function);
 	void computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, Float4 &M, SamplerFunction function);
@@ -85,12 +93,12 @@ private:
 	Vector4s sampleTexel(UInt index[4], Pointer<Byte> buffer);
 	Vector4f sampleTexel(Int4 &u, Int4 &v, Int4 &w, Float4 &dRef, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function);
 	Vector4f replaceBorderTexel(const Vector4f &c, Int4 valid);
-	void selectMipmap(const Pointer<Byte> &texture, Pointer<Byte> &mipmap, Pointer<Byte> &buffer, const Float &lod, bool secondLOD);
+	Pointer<Byte> selectMipmap(const Pointer<Byte> &texture, const Float &lod, bool secondLOD);
 	Short4 address(const Float4 &uvw, AddressingMode addressingMode, Pointer<Byte> &mipmap);
 	Short4 computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap);
 	void address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Int4 &offset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function);
 	Int4 computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap, SamplerFunction function);
-	Int4 computeFilterOffset(Float &lod);
+	Int4 computeFilterOffset(const Float &lod);
 
 	void convertSigned15(Float4 &cf, Short4 &ci);
 	void convertUnsigned16(Float4 &cf, Short4 &ci);
