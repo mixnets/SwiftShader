@@ -40,12 +40,6 @@
 #	define __x86__
 #endif
 
-// A Clang extension to determine compiler features.
-// We use it to detect Sanitizer builds (e.g. -fsanitize=memory).
-#ifndef __has_feature
-#	define __has_feature(x) 0
-#endif
-
 namespace sw {
 
 namespace {
@@ -83,12 +77,6 @@ void *allocate(size_t bytes, size_t alignment)
 
 	if(block)
 	{
-		// TODO(b/140991626): Never initialize the allocated memory.
-		if(!__has_feature(memory_sanitizer))
-		{
-			memset(block, 0, size);
-		}
-
 		aligned = (unsigned char *)((uintptr_t)(block + sizeof(Allocation) + alignment - 1) & -(intptr_t)alignment);
 		Allocation *allocation = (Allocation *)(aligned - sizeof(Allocation));
 
