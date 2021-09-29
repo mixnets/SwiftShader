@@ -50,7 +50,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 	bool requiresLodComputation = (function == Query) || (state.textureFilter == FILTER_ANISOTROPIC);
 	bool skipLodComputation = singleMipLevel && !requiresLodComputation;
 
-	LOD lod;
+	LOD lod(state, function);
 	{
 		Float4 M;  // Major axis
 
@@ -68,19 +68,19 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 		{
 			if(state.is1D())
 			{
-				computeLod1D(texture, lod.lod, u, dsx, dsy);
+				lod.computeLod1D(texture, u, dsx, dsy);
 			}
 			else if(state.is2D())
 			{
-				computeLod2D(texture, lod.lod, lod.anisotropy, lod.uDelta, lod.vDelta, u, v, dsx, dsy);
+				lod.computeLod2D(texture, u, v, dsx, dsy);
 			}
 			else if(state.isCube())
 			{
-				computeLodCube(texture, lod.lod, uvwa[0], uvwa[1], uvwa[2], dsx, dsy, M);
+				lod.computeLodCube(texture, uvwa[0], uvwa[1], uvwa[2], dsx, dsy, M);
 			}
 			else
 			{
-				computeLod3D(texture, lod.lod, u, v, w, dsx, dsy);
+				lod.computeLod3D(texture, u, v, w, dsx, dsy);
 			}
 
 			Float bias = state.mipLodBias;
@@ -101,8 +101,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 		}
 		else if(function == Fetch)
 		{
-			// TODO: Eliminate int-float-int conversion.
-			lod.lod = Float(lodOrBias);
+			lod.level = lodOrBias;  // The Lod operand for Fetch instructions is an integer.
 		}
 		else if(function == Base || function == Gather)
 		{
@@ -383,7 +382,7 @@ Short4 SamplerCore::offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOff
 
 Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
-	Vector4s c = sampleAniso(texture, u, v, w, a, offset, sample, lod, false);
+	Vector4s c = sampleAniso(texture, u, v, w, a, offset, sample, lod);  // fakse
 
 	if(function == Fetch)
 	{
@@ -392,7 +391,7 @@ Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 
 	if(state.mipmapFilter == MIPMAP_LINEAR)
 	{
-		Vector4s cc = sampleAniso(texture, u, v, w, a, offset, sample, lod, true);
+		Vector4s cc = sampleAniso(texture, u, v, w, a, offset, sample, lod);  //true
 
 		UShort4 utri = UShort4(Float4(lod.lod * Float(1 << 16)));  // FIXME: Optimize
 		Short4 stri = utri >> 1;                                   // FIXME: Optimize
@@ -448,13 +447,13 @@ Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 	return c;
 }
 
-Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const LOD &lod, bool secondLOD)
+Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
 	Vector4s c;
 
 	if(state.textureFilter != FILTER_ANISOTROPIC)
 	{
-		c = sampleQuad(texture, u, v, w, a, offset, sample, lod.lod, secondLOD);
+		c = sampleQuad(texture, u, v, w, a, offset, sample, lod);
 	}
 	else
 	{
@@ -485,7 +484,7 @@ Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, 
 
 		Do
 		{
-			c = sampleQuad(texture, u0, v0, w, a, offset, sample, lod.lod, secondLOD);
+			c = sampleQuad(texture, u0, v0, w, a, offset, sample, lod);
 
 			u0 += du;
 			v0 += dv;
@@ -532,26 +531,26 @@ Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, 
 	return c;
 }
 
-Vector4s SamplerCore::sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD)
+Vector4s SamplerCore::sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
 	if(state.textureType != VK_IMAGE_VIEW_TYPE_3D)
 	{
-		return sampleQuad2D(texture, u, v, w, a, offset, sample, lod, secondLOD);
+		return sampleQuad2D(texture, u, v, w, a, offset, sample, lod);
 	}
 	else
 	{
-		return sample3D(texture, u, v, w, offset, sample, lod, secondLOD);
+		return sample3D(texture, u, v, w, offset, sample, lod);
 	}
 }
 
-Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD)
+Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
 	Vector4s c;
 
 	int componentCount = textureComponentCount();
 	bool gather = (state.textureFilter == FILTER_GATHER);
 
-	Pointer<Byte> mipmap = selectMipmap(texture, lod, secondLOD);
+	Pointer<Byte> mipmap = selectMipmap(texture, lod);
 	Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap, buffer));
 
 	Short4 uuuu = address(u, state.addressingModeU, mipmap);
@@ -565,10 +564,10 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 	}
 	else
 	{
-		Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap, uHalf), state.addressingModeU == ADDRESSING_WRAP, -1, lod);
-		Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, -1, lod);
-		Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap, uHalf), state.addressingModeU == ADDRESSING_WRAP, +1, lod);
-		Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, +1, lod);
+		Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap, uHalf), state.addressingModeU == ADDRESSING_WRAP, -1, lod.lod);
+		Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, -1, lod.lod);
+		Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap, uHalf), state.addressingModeU == ADDRESSING_WRAP, +1, lod.lod);
+		Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, +1, lod.lod);
 
 		Vector4s c00 = sampleTexel(uuuu0, vvvv0, wwww, layerIndex, offset, sample, mipmap, buffer);
 		Vector4s c10 = sampleTexel(uuuu1, vvvv0, wwww, layerIndex, offset, sample, mipmap, buffer);
@@ -746,13 +745,13 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 	return c;
 }
 
-Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, Float4 &w_, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD)
+Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, Float4 &w_, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
 	Vector4s c_;
 
 	int componentCount = textureComponentCount();
 
-	Pointer<Byte> mipmap = selectMipmap(texture, lod, secondLOD);
+	Pointer<Byte> mipmap = selectMipmap(texture, lod);
 	Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap, buffer));
 
 	Short4 uuuu = address(u_, state.addressingModeU, mipmap);
@@ -777,9 +776,9 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 			{
 				for(int k = 0; k < 2; k++)
 				{
-					u[i][j][k] = offsetSample(uuuu, mipmap, OFFSET(Mipmap, uHalf), state.addressingModeU == ADDRESSING_WRAP, i * 2 - 1, lod);
-					v[i][j][k] = offsetSample(vvvv, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, j * 2 - 1, lod);
-					s[i][j][k] = offsetSample(wwww, mipmap, OFFSET(Mipmap, wHalf), state.addressingModeW == ADDRESSING_WRAP, k * 2 - 1, lod);
+					u[i][j][k] = offsetSample(uuuu, mipmap, OFFSET(Mipmap, uHalf), state.addressingModeU == ADDRESSING_WRAP, i * 2 - 1, lod.lod);
+					v[i][j][k] = offsetSample(vvvv, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, j * 2 - 1, lod.lod);
+					s[i][j][k] = offsetSample(wwww, mipmap, OFFSET(Mipmap, wHalf), state.addressingModeW == ADDRESSING_WRAP, k * 2 - 1, lod.lod);
 				}
 			}
 		}
@@ -896,7 +895,7 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 
 Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
-	Vector4f c = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod, false);
+	Vector4f c = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod);  //false
 
 	if(function == Fetch)
 	{
@@ -905,7 +904,7 @@ Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float
 
 	if(state.mipmapFilter == MIPMAP_LINEAR)
 	{
-		Vector4f cc = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod, true);
+		Vector4f cc = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod);  //true
 
 		Float4 lod4 = Float4(Frac(lod.lod));
 
@@ -918,13 +917,13 @@ Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float
 	return c;
 }
 
-Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const LOD &lod, bool secondLOD)
+Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
 	Vector4f c;
 
 	if(state.textureFilter != FILTER_ANISOTROPIC)
 	{
-		c = sampleFloat(texture, u, v, w, a, dRef, offset, sample, lod.lod, secondLOD);
+		c = sampleFloat(texture, u, v, w, a, dRef, offset, sample, lod);
 	}
 	else
 	{
@@ -953,7 +952,7 @@ Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4
 
 		Do
 		{
-			c = sampleFloat(texture, u0, v0, w, a, dRef, offset, sample, lod.lod, secondLOD);
+			c = sampleFloat(texture, u0, v0, w, a, dRef, offset, sample, lod);
 
 			u0 += du;
 			v0 += dv;
@@ -976,31 +975,31 @@ Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4
 	return c;
 }
 
-Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD)
+Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
 	if(state.textureType != VK_IMAGE_VIEW_TYPE_3D)
 	{
-		return sampleFloat2D(texture, u, v, w, a, dRef, offset, sample, lod, secondLOD);
+		return sampleFloat2D(texture, u, v, w, a, dRef, offset, sample, lod);
 	}
 	else
 	{
-		return sampleFloat3D(texture, u, v, w, dRef, offset, sample, lod, secondLOD);
+		return sampleFloat3D(texture, u, v, w, dRef, offset, sample, lod);
 	}
 }
 
-Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD)
+Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
 	Vector4f c;
 
 	int componentCount = textureComponentCount();
 	bool gather = (state.textureFilter == FILTER_GATHER);
 
-	Pointer<Byte> mipmap = selectMipmap(texture, lod, secondLOD);
+	Pointer<Byte> mipmap = selectMipmap(texture, lod);
 	Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap, buffer));
 
 	Int4 x0, x1, y0, y1;
 	Float4 fu, fv;
-	Int4 filter = computeFilterOffset(lod);
+	Int4 filter = computeFilterOffset(lod.lod);
 	address(u, x0, x1, fu, mipmap, offset.x, filter, OFFSET(Mipmap, width), state.addressingModeU);
 	address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV);
 
@@ -1081,18 +1080,18 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 	return c;
 }
 
-Vector4f SamplerCore::sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &dRef, Vector4i &offset, const Int4 &sample, const Float &lod, bool secondLOD)
+Vector4f SamplerCore::sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &dRef, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
 	Vector4f c;
 
 	int componentCount = textureComponentCount();
 
-	Pointer<Byte> mipmap = selectMipmap(texture, lod, secondLOD);
+	Pointer<Byte> mipmap = selectMipmap(texture, lod);
 	Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap, buffer));
 
 	Int4 x0, x1, y0, y1, z0, z1;
 	Float4 fu, fv, fw;
-	Int4 filter = computeFilterOffset(lod);
+	Int4 filter = computeFilterOffset(lod.lod);
 	address(u, x0, x1, fu, mipmap, offset.x, filter, OFFSET(Mipmap, width), state.addressingModeU);
 	address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV);
 	address(w, z0, z1, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW);
@@ -1181,7 +1180,7 @@ static Float log2(Float lod)
 	return lod;
 }
 
-void SamplerCore::computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &dsx, Float4 &dsy)
+void LOD::computeLod1D(const Pointer<Byte> &texture, const Float4 &uuuu, const Float4 &dsx, const Float4 &dsy)
 {
 	Float4 dudxy;
 
@@ -1205,7 +1204,7 @@ void SamplerCore::computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu,
 	lod = log2sqrt(lod);
 }
 
-void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, Float4 &dsx, Float4 &dsy)
+void LOD::computeLod2D(const Pointer<Byte> &texture, const Float4 &uuuu, const Float4 &vvvv, const Float4 &dsx, const Float4 &dsy)
 {
 	Float4 duvdxy;
 
@@ -1253,7 +1252,7 @@ void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisot
 	lod = log2sqrt(lod);  // log2(sqrt(lod))
 }
 
-void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, Float4 &M)
+void LOD::computeLodCube(const Pointer<Byte> &texture, const Float4 &u, const Float4 &v, const Float4 &w, const Float4 &dsx, const Float4 &dsy, const Float4 &M)
 {
 	Float4 dudxy, dvdxy, dsdxy;
 
@@ -1294,7 +1293,7 @@ void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, 
 	lod = log2(lod);
 }
 
-void SamplerCore::computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &vvvv, Float4 &wwww, Float4 &dsx, Float4 &dsy)
+void LOD::computeLod3D(const Pointer<Byte> &texture, const Float4 &uuuu, const Float4 &vvvv, const Float4 &wwww, const Float4 &dsx, const Float4 &dsy)
 {
 	Float4 dudxy, dvdxy, dsdxy;
 
@@ -2213,7 +2212,7 @@ Vector4f SamplerCore::replaceBorderTexel(const Vector4f &c, Int4 valid)
 	return out;
 }
 
-Pointer<Byte> SamplerCore::selectMipmap(const Pointer<Byte> &texture, const Float &lod, bool secondLOD)
+Pointer<Byte> SamplerCore::selectMipmap(const Pointer<Byte> &texture, const LOD &lod)
 {
 	Pointer<Byte> mipmap0 = texture + OFFSET(Texture, mipmap[0]);
 
@@ -2222,19 +2221,23 @@ Pointer<Byte> SamplerCore::selectMipmap(const Pointer<Byte> &texture, const Floa
 		return mipmap0;
 	}
 
-	Int ilod;
+	Int level;
 
-	if(state.mipmapFilter == MIPMAP_POINT)
+	if(function == Fetch)  // Fetch instructions provide an integer Lod level.
+	{
+		level = lod.level;
+	}
+	else if(state.mipmapFilter == MIPMAP_POINT)
 	{
 		// TODO: Preferred formula is ceil(lod + 0.5) - 1
-		ilod = RoundInt(lod);
+		level = RoundInt(lod.lod);
 	}
 	else  // MIPMAP_LINEAR
 	{
-		ilod = Int(lod);
+		level = Int(lod.lod);
 	}
 
-	return mipmap0 + ilod * sizeof(Mipmap) + secondLOD * sizeof(Mipmap);
+	return mipmap0 + level * sizeof(Mipmap) + lod.secondLevel * sizeof(Mipmap);
 }
 
 Int4 SamplerCore::computeFilterOffset(const Float &lod)
