@@ -49,6 +49,12 @@
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
+// A Clang extension to determine compiler features.
+// We use it to detect Sanitizer builds (e.g. -fsanitize=memory).
+#ifndef __has_feature
+#	define __has_feature(x) 0
+#endif
+
 namespace rr {
 namespace {
 
