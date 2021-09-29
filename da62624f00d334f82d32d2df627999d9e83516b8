@@ -22,6 +22,30 @@
       },
       "revId": "da62624f00d334f82d32d2df627999d9e83516b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "38990984_e44bd830",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-29T15:36:22Z",
+      "side": 1,
+      "message": "\u003e I feel like this should be the result of a centralized function since we do the same thing in vk::Format::sliceB()\n\nI think we should keep it separate, because vertex attribute formats and texel formats are treated quite differently. Vertex attributes only have to be aligned to the size of their components. 3-component formats are common, and a few are mandatory. The addressing of texels is opaque (except for linear layout), and practically nobody supports 3-component formats for images.\n\nThe padding in vk::Format::sliceB() is to my knowledge only still required because we use 8-byte accesses for the stencil buffer. If/when we fix that it could go away, or we could adjust this padding to be more specific for that case (e.g. only for VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT images).\n\n\u003e Should this computation also include \"sw::align\u003c16\u003e\"?\n\nIt\u0027s the application\u0027s responsibility to map the buffer at an address that respects the alignment requirement returned by this function.",
+      "parentUuid": "102260c4_4e157bdd",
+      "range": {
+        "startLine": 66,
+        "startChar": 27,
+        "endLine": 66,
+        "endChar": 42
+      },
+      "revId": "da62624f00d334f82d32d2df627999d9e83516b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
