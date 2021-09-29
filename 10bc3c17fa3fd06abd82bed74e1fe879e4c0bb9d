@@ -63,6 +63,30 @@
       },
       "revId": "10bc3c17fa3fd06abd82bed74e1fe879e4c0bb9d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6e1f65e_7fcd1e5e",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 4
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-29T12:41:28Z",
+      "side": 1,
+      "message": "Fair enough. Let\u0027s not make any functional change for now.",
+      "parentUuid": "933443b0_3451123e",
+      "range": {
+        "startLine": 22,
+        "startChar": 2,
+        "endLine": 22,
+        "endChar": 56
+      },
+      "revId": "10bc3c17fa3fd06abd82bed74e1fe879e4c0bb9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
