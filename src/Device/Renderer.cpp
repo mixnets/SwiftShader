@@ -146,7 +146,11 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 
 DrawCall::DrawCall()
 {
-	data = (DrawData *)allocate(sizeof(DrawData));
+	// TODO(b/140991626): Use allocateZeroOrPoison() instead of allocateZero()
+	// when no MemorySanitizer errors are found.
+	// TODO(b/140991626): Determine the cost of zero-initialization and use
+	// allocateUninitialized() instead of allocateZeroOrPoison().
+	data = (DrawData *)allocateZero(sizeof(DrawData));
 	data->constants = &Constants::Get();
 }
 
@@ -172,12 +176,12 @@ Renderer::~Renderer()
 void *Renderer::operator new(size_t size)
 {
 	ASSERT(size == sizeof(Renderer));  // This operator can't be called from a derived class
-	return vk::allocate(sizeof(Renderer), alignof(Renderer), vk::DEVICE_MEMORY, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
+	return sw::allocateZero(sizeof(Renderer), alignof(Renderer));
 }
 
 void Renderer::operator delete(void *mem)
 {
-	vk::deallocate(mem, vk::DEVICE_MEMORY);
+	sw::deallocate(mem);
 }
 
 void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState &dynamicState, unsigned int count, int baseVertex,

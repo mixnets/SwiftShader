@@ -22,14 +22,36 @@
 
 namespace vk {
 
-void *allocate(size_t count, size_t alignment, const VkAllocationCallbacks *pAllocator, VkSystemAllocationScope allocationScope)
+void *allocateDeviceMemory(size_t bytes, size_t alignment)
 {
-	return pAllocator ? pAllocator->pfnAllocation(pAllocator->pUserData, count, alignment, allocationScope) : sw::allocate(count, alignment);
+	return allocate_(bytes, alignment, nullptr, VK_SYSTEM_ALLOCATION_SCOPE_MAX_ENUM);
 }
 
-void deallocate(void *ptr, const VkAllocationCallbacks *pAllocator)
+void freeDeviceMemory(void *memory)
 {
-	pAllocator ? pAllocator->pfnFree(pAllocator->pUserData, ptr) : sw::deallocate(ptr);
+	deallocate(memory, nullptr);
+}
+
+void *allocate(size_t bytes, size_t alignment)
+{
+	return allocate_(bytes, alignment, nullptr, VK_SYSTEM_ALLOCATION_SCOPE_MAX_ENUM);
+}
+
+void deallocate(void *memory)
+{
+	deallocate(memory, nullptr);
+}
+
+void *allocate_(size_t bytes, size_t alignment, const VkAllocationCallbacks *pAllocator, VkSystemAllocationScope allocationScope)
+{
+	// TODO(b/140991626): Use allocateUninitialized() instead of allocateZeroOrPoison() to improve startup peformance.
+	return pAllocator ? pAllocator->pfnAllocation(pAllocator->pUserData, bytes, alignment, allocationScope)
+	                  : sw::allocateZeroOrPoison(bytes, alignment);
+}
+
+void deallocate(void *memory, const VkAllocationCallbacks *pAllocator)
+{
+	pAllocator ? pAllocator->pfnFree(pAllocator->pUserData, memory) : sw::deallocate(memory);
 }
 
 }  // namespace vk

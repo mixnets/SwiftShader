@@ -74,7 +74,7 @@ public:
 		return VK_SUCCESS;
 	}
 
-	void deallocate(void *buffer, size_t size) override
+	void deallocate_(void *buffer, size_t size) override
 	{
 		memfd.unmap(buffer, size);
 	}

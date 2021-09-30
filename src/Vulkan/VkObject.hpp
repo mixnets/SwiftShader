@@ -40,9 +40,6 @@ static inline VkT TtoVkT(T *object)
 	return { static_cast<uint64_t>(reinterpret_cast<uintptr_t>(object)) };
 }
 
-// For use in the placement new to make it verbose that we're allocating an object using device memory
-static constexpr VkAllocationCallbacks *DEVICE_MEMORY = nullptr;
-
 template<typename T, typename VkT, typename CreateInfo, typename... ExtendedInfo>
 static VkResult Create(const VkAllocationCallbacks *pAllocator, const CreateInfo *pCreateInfo, VkT *outObject, ExtendedInfo... extendedInfo)
 {
@@ -52,14 +49,14 @@ static VkResult Create(const VkAllocationCallbacks *pAllocator, const CreateInfo
 	void *memory = nullptr;
 	if(size)
 	{
-		memory = vk::allocate(size, REQUIRED_MEMORY_ALIGNMENT, pAllocator, T::GetAllocationScope());
+		memory = vk::allocate_(size, REQUIRED_MEMORY_ALIGNMENT, pAllocator, T::GetAllocationScope());
 		if(!memory)
 		{
 			return VK_ERROR_OUT_OF_HOST_MEMORY;
 		}
 	}
 
-	void *objectMemory = vk::allocate(sizeof(T), alignof(T), pAllocator, T::GetAllocationScope());
+	void *objectMemory = vk::allocate_(sizeof(T), alignof(T), pAllocator, T::GetAllocationScope());
 	if(!objectMemory)
 	{
 		vk::deallocate(memory, pAllocator);
