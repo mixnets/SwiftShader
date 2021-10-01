@@ -26,6 +26,7 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
@@ -72,6 +73,8 @@ const (
 	fullTestListRelPath   = "tests/regres/full-tests.json"
 	ciTestListRelPath     = "tests/regres/ci-tests.json"
 	deqpConfigRelPath     = "tests/regres/deqp.json"
+	swsTestLists          = "tests/regres/testlists"
+	deqpTestLists         = "external/vulkancts/mustpass/master"
 )
 
 var (
@@ -486,9 +489,20 @@ func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 			if err := git.CheckoutRemoteBranch(cacheDir, cfg.Remote, cfg.Branch); err != nil {
 				return deqpBuild{}, cause.Wrap(err, "Couldn't checkout deqp branch %v @ %v", cfg.Remote, cfg.Branch)
 			}
-			log.Printf("Checking out deqp %v commit %v \n", cfg.Remote, cfg.SHA)
-			if err := git.CheckoutCommit(cacheDir, git.ParseHash(cfg.SHA)); err != nil {
-				return deqpBuild{}, cause.Wrap(err, "Couldn't checkout deqp commit %v @ %v", cfg.Remote, cfg.SHA)
+			if cfg.SHA != "" {
+				log.Printf("Checking out deqp %v commit %v \n", cfg.Remote, cfg.SHA)
+				if err := git.CheckoutCommit(cacheDir, git.ParseHash(cfg.SHA)); err != nil {
+					return deqpBuild{}, cause.Wrap(err, "Couldn't checkout deqp commit %v @ %v", cfg.Remote, cfg.SHA)
+				}
+			} else {
+				log.Printf("Fast forwarding to most recent commit")
+				if err := git.FastForward(cacheDir); err != nil {
+					return deqpBuild{}, cause.Wrap(err, "Couldn't fast-forward deqp to tip of branch %v", cfg.Branch)
+				}
+				log.Printf("Fetching sources")
+				if err := deqp.FetchSources(cacheDir); err != nil {
+					return deqpBuild{}, cause.Wrap(err, "Failed to fetch dEQP sources")
+				}
 			}
 		} else {
 			log.Printf("Checking out deqp %v @ %v into %v\n", cfg.Remote, cfg.SHA, cacheDir)
@@ -708,6 +722,106 @@ func (r *regres) runDailyTest(dailyHash git.Hash, reactorBackend reactorBackend,
 	return withResults(test, testLists, results)
 }
 
+func copyFileIfDifferent(src, dst string) error {
+	srcContents, err := os.ReadFile(src)
+	if err != nil {
+		return err
+	}
+
+	dstContents, err := os.ReadFile(dst)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return err
+	}
+
+	if bytes.Equal(srcContents, dstContents) {
+		return nil
+	} else {
+		if err := os.WriteFile(dst, srcContents, 0640); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// updatedEQPFiles copies the lists of tests in dEQP to the same lists in
+// SwiftShader, and sets the SHA in deqp.json to the latest revision
+func (r *regres) updatedEQPFiles(test *test) ([]string, error) {
+	out := []string{}
+	deqpBuild, err := r.getOrBuildDEQP(test)
+
+	log.Println("Copying deqp's vulkan testlist to checkout %s", test.commit)
+	deqpTestlistDir := path.Join(deqpBuild.path, deqpTestLists)
+	swsTestlistDir := path.Join(test.checkoutDir, swsTestLists)
+
+	deqpDefault := path.Join(deqpTestlistDir, "vk-default.txt")
+	swsDefault := path.Join(swsTestlistDir, "vk-master.txt")
+
+	if err := copyFileIfDifferent(deqpDefault, swsDefault); err != nil {
+		return nil, cause.Wrap(err, "Failed to copy '%s' to '%s'", deqpDefault, swsDefault)
+	}
+
+	out = append(out, swsDefault)
+
+	files, err := ioutil.ReadDir(path.Join(deqpTestlistDir, "vk-default"))
+	if err != nil {
+		return nil, cause.Wrap(err, "Could not read files from %s/vk-default/", deqpTestlistDir)
+	}
+
+	for _, f := range files {
+		if f.IsDir() {
+			continue
+		}
+
+		swsFile := path.Join(swsTestlistDir, "vk-default", f.Name())
+		deqpFile := path.Join(deqpTestlistDir, "vk-default", f.Name())
+
+		err := copyFileIfDifferent(deqpFile, swsFile)
+		if err != nil {
+			return nil, cause.Wrap(err, "Failed to copy '%s' to '%s'", deqpFile, swsFile)
+		}
+		out = append(out, swsFile)
+	}
+
+	// Update deqp.json
+	checkoutDir := test.checkoutDir
+	p := path.Join(checkoutDir, deqpConfigRelPath)
+	if !util.IsFile(p) {
+		checkoutDir, _ = os.Getwd()
+		log.Printf("Couldn't open dEQP config file from change (%v), falling back to internal version\n", p)
+	} else {
+		log.Println("Using dEQP config file from change")
+	}
+	file, err := os.OpenFile(path.Join(checkoutDir, deqpConfigRelPath), os.O_RDWR, 0640)
+	if err != nil {
+		return nil, cause.Wrap(err, "Couldn't open dEQP config file")
+	}
+	defer file.Close()
+
+	cfg := struct {
+		Remote  string   `json:"remote"`
+		Branch  string   `json:"branch"`
+		SHA     string   `json:"sha"`
+		Patches []string `json:"patches"`
+	}{}
+	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
+		return nil, cause.Wrap(err, "Couldn't parse %s", deqpConfigRelPath)
+	}
+
+	hash, err := git.FetchRefHash("refs/head/master", cfg.Remote)
+	if err != nil {
+		return nil, cause.Wrap(err, "Failed to fetch dEQP ref")
+	}
+
+	cfg.SHA = hash.String()
+	if err := json.NewEncoder(file).Encode(&cfg); err != nil {
+		return nil, cause.Wrap(err, "Failed to re-encode %s", deqpConfigRelPath)
+	}
+	out = append(out, p)
+
+	return out, nil
+}
+
 // postDailyResults posts the results of the daily full deqp run to gerrit as
 // a new change, or reusing an old, unsubmitted change.
 // This change contains the updated test lists, along with a summary of the
@@ -725,6 +839,13 @@ func (r *regres) postDailyResults(
 	if err != nil {
 		return cause.Wrap(err, "Failed to write test lists by status")
 	}
+
+	newPaths, err := r.updatedEQPFiles(test)
+	if err != nil {
+		return cause.Wrap(err, "Failed to update test lists from dEQP")
+	}
+
+	filePaths = append(filePaths, newPaths...)
 
 	// Stage all the updated test files.
 	for _, path := range filePaths {
