@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c3f0228_1b53e02e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6650
+      },
+      "writtenOn": "2021-10-01T17:31:57Z",
+      "side": 1,
+      "message": "Great, https://luci-milo.appspot.com/ui/p/chromium/builders/ci/mac-swangle-chromium-x64/16801/overview is green!\nThanks a lot for the quick fix (which allowed me to confirm that switching from AMD to Intel didn\u0027t break anything).",
+      "revId": "1cdfcb680631ed792d66b3c7db74bfb21c4f8060",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
