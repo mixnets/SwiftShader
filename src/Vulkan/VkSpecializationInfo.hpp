@@ -24,18 +24,17 @@ namespace vk {
 struct SpecializationInfo
 {
 	SpecializationInfo(const VkSpecializationInfo *specializationInfo);
+	~SpecializationInfo();
 
 	bool operator<(const SpecializationInfo &specializationInfo) const;
 
-	const VkSpecializationInfo *get() const { return info.get(); }
+	const VkSpecializationInfo *get() const
+	{
+		return (info.mapEntryCount > 0) ? &info : nullptr;
+	}
 
 private:
-	struct Deleter
-	{
-		void operator()(VkSpecializationInfo *) const;
-	};
-
-	std::shared_ptr<VkSpecializationInfo> info;
+	VkSpecializationInfo info = {};
 };
 
 }  // namespace vk
