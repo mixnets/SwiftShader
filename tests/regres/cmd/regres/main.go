@@ -486,9 +486,20 @@ func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 			if err := git.CheckoutRemoteBranch(cacheDir, cfg.Remote, cfg.Branch); err != nil {
 				return deqpBuild{}, cause.Wrap(err, "Couldn't checkout deqp branch %v @ %v", cfg.Remote, cfg.Branch)
 			}
-			log.Printf("Checking out deqp %v commit %v \n", cfg.Remote, cfg.SHA)
-			if err := git.CheckoutCommit(cacheDir, git.ParseHash(cfg.SHA)); err != nil {
-				return deqpBuild{}, cause.Wrap(err, "Couldn't checkout deqp commit %v @ %v", cfg.Remote, cfg.SHA)
+			if cfg.SHA != "" {
+				log.Printf("Checking out deqp %v commit %v \n", cfg.Remote, cfg.SHA)
+				if err := git.CheckoutCommit(cacheDir, git.ParseHash(cfg.SHA)); err != nil {
+					return deqpBuild{}, cause.Wrap(err, "Couldn't checkout deqp commit %v @ %v", cfg.Remote, cfg.SHA)
+				}
+			} else {
+				log.Printf("Fast forwarding to most recent commit")
+				if err := git.FastForward(cacheDir); err != nil {
+					return deqpBuild{}, cause.Wrap(err, "Couldn't fast-forward deqp to tip of branch %v", cfg.Branch)
+				}
+				log.Printf("Fetching sources")
+				if err := deqp.FetchSources(cacheDir); err != nil {
+					return deqpBuild{}, cause.Wrap(err, "Failed to fetch dEQP sources")
+				}
 			}
 		} else {
 			log.Printf("Checking out deqp %v @ %v into %v\n", cfg.Remote, cfg.SHA, cacheDir)

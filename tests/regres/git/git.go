@@ -222,9 +222,18 @@ func HeadCL(path string) (ChangeList, error) {
 	return cls[0], nil
 }
 
+func FastForward(path string) error {
+	_, err := shell.Exec(gitTimeout, exe, path, nil, "pull")
+	return err
+}
+
 // Show content of the file at path for the given commit/tag/branch.
 func Show(path, at string) ([]byte, error) {
 	return shell.Exec(gitTimeout, exe, "", nil, "show", at+":"+path)
+}
+
+func GetRoot() ([]byte, error) {
+	return shell.Exec(gitTimeout, exe, "", nil, "rev-parse", "--show-toplevel")
 }
 
 const prettyFormat = "ǁ%Hǀ%cIǀ%an <%ae>ǀ%sǀ%b"

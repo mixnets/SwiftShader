@@ -433,3 +433,9 @@ nextTest:
 		}
 	}
 }
+
+func FetchSources(path string) error {
+	pythonTimeout, _ := time.ParseDuration("5m")
+	_, err := shell.Exec(pythonTimeout, "python", path, nil, "external/fetch_sources.py")
+	return err
+}
