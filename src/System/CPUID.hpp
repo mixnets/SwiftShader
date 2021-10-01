@@ -41,6 +41,9 @@ public:
 
 	static void setFlushToZero(bool enable);       // Denormal results are written as zero
 	static void setDenormalsAreZero(bool enable);  // Denormal inputs are read as zero
+
+	static void disallowUnaligned();
+	static void allowUnaligned();
 };
 
 }  // namespace sw

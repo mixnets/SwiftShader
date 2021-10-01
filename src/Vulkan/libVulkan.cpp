@@ -147,6 +147,9 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 		cfg.setWorkerThreadInitializer([](int) {
 			sw::CPUID::setFlushToZero(true);
 			sw::CPUID::setDenormalsAreZero(true);
+#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+			sw::CPUID::disallowUnaligned();
+#endif
 		});
 		sptr = std::make_shared<marl::Scheduler>(cfg);
 		scheduler.weakptr = sptr;

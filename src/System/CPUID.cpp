@@ -168,4 +168,30 @@ void CPUID::setDenormalsAreZero(bool enable)
 	// Unimplemented
 }
 
+void CPUID::disallowUnaligned()
+{
+#if defined(__GNUC__)
+#	if defined(__i386__)
+	/* Enable Alignment Checking on x86 */
+	__asm__("pushf\norl $0x00040000,(%esp)\npopf");
+#	elif defined(__x86_64__)
+	/* Enable Alignment Checking on x86_64 */
+	__asm__("pushf\norl $0x00040000,(%rsp)\npopf");
+#	endif
+#endif
+}
+
+void CPUID::allowUnaligned()
+{
+#if defined(__GNUC__)
+#	if defined(__i386__)
+	/* Disable Alignment Checking on x86 */
+	__asm__("pushf\nandl $0xFFFBFFFF,(%esp)\npopf");
+#	elif defined(__x86_64__)
+	/* Disable Alignment Checking on x86_64 */
+	__asm__("pushf\nandl $0xFFFBFFFF,(%rsp)\npopf");
+#	endif
+#endif
+}
+
 }  // namespace sw
