@@ -26,13 +26,12 @@ void *allocate(size_t count, size_t alignment, const VkAllocationCallbacks *pAll
 {
 	// TODO(b/140991626): Use allocateZeroOrPoison() instead of allocateZero() to detect MemorySanitizer errors.
 	// TODO(b/140991626): Use allocateUninitialized() instead of allocateZeroOrPoison() to improve startup peformance.
-	return pAllocator ? pAllocator->pfnAllocation(pAllocator->pUserData, count, alignment, allocationScope)
-	                  : sw::allocateZero(count, alignment);
+	return sw::allocateZero(count, alignment);
 }
 
 void deallocate(void *ptr, const VkAllocationCallbacks *pAllocator)
 {
-	pAllocator ? pAllocator->pfnFree(pAllocator->pUserData, ptr) : sw::deallocate(ptr);
+	sw::deallocate(ptr);
 }
 
 }  // namespace vk
