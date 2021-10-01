@@ -7,7 +7,7 @@ set -x # Display commands being run.
 
 # Update CMake
 sudo aptitude purge -yq cmake
-wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
 sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ xenial main'
 sudo aptitude update -yq
 sudo aptitude install -yq cmake
