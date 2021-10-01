@@ -15,8 +15,8 @@
 #ifndef VK_PIPELINE_CACHE_HPP_
 #define VK_PIPELINE_CACHE_HPP_
 
+#include "SpecializationInfo.hpp"
 #include "VkObject.hpp"
-#include "VkSpecializationInfo.hpp"
 #include "Pipeline/SpirvBinary.hpp"
 
 #include "marl/mutex.h"
@@ -44,6 +44,8 @@ class RenderPass;
 class PipelineCache : public Object<PipelineCache, VkPipelineCache>
 {
 public:
+	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_CACHE; }
+
 	PipelineCache(const VkPipelineCacheCreateInfo *pCreateInfo, void *mem);
 	virtual ~PipelineCache();
 	void destroy(const VkAllocationCallbacks *pAllocator);

@@ -58,6 +58,7 @@ config("swiftshader_libvulkan_private_config") {
 
 swiftshader_source_set("swiftshader_libvulkan_headers") {
   sources = [
+    "SpecializationInfo.hpp",
     "Version.hpp",
     "VkBuffer.hpp",
     "VkBufferView.hpp",
@@ -92,7 +93,6 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
     "VkSampler.hpp",
     "VkSemaphore.hpp",
     "VkShaderModule.hpp",
-    "VkSpecializationInfo.hpp",
     "VkStringify.hpp",
     "VkTimelineSemaphore.hpp",
     "VulkanPlatform.hpp",
@@ -113,6 +113,7 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
 
 swiftshader_shared_library("swiftshader_libvulkan") {
   sources = [
+    "SpecializationInfo.cpp",
     "VkBuffer.cpp",
     "VkBufferView.cpp",
     "VkCommandBuffer.cpp",
@@ -142,7 +143,6 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "VkSampler.cpp",
     "VkSemaphore.cpp",
     "VkShaderModule.cpp",
-    "VkSpecializationInfo.cpp",
     "VkStringify.cpp",
     "VkTimelineSemaphore.cpp",
     "libVulkan.cpp",

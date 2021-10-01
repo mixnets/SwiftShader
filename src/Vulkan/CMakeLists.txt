@@ -21,6 +21,8 @@ set(VULKAN_SRC_FILES
     libVulkan.cpp
     main.cpp
     resource.h
+    SpecializationInfo.cpp
+    SpecializationInfo.hpp
     Version.hpp
     VkBuffer.cpp
     VkBuffer.hpp
@@ -70,8 +72,6 @@ set(VULKAN_SRC_FILES
     VkPipeline.hpp
     VkPipelineCache.cpp
     VkPipelineCache.hpp
-    VkSpecializationInfo.cpp
-    VkSpecializationInfo.hpp
     VkPipelineLayout.cpp
     VkPipelineLayout.hpp
     VkPromotedExtensions.cpp

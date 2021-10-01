@@ -100,7 +100,7 @@ protected:
 	virtual VkResult allocate(size_t size, void **pBuffer);
 
 	// Deallocate previously allocated memory at |buffer|.
-	virtual void deallocate(void *buffer, size_t size);
+	virtual void deallocate_(void *buffer, size_t size);  ///////////////// rename to free
 
 	// Return the handle type flag bit supported by this implementation.
 	// A value of 0 corresponds to non-external memory.
