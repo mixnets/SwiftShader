@@ -7,9 +7,13 @@ set -x # Display commands being run.
 
 # Update CMake
 sudo aptitude purge -yq cmake
-wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
-sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ xenial main'
-sudo aptitude update -yq
+sudo apt-get update
+sudo apt-get install apt-transport-https wget
+sudo apt-get -y update ca-certificates
+echo 'Acquire::https://apt.kitware.com::Verify-Peer "false";' > /etc/apt/apt.conf.d/99kitware-cert
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null --no-check-certificate | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ xenial main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
+sudo apt-get update
 sudo aptitude install -yq cmake
 cmake --version
 
