@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f7f3cf5_5e86d504",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101152
+      },
+      "writtenOn": "2021-10-02T00:52:23Z",
+      "side": 1,
+      "message": "PTAL.\n\nPlease land if looks good, since I suspect I don\u0027t have necessary permissions.",
+      "revId": "7d25f1ca2768a095d49e5b9096b4899474418e25",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
