@@ -16,6 +16,24 @@
       "message": "The kokoro failure looks like a setup flake, should we just bypass?",
       "revId": "f0b2335ce284cc45726ff18923b79e4164802b0d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c46516c1_3631e704",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-04T16:22:16Z",
+      "side": 1,
+      "message": "Yes, our Submit is not blocked by Kokoro. I\u0027ll temporarily disable the Linux builds to avoid the red though: https://swiftshader-review.googlesource.com/c/SwiftShader/+/57748",
+      "parentUuid": "11491dff_06148379",
+      "revId": "f0b2335ce284cc45726ff18923b79e4164802b0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
