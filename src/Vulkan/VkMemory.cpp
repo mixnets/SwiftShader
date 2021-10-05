@@ -33,10 +33,9 @@ void freeDeviceMemory(void *ptr)
 
 void *allocate(size_t count, size_t alignment, const VkAllocationCallbacks *pAllocator, VkSystemAllocationScope allocationScope)
 {
-	// TODO(b/140991626): Use allocateZeroOrPoison() instead of allocateZero() to detect MemorySanitizer errors.
 	// TODO(b/140991626): Use allocateUninitialized() instead of allocateZeroOrPoison() to improve startup peformance.
 	return pAllocator ? pAllocator->pfnAllocation(pAllocator->pUserData, count, alignment, allocationScope)
-	                  : sw::allocateZero(count, alignment);
+	                  : sw::allocateZeroOrPoison(count, alignment);
 }
 
 void free(void *ptr, const VkAllocationCallbacks *pAllocator)
