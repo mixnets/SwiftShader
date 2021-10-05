@@ -19,15 +19,25 @@
 
 namespace vk {
 
-void *allocate(size_t count, size_t alignment, const VkAllocationCallbacks *pAllocator,
-               VkSystemAllocationScope allocationScope = VK_SYSTEM_ALLOCATION_SCOPE_OBJECT);
-void deallocate(void *ptr, const VkAllocationCallbacks *pAllocator);
+void *allocateDeviceMemory(size_t bytes, size_t alignment);
+void freeDeviceMemory(void *memory);
+
+void *allocate(size_t bytes, size_t alignment);
+void deallocate(void *memory);  ///////////////// rename to free
+
+// To make it verbose which allocations do not have an allocation callback pointer.
+// Note that even if a pointer is available, it can also be null itself.
+constexpr VkAllocationCallbacks *NULL_ALLOCATION_CALLBACKS = nullptr;  ///////////////// indicates a bug "Objects that are allocated from pools do not specify their own allocator. When an implementation requires host memory for such an object, that memory is sourced from the object’s parent pool’s allocator."
+
+void *allocate_(size_t bytes, size_t alignment, const VkAllocationCallbacks *pAllocator, VkSystemAllocationScope allocationScope);
 
 template<typename T>
-T *allocate(size_t count, const VkAllocationCallbacks *pAllocator)
+T *allocateObject(size_t bytes, const VkAllocationCallbacks *pAllocator)
 {
-	return static_cast<T *>(allocate(count, alignof(T), pAllocator, T::GetAllocationScope()));
+	return static_cast<T *>(allocate(bytes, alignof(T), pAllocator, T::GetAllocationScope()));
 }
+///////////////// rename to free
+void deallocate(void *memory, const VkAllocationCallbacks *pAllocator);
 
 }  // namespace vk
 
