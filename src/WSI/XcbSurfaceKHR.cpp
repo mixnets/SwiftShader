@@ -94,14 +94,14 @@ VkExtent2D getWindowSize(xcb_connection_t *connection, xcb_window_t window)
 	auto geom = libXcb->xcb_get_geometry_reply(connection, libXcb->xcb_get_geometry(connection, window), &error);
 	if(error)
 	{
-		free(error);
+		::free(error);
 	}
 	else if(geom)
 	{
 		windowExtent.width = static_cast<uint32_t>(geom->width);
 		windowExtent.height = static_cast<uint32_t>(geom->height);
 	}
-	free(geom);
+	::free(geom);
 	return windowExtent;
 }
 

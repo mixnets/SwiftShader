@@ -13,8 +13,10 @@
 // limitations under the License.
 
 #include "VkCommandPool.hpp"
+
 #include "VkCommandBuffer.hpp"
 #include "VkDestroy.hpp"
+
 #include <algorithm>
 #include <new>
 

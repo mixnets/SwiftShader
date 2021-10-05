@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkQueue.hpp"
+
 #include "VkCommandBuffer.hpp"
 #include "VkFence.hpp"
 #include "VkSemaphore.hpp"
@@ -303,7 +304,7 @@ void Queue::garbageCollect()
 	{
 		auto v = toDelete.tryTake();
 		if(!v.second) { break; }
-		vk::deallocate(v.first, NULL_ALLOCATION_CALLBACKS);
+		vk::free(v.first, NULL_ALLOCATION_CALLBACKS);
 	}
 }
 

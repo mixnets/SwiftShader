@@ -168,7 +168,7 @@ public:
 		return VK_SUCCESS;
 	}
 
-	void deallocate(void *buffer, size_t size) override
+	void free(void *buffer, size_t size) override
 	{
 		::munmap(buffer, size);
 	}
