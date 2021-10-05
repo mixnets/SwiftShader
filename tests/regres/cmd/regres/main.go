@@ -407,7 +407,7 @@ func (r *regres) test(change *changeInfo) (string, bool, error) {
 		return "", true, cause.Wrap(err, "Failed to checkout '%s'", change.latest)
 	}
 
-	deqpBuild, err := r.getOrBuildDEQP(latest)
+	deqpBuild, err := r.getOrBuildDEQP(latest, false)
 	if err != nil {
 		return "", true, cause.Wrap(err, "Failed to build dEQP '%v' for change", change.id)
 	}
@@ -435,7 +435,7 @@ type deqpBuild struct {
 	hash string // hash of the deqp config
 }
 
-func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
+func (r *regres) getOrBuildDEQP(test *test, update bool) (deqpBuild, error) {
 	checkoutDir := test.checkoutDir
 	if p := path.Join(checkoutDir, deqpConfigRelPath); !util.IsFile(p) {
 		checkoutDir, _ = os.Getwd()
@@ -466,6 +466,11 @@ func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 	hash := hex.EncodeToString(hasher.Sum(nil))
 	cacheDir := path.Join(r.cacheRoot, "deqp", hash)
 	buildDir := path.Join(cacheDir, "build")
+	// Don't update if we're testing against a specific revision
+	if cfg.SHA != "" {
+		update = false
+	}
+
 	if !util.IsDir(cacheDir) {
 		if err := os.MkdirAll(cacheDir, 0777); err != nil {
 			return deqpBuild{}, cause.Wrap(err, "Couldn't make deqp cache directory '%s'", cacheDir)
@@ -492,13 +497,9 @@ func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 					return deqpBuild{}, cause.Wrap(err, "Couldn't checkout deqp commit %v @ %v", cfg.Remote, cfg.SHA)
 				}
 			} else {
-				log.Printf("Fast forwarding to most recent commit")
+				log.Printf("Fast forwarding deqp to most recent commit")
 				if err := git.FastForward(cacheDir); err != nil {
 					return deqpBuild{}, cause.Wrap(err, "Couldn't fast-forward deqp to tip of branch %v", cfg.Branch)
-				}
-				log.Printf("Fetching sources")
-				if err := deqp.FetchSources(cacheDir); err != nil {
-					return deqpBuild{}, cause.Wrap(err, "Failed to fetch dEQP sources")
 				}
 			}
 		} else {
@@ -540,6 +541,41 @@ func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 		}
 
 		success = true
+	} else if update {
+		log.Println("Updating dEQP")
+		if err := git.FastForward(cacheDir); err != nil {
+			return deqpBuild{}, cause.Wrap(err, "Couldn't fast-forward deqp to tip of branch %v", cfg.Branch)
+		}
+		log.Println("Fetching deqp dependencies")
+		if err := shell.Shell(buildTimeout, r.python, cacheDir, "external/fetch_sources.py"); err != nil {
+			return deqpBuild{}, cause.Wrap(err, "Couldn't fetch deqp sources %v @ %v", cfg.Remote, cfg.SHA)
+		}
+
+		log.Println("Applying deqp patches")
+		for _, patch := range cfg.Patches {
+			fullPath := path.Join(checkoutDir, patch)
+			if err := git.Apply(cacheDir, fullPath); err != nil {
+				return deqpBuild{}, cause.Wrap(err, "Couldn't apply deqp patch %v for %v @ %v", patch, cfg.Remote, cfg.SHA)
+			}
+		}
+
+		log.Printf("Building deqp into %v\n", buildDir)
+		if err := os.MkdirAll(buildDir, 0777); err != nil {
+			return deqpBuild{}, cause.Wrap(err, "Couldn't make deqp build directory '%v'", buildDir)
+		}
+
+		if err := shell.Shell(buildTimeout, r.cmake, buildDir,
+			"-DDEQP_TARGET=default",
+			"-DCMAKE_BUILD_TYPE=Release",
+			".."); err != nil {
+			return deqpBuild{}, cause.Wrap(err, "Couldn't generate build rules for deqp %v @ %v", cfg.Remote, cfg.SHA)
+		}
+
+		if err := shell.Shell(buildTimeout, r.make, buildDir,
+			fmt.Sprintf("-j%d", runtime.NumCPU()),
+			"deqp-vk"); err != nil {
+			return deqpBuild{}, cause.Wrap(err, "Couldn't build deqp %v @ %v", cfg.Remote, cfg.SHA)
+		}
 	}
 
 	return deqpBuild{
@@ -685,7 +721,7 @@ func (r *regres) runDailyTest(dailyHash git.Hash, reactorBackend reactorBackend,
 		return cause.Wrap(err, "Failed to checkout '%s'", dailyHash)
 	}
 
-	d, err := r.getOrBuildDEQP(test)
+	d, err := r.getOrBuildDEQP(test, true)
 	if err != nil {
 		return cause.Wrap(err, "Failed to build deqp for '%s'", dailyHash)
 	}
