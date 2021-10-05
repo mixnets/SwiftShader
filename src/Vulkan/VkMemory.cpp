@@ -21,9 +21,8 @@ namespace vk {
 
 void *allocateDeviceMemory(size_t count, size_t alignment)
 {
-	// TODO(b/140991626): Use allocateZeroOrPoison() instead of allocateZero() to detect MemorySanitizer errors.
 	// TODO(b/140991626): Use allocateUninitialized() instead of allocateZeroOrPoison() to improve startup peformance.
-	return sw::allocateZero(count, alignment);
+	return sw::allocateZeroOrPoison(count, alignment);
 }
 
 void freeDeviceMemory(void *ptr)
