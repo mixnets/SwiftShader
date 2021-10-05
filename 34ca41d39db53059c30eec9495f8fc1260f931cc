@@ -16,6 +16,24 @@
       "message": "This is likely to add confusion about this free() and the malloc free().",
       "revId": "34ca41d39db53059c30eec9495f8fc1260f931cc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1bd235e_63188fd9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-05T21:48:19Z",
+      "side": 1,
+      "message": "You\u0027re right, it was bug prone, and not very clear that vk::allocate/free were host memory allocations. So I made everything more explicitly named. It\u0027s a bit verbose, but considering that we \"should\" keep track of all allocations and discern between them to address b/201798871, I don\u0027t think it hurts.\n\nIdeally we should work towards having an allocator object, which knows what heap to allocate from and have a symmetrical .free() so it\u0027s more implicitly safe, but  I\u0027ll leave that for b/201798871.",
+      "parentUuid": "afd75970_33c5c630",
+      "revId": "34ca41d39db53059c30eec9495f8fc1260f931cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
