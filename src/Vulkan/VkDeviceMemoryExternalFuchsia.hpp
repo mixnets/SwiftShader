@@ -115,7 +115,7 @@ public:
 		return VK_SUCCESS;
 	}
 
-	void deallocate(void *buffer, size_t size) override
+	void free(void *buffer, size_t size) override
 	{
 		zx_status_t status = zx_vmar_unmap(zx_vmar_root_self(),
 		                                   reinterpret_cast<zx_vaddr_t>(buffer),

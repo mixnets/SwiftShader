@@ -70,7 +70,7 @@ public:
 		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 	}
 
-	void deallocate(void *buffer, size_t size) override
+	void free(void *buffer, size_t size) override
 	{}
 
 	VkExternalMemoryHandleTypeFlagBits getFlagBit() const override
@@ -207,7 +207,7 @@ void DeviceMemory::destroy(const VkAllocationCallbacks *pAllocator)
 #endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 	if(buffer)
 	{
-		deallocate(buffer, size);
+		this->free(buffer, size);
 		buffer = nullptr;
 	}
 }
@@ -370,8 +370,8 @@ bool DeviceMemory::checkExternalMemoryHandleType(
 	return (supportedHandleTypes & handle_type_bit) != 0;
 }
 
-// Allocate the memory according to |size|. On success return VK_SUCCESS
-// and sets |*pBuffer|.
+// Allocate the memory according to `size`. On success return VK_SUCCESS
+// and sets `*pBuffer`.
 VkResult DeviceMemory::allocate(size_t size, void **pBuffer)
 {
 	buffer = vk::allocateDeviceMemory(size, REQUIRED_MEMORY_ALIGNMENT);
@@ -384,10 +384,10 @@ VkResult DeviceMemory::allocate(size_t size, void **pBuffer)
 	return VK_SUCCESS;
 }
 
-// Deallocate previously allocated memory at |buffer|.
-void DeviceMemory::deallocate(void *buffer, size_t size)
+// Free previously allocated memory at `buffer`.
+void DeviceMemory::free(void *buffer, size_t size)
 {
-	vk::deallocateDeviceMemory(buffer);
+	vk::freeDeviceMemory(buffer);
 	buffer = nullptr;
 }
 
