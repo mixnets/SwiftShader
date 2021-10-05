@@ -200,7 +200,7 @@ AHardwareBufferExternalMemory::AHardwareBufferExternalMemory(const VkMemoryAlloc
 AHardwareBufferExternalMemory::~AHardwareBufferExternalMemory()
 {
 	// correct deallocation of AHB does not require a pointer or size
-	deallocate(nullptr, 0);
+	vk::freeHostMemory(nullptr, 0);
 }
 
 // VkAllocateMemory
@@ -217,7 +217,7 @@ VkResult AHardwareBufferExternalMemory::allocate(size_t size, void **pBuffer)
 	}
 }
 
-void AHardwareBufferExternalMemory::deallocate(void *buffer, size_t size)
+void AHardwareBufferExternalMemory::free(void *buffer, size_t size)
 {
 	if(ahb != nullptr)
 	{
