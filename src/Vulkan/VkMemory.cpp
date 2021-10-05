@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_OBJECT_HPP_
-#define VK_OBJECT_HPP_
-
 #include "VkMemory.hpp"
 
 #include "VkConfig.hpp"
@@ -29,9 +26,9 @@ void *allocateDeviceMemory(size_t count, size_t alignment)
 	return sw::allocateZero(count, alignment);
 }
 
-void deallocateDeviceMemory(void *ptr)
+void freeDeviceMemory(void *ptr)
 {
-	sw::deallocate(ptr);
+	sw::free(ptr);
 }
 
 void *allocate(size_t count, size_t alignment, const VkAllocationCallbacks *pAllocator, VkSystemAllocationScope allocationScope)
@@ -42,11 +39,9 @@ void *allocate(size_t count, size_t alignment, const VkAllocationCallbacks *pAll
 	                  : sw::allocateZero(count, alignment);
 }
 
-void deallocate(void *ptr, const VkAllocationCallbacks *pAllocator)
+void free(void *ptr, const VkAllocationCallbacks *pAllocator)
 {
-	pAllocator ? pAllocator->pfnFree(pAllocator->pUserData, ptr) : sw::deallocate(ptr);
+	pAllocator ? pAllocator->pfnFree(pAllocator->pUserData, ptr) : sw::free(ptr);
 }
 
 }  // namespace vk
-
-#endif  // VK_OBJECT_HPP_

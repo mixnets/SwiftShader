@@ -50,7 +50,7 @@ void SwapchainKHR::destroy(const VkAllocationCallbacks *pAllocator)
 		surface->disassociateSwapchain();
 	}
 
-	vk::deallocate(images, pAllocator);
+	vk::free(images, pAllocator);
 }
 
 size_t SwapchainKHR::ComputeRequiredAllocationSize(const VkSwapchainCreateInfoKHR *pCreateInfo)

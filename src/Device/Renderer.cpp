@@ -154,7 +154,7 @@ DrawCall::DrawCall()
 
 DrawCall::~DrawCall()
 {
-	deallocate(data);
+	free(data);
 }
 
 Renderer::Renderer(vk::Device *device)
@@ -179,7 +179,7 @@ void *Renderer::operator new(size_t size)
 
 void Renderer::operator delete(void *mem)
 {
-	vk::deallocate(mem, vk::NULL_ALLOCATION_CALLBACKS);
+	vk::free(mem, vk::NULL_ALLOCATION_CALLBACKS);
 }
 
 void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState &dynamicState, unsigned int count, int baseVertex,

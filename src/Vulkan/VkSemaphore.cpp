@@ -232,7 +232,7 @@ BinarySemaphore::External *BinarySemaphore::allocateExternal()
 void BinarySemaphore::deallocateExternal(BinarySemaphore::External *ext)
 {
 	ext->~External();
-	vk::deallocate(ext, allocator);
+	vk::free(ext, allocator);
 }
 
 template<typename ALLOC_FUNC, typename IMPORT_FUNC>
