@@ -41,7 +41,7 @@ void SwapchainKHR::destroy(const VkAllocationCallbacks *pAllocator)
 		if(currentImage.exists())
 		{
 			surface->detachImage(&currentImage);
-			currentImage.clear();
+			currentImage.free();
 		}
 	}
 
@@ -50,7 +50,7 @@ void SwapchainKHR::destroy(const VkAllocationCallbacks *pAllocator)
 		surface->disassociateSwapchain();
 	}
 
-	vk::deallocate(images, pAllocator);
+	vk::freeHostMemory(images, pAllocator);
 }
 
 size_t SwapchainKHR::ComputeRequiredAllocationSize(const VkSwapchainCreateInfoKHR *pCreateInfo)
@@ -71,7 +71,7 @@ void SwapchainKHR::retire()
 			if(currentImage.isAvailable())
 			{
 				surface->detachImage(&currentImage);
-				currentImage.clear();
+				currentImage.free();
 			}
 		}
 	}
@@ -81,7 +81,7 @@ void SwapchainKHR::resetImages()
 {
 	for(uint32_t i = 0; i < imageCount; i++)
 	{
-		images[i].clear();
+		images[i].free();
 	}
 }
 
@@ -207,7 +207,7 @@ VkResult SwapchainKHR::present(uint32_t index)
 	if(retired)
 	{
 		surface->detachImage(&image);
-		image.clear();
+		image.free();
 	}
 
 	return result;

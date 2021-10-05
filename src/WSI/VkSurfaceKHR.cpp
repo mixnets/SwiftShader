@@ -71,7 +71,7 @@ VkResult PresentImage::allocateAndBindImageMemory(VkDevice device, const VkMemor
 	return VK_SUCCESS;
 }
 
-void PresentImage::clear()
+void PresentImage::free()
 {
 	if(imageMemory)
 	{

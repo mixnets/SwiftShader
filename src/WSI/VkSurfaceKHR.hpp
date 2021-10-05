@@ -40,7 +40,7 @@ class PresentImage
 public:
 	VkResult allocateImage(VkDevice device, const VkImageCreateInfo &createInfo);
 	VkResult allocateAndBindImageMemory(VkDevice device, const VkMemoryAllocateInfo &allocateInfo);
-	void clear();
+	void free();
 	VkImage asVkImage() const;
 
 	const Image *getImage() const { return image; }

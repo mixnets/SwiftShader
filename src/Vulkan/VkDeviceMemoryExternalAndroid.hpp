@@ -54,7 +54,7 @@ public:
 	~AHardwareBufferExternalMemory();
 
 	VkResult allocate(size_t size, void **pBuffer) override;
-	void deallocate(void *buffer, size_t size) override;
+	void free(void *buffer, size_t size) override;
 
 	VkExternalMemoryHandleTypeFlagBits getFlagBit() const override { return typeFlagBit; }
 
