@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "947a6d8f_b07d8bed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T13:27:04Z",
+      "side": 1,
+      "message": "Kokoro\u0027s macOS builds are very flaky: b/202217530",
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
