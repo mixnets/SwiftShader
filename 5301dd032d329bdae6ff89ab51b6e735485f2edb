@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d437ff69_40d66251",
+        "filename": "src/System/Memory.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T17:27:18Z",
+      "side": 1,
+      "message": "Not strictly. Generally speaking I think it\u0027s good practice to be explicit about it when a C function is being called, which is why I left this in initially, but this file actually includes \u003ccstdlib\u003e, which only defines std::free(). We would have to include \u003cstdlib.h\u003e instead to use ::free(). I\u0027m reverting it back to the original code to leave this issue for another day.",
+      "parentUuid": "130e1ec7_d0e9184f",
+      "range": {
+        "startLine": 126,
+        "startChar": 2,
+        "endLine": 126,
+        "endChar": 4
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b3e29a82_e237d3fd",
@@ -64,6 +88,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "320484be_b6935b3e",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T17:27:18Z",
+      "side": 1,
+      "message": "Note that this doesn\u0027t destroy the object (there\u0027s an actual destroy() method for that). It\u0027s just an internal method for freeing the `buffer` memory.\n\nIt\u0027s definitely confusing to use a non-static method for that, and we should come up with something more elegant in a future change.",
+      "parentUuid": "b3e29a82_e237d3fd",
+      "range": {
+        "startLine": 103,
+        "startChar": 14,
+        "endLine": 103,
+        "endChar": 18
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7c0685e2_203d43da",
@@ -77,6 +125,30 @@
       "writtenOn": "2021-10-06T13:47:09Z",
       "side": 1,
       "message": "Again, would go with \"release\" here.",
+      "range": {
+        "startLine": 43,
+        "startChar": 6,
+        "endLine": 43,
+        "endChar": 10
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ddd9a2dd_f8f53a73",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T17:27:18Z",
+      "side": 1,
+      "message": "Agreed. It both frees the memory and destroys the image, but leaves the PresentImage itself in a valid state (but empty) state. I don\u0027t like the original clear() since it doesn\u0027t clear the image\u0027s pixels, and free() is still ambiguous. Although release() is often associated with decreasing a reference count, it works well enough.\n\nI\u0027m also renaming allocateImage() to createImage() to match the underlying call.\n\nNote this whole class and its usage has room for improvement, since we\u0027re creating/allocating and destroying/freeing images on every present. But let\u0027s address that later.",
+      "parentUuid": "7c0685e2_203d43da",
       "range": {
         "startLine": 43,
         "startChar": 6,
@@ -124,6 +196,30 @@
       "side": 1,
       "message": "Clarification: I mean the change isn\u0027t required, not the code.",
       "parentUuid": "5173cf6c_2ca530bc",
+      "range": {
+        "startLine": 97,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 14
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "539c6938_e8ef28fd",
+        "filename": "src/WSI/XcbSurfaceKHR.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T17:27:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c881e6d6_cd20a56a",
       "range": {
         "startLine": 97,
         "startChar": 0,
