@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a73adc96_889a9bdd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T13:33:22Z",
+      "side": 1,
+      "message": "I\u0027ll wait to land this until after the Chromium branch point, hence my own -2 vote, but it\u0027s a one-line change so you can +2 for when it\u0027s ready to land.",
+      "revId": "904db6e62e18bfdf0bb0595ad85ca5b0c4522509",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
