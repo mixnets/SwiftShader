@@ -22,6 +22,30 @@
       },
       "revId": "4c06f6d508fbdef2fe787efcaea85fe5505ef31a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b5c828e_343804ef",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T17:41:30Z",
+      "side": 1,
+      "message": "Same explanation as https://swiftshader-review.googlesource.com/c/SwiftShader/+/57708/comments/ce619908_d6ed58e6 why we should keep host and device memory allocations quite separate even if at some points in time their implementations are identical.\n\nAlso note we must poison host memory first, since that will prove that SwiftShader has no internal MSan bugs.",
+      "parentUuid": "fc9ec7a1_ddd6bb1a",
+      "range": {
+        "startLine": 38,
+        "startChar": 21,
+        "endLine": 38,
+        "endChar": 45
+      },
+      "revId": "4c06f6d508fbdef2fe787efcaea85fe5505ef31a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
