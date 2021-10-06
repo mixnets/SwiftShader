@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc9ec7a1_ddd6bb1a",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-06T13:49:47Z",
+      "side": 1,
+      "message": "Nit: could be replaced with allocateDeviceMemory() and landed after the CL where allocateDeviceMemory calls sw::allocateZeroOrPoison().",
+      "range": {
+        "startLine": 38,
+        "startChar": 21,
+        "endLine": 38,
+        "endChar": 45
+      },
+      "revId": "4c06f6d508fbdef2fe787efcaea85fe5505ef31a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
