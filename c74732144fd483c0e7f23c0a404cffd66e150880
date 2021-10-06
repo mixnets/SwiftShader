@@ -22,6 +22,30 @@
       },
       "revId": "c74732144fd483c0e7f23c0a404cffd66e150880",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b8298be_b189d679",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T16:28:32Z",
+      "side": 1,
+      "message": "No, vk::allocate() allocates host memory (and is renamed to vk::allocateHostMemory() in the next change to reflect that), so to avoid confusion it should not call allocateDeviceMemory(), despite that it (currently) becomes the same underlying call.\n\nFurther up the stack I\u0027m separately changing allocateHostMemory() and allocateDeviceMemory() to call sw::allocateZeroOrPoison() instead. This separation allows identifying MSAn errors as application bugs or SwiftShader bugs.",
+      "parentUuid": "ce619908_d6ed58e6",
+      "range": {
+        "startLine": 42,
+        "startChar": 21,
+        "endLine": 42,
+        "endChar": 37
+      },
+      "revId": "c74732144fd483c0e7f23c0a404cffd66e150880",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
