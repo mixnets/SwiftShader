@@ -16,6 +16,23 @@
       "message": "I\u0027ll wait to land this until after the Chromium branch point, hence my own -2 vote, but it\u0027s a one-line change so you can +2 for when it\u0027s ready to land.\n\nThis is very likely to not roll into Chromium due to msan errors that are not SwiftShader\u0027s fault, but we have to land this (after branching) precisely to prove that, and then revert it.",
       "revId": "ec1b77ee8e82714da5b9c0d2981b2184adb0b5e8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb23a6a6_2ab39821",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-06T13:48:00Z",
+      "side": 1,
+      "message": "Ok to land after branch point.",
+      "revId": "ec1b77ee8e82714da5b9c0d2981b2184adb0b5e8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
