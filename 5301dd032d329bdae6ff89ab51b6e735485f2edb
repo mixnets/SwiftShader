@@ -112,6 +112,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2166464_6a753326",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-06T17:51:09Z",
+      "side": 1,
+      "message": "Honestly, anything that would avoid having to write \"this-\u003e\" here:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/57888/5/src/Vulkan/VkDeviceMemory.cpp#210\nwould be welcome.",
+      "parentUuid": "320484be_b6935b3e",
+      "range": {
+        "startLine": 103,
+        "startChar": 14,
+        "endLine": 103,
+        "endChar": 18
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7c0685e2_203d43da",
