@@ -16,6 +16,98 @@
       "message": "Kokoro\u0027s macOS builds are very flaky: b/202217530",
       "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "130e1ec7_d0e9184f",
+        "filename": "src/System/Memory.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-06T13:47:09Z",
+      "side": 1,
+      "message": "Is this change still needed?",
+      "range": {
+        "startLine": 126,
+        "startChar": 2,
+        "endLine": 126,
+        "endChar": 4
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3e29a82_e237d3fd",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-06T13:47:09Z",
+      "side": 1,
+      "message": "For objects, I would go with \"release\" instead of \"free\", or even something more explicit in this case, like \"releaseBuffer\".",
+      "range": {
+        "startLine": 103,
+        "startChar": 14,
+        "endLine": 103,
+        "endChar": 18
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c0685e2_203d43da",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-06T13:47:09Z",
+      "side": 1,
+      "message": "Again, would go with \"release\" here.",
+      "range": {
+        "startLine": 43,
+        "startChar": 6,
+        "endLine": 43,
+        "endChar": 10
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5173cf6c_2ca530bc",
+        "filename": "src/WSI/XcbSurfaceKHR.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-06T13:47:09Z",
+      "side": 1,
+      "message": "Maybe this is no longer required?",
+      "range": {
+        "startLine": 97,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 14
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
