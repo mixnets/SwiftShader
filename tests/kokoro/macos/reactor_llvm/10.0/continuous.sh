@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# FIXME(b/202217530): macOS builds with Reactor LLVM time out
-exit 0
-
 # Fail on any error.
 set -e
 # Display commands being run.
@@ -21,9 +18,10 @@ fi
 # Lower the amount of debug info, to reduce Kokoro build times.
 SWIFTSHADER_LESS_DEBUG_INFO=1
 
+#FIXME(b/202217530): macOS builds with Reactor LLVM time out
+ASAN="OFF"
 # Disable ASAN checks for debug builds, to reduce Kokoro build times.
 # ASAN builds are recommended to be optimized.
-ASAN="ON"
 if [[ "${BUILD_TYPE}" == "Debug" ]]; then
   ASAN="OFF"
 fi
