@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2f24098_1bee4eab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T13:21:33Z",
+      "side": 1,
+      "message": "Subzero builds also fail sometimes on macOS: https://swiftshader-review.googlesource.com/c/SwiftShader/+/57928 :-(",
+      "revId": "b5f73d9ae8c842c3bb82879b855b16a12676504c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
