@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce619908_d6ed58e6",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-06T13:41:20Z",
+      "side": 1,
+      "message": "Nit: would it be clearer to use allocateDeviceMemory() here?",
+      "range": {
+        "startLine": 42,
+        "startChar": 21,
+        "endLine": 42,
+        "endChar": 37
+      },
+      "revId": "c74732144fd483c0e7f23c0a404cffd66e150880",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
