@@ -108,6 +108,30 @@
       },
       "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c881e6d6_cd20a56a",
+        "filename": "src/WSI/XcbSurfaceKHR.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-06T13:51:06Z",
+      "side": 1,
+      "message": "Clarification: I mean the change isn\u0027t required, not the code.",
+      "parentUuid": "5173cf6c_2ca530bc",
+      "range": {
+        "startLine": 97,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 14
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
