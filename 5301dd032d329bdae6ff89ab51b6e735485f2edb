@@ -136,6 +136,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7dd7745a_32fc6915",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-06T18:52:29Z",
+      "side": 1,
+      "message": "Right, I did that to clarify that it\u0027s a member function. So it was intentionally ugly so we\u0027d refactor it one day.\n\nAnyway, I\u0027ve taken this portion out for now.",
+      "parentUuid": "d2166464_6a753326",
+      "range": {
+        "startLine": 103,
+        "startChar": 14,
+        "endLine": 103,
+        "endChar": 18
+      },
+      "revId": "5301dd032d329bdae6ff89ab51b6e735485f2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7c0685e2_203d43da",
