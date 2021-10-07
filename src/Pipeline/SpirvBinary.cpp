@@ -12,36 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef sw_SpirvBinary_hpp
-#define sw_SpirvBinary_hpp
-
-#include <atomic>
-#include <cstdint>
-#include <vector>
+#include "SpirvBinary.hpp"
 
 namespace sw {
 
-class SpirvBinary : public std::vector<uint32_t>
-{
-public:
-	SpirvBinary()
-	    : serialID(serialCounter++)
-	{}
-
-	SpirvBinary(const uint32_t *binary, uint32_t wordCount)
-	    : std::vector<uint32_t>(binary, binary + wordCount)
-	    , serialID(serialCounter++)
-	{
-	}
-
-	uint32_t getSerialID() const { return serialID; };
-
-private:
-	static std::atomic<uint32_t> serialCounter;
-
-	uint32_t serialID;
-};
+std::atomic<uint32_t> SpirvBinary::serialCounter(1);  // Start at 1, 0 is invalid shader.
 
 }  // namespace sw
-
-#endif  // sw_SpirvBinary_hpp
