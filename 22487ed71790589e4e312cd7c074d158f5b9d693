@@ -22,6 +22,30 @@
       },
       "revId": "22487ed71790589e4e312cd7c074d158f5b9d693",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cdf5104b_46148ead",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-07T20:44:16Z",
+      "side": 1,
+      "message": "It\u0027s on line 65",
+      "parentUuid": "871c2f63_4f9c2716",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 41
+      },
+      "revId": "22487ed71790589e4e312cd7c074d158f5b9d693",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
