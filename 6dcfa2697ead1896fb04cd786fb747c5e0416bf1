@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c99c09d8_24a7f9da",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-07T20:05:46Z",
+      "side": 1,
+      "message": "This test isn\u0027t available in the version of dEQP that Regres currently uses.\n\nPlease go ahead and update it. The instructions are here: go/swiftshader/development/regres-service.md#updating-deqp For reference here\u0027s the last CL where it was updated: https://swiftshader-review.googlesource.com/c/SwiftShader/+/54568",
+      "range": {
+        "startLine": 20,
+        "startChar": 7,
+        "endLine": 20,
+        "endChar": 48
+      },
+      "revId": "6dcfa2697ead1896fb04cd786fb747c5e0416bf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
