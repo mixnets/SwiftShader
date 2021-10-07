@@ -265,6 +265,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ca2101f_c69694c9",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-07T20:28:22Z",
+      "side": 1,
+      "message": "So, I tried removing the dependency on vk::ObjectBase, but it duplicates too much code, IMHO. Whether it\u0027s failing on OOM if the object fails to be allocated or properly using pAllocator, the code is just much simpler and straightforward if the classes just derive from vk::ObjectBase.\n\nAlso, other classes currently are derived from vk::ObjectBase, like Surface related classes, so this wouldn\u0027t be enough to remove vk::ObjectBase.\n\nBut, IMHO, one of the better reasons not to remove the dependency on vk::ObjectBase is that both Surface classes and DeviceMemory classes have various implementations across multiple platforms and having a single location for allocations on all platforms is much less error prone.\n\nMy opinion is that is easier to read code and keep track of allocations the way the code is written as it is now, where we don\u0027t have exceptions for certain objects.",
+      "parentUuid": "b6330aaf_201d670d",
+      "range": {
+        "startLine": 25,
+        "startChar": 74,
+        "endLine": 25,
+        "endChar": 84
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5d1558fe_318a910a",
