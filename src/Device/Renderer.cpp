@@ -472,7 +472,7 @@ void DrawCall::teardown()
 	{
 		if(target)
 		{
-			target->contentsChanged();
+			target->contentsChanged(vk::Image::DIRECT_MEMORY_ACCESS);
 		}
 	}
 
