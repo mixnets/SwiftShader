@@ -234,12 +234,8 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 			spirv = optimizeSpirv(key);
 		}
 
-		// If the pipeline has specialization constants, assume they're unique and
-		// use a new serial ID so the shader gets recompiled.
-		uint32_t codeSerialID = (key.getSpecializationInfo() ? vk::ShaderModule::nextSerialID() : module->getSerialID());
-
-		// TODO(b/119409619): use allocator.
-		auto shader = std::make_shared<sw::SpirvShader>(codeSerialID, pStage->stage, pStage->pName, spirv,
+		// TODO(b/201798871): use allocator.
+		auto shader = std::make_shared<sw::SpirvShader>(pStage->stage, pStage->pName, spirv,
 		                                                vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass, robustBufferAccess, dbgctx);
 
 		setShader(pStage->stage, shader);
@@ -291,12 +287,8 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 		spirv = optimizeSpirv(shaderKey);
 	}
 
-	// If the pipeline has specialization constants, assume they're unique and
-	// use a new serial ID so the shader gets recompiled.
-	uint32_t codeSerialID = (stage.pSpecializationInfo ? vk::ShaderModule::nextSerialID() : module->getSerialID());
-
-	// TODO(b/119409619): use allocator.
-	shader = std::make_shared<sw::SpirvShader>(codeSerialID, stage.stage, stage.pName, spirv,
+	// TODO(b/201798871): use allocator.
+	shader = std::make_shared<sw::SpirvShader>(stage.stage, stage.pName, spirv,
 	                                           nullptr, 0, robustBufferAccess, dbgctx);
 
 	const PipelineCache::ComputeProgramKey programKey(shader->getSerialID(), layout->identifier);

@@ -559,11 +559,10 @@ public:
 	// shader entry point represented by this object.
 	uint64_t getSerialID() const
 	{
-		return ((uint64_t)entryPoint.value() << 32) | codeSerialID;
+		return ((uint64_t)entryPoint.value() << 32) | insns.getSerialID();
 	}
 
-	SpirvShader(uint32_t codeSerialID,
-	            VkShaderStageFlagBits stage,
+	SpirvShader(VkShaderStageFlagBits stage,
 	            const char *entryPointName,
 	            SpirvBinary const &insns,
 	            const vk::RenderPass *renderPass,
@@ -835,7 +834,6 @@ public:
 	WorkgroupMemory workgroupMemory;
 
 private:
-	const uint32_t codeSerialID;
 	const bool robustBufferAccess;
 
 	Function::ID entryPoint;
