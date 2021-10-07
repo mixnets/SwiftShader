@@ -79,7 +79,7 @@ public:
 	// Function must be a function of the signature:
 	//     sw::ShaderBinary()
 	template<typename Function>
-	inline sw::SpirvBinary getOrOptimizeSpirv(const PipelineCache::SpirvBinaryKey &key, Function &&create);
+	inline const sw::SpirvBinary &getOrOptimizeSpirv(const PipelineCache::SpirvBinaryKey &key, Function &&create);
 
 	struct ComputeProgramKey
 	{
@@ -144,7 +144,7 @@ std::shared_ptr<sw::ComputeProgram> PipelineCache::getOrCreateComputeProgram(con
 }
 
 template<typename Function>
-sw::SpirvBinary PipelineCache::getOrOptimizeSpirv(const PipelineCache::SpirvBinaryKey &key, Function &&create)
+const sw::SpirvBinary &PipelineCache::getOrOptimizeSpirv(const PipelineCache::SpirvBinaryKey &key, Function &&create)
 {
 	marl::lock lock(spirvShadersMutex);
 
@@ -154,10 +154,9 @@ sw::SpirvBinary PipelineCache::getOrOptimizeSpirv(const PipelineCache::SpirvBina
 		return it->second;
 	}
 
-	auto created = create();
-	spirvShaders.emplace(key, created);
+	auto pair = spirvShaders.emplace(key, create());
 
-	return created;
+	return pair.first->second;
 }
 
 }  // namespace vk
