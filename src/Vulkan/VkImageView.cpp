@@ -154,7 +154,7 @@ bool ImageView::imageTypesMatch(VkImageType imageType) const
 		return ((imageType == VK_IMAGE_TYPE_2D) ||
 		        ((imageType == VK_IMAGE_TYPE_3D) &&
 		         (imageArrayLayers == 1))) &&
-		       (subresourceRange.layerCount == 1);
+		       (imageArrayLayers >= subresourceRange.layerCount);
 	case VK_IMAGE_VIEW_TYPE_2D_ARRAY:
 		return (imageType == VK_IMAGE_TYPE_2D) ||
 		       ((imageType == VK_IMAGE_TYPE_3D) &&
