@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8d34022_f9be2c19",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-08T18:11:47Z",
+      "side": 1,
+      "message": "Chromium M96 has branched.",
+      "revId": "7e2a21fd8f353caf781ebf3953612da2464e6ff6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
