@@ -33,6 +33,24 @@
       "message": "This doesn\u0027t seem to be enough, I still see C4244 with this patch:\nhttps://chromium-review.googlesource.com/c/angle/angle/+/3208457/3\nhttps://ci.chromium.org/ui/p/angle/builders/try/win-msvc-x64-dbg/22023/overview\n[2097/5135] CXX obj/third_party/SwiftShader/src/Reactor/swiftshader_llvm_reactor/LLVMJIT.obj\nC:\\b\\s\\w\\ir\\cache\\builder\\angle\\third_party\\depot_tools\\win_toolchain\\vs_files\\3bda71a11e\\VC\\Tools\\MSVC\\14.26.28801\\include\\utility(208): warning C4244: \u0027initializing\u0027: conversion from \u0027_Ty\u0027 to \u0027_Ty2\u0027, possible loss of data\n        with\n        [\n            _Ty\u003dllvm::orc::VModuleKey\n        ]\n        and\n        [\n            _Ty2\u003dunsigned int\n        ]\nC:\\b\\s\\w\\ir\\cache\\builder\\angle\\third_party\\SwiftShader\\third_party\\llvm-10.0\\llvm\\include\\llvm/Transforms/InstCombine/InstCombineWorklist.h(44): note: see reference to function template instantiation \u0027std::pair\u003cKeyT,ValueT\u003e::pair\u003cllvm::Instruction*,unsigned __int64,0\u003e(std::pair\u003cllvm::Instruction *,unsigned __int64\u003e \u0026\u0026) noexcept\u0027 being compiled\n        with\n        [\n            KeyT\u003dllvm::Instruction *,\n            ValueT\u003dunsigned int\n        ]\nC:\\b\\s\\w\\ir\\cache\\builder\\angle\\third_party\\SwiftShader\\third_party\\llvm-10.0\\llvm\\include\\llvm/Transforms/InstCombine/InstCombineWorklist.h(44): note: see reference to function template instantiation \u0027std::pair\u003cKeyT,ValueT\u003e::pair\u003cllvm::Instruction*,unsigned __int64,0\u003e(std::pair\u003cllvm::Instruction *,unsigned __int64\u003e \u0026\u0026) noexcept\u0027 being compiled\n        with\n        [\n            KeyT\u003dllvm::Instruction *,\n            ValueT\u003dunsigned int\n        ]\n\nLooks like the warning needs to be disabled in other parts of SwiftShader, which include files from llvm.",
       "revId": "0cf3accfa948725d7e927af7449549e748c99945",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "53c6feeb_385975f6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5885
+      },
+      "writtenOn": "2021-10-08T15:14:21Z",
+      "side": 1,
+      "message": "What about patch set 3?",
+      "parentUuid": "5d4757b5_16bad9ee",
+      "revId": "0cf3accfa948725d7e927af7449549e748c99945",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
