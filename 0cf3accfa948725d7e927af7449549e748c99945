@@ -51,6 +51,24 @@
       "parentUuid": "5d4757b5_16bad9ee",
       "revId": "0cf3accfa948725d7e927af7449549e748c99945",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "abb67740_89bb39ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6650
+      },
+      "writtenOn": "2021-10-08T22:24:32Z",
+      "side": 1,
+      "message": "Yes, https://chromium-review.googlesource.com/c/angle/angle/+/3208457/6 is based on PS3 and doesn\u0027t have SwS warnings anymore. Thanks!",
+      "parentUuid": "53c6feeb_385975f6",
+      "revId": "0cf3accfa948725d7e927af7449549e748c99945",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
