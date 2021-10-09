@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b348d5f5_e73a0adb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-09T04:17:47Z",
+      "side": 1,
+      "message": "The previous change to leave \u0027host\u0027 memory allocations uninitialized (https://swiftshader-review.googlesource.com/c/SwiftShader/+/57889) successfully rolled into Chromium: https://chromium-review.googlesource.com/c/chromium/src/+/3214523. This proves SwiftShader has no internal MSan violations.\n\nThis \u0027device\u0027 memory allocation change is instead unlikely to roll in successfully, just like the one that changed all allocations at once to become uninitialized: https://chromium-review.googlesource.com/c/chromium/src/+/3195811. I\u0027ll roll it back after the weekend.",
+      "revId": "106f0e63d5d4d598b21e4f3af56fd1cc39e4fae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
