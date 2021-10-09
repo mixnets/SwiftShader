@@ -18,13 +18,6 @@
 #include "VkObject.hpp"
 #include "Pipeline/SpirvBinary.hpp"
 
-#include <atomic>
-#include <vector>
-
-namespace rr {
-class Routine;
-}
-
 namespace vk {
 
 class ShaderModule : public Object<ShaderModule, VkShaderModule>
@@ -34,13 +27,10 @@ public:
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkShaderModuleCreateInfo *pCreateInfo);
-	// TODO: reconsider boundary of ShaderModule class; try to avoid 'expose the
-	// guts' operations, and this copy.
-	sw::SpirvBinary getCode() const { return sw::SpirvBinary(code, wordCount); }
+	const sw::SpirvBinary &getBinary() const { return binary; }
 
 private:
-	uint32_t *code = nullptr;
-	uint32_t wordCount = 0;
+	sw::SpirvBinary binary;
 };
 
 static inline ShaderModule *Cast(VkShaderModule object)

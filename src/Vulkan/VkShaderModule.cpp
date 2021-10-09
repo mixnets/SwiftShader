@@ -21,29 +21,25 @@
 namespace vk {
 
 ShaderModule::ShaderModule(const VkShaderModuleCreateInfo *pCreateInfo, void *mem)
-    : code(reinterpret_cast<uint32_t *>(mem))
+    : binary(pCreateInfo->pCode, pCreateInfo->codeSize / sizeof(uint32_t))
 {
-	memcpy(code, pCreateInfo->pCode, pCreateInfo->codeSize);
-	wordCount = static_cast<uint32_t>(pCreateInfo->codeSize / sizeof(uint32_t));
-
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 	spvtools::SpirvTools spirvTools(SPIRV_VERSION);
 	spvtools::ValidatorOptions validatorOptions = {};
 	validatorOptions.SetScalarBlockLayout(true);            // VK_EXT_scalar_block_layout
 	validatorOptions.SetUniformBufferStandardLayout(true);  // VK_KHR_uniform_buffer_standard_layout
 
-	ASSERT(spirvTools.Validate(code, wordCount, validatorOptions));  // The SPIR-V code passed to vkCreateShaderModule must be valid (b/158228522)
+	ASSERT(spirvTools.Validate(binary.data(), binary.size(), validatorOptions));  // The SPIR-V code passed to vkCreateShaderModule must be valid (b/158228522)
 #endif
 }
 
 void ShaderModule::destroy(const VkAllocationCallbacks *pAllocator)
 {
-	vk::freeHostMemory(code, pAllocator);
 }
 
 size_t ShaderModule::ComputeRequiredAllocationSize(const VkShaderModuleCreateInfo *pCreateInfo)
 {
-	return pCreateInfo->codeSize;
+	return 0;
 }
 
 }  // namespace vk

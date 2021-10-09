@@ -36,7 +36,7 @@ public:
 
 	uint32_t getSerialID() const { return serialID; };
 
-private:
+	//private:
 	static std::atomic<uint32_t> serialCounter;
 
 	uint32_t serialID;
