@@ -219,7 +219,7 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 		const bool optimize = !dbgctx;
 
 		const ShaderModule *module = vk::Cast(pStage->module);
-		const PipelineCache::SpirvBinaryKey key(module->getCode(), pStage->pSpecializationInfo, optimize);
+		const PipelineCache::SpirvBinaryKey key(module->getBinary(), pStage->pSpecializationInfo, optimize);
 
 		sw::SpirvBinary spirv;
 
@@ -232,6 +232,10 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 		else
 		{
 			spirv = optimizeSpirv(key);
+
+			// If the pipeline has specialization constants, assume they're unique and
+			// use a new serial ID so the shader gets recompiled.
+			spirv.serialID = key.getSpecializationInfo() ? sw::SpirvBinary::serialCounter++ : key.getInsns().serialID;
 		}
 
 		// TODO(b/201798871): use allocator.
@@ -272,19 +276,23 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	// instructions.
 	const bool optimize = !dbgctx;
 
-	const PipelineCache::SpirvBinaryKey shaderKey(module->getCode(), stage.pSpecializationInfo, optimize);
+	const PipelineCache::SpirvBinaryKey key(module->getBinary(), stage.pSpecializationInfo, optimize);
 
 	sw::SpirvBinary spirv;
 
 	if(pPipelineCache)
 	{
-		spirv = pPipelineCache->getOrOptimizeSpirv(shaderKey, [&] {
-			return optimizeSpirv(shaderKey);
+		spirv = pPipelineCache->getOrOptimizeSpirv(key, [&] {
+			return optimizeSpirv(key);
 		});
 	}
 	else
 	{
-		spirv = optimizeSpirv(shaderKey);
+		spirv = optimizeSpirv(key);
+
+		// If the pipeline has specialization constants, assume they're unique and
+		// use a new serial ID so the shader gets recompiled.
+		spirv.serialID = key.getSpecializationInfo() ? sw::SpirvBinary::serialCounter++ : key.getInsns().serialID;
 	}
 
 	// TODO(b/201798871): use allocator.
