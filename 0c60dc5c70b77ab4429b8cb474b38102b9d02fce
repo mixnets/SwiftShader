@@ -16,6 +16,24 @@
       "message": "Please never add -Wno-error flags. If there are warnings that fire, disable the warnings instead. We want a silent build.",
       "revId": "0c60dc5c70b77ab4429b8cb474b38102b9d02fce",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8adbb7b7_013f414b",
+        "filename": "third_party/llvm-10.0/BUILD.gn",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T15:31:42Z",
+      "side": 1,
+      "message": "Looks like this was introduced at https://swiftshader-review.googlesource.com/c/SwiftShader/+/20208\n\nAlexis, can you look into removing this?",
+      "parentUuid": "3aea2a1d_fceff98d",
+      "revId": "0c60dc5c70b77ab4429b8cb474b38102b9d02fce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
