@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b17dcf8d_5852bb61",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T04:31:14Z",
+      "side": 1,
+      "message": "TBR: This should unblock the SwiftShader into Chromium autoroller.",
+      "revId": "589e5b7a1f8c696f28620a576fe68d5296f4af15",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
