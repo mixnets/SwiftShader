@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3aea2a1d_fceff98d",
+        "filename": "third_party/llvm-10.0/BUILD.gn",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 6725
+      },
+      "writtenOn": "2021-10-12T15:18:46Z",
+      "side": 1,
+      "message": "Please never add -Wno-error flags. If there are warnings that fire, disable the warnings instead. We want a silent build.",
+      "revId": "0c60dc5c70b77ab4429b8cb474b38102b9d02fce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
