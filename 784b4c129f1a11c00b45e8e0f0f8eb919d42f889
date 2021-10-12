@@ -1,0 +1,228 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d67a1ba6_e7d5ee06",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "Looking good!",
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d47764a_665b6aa9",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "b/200826740",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 79
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a99ab71b_696fe748",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "Please file a bug for this.",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 49
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa0a5753_7c7fbb5a",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "b/197658470",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 41
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa3db192_0fbf8ff3",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 64709,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "Please mention https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3040 in the commit message.",
+      "range": {
+        "startLine": 64709,
+        "startChar": 0,
+        "endLine": 64709,
+        "endChar": 46
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ed6decd_581e64ab",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 185112,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "Please mention https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/2735 in the commit message.",
+      "range": {
+        "startLine": 185112,
+        "startChar": 0,
+        "endLine": 185112,
+        "endChar": 59
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c134a1c_39cd73ae",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 203061,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "http://crbug.com/swiftshader/163, please mention https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3039 in the commit message.",
+      "range": {
+        "startLine": 203061,
+        "startChar": 0,
+        "endLine": 203061,
+        "endChar": 50
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d5b1553_e1731840",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 6088,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "b/189559356",
+      "range": {
+        "startLine": 6088,
+        "startChar": 0,
+        "endLine": 6088,
+        "endChar": 74
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c4bab97_e550cc8e",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 6108,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "Probably requires reopening b/192088265",
+      "range": {
+        "startLine": 6108,
+        "startChar": 34,
+        "endLine": 6108,
+        "endChar": 52
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67917411_4855d400",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 6124,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T20:06:13Z",
+      "side": 1,
+      "message": "Looks like these are similar to the one on line 6124b, but I couldn\u0027t immediately find an open bug for it. Please file a new bug if there is none.",
+      "range": {
+        "startLine": 6124,
+        "startChar": 0,
+        "endLine": 6124,
+        "endChar": 36
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
