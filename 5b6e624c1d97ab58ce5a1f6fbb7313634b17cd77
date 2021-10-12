@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9229f5f1_25411c14",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-12T15:40:12Z",
+      "side": 1,
+      "message": "Looks like CMake updates started to work again.",
+      "revId": "5b6e624c1d97ab58ce5a1f6fbb7313634b17cd77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
