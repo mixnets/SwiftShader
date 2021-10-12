@@ -66,6 +66,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "96b4ad83_6cc752ac",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-12T20:44:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a99ab71b_696fe748",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 49
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "aa0a5753_7c7fbb5a",
         "filename": "tests/regres/testlists/vk-master-FAIL.txt",
         "patchSetId": 4
@@ -110,6 +134,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c4540e2_f2f8e93f",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 64709,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-12T20:44:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa3db192_0fbf8ff3",
+      "range": {
+        "startLine": 64709,
+        "startChar": 0,
+        "endLine": 64709,
+        "endChar": 46
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3ed6decd_581e64ab",
@@ -133,6 +181,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9abe22b8_07008661",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 185112,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-12T20:44:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3ed6decd_581e64ab",
+      "range": {
+        "startLine": 185112,
+        "startChar": 0,
+        "endLine": 185112,
+        "endChar": 59
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0c134a1c_39cd73ae",
@@ -146,6 +218,30 @@
       "writtenOn": "2021-10-12T20:06:13Z",
       "side": 1,
       "message": "http://crbug.com/swiftshader/163, please mention https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3039 in the commit message.",
+      "range": {
+        "startLine": 203061,
+        "startChar": 0,
+        "endLine": 203061,
+        "endChar": 50
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c06ef2f5_45d30e91",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 203061,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-12T20:44:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c134a1c_39cd73ae",
       "range": {
         "startLine": 203061,
         "startChar": 0,
@@ -202,6 +298,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6476806d_545f9951",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 6108,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-12T20:44:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7c4bab97_e550cc8e",
+      "range": {
+        "startLine": 6108,
+        "startChar": 34,
+        "endLine": 6108,
+        "endChar": 52
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "67917411_4855d400",
@@ -215,6 +335,30 @@
       "writtenOn": "2021-10-12T20:06:13Z",
       "side": 1,
       "message": "Looks like these are similar to the one on line 6124b, but I couldn\u0027t immediately find an open bug for it. Please file a new bug if there is none.",
+      "range": {
+        "startLine": 6124,
+        "startChar": 0,
+        "endLine": 6124,
+        "endChar": 36
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c230d927_919d0343",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 6124,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-12T20:44:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "67917411_4855d400",
       "range": {
         "startLine": 6124,
         "startChar": 0,
