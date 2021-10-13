@@ -34,10 +34,11 @@
 namespace {
 rr::RValue<rr::Int> PackFields(rr::Int4 const &ints, const sw::int4 shifts)
 {
-	return (rr::Int(ints.x) << shifts[0]) |
-	       (rr::Int(ints.y) << shifts[1]) |
-	       (rr::Int(ints.z) << shifts[2]) |
-	       (rr::Int(ints.w) << shifts[3]);
+	rr::Int4 positiveInts = Max(ints, rr::Int4(0));
+	return (rr::Int(positiveInts.x) << shifts[0]) |
+	       (rr::Int(positiveInts.y) << shifts[1]) |
+	       (rr::Int(positiveInts.z) << shifts[2]) |
+	       (rr::Int(positiveInts.w) << shifts[3]);
 }
 }  // namespace
 
@@ -1895,7 +1896,7 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	    (src->getSampleCountFlagBits() > 1) ||
 	    (srcFormat.isSRGBformat() != dstFormat.isSRGBformat());
 
-	State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
+	State state(srcFormat, dstFormat, src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
 	            Options{ doFilter, allowSRGBConversion });
 	state.clampToEdge = (region.srcOffsets[0].x < 0) ||
 	                    (region.srcOffsets[0].y < 0) ||
@@ -2295,7 +2296,7 @@ Blitter::CornerUpdateRoutineType Blitter::generateCornerUpdate(const State &stat
 	return function("BlitRoutine");
 }
 
-void Blitter::updateBorders(vk::Image *image, const VkImageSubresource &subresource)
+void Blitter::updateBorders(const vk::Image *image, const VkImageSubresource &subresource)
 {
 	ASSERT(image->getArrayLayers() >= (subresource.arrayLayer + 6));
 
@@ -2370,7 +2371,7 @@ void Blitter::updateBorders(vk::Image *image, const VkImageSubresource &subresou
 	cornerUpdateRoutine(&data);
 }
 
-void Blitter::copyCubeEdge(vk::Image *image,
+void Blitter::copyCubeEdge(const vk::Image *image,
                            const VkImageSubresource &dstSubresource, Edge dstEdge,
                            const VkImageSubresource &srcSubresource, Edge srcEdge)
 {

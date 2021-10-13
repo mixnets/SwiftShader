@@ -988,7 +988,9 @@ const Image *Image::getSampledImage(const vk::Format &imageViewFormat) const
 
 void Image::blitTo(Image *dstImage, const VkImageBlit &region, VkFilter filter) const
 {
-	device->getBlitter()->blit(this, dstImage, region, filter);
+	prepareForSampling({ region.srcSubresource.aspectMask, region.srcSubresource.mipLevel, 1,
+	                     region.srcSubresource.baseArrayLayer, region.srcSubresource.layerCount });
+	device->getBlitter()->blit(decompressedImage ? decompressedImage : this, dstImage, region, filter);
 }
 
 void Image::copyTo(uint8_t *dst, unsigned int dstPitch) const
@@ -1138,7 +1140,7 @@ void Image::contentsChanged(const VkImageSubresourceRange &subresourceRange, Con
 	}
 }
 
-void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
+void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange) const
 {
 	// If this isn't a cube or a compressed image, there's nothing to do
 	if(!requiresPreprocessing())
@@ -1229,7 +1231,7 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 	}
 }
 
-void Image::decompress(const VkImageSubresource &subresource)
+void Image::decompress(const VkImageSubresource &subresource) const
 {
 	switch(format)
 	{
@@ -1299,7 +1301,7 @@ void Image::decompress(const VkImageSubresource &subresource)
 	}
 }
 
-void Image::decodeETC2(const VkImageSubresource &subresource)
+void Image::decodeETC2(const VkImageSubresource &subresource) const
 {
 	ASSERT(decompressedImage);
 
@@ -1337,7 +1339,7 @@ void Image::decodeETC2(const VkImageSubresource &subresource)
 	}
 }
 
-void Image::decodeBC(const VkImageSubresource &subresource)
+void Image::decodeBC(const VkImageSubresource &subresource) const
 {
 	ASSERT(decompressedImage);
 
@@ -1360,7 +1362,7 @@ void Image::decodeBC(const VkImageSubresource &subresource)
 	}
 }
 
-void Image::decodeASTC(const VkImageSubresource &subresource)
+void Image::decodeASTC(const VkImageSubresource &subresource) const
 {
 	ASSERT(decompressedImage);
 
