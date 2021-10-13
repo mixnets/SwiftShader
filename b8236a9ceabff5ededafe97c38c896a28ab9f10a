@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "573db30b_5a312462",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-13T17:23:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9b9f6d7d_763abbd7",
+      "range": {
+        "startLine": 382,
+        "startChar": 2,
+        "endLine": 382,
+        "endChar": 34
+      },
+      "revId": "b8236a9ceabff5ededafe97c38c896a28ab9f10a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3697a53b_fb8e635a",
@@ -58,6 +82,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "710b61ab_6c8e98d9",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-13T17:23:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3697a53b_fb8e635a",
+      "revId": "b8236a9ceabff5ededafe97c38c896a28ab9f10a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f96aa3ae_0cd5f761",
@@ -71,6 +113,30 @@
       "writtenOn": "2021-10-13T01:10:57Z",
       "side": 1,
       "message": "This is fine temporarily, but let\u0027s make sure to follow up with a headers update to avoid hard-coding this. Here\u0027s the last update for reference: https://swiftshader-review.googlesource.com/c/SwiftShader/+/56588",
+      "range": {
+        "startLine": 441,
+        "startChar": 2,
+        "endLine": 441,
+        "endChar": 96
+      },
+      "revId": "b8236a9ceabff5ededafe97c38c896a28ab9f10a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56ec58f6_d23872fc",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-13T17:23:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f96aa3ae_0cd5f761",
       "range": {
         "startLine": 441,
         "startChar": 2,
