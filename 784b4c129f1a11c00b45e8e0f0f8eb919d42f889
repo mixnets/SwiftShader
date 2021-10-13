@@ -322,6 +322,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebe69220_7967ad44",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 6108,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-13T03:30:42Z",
+      "side": 1,
+      "message": "Test bug: https://issuetracker.google.com/192088265#comment12",
+      "parentUuid": "6476806d_545f9951",
+      "range": {
+        "startLine": 6108,
+        "startChar": 34,
+        "endLine": 6108,
+        "endChar": 52
+      },
+      "revId": "784b4c129f1a11c00b45e8e0f0f8eb919d42f889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "67917411_4855d400",
