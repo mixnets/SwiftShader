@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1939bf7_70e11474",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-13T17:58:18Z",
+      "side": 1,
+      "message": "Thanks!\n\nI know this adds a bit of repetition to our code, but I hope this can help convince Khronos that the CTS should not attempt to test when \"nothing\" should happen. It\u0027s important to us and other implementers to know when we\u0027re not explicitly handling structures that *are* valid. There\u0027s a countless number of invalid ones and unless the CTS tests each of them it\u0027s rather meaningless (and even then it\u0027s hard to know whether the use of the invalid structure changed any state in the system).",
+      "revId": "18c17afcb71fefcb9e1e049dac49afaed0beca29",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
