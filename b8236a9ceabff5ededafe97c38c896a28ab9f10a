@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "015928d7_00354bfb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-13T01:10:57Z",
+      "side": 1,
+      "message": "Looks good! Just a few minor things:",
+      "revId": "b8236a9ceabff5ededafe97c38c896a28ab9f10a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b9f6d7d_763abbd7",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-13T01:10:57Z",
+      "side": 1,
+      "message": "nit: Could you move this one last, before the default case? There\u0027s a good chance we\u0027ll use VK_STRUCTURE_TYPE_APPLICATION_INFO at some point and I\u0027d rather separate the edge cases from the normal ones a bit.",
+      "range": {
+        "startLine": 382,
+        "startChar": 2,
+        "endLine": 382,
+        "endChar": 34
+      },
+      "revId": "b8236a9ceabff5ededafe97c38c896a28ab9f10a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3697a53b_fb8e635a",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-13T01:10:57Z",
+      "side": 1,
+      "message": "Please add \"// TODO(b/176893525): This may not be legal.\"\n\nAccording to the latest interpretation at https://gitlab.khronos.org/vulkan/vulkan/-/issues/2442, applications should not include extension structures for extensions which are not enabled. Since we don\u0027t support these, they cannot be enabled. It would be helpful if we didn\u0027t silently ignore them because if we were to implement the feature we\u0027d want to hit the assert if we didn\u0027t implement this correctly.",
+      "revId": "b8236a9ceabff5ededafe97c38c896a28ab9f10a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f96aa3ae_0cd5f761",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-13T01:10:57Z",
+      "side": 1,
+      "message": "This is fine temporarily, but let\u0027s make sure to follow up with a headers update to avoid hard-coding this. Here\u0027s the last update for reference: https://swiftshader-review.googlesource.com/c/SwiftShader/+/56588",
+      "range": {
+        "startLine": 441,
+        "startChar": 2,
+        "endLine": 441,
+        "endChar": 96
+      },
+      "revId": "b8236a9ceabff5ededafe97c38c896a28ab9f10a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
