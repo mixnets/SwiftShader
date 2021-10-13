@@ -350,6 +350,20 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	// Image copy does not perform any conversion, it simply copies memory from
 	// an image to another image that has the same number of bytes per pixel.
 
+	static constexpr VkImageAspectFlags DepthStencilAspect =
+	    VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+	if((region.srcSubresource.aspectMask == DepthStencilAspect) &&
+	   (region.dstSubresource.aspectMask == DepthStencilAspect))
+	{
+		// Depth and stencil can be specified together, copy each separately
+		VkImageCopy ds = region;
+		ds.srcSubresource.aspectMask = ds.dstSubresource.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		copyTo(dstImage, ds);
+		ds.srcSubresource.aspectMask = ds.dstSubresource.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
+		copyTo(dstImage, ds);
+		return;
+	}
+
 	if(!((region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
 	     (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
 	     (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT) ||
