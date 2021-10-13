@@ -347,8 +347,21 @@ void Image::getSubresourceLayout(const VkImageSubresource *pSubresource, VkSubre
 
 void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 {
-	// Image copy does not perform any conversion, it simply copies memory from
-	// an image to another image that has the same number of bytes per pixel.
+	static constexpr VkImageAspectFlags CombinedDepthStencilAspects =
+	    VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+	if((region.srcSubresource.aspectMask == CombinedDepthStencilAspects) &&
+	   (region.dstSubresource.aspectMask == CombinedDepthStencilAspects))
+	{
+		// Depth and stencil can be specified together, copy each separately
+		VkImageCopy singleAspectRegion = region;
+		singleAspectRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		singleAspectRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		copySingleAspectTo(dstImage, singleAspectRegion);
+		singleAspectRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
+		singleAspectRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
+		copySingleAspectTo(dstImage, singleAspectRegion);
+		return;
+	}
 
 	if(!((region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
 	     (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
@@ -369,6 +382,14 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	{
 		UNSUPPORTED("dstSubresource.aspectMask %X", region.dstSubresource.aspectMask);
 	}
+
+	copySingleAspectTo(dstImage, region);
+}
+
+void Image::copySingleAspectTo(Image *dstImage, const VkImageCopy &region) const
+{
+	// Image copy does not perform any conversion, it simply copies memory from
+	// an image to another image that has the same number of bytes per pixel.
 
 	VkImageAspectFlagBits srcAspect = static_cast<VkImageAspectFlagBits>(region.srcSubresource.aspectMask);
 	VkImageAspectFlagBits dstAspect = static_cast<VkImageAspectFlagBits>(region.dstSubresource.aspectMask);
