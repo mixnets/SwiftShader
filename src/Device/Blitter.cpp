@@ -1895,7 +1895,7 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	    (src->getSampleCountFlagBits() > 1) ||
 	    (srcFormat.isSRGBformat() != dstFormat.isSRGBformat());
 
-	State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
+	State state(srcFormat, dstFormat, src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
 	            Options{ doFilter, allowSRGBConversion });
 	state.clampToEdge = (region.srcOffsets[0].x < 0) ||
 	                    (region.srcOffsets[0].y < 0) ||
@@ -2295,7 +2295,7 @@ Blitter::CornerUpdateRoutineType Blitter::generateCornerUpdate(const State &stat
 	return function("BlitRoutine");
 }
 
-void Blitter::updateBorders(vk::Image *image, const VkImageSubresource &subresource)
+void Blitter::updateBorders(const vk::Image *image, const VkImageSubresource &subresource)
 {
 	ASSERT(image->getArrayLayers() >= (subresource.arrayLayer + 6));
 
@@ -2370,7 +2370,7 @@ void Blitter::updateBorders(vk::Image *image, const VkImageSubresource &subresou
 	cornerUpdateRoutine(&data);
 }
 
-void Blitter::copyCubeEdge(vk::Image *image,
+void Blitter::copyCubeEdge(const vk::Image *image,
                            const VkImageSubresource &dstSubresource, Edge dstEdge,
                            const VkImageSubresource &srcSubresource, Edge srcEdge)
 {
