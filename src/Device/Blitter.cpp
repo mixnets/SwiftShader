@@ -2291,7 +2291,7 @@ Blitter::CornerUpdateRoutineType Blitter::generateCornerUpdate(const State &stat
 	return function("BlitRoutine");
 }
 
-void Blitter::updateBorders(vk::Image *image, const VkImageSubresource &subresource)
+void Blitter::updateBorders(const vk::Image *image, const VkImageSubresource &subresource)
 {
 	ASSERT(image->getArrayLayers() >= (subresource.arrayLayer + 6));
 
@@ -2366,7 +2366,7 @@ void Blitter::updateBorders(vk::Image *image, const VkImageSubresource &subresou
 	cornerUpdateRoutine(&data);
 }
 
-void Blitter::copyCubeEdge(vk::Image *image,
+void Blitter::copyCubeEdge(const vk::Image *image,
                            const VkImageSubresource &dstSubresource, Edge dstEdge,
                            const VkImageSubresource &srcSubresource, Edge srcEdge)
 {
