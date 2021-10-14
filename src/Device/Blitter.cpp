@@ -553,6 +553,11 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 	bool writeA = state.writeAlpha;
 	bool writeRGBA = writeR && writeG && writeB && writeA;
 
+	if(!state.sourceFormat.isUnsignedComponent(0) && state.destFormat.isUnsignedComponent(0))
+	{
+		c = Max(c, Float4(0.0f));
+	}
+
 	switch(state.destFormat)
 	{
 	case VK_FORMAT_R4G4_UNORM_PACK8:
@@ -576,21 +581,25 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		}
 		break;
 	case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
-		if(writeR || writeG || writeB || writeA)
+		if(writeRGBA)
 		{
-			*Pointer<UShort>(element) = (writeR ? ((UShort(RoundInt(Float(c.x))) & UShort(0xF)) << UShort(12)) : (*Pointer<UShort>(element) & UShort(0x000F))) |
-			                            (writeG ? ((UShort(RoundInt(Float(c.y))) & UShort(0xF)) << UShort(8)) : (*Pointer<UShort>(element) & UShort(0x00F0))) |
-			                            (writeB ? ((UShort(RoundInt(Float(c.z))) & UShort(0xF)) << UShort(4)) : (*Pointer<UShort>(element) & UShort(0x0F00))) |
-			                            (writeA ? (UShort(RoundInt(Float(c.w))) & UShort(0xF)) : (*Pointer<UShort>(element) & UShort(0xF000)));
+			*Pointer<UShort>(element) = UShort(PackFields(RoundInt(c) & Int4(0xF), { 12, 8, 4, 0 }));
+		}
+		else
+		{
+			unsigned short mask = (writeA ? 0x000F : 0x0000) |
+			                      (writeB ? 0x00F0 : 0x0000) |
+			                      (writeG ? 0x0F00 : 0x0000) |
+			                      (writeR ? 0xF000 : 0x0000);
+			unsigned short unmask = ~mask;
+			*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
+			                            (UShort(PackFields(RoundInt(c) & Int4(0xF), { 12, 8, 4, 0 })) & UShort(mask));
 		}
 		break;
 	case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
 		if(writeRGBA)
 		{
-			*Pointer<UShort>(element) = UShort(RoundInt(Float(c.w)) & Int(0xF)) |
-			                            UShort((RoundInt(Float(c.x)) & Int(0xF)) << 4) |
-			                            UShort((RoundInt(Float(c.y)) & Int(0xF)) << 8) |
-			                            UShort((RoundInt(Float(c.z)) & Int(0xF)) << 12);
+			*Pointer<UShort>(element) = UShort(PackFields(RoundInt(c) & Int4(0xF), { 4, 8, 12, 0 }));
 		}
 		else
 		{
@@ -600,20 +609,13 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			                      (writeB ? 0xF000 : 0x0000);
 			unsigned short unmask = ~mask;
 			*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
-			                            ((UShort(RoundInt(Float(c.w)) & Int(0xF)) |
-			                              UShort((RoundInt(Float(c.x)) & Int(0xF)) << 4) |
-			                              UShort((RoundInt(Float(c.y)) & Int(0xF)) << 8) |
-			                              UShort((RoundInt(Float(c.z)) & Int(0xF)) << 12)) &
-			                             UShort(mask));
+			                            (UShort(PackFields(RoundInt(c) & Int4(0xF), { 4, 8, 12, 0 })) & UShort(mask));
 		}
 		break;
 	case VK_FORMAT_A4R4G4B4_UNORM_PACK16_EXT:
 		if(writeRGBA)
 		{
-			*Pointer<UShort>(element) = UShort(RoundInt(Float(c.z)) & Int(0xF)) |
-			                            UShort((RoundInt(Float(c.y)) & Int(0xF)) << 4) |
-			                            UShort((RoundInt(Float(c.x)) & Int(0xF)) << 8) |
-			                            UShort((RoundInt(Float(c.w)) & Int(0xF)) << 12);
+			*Pointer<UShort>(element) = UShort(PackFields(RoundInt(c) & Int4(0xF), { 8, 4, 0, 12 }));
 		}
 		else
 		{
@@ -623,20 +625,13 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			                      (writeA ? 0xF000 : 0x0000);
 			unsigned short unmask = ~mask;
 			*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
-			                            ((UShort(RoundInt(Float(c.w)) & Int(0xF)) |
-			                              UShort((RoundInt(Float(c.x)) & Int(0xF)) << 4) |
-			                              UShort((RoundInt(Float(c.y)) & Int(0xF)) << 8) |
-			                              UShort((RoundInt(Float(c.z)) & Int(0xF)) << 12)) &
-			                             UShort(mask));
+			                            (UShort(PackFields(RoundInt(c) & Int4(0xF), { 8, 4, 0, 12 })) & UShort(mask));
 		}
 		break;
 	case VK_FORMAT_A4B4G4R4_UNORM_PACK16_EXT:
 		if(writeRGBA)
 		{
-			*Pointer<UShort>(element) = UShort(RoundInt(Float(c.x)) & Int(0xF)) |
-			                            UShort((RoundInt(Float(c.y)) & Int(0xF)) << 4) |
-			                            UShort((RoundInt(Float(c.z)) & Int(0xF)) << 8) |
-			                            UShort((RoundInt(Float(c.w)) & Int(0xF)) << 12);
+			*Pointer<UShort>(element) = UShort(PackFields(RoundInt(c) & Int4(0xF), { 0, 4, 8, 12 }));
 		}
 		else
 		{
@@ -646,11 +641,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			                      (writeA ? 0xF000 : 0x0000);
 			unsigned short unmask = ~mask;
 			*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
-			                            ((UShort(RoundInt(Float(c.x)) & Int(0xF)) |
-			                              UShort((RoundInt(Float(c.y)) & Int(0xF)) << 4) |
-			                              UShort((RoundInt(Float(c.z)) & Int(0xF)) << 8) |
-			                              UShort((RoundInt(Float(c.w)) & Int(0xF)) << 12)) &
-			                             UShort(mask));
+			                            (UShort(PackFields(RoundInt(c) & Int4(0xF), { 0, 4, 8, 12 })) & UShort(mask));
 		}
 		break;
 	case VK_FORMAT_B8G8R8A8_SRGB:
@@ -1196,6 +1187,11 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 	bool writeB = state.writeBlue;
 	bool writeA = state.writeAlpha;
 	bool writeRGBA = writeR && writeG && writeB && writeA;
+
+	if(!state.sourceFormat.isUnsignedComponent(0) && state.destFormat.isUnsignedComponent(0))
+	{
+		c = Max(c, Int4(0));
+	}
 
 	switch(state.destFormat)
 	{
@@ -1895,7 +1891,7 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	    (src->getSampleCountFlagBits() > 1) ||
 	    (srcFormat.isSRGBformat() != dstFormat.isSRGBformat());
 
-	State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
+	State state(srcFormat, dstFormat, src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
 	            Options{ doFilter, allowSRGBConversion });
 	state.clampToEdge = (region.srcOffsets[0].x < 0) ||
 	                    (region.srcOffsets[0].y < 0) ||
