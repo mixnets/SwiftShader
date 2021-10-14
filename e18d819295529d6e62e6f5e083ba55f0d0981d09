@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "80008de6_bce5487e",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T13:44:46Z",
+      "side": 1,
+      "message": "Ack. Will remove.",
+      "parentUuid": "b205ed5d_b693f815",
+      "range": {
+        "startLine": 323,
+        "startChar": 8,
+        "endLine": 323,
+        "endChar": 21
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "265931cb_dee4108d",
@@ -59,6 +83,76 @@
         "startChar": 3,
         "endLine": 332,
         "endChar": 24
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "300fcd76_5b794607",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T13:44:46Z",
+      "side": 1,
+      "message": "See my comment below.",
+      "parentUuid": "265931cb_dee4108d",
+      "range": {
+        "startLine": 332,
+        "startChar": 3,
+        "endLine": 332,
+        "endChar": 24
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c88f0e70_cbd5601e",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1084,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T13:44:46Z",
+      "side": 1,
+      "message": "This does not call any constructor, it only casts the destination pointer to a Color pointer. The destination memory is not modified here.",
+      "range": {
+        "startLine": 1084,
+        "startChar": 4,
+        "endLine": 1084,
+        "endChar": 74
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b721553_5e548a6e",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T13:44:46Z",
+      "side": 1,
+      "message": "This calls the assignment operator. If the assignment operator doesn\u0027t modify the alpha channel, it will stay unmodified.",
+      "range": {
+        "startLine": 1085,
+        "startChar": 4,
+        "endLine": 1085,
+        "endChar": 17
       },
       "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
