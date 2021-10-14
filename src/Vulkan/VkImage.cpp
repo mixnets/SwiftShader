@@ -1138,7 +1138,7 @@ void Image::contentsChanged(const VkImageSubresourceRange &subresourceRange, Con
 	}
 }
 
-void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
+void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange) const
 {
 	// If this isn't a cube or a compressed image, there's nothing to do
 	if(!requiresPreprocessing())
@@ -1229,7 +1229,7 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 	}
 }
 
-void Image::decompress(const VkImageSubresource &subresource)
+void Image::decompress(const VkImageSubresource &subresource) const
 {
 	switch(format)
 	{
@@ -1299,7 +1299,7 @@ void Image::decompress(const VkImageSubresource &subresource)
 	}
 }
 
-void Image::decodeETC2(const VkImageSubresource &subresource)
+void Image::decodeETC2(const VkImageSubresource &subresource) const
 {
 	ASSERT(decompressedImage);
 
@@ -1337,7 +1337,7 @@ void Image::decodeETC2(const VkImageSubresource &subresource)
 	}
 }
 
-void Image::decodeBC(const VkImageSubresource &subresource)
+void Image::decodeBC(const VkImageSubresource &subresource) const
 {
 	ASSERT(decompressedImage);
 
@@ -1360,7 +1360,7 @@ void Image::decodeBC(const VkImageSubresource &subresource)
 	}
 }
 
-void Image::decodeASTC(const VkImageSubresource &subresource)
+void Image::decodeASTC(const VkImageSubresource &subresource) const
 {
 	ASSERT(decompressedImage);
 
