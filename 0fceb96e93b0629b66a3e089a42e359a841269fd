@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b53b351c_f07446d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T16:56:21Z",
+      "side": 1,
+      "message": "LGTM with one more change:",
+      "revId": "0fceb96e93b0629b66a3e089a42e359a841269fd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6469271_cf414047",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T16:56:21Z",
+      "side": 1,
+      "message": "This should be in copySingleAspectTo",
+      "range": {
+        "startLine": 366,
+        "startChar": 1,
+        "endLine": 384,
+        "endChar": 2
+      },
+      "revId": "0fceb96e93b0629b66a3e089a42e359a841269fd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
