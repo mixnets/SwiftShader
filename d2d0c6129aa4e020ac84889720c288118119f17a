@@ -187,6 +187,30 @@
       },
       "revId": "d2d0c6129aa4e020ac84889720c288118119f17a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "032d1912_2e04e81e",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1194,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T18:31:32Z",
+      "side": 1,
+      "message": "According to the latest dEQP run, this actually happens in dEQP-VK.image.mutable.*",
+      "parentUuid": "3011541f_4a250920",
+      "range": {
+        "startLine": 1191,
+        "startChar": 1,
+        "endLine": 1194,
+        "endChar": 2
+      },
+      "revId": "d2d0c6129aa4e020ac84889720c288118119f17a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
