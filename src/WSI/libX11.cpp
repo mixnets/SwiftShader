@@ -14,42 +14,33 @@
 
 #include "libX11.hpp"
 
-#include "System/SharedLibrary.hpp"
-
-namespace {
-
-template<typename FPTR>
-void getFuncAddress(void *lib, const char *name, FPTR *out)
-{
-	*out = reinterpret_cast<FPTR>(getProcAddress(lib, name));
-}
-
-}  // anonymous namespace
+#include "Common/SharedLibrary.hpp"
+#include <memory>
 
 LibX11exports::LibX11exports(void *libX11, void *libXext)
 {
-	getFuncAddress(libX11, "XOpenDisplay", &XOpenDisplay);
-	getFuncAddress(libX11, "XGetWindowAttributes", &XGetWindowAttributes);
-	getFuncAddress(libX11, "XDefaultScreenOfDisplay", &XDefaultScreenOfDisplay);
-	getFuncAddress(libX11, "XWidthOfScreen", &XWidthOfScreen);
-	getFuncAddress(libX11, "XHeightOfScreen", &XHeightOfScreen);
-	getFuncAddress(libX11, "XPlanesOfScreen", &XPlanesOfScreen);
-	getFuncAddress(libX11, "XDefaultGC", &XDefaultGC);
-	getFuncAddress(libX11, "XDefaultDepth", &XDefaultDepth);
-	getFuncAddress(libX11, "XMatchVisualInfo", &XMatchVisualInfo);
-	getFuncAddress(libX11, "XDefaultVisual", &XDefaultVisual);
-	getFuncAddress(libX11, "XSetErrorHandler", &XSetErrorHandler);
-	getFuncAddress(libX11, "XSync", &XSync);
-	getFuncAddress(libX11, "XCreateImage", &XCreateImage);
-	getFuncAddress(libX11, "XCloseDisplay", &XCloseDisplay);
-	getFuncAddress(libX11, "XPutImage", &XPutImage);
-	getFuncAddress(libX11, "XDrawString", &XDrawString);
+	XOpenDisplay = (Display *(*)(char*))getProcAddress(libX11, "XOpenDisplay");
+	XGetWindowAttributes = (Status (*)(Display*, Window, XWindowAttributes*))getProcAddress(libX11, "XGetWindowAttributes");
+	XDefaultScreenOfDisplay = (Screen *(*)(Display*))getProcAddress(libX11, "XDefaultScreenOfDisplay");
+	XWidthOfScreen = (int (*)(Screen*))getProcAddress(libX11, "XWidthOfScreen");
+	XHeightOfScreen = (int (*)(Screen*))getProcAddress(libX11, "XHeightOfScreen");
+	XPlanesOfScreen = (int (*)(Screen*))getProcAddress(libX11, "XPlanesOfScreen");
+	XDefaultGC = (GC (*)(Display*, int))getProcAddress(libX11, "XDefaultGC");
+	XDefaultDepth = (int (*)(Display*, int))getProcAddress(libX11, "XDefaultDepth");
+	XMatchVisualInfo = (Status (*)(Display*, int, int, int, XVisualInfo*))getProcAddress(libX11, "XMatchVisualInfo");
+	XDefaultVisual = (Visual *(*)(Display*, int screen_number))getProcAddress(libX11, "XDefaultVisual");
+	XSetErrorHandler = (int (*(*)(int (*)(Display*, XErrorEvent*)))(Display*, XErrorEvent*))getProcAddress(libX11, "XSetErrorHandler");
+	XSync = (int (*)(Display*, Bool))getProcAddress(libX11, "XSync");
+	XCreateImage = (XImage *(*)(Display*, Visual*, unsigned int, int, int, char*, unsigned int, unsigned int, int, int))getProcAddress(libX11, "XCreateImage");
+	XCloseDisplay = (int (*)(Display*))getProcAddress(libX11, "XCloseDisplay");
+	XPutImage = (int (*)(Display*, Drawable, GC, XImage*, int, int, int, int, unsigned int, unsigned int))getProcAddress(libX11, "XPutImage");
+	XDrawString = (int (*)(Display*, Drawable, GC, int, int, char*, int))getProcAddress(libX11, "XDrawString");
 
-	getFuncAddress(libXext, "XShmQueryExtension", &XShmQueryExtension);
-	getFuncAddress(libXext, "XShmCreateImage", &XShmCreateImage);
-	getFuncAddress(libXext, "XShmAttach", &XShmAttach);
-	getFuncAddress(libXext, "XShmDetach", &XShmDetach);
-	getFuncAddress(libXext, "XShmPutImage", &XShmPutImage);
+	XShmQueryExtension = (Bool (*)(Display*))getProcAddress(libXext, "XShmQueryExtension");
+	XShmCreateImage = (XImage *(*)(Display*, Visual*, unsigned int, int, char*, XShmSegmentInfo*, unsigned int, unsigned int))getProcAddress(libXext, "XShmCreateImage");
+	XShmAttach = (Bool (*)(Display*, XShmSegmentInfo*))getProcAddress(libXext, "XShmAttach");
+	XShmDetach = (Bool (*)(Display*, XShmSegmentInfo*))getProcAddress(libXext, "XShmDetach");
+	XShmPutImage = (int (*)(Display*, Drawable, GC, XImage*, int, int, int, int, unsigned int, unsigned int, bool))getProcAddress(libXext, "XShmPutImage");
 }
 
 LibX11exports *LibX11::operator->()
@@ -61,14 +52,14 @@ LibX11exports *LibX11::loadExports()
 {
 	static void *libX11 = nullptr;
 	static void *libXext = nullptr;
-	static LibX11exports *libX11exports = nullptr;
+	static std::unique_ptr<LibX11exports> libX11exports = nullptr;
 
 	if(!libX11)
 	{
-		if(getProcAddress(RTLD_DEFAULT, "XOpenDisplay"))  // Search the global scope for pre-loaded X11 library.
+		if(getProcAddress(RTLD_DEFAULT, "XOpenDisplay"))   // Search the global scope for pre-loaded X11 library.
 		{
-			libX11exports = new LibX11exports(RTLD_DEFAULT, RTLD_DEFAULT);
-			libX11 = (void *)-1;  // No need to load it.
+			libX11exports = std::make_unique<LibX11exports>(RTLD_DEFAULT, RTLD_DEFAULT);
+			libX11 = (void*)-1;   // No need to load it.
 		}
 		else
 		{
@@ -77,16 +68,16 @@ LibX11exports *LibX11::loadExports()
 			if(libX11)
 			{
 				libXext = loadLibrary("libXext.so");
-				libX11exports = new LibX11exports(libX11, libXext);
+				libX11exports = std::make_unique<LibX11exports>(libX11, libXext);
 			}
 			else
 			{
-				libX11 = (void *)-1;  // Don't attempt loading more than once.
+				libX11 = (void*)-1;   // Don't attempt loading more than once.
 			}
 		}
 	}
 
-	return libX11exports;
+	return libX11exports.get();
 }
 
 LibX11 libX11;
