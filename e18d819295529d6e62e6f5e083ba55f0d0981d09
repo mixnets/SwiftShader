@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4658ee80_d07085b2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T08:33:14Z",
+      "side": 1,
+      "message": "Please rebase this to come after https://swiftshader-review.googlesource.com/c/SwiftShader/+/58148 so we can see which tests this fixes.\n\nI don\u0027t think this change is fixing things in the right place. The constructor and assignment operator were correct before. Re-setting the alpha just works around another bug, in an obscured way.\n\nI think we should also request dEQP\u0027s BC6h image sampling tests to be improved to also exercise use of the alpha channel.",
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b205ed5d_b693f815",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T08:33:14Z",
+      "side": 1,
+      "message": "This is redundant. The C++ spec states that the default member initializer \"is used if the member is omitted from the member initializer list of a constructor.\"",
+      "range": {
+        "startLine": 323,
+        "startChar": 8,
+        "endLine": 323,
+        "endChar": 21
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "265931cb_dee4108d",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T08:33:14Z",
+      "side": 1,
+      "message": "Unless we violate the constness somewhere, I don\u0027t see how this-\u003ea isn\u0027t already 1.0.",
+      "range": {
+        "startLine": 332,
+        "startChar": 3,
+        "endLine": 332,
+        "endChar": 24
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
