@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4910d76_a8574083",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 6089,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T10:41:52Z",
+      "side": 1,
+      "message": "Sean can you have a look at whether https://swiftshader-review.googlesource.com/c/SwiftShader/+/53528 could have caused this? Maybe flaky due to something left uninitialized?",
+      "range": {
+        "startLine": 6089,
+        "startChar": 0,
+        "endLine": 6089,
+        "endChar": 59
+      },
+      "revId": "bcffcd95f1f345c2ada41ac68c23a547dda00280",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
