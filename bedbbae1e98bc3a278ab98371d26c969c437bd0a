@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9bbb62f_a2d14279",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T14:23:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "db308d43_aafaa560",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 5
+      },
+      "revId": "bedbbae1e98bc3a278ab98371d26c969c437bd0a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4505c975_5f473e46",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-10-14T11:08:34Z",
       "side": 1,
       "message": "\"CombinedDepthStencilAspects\" would make it clearer that this doesn\u0027t represent a single aspect of a depth/stencil image (which is often used to designate an image with just a depth aspect).",
+      "range": {
+        "startLine": 353,
+        "startChar": 37,
+        "endLine": 353,
+        "endChar": 55
+      },
+      "revId": "bedbbae1e98bc3a278ab98371d26c969c437bd0a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "81d9a41a_8d9c981d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T14:23:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4505c975_5f473e46",
       "range": {
         "startLine": 353,
         "startChar": 37,
@@ -70,6 +118,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d01575d8_a42d842a",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T14:23:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2996e4e7_5d832847",
+      "range": {
+        "startLine": 361,
+        "startChar": 2,
+        "endLine": 361,
+        "endChar": 8
+      },
+      "revId": "bedbbae1e98bc3a278ab98371d26c969c437bd0a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a4d62a14_3bbc0547",
@@ -83,6 +155,24 @@
       "writtenOn": "2021-10-14T11:08:34Z",
       "side": 1,
       "message": "Let\u0027s add a comment here to clarify that we\u0027re only copying a single aspect.",
+      "revId": "bedbbae1e98bc3a278ab98371d26c969c437bd0a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c26696d_6730d076",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T14:23:25Z",
+      "side": 1,
+      "message": "Added a \"copySingleAspectTo\" function, which should make this clear.",
+      "parentUuid": "a4d62a14_3bbc0547",
       "revId": "bedbbae1e98bc3a278ab98371d26c969c437bd0a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
