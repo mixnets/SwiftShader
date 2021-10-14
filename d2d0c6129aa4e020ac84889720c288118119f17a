@@ -211,6 +211,30 @@
       },
       "revId": "d2d0c6129aa4e020ac84889720c288118119f17a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b49e01da_e956301c",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1194,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-14T19:02:41Z",
+      "side": 1,
+      "message": "This assert doesn\u0027t come from vkCmdBlitImage, it comes from a clear call, clearing an unsinged format image with a signed clear color. I\u0027ll remove the assert from this CL and we can look into this separately.",
+      "parentUuid": "032d1912_2e04e81e",
+      "range": {
+        "startLine": 1191,
+        "startChar": 1,
+        "endLine": 1194,
+        "endChar": 2
+      },
+      "revId": "d2d0c6129aa4e020ac84889720c288118119f17a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
