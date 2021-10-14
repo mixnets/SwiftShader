@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3f694ae_3cf452b9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T08:06:38Z",
+      "side": 1,
+      "message": "\"Fix blitting of compressed images\"\n\nIf I understand correctly it was already \"allowed\", we\u0027d just hit an assert in debug builds and it didn\u0027t work as intended in release.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 31
+      },
+      "revId": "4d8fb53d253ce73fc549b4d6bd165775ae4a73ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1cc64279_4e665777",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T08:06:38Z",
+      "side": 1,
+      "message": "fixes Image::blitTo() to decompress the source image and use the correct resource",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 43
+      },
+      "revId": "4d8fb53d253ce73fc549b4d6bd165775ae4a73ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "262f5bab_cf25452d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T08:06:38Z",
+      "side": 1,
+      "message": "Please make this the first CL in the stack. Note that UNSUPPORTED -\u003e FAIL is not a regression. (We should probably make UNSUPPORTED sound scarier, like INVALID, which would also set it apart from the NOT_SUPPORTED dEQP test result.)",
+      "revId": "4d8fb53d253ce73fc549b4d6bd165775ae4a73ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60df94f6_7d432f2b",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 991,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-14T08:06:38Z",
+      "side": 1,
+      "message": "It might be useful to consider a refactoring to use lock/unlock semantics so bugs like forgetting this can\u0027t happen.",
+      "range": {
+        "startLine": 991,
+        "startChar": 1,
+        "endLine": 991,
+        "endChar": 19
+      },
+      "revId": "4d8fb53d253ce73fc549b4d6bd165775ae4a73ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
