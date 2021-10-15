@@ -16,6 +16,29 @@
       "message": "Nice find",
       "revId": "bc50e3e225488b613f11e0b3f7b470f318b08e3b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb52b2a2_16898107",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-15T15:44:48Z",
+      "side": 1,
+      "message": "Also note: having a const member here while the other union member, \"channel\", isn\u0027t const in the same memory location is very error prone, so removing this const makes it less error prone. In general, I don\u0027t think union members should have const fields.",
+      "range": {
+        "startLine": 317,
+        "startChar": 2,
+        "endLine": 317,
+        "endChar": 26
+      },
+      "revId": "bc50e3e225488b613f11e0b3f7b470f318b08e3b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
