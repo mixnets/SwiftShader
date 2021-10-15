@@ -80,9 +80,34 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		pPixel[3] = sw::clamp(pPixel[3], -1.0f, 1.0f);
 	}
 
-	if(fastClear(pixel, format, dest, dstFormat, subresourceRange, renderArea))
+	// When using integers, adjust the source format's signedness
+	// to the signedness the destination format expects
+	int clearColor[4];
+	if(!dstFormat.isFloatFormat())
 	{
-		return;
+		switch(format)
+		{
+		case VK_FORMAT_R32G32B32A32_SINT:
+			if(dstFormat.isUnsigned())
+			{
+				int *pixelI = reinterpret_cast<int *>(pixel);
+				for(int i = 0; i < 4; i++)
+				{
+					clearColor[i] = std::max(pixelI[i], 0);
+				}
+				pixel = &(clearColor[0]);
+				format = VK_FORMAT_R32G32B32A32_UINT;
+			}
+			break;
+		case VK_FORMAT_R32G32B32A32_UINT:
+			if(!dstFormat.isUnsigned())
+			{
+				format = VK_FORMAT_R32G32B32A32_SINT;
+			}
+			break;
+		default:
+			break;
+		}
 	}
 
 	State state(format, dstFormat, 1, dest->getSampleCountFlagBits(), Options{ 0xF });
@@ -1183,6 +1208,8 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 	bool writeA = state.writeAlpha;
 	bool writeRGBA = writeR && writeG && writeB && writeA;
 
+	ASSERT(state.sourceFormat.isUnsigned() == state.destFormat.isUnsigned());
+
 	switch(state.destFormat)
 	{
 	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
@@ -1471,8 +1498,7 @@ void Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool preScal
 		                          state.destFormat.isUnsignedComponent(3) ? 0.0f : -scale.w));
 	}
 
-	// TODO(b/203068380): create proper functions to check for signedness
-	if(!state.sourceFormat.isUnsignedComponent(0) && state.destFormat.isUnsignedComponent(0))
+	if(!state.sourceFormat.isUnsigned() && state.destFormat.isUnsigned())
 	{
 		value = Max(value, Float4(0.0f));
 	}
