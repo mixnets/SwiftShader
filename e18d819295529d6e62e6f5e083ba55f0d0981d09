@@ -204,6 +204,30 @@
       },
       "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e9e8132_49bfac65",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-15T14:55:55Z",
+      "side": 1,
+      "message": "While it\u0027s certainly possible, I disagree that this would be a proper solution, because Color is a union and unions don\u0027t call their inner members\u0027 default constructors, so using a placement new still hides a bug. IMHO, the current solution is safer.",
+      "parentUuid": "3d20df5f_814c77e4",
+      "range": {
+        "startLine": 1085,
+        "startChar": 4,
+        "endLine": 1085,
+        "endChar": 17
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
