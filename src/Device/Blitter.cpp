@@ -64,25 +64,53 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		return;
 	}
 
-	float *pPixel = static_cast<float *>(pixel);
-	if(viewFormat.isUnsignedNormalized() || viewFormat.isSRGBformat())
-	{
-		pPixel[0] = sw::clamp(pPixel[0], 0.0f, 1.0f);
-		pPixel[1] = sw::clamp(pPixel[1], 0.0f, 1.0f);
-		pPixel[2] = sw::clamp(pPixel[2], 0.0f, 1.0f);
-		pPixel[3] = sw::clamp(pPixel[3], 0.0f, 1.0f);
-	}
-	else if(viewFormat.isSignedNormalized())
-	{
-		pPixel[0] = sw::clamp(pPixel[0], -1.0f, 1.0f);
-		pPixel[1] = sw::clamp(pPixel[1], -1.0f, 1.0f);
-		pPixel[2] = sw::clamp(pPixel[2], -1.0f, 1.0f);
-		pPixel[3] = sw::clamp(pPixel[3], -1.0f, 1.0f);
-	}
-
 	if(fastClear(pixel, format, dest, dstFormat, subresourceRange, renderArea))
 	{
 		return;
+	}
+
+	// Adjust the source format to what the destination format expects
+	if(!dstFormat.isFloatFormat())
+	{
+		switch(format)
+		{
+		case VK_FORMAT_R32G32B32A32_SINT:
+			if(dstFormat.isUnsigned())
+			{
+				int *pixelI = reinterpret_cast<int *>(pixel);
+				for(int i = 0; i < 4; i++)
+				{
+					pixelI[i] = std::max(pixelI[i], 0);
+				}
+				format = VK_FORMAT_R32G32B32A32_UINT;
+			}
+			break;
+		case VK_FORMAT_R32G32B32A32_SFLOAT:
+			if(dstFormat.isUnsigned())
+			{
+				uint32_t *pixelU = reinterpret_cast<uint32_t *>(pixel);
+				float *pixelF = reinterpret_cast<float *>(pixel);
+				float4 scale = dstFormat.getScale();
+				for(int i = 0; i < 4; i++)
+				{
+					pixelU[i] = static_cast<uint32_t>(std::max(pixelF[i] * scale[i], 0.0f));
+				}
+				format = VK_FORMAT_R32G32B32A32_UINT;
+			}
+			break;
+		case VK_FORMAT_R32G32B32A32_UINT:
+			if(!dstFormat.isUnsigned())
+			{
+				format = VK_FORMAT_R32G32B32A32_SINT;
+			}
+			break;
+		case VK_FORMAT_D32_SFLOAT:
+		case VK_FORMAT_S8_UINT:
+			// Do nothing for depth/stencil formats
+			break;
+		default:
+			UNREACHABLE("Unknown clear format: %d", (int)format);
+		}
 	}
 
 	State state(format, dstFormat, 1, dest->getSampleCountFlagBits(), Options{ 0xF });
@@ -553,8 +581,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 	bool writeA = state.writeAlpha;
 	bool writeRGBA = writeR && writeG && writeB && writeA;
 
-	// TODO(b/203068380): create proper functions to check for signedness
-	if(!state.sourceFormat.isUnsignedComponent(0) && state.destFormat.isUnsignedComponent(0))
+	if(!state.sourceFormat.isUnsigned() && state.destFormat.isUnsigned())
 	{
 		c = Max(c, Float4(0.0f));
 	}
@@ -1188,6 +1215,8 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 	bool writeB = state.writeBlue;
 	bool writeA = state.writeAlpha;
 	bool writeRGBA = writeR && writeG && writeB && writeA;
+
+	ASSERT(state.sourceFormat.isUnsigned() == state.destFormat.isUnsigned());
 
 	switch(state.destFormat)
 	{

@@ -1311,6 +1311,12 @@ int Format::componentCount() const
 	return 1;
 }
 
+bool Format::isUnsigned() const
+{
+	// TODO(b/203068380): create a proper check for signedness
+	return isUnsignedComponent(0);
+}
+
 bool Format::isUnsignedComponent(int component) const
 {
 	switch(format)
