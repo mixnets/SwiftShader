@@ -1183,6 +1183,8 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 	bool writeA = state.writeAlpha;
 	bool writeRGBA = writeR && writeG && writeB && writeA;
 
+	ASSERT(state.sourceFormat.isUnsigned() == state.destFormat.isUnsigned());
+
 	switch(state.destFormat)
 	{
 	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
@@ -1471,8 +1473,7 @@ void Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool preScal
 		                          state.destFormat.isUnsignedComponent(3) ? 0.0f : -scale.w));
 	}
 
-	// TODO(b/203068380): create proper functions to check for signedness
-	if(!state.sourceFormat.isUnsignedComponent(0) && state.destFormat.isUnsignedComponent(0))
+	if(!state.sourceFormat.isUnsigned() && state.destFormat.isUnsigned())
 	{
 		value = Max(value, Float4(0.0f));
 	}

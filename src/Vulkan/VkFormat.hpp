@@ -35,6 +35,7 @@ public:
 	bool isSignedUnnormalizedInteger() const;
 	bool isUnsignedUnnormalizedInteger() const;
 	bool isUnnormalizedInteger() const;
+	bool isUnsigned() const;
 
 	VkImageAspectFlags getAspects() const;
 	Format getAspectFormat(VkImageAspectFlags aspect) const;
