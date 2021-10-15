@@ -135,6 +135,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b49e9ff0_bccd7346",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1084,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-15T13:51:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c88f0e70_cbd5601e",
+      "range": {
+        "startLine": 1084,
+        "startChar": 4,
+        "endLine": 1084,
+        "endChar": 74
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4b721553_5e548a6e",
@@ -148,6 +172,30 @@
       "writtenOn": "2021-10-14T13:44:46Z",
       "side": 1,
       "message": "This calls the assignment operator. If the assignment operator doesn\u0027t modify the alpha channel, it will stay unmodified.",
+      "range": {
+        "startLine": 1085,
+        "startChar": 4,
+        "endLine": 1085,
+        "endChar": 17
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d20df5f_814c77e4",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-15T13:51:49Z",
+      "side": 1,
+      "message": "Yeah, this is the real bug. We can\u0027t treat *out as a valid Color because it was never constructed.\n\nThe proper fix is to use placement new here, and copy construct from `color`.",
+      "parentUuid": "4b721553_5e548a6e",
       "range": {
         "startLine": 1085,
         "startChar": 4,
