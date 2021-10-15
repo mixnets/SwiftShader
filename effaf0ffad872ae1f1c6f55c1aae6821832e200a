@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8de28485_a2c9317a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-15T18:43:42Z",
+      "side": 1,
+      "message": "This will cause an exit-time destructor to be called, which isn\u0027t fully supported on some legacy old platforms, but I\u0027m fairly certain it\u0027s not an issue on platforms where our Vulkan implementation is deployed.\n\nI think ideally this singleton object is static so there\u0027s no allocation in the first place, but that\u0027s a slightly larger change and if this unblocks you feel free to land as-is.",
+      "revId": "effaf0ffad872ae1f1c6f55c1aae6821832e200a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
