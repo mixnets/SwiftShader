@@ -132,7 +132,7 @@ private:
 	VkOffset3D imageOffsetInBlocks(const VkOffset3D &offset, VkImageAspectFlagBits aspect) const;
 	VkExtent2D bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferImageCopy &region) const;
 	VkFormat getClearFormat() const;
-	void clear(void *pixelData, VkFormat pixelFormat, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D &renderArea);
+	void clear(void *pixelData, VkFormat pixelFormat, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea);
 	int borderSize() const;
 
 	bool requiresPreprocessing() const;
