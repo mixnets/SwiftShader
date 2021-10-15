@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a0dfb27_37d3b0b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-15T13:40:08Z",
+      "side": 1,
+      "message": "Results changes are as expected from https://swiftshader-review.googlesource.com/c/SwiftShader/+/58148 and https://swiftshader-review.googlesource.com/c/SwiftShader/+/58168, except dEQP-VK.api.info.get_physical_device_properties2.properties which started failing after https://swiftshader-review.googlesource.com/c/SwiftShader/+/53528.",
+      "revId": "8460f044ea60777ccfcce11a3c6d4292db508672",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
