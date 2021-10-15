@@ -22,6 +22,30 @@
       },
       "revId": "bcffcd95f1f345c2ada41ac68c23a547dda00280",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e750e495_fc6376a7",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 6089,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-15T13:41:48Z",
+      "side": 1,
+      "message": "b/176893525#comment6",
+      "parentUuid": "a4910d76_a8574083",
+      "range": {
+        "startLine": 6089,
+        "startChar": 0,
+        "endLine": 6089,
+        "endChar": 59
+      },
+      "revId": "bcffcd95f1f345c2ada41ac68c23a547dda00280",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
