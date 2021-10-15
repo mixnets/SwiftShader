@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "346583f7_d6581b39",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-15T19:50:37Z",
+      "side": 1,
+      "message": "This is wrong. The spec states that \"The use of the pipeline cache object in these commands is internally synchronized, and the same pipeline cache object can be used in multiple threads simultaneously.\"\n\nThis method unlocks the mutex on return, so the reference could become invalid.",
+      "range": {
+        "startLine": 147,
+        "startChar": 0,
+        "endLine": 147,
+        "endChar": 23
+      },
+      "revId": "58b15b12fc4bfd2996de10880c13c3d11994215b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
