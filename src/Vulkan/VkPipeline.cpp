@@ -90,16 +90,21 @@ sw::SpirvBinary optimizeSpirv(const vk::PipelineCache::SpirvBinaryKey &key)
 #endif
 
 	sw::SpirvBinary optimized;
-	opt.Run(code.data(), code.size(), &optimized, optimizerOptions);
+	std::vector<uint32_t> optimized2;
+
+	opt.Run(code.data(), code.size(), &optimized2, optimizerOptions);
+	optimized.insert(optimized.end(), &optimized2.front(), &optimized2.back());
 	ASSERT(optimized.size() > 0);
 
 	if(false)
 	{
 		spvtools::SpirvTools core(vk::SPIRV_VERSION);
 		std::string preOpt;
-		core.Disassemble(code, &preOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
+		std::vector<uint32_t> code2;
+		code2.insert(code2.end(), &code.front(), &code.back());
+		core.Disassemble(code2, &preOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
 		std::string postOpt;
-		core.Disassemble(optimized, &postOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
+		core.Disassemble(optimized2, &postOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
 		std::cout << "PRE-OPT: " << preOpt << std::endl
 		          << "POST-OPT: " << postOpt << std::endl;
 	}
