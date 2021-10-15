@@ -228,6 +228,30 @@
       },
       "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32158aa3_1466a6db",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-15T18:25:11Z",
+      "side": 1,
+      "message": "I see. The union\u0027s default constructor can explicitly call a member\u0027s constructor though. Another solution would be to eliminate the need for it to be a union, which I think can be achieved by adding an operator[]\n\nSorry if I\u0027m sounding pedantic, but I think it\u0027s important that we can derive certain \"truths\" about a class just by looking at its definition. Placement new is the correct way to construct an instance in existing memory that preserves these truths. An assignment operator repeating what the constructor should have guaranteed is just a hack.",
+      "parentUuid": "9e9e8132_49bfac65",
+      "range": {
+        "startLine": 1085,
+        "startChar": 4,
+        "endLine": 1085,
+        "endChar": 17
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }

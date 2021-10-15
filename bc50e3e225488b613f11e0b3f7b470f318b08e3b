@@ -39,6 +39,30 @@
       },
       "revId": "bc50e3e225488b613f11e0b3f7b470f318b08e3b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25b4e161_5c91ab06",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-15T18:25:11Z",
+      "side": 1,
+      "message": "It\u0027s definitely bug prone, but just to play devil\u0027s advocate, it can also be a perfectly reasonable way to allow modifying a const variable\u0027s value. const, unlike constexpr, does not mean the value can\u0027t change, it just means it\u0027s a compilation error to try to assign a new value through this variable. const_cast\u003c\u003e and mutable are other ways to const doesn\u0027t mean unmodifiable. Obviously each such use requires great care.\n\nWith that said, it may seem sensible to remove the const to make it clear this variable can change, and that actually does make the assignment operator\u0027s re-assignment of this component look much more reasonable. But the thing is, this component isn\u0027t intended to be changeable. In fact its only purpose in this code is due to the fact that we\u0027re decoding BC6h, which is a 3-component format, into 4-component half-float.\n\nSo there\u0027s a totally different solution available as well: remove `a` from Color, and make it `uint16_t *out`, assigning r/g/b from Color individually, and each fourth element halfFloat1. That\u0027s probably more elegant than the placement new approach.",
+      "parentUuid": "fb52b2a2_16898107",
+      "range": {
+        "startLine": 317,
+        "startChar": 2,
+        "endLine": 317,
+        "endChar": 26
+      },
+      "revId": "bc50e3e225488b613f11e0b3f7b470f318b08e3b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
