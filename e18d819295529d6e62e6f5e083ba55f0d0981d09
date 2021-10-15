@@ -252,6 +252,30 @@
       },
       "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9aee302_dadd598c",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-15T18:41:30Z",
+      "side": 1,
+      "message": "I\u0027m sorry, but I think this is still incorrect.\nFor example, the Color copy constructor (line 353) is also currently broken, as it doesn\u0027t initialize the rgba member and then uses the operator\u003d from the RGBA struct to assign it, skipping the alpha initialization also here.\n\nIt feels like you\u0027re jumping through an awful lot of hoops to avoid simply treating this class as what it\u0027s supposed to be: a representation of a pixel. Everything less than that is error prone.\n\nSimply fixing the assignment operator of the RGBA struct fixes all potential issues and the rest of the code can stay clean. It is still my opinion that this is the best solution for this issue.",
+      "parentUuid": "32158aa3_1466a6db",
+      "range": {
+        "startLine": 1085,
+        "startChar": 4,
+        "endLine": 1085,
+        "endChar": 17
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
