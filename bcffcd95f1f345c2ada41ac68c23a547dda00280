@@ -46,6 +46,30 @@
       },
       "revId": "bcffcd95f1f345c2ada41ac68c23a547dda00280",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cf830f2_e7a8261f",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 6089,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-15T13:52:13Z",
+      "side": 1,
+      "message": "Yes, 53528 caused this. dEQP is passing VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES_KHR to getFeatures2. Not sure why regres didn\u0027t include this in its comment.",
+      "parentUuid": "e750e495_fc6376a7",
+      "range": {
+        "startLine": 6089,
+        "startChar": 0,
+        "endLine": 6089,
+        "endChar": 59
+      },
+      "revId": "bcffcd95f1f345c2ada41ac68c23a547dda00280",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
