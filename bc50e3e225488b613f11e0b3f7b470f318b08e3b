@@ -18,6 +18,23 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9df6f414_86ac4c7c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-18T16:16:09Z",
+      "side": 1,
+      "message": "+2 because it\u0027s a definite step forward, but I still think there\u0027s room for improvement:",
+      "revId": "bc50e3e225488b613f11e0b3f7b470f318b08e3b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fb52b2a2_16898107",
@@ -79,6 +96,30 @@
       "side": 1,
       "message": "This would mean that we can no longer cast a pixel of the output as a Color. To be completely honest, this sounds much less elegant than the current code.",
       "parentUuid": "25b4e161_5c91ab06",
+      "range": {
+        "startLine": 317,
+        "startChar": 2,
+        "endLine": 317,
+        "endChar": 26
+      },
+      "revId": "bc50e3e225488b613f11e0b3f7b470f318b08e3b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d84a002_fc46349e",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-18T16:16:09Z",
+      "side": 1,
+      "message": "\u003e This would mean that we can no longer cast a pixel of the output as a Color.\n\nPrecisely. It is invalid to cast a pointer to uninitialized memory, to be a pointer to a class which has a constructor. One has to call placement new to do that in a well-defined manner. Even if we argue that the default constructor leaves things uninitialized, it\u0027s not trivial to spot that to be the case, and I think it\u0027s bad practice to have some constructors initialize things while another doesn\u0027t. The other problem is that in Patchset 5 the assignment operator or RGBA overwrites the alpha component. That would lead to bugs if this class was intended to represent a generic 4-component half-float color. Currently this class is a bit of a mixed bag that happens to work for our usage patterns.\n\nIdeally either all constructors initialize the fields, and we use placement new, or none of the constructors perform initialization and we explicitly assign each component. I\u0027m leaning towards the latter because RGBf also doesn\u0027t initialize, and it becomes much clearer that we\u0027re setting the alpha channel of the decoded image to 1.0h instead of involving two assignment operators, one of which performs an unexpected overwrite.",
+      "parentUuid": "92fc8bca_4ba4cc53",
       "range": {
         "startLine": 317,
         "startChar": 2,

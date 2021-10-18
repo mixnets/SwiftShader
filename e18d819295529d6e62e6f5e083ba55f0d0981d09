@@ -276,6 +276,30 @@
       },
       "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4800ee98_ec95d5ae",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-18T16:16:09Z",
+      "side": 1,
+      "message": "\u003e a representation of a pixel. Everything less than that is error prone.\n\nI agree that\u0027s what it needs to be. But this is not it. This patch only narrowly fixes the current bug and the class remains error prone. See other comment for details.",
+      "parentUuid": "e9aee302_dadd598c",
+      "range": {
+        "startLine": 1085,
+        "startChar": 4,
+        "endLine": 1085,
+        "endChar": 17
+      },
+      "revId": "e18d819295529d6e62e6f5e083ba55f0d0981d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
