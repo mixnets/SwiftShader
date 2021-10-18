@@ -46,6 +46,30 @@
       },
       "revId": "17addad2f852c78cd2e80d4c18e7797d7a5c37fd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "76ead1b4_c76d78e7",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3216,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-18T21:18:59Z",
+      "side": 1,
+      "message": "\u003e I\u0027m not sure why regres isn\u0027t reporting the test as fixed.\n\nYes I\u0027m mildly worried about that. I assume you\u0027re able to reproduce before/after the patch and it works as expected? Any risk there\u0027s undefined behavior involved? OK to land if everything checks out, and we\u0027ll keep an eye on the nightly result.",
+      "parentUuid": "705e0e9c_5be875d3",
+      "range": {
+        "startLine": 3215,
+        "startChar": 2,
+        "endLine": 3216,
+        "endChar": 9
+      },
+      "revId": "17addad2f852c78cd2e80d4c18e7797d7a5c37fd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
