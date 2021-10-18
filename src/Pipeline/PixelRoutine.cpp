@@ -2070,6 +2070,235 @@ void PixelRoutine::blendFactorAlpha(Vector4f &blendFactor, const Vector4f &oC, c
 	}
 }
 
+Float4 PixelRoutine::blendOpOverlay(Float4 &src, Float4 &dst)
+{
+	Int4 largeDst = CmpGT(dst, Float4(0.5f));
+	return As<Float4>(
+	    (~largeDst &
+	     As<Int4>(Float4(2.0f) * src * dst)) |
+	    (largeDst &
+	     As<Int4>(Float4(1.0f) - (Float4(2.0f) * (Float4(1.0f) - src) * (Float4(1.0f) - dst)))));
+}
+
+Float4 PixelRoutine::blendOpColorDodge(Float4 &src, Float4 &dst)
+{
+	Int4 srcBelowOne = CmpLT(src, Float4(1.0f));
+	Int4 positiveDst = CmpGT(dst, Float4(0.0f));
+	return As<Float4>(positiveDst & ((~srcBelowOne &
+	                                  As<Int4>(Float4(1.0f))) |
+	                                 (srcBelowOne &
+	                                  As<Int4>(Min(Float4(1.0f), (dst / (Float4(1.0f) - src)))))));
+}
+
+Float4 PixelRoutine::blendOpColorBurn(Float4 &src, Float4 &dst)
+{
+	Int4 dstBelowOne = CmpLT(dst, Float4(1.0f));
+	Int4 positiveSrc = CmpGT(src, Float4(0.0f));
+	return As<Float4>(
+	    (~dstBelowOne &
+	     As<Int4>(Float4(1.0f))) |
+	    (dstBelowOne & positiveSrc &
+	     As<Int4>(Float4(1.0f) - Min(Float4(1.0f), (Float4(1.0f) - dst) / src))));
+}
+
+Float4 PixelRoutine::blendOpHardlight(Float4 &src, Float4 &dst)
+{
+	Int4 largeSrc = CmpGT(src, Float4(0.5f));
+	return As<Float4>(
+	    (~largeSrc &
+	     As<Int4>(Float4(2.0f) * src * dst)) |
+	    (largeSrc &
+	     As<Int4>(Float4(1.0f) - (Float4(2.0f) * (Float4(1.0f) - src) * (Float4(1.0f) - dst)))));
+}
+
+Float4 PixelRoutine::blendOpSoftlight(Float4 &src, Float4 &dst)
+{
+	Int4 largeSrc = CmpGT(src, Float4(0.5f));
+	Int4 largeDst = CmpGT(dst, Float4(0.25f));
+
+	return As<Float4>(
+	    (~largeSrc &
+	     As<Int4>(dst - ((Float4(1.0f) - (Float4(2.0f) * src)) * dst * (Float4(1.0f) - dst)))) |
+	    (largeSrc & ((~largeDst &
+	                  As<Int4>(dst + (((Float4(2.0f) * src) - Float4(1.0f)) * dst * ((((Float4(16.0f) * dst) - Float4(12.0f)) * dst) + Float4(3.0f))))) |
+	                 (largeDst &
+	                  As<Int4>(dst + (((Float4(2.0f) * src) - Float4(1.0f)) * (Sqrt(dst) - dst)))))));
+}
+
+Float4 PixelRoutine::maxRGB(Vector4f &c)
+{
+	return Max(Max(c.x, c.y), c.z);
+}
+
+Float4 PixelRoutine::minRGB(Vector4f &c)
+{
+	return Min(Min(c.x, c.y), c.z);
+}
+
+void PixelRoutine::setLumSat(Vector4f &cbase, Vector4f &csat, Vector4f &clum, Float4 &x, Float4 &y, Float4 &z)
+{
+	Float4 minbase = minRGB(cbase);
+	Float4 sbase = maxRGB(cbase) - minbase;
+	Float4 ssat = maxRGB(csat) - minRGB(csat);
+	Int4 isNonZero = CmpGT(sbase, Float4(0.0f));
+	Vector4f color;
+	color.x = As<Float4>(isNonZero & As<Int4>((cbase.x - minbase) * ssat / sbase));
+	color.y = As<Float4>(isNonZero & As<Int4>((cbase.y - minbase) * ssat / sbase));
+	color.z = As<Float4>(isNonZero & As<Int4>((cbase.z - minbase) * ssat / sbase));
+	setLum(color, clum, x, y, z);
+}
+
+Float4 PixelRoutine::lumRGB(Vector4f &c)
+{
+	return c.x * Float4(0.3f) + c.y * Float4(0.59f) + c.z * Float4(0.11f);
+}
+
+Float4 PixelRoutine::computeLum(Float4 &color, Float4 &lum, Float4 &mincol, Float4 &maxcol, Int4 &negative, Int4 &aboveOne)
+{
+	return As<Float4>(
+	    (negative &
+	     As<Int4>(lum + ((color - lum) * lum) / (lum - mincol))) |
+	    (~negative &
+	     ((aboveOne &
+	       As<Int4>(lum + ((color - lum) * (Float4(1.0f) - lum)) / (Float4(maxcol) - lum))) |
+	      (~aboveOne &
+	       As<Int4>(color)))));
+}
+
+void PixelRoutine::setLum(Vector4f &cbase, Vector4f &clum, Float4 &x, Float4 &y, Float4 &z)
+{
+	Float4 lbase = lumRGB(cbase);
+	Float4 llum = lumRGB(clum);
+	Float4 ldiff = llum - lbase;
+
+	Vector4f color;
+	color.x = cbase.x + ldiff;
+	color.y = cbase.y + ldiff;
+	color.z = cbase.z + ldiff;
+
+	Float4 lum = lumRGB(color);
+	Float4 mincol = minRGB(color);
+	Float4 maxcol = maxRGB(color);
+
+	Int4 negative = CmpLT(mincol, Float4(0.0f));
+	Int4 aboveOne = CmpGT(maxcol, Float4(1.0f));
+
+	x = computeLum(color.x, lum, mincol, maxcol, negative, aboveOne);
+	y = computeLum(color.y, lum, mincol, maxcol, negative, aboveOne);
+	z = computeLum(color.z, lum, mincol, maxcol, negative, aboveOne);
+}
+
+void PixelRoutine::premultiply(Vector4f &c)
+{
+	Int4 nonZeroAlpha = CmpNEQ(c.w, Float4(0.0f));
+	c.x = As<Float4>(nonZeroAlpha & As<Int4>(c.x / c.w));
+	c.y = As<Float4>(nonZeroAlpha & As<Int4>(c.y / c.w));
+	c.z = As<Float4>(nonZeroAlpha & As<Int4>(c.z / c.w));
+}
+
+void PixelRoutine::computeAdvancedBlendMode(int index, Vector4f &srcColor, Vector4f &dstColor)
+{
+	Float4 x;
+	Float4 y;
+	Float4 z;
+
+	premultiply(srcColor);
+	premultiply(dstColor);
+
+	switch(state.blendState[index].blendOperation)
+	{
+	case VK_BLEND_OP_MULTIPLY_EXT:
+		x = (srcColor.x * dstColor.x);
+		y = (srcColor.y * dstColor.y);
+		z = (srcColor.z * dstColor.z);
+		break;
+	case VK_BLEND_OP_SCREEN_EXT:
+		x = srcColor.x + dstColor.x - (srcColor.x * dstColor.x);
+		y = srcColor.y + dstColor.y - (srcColor.y * dstColor.y);
+		z = srcColor.z + dstColor.z - (srcColor.z * dstColor.z);
+		break;
+	case VK_BLEND_OP_OVERLAY_EXT:
+		x = blendOpOverlay(srcColor.x, dstColor.x);
+		y = blendOpOverlay(srcColor.y, dstColor.y);
+		z = blendOpOverlay(srcColor.z, dstColor.z);
+		break;
+	case VK_BLEND_OP_DARKEN_EXT:
+		x = Min(srcColor.x, dstColor.x);
+		y = Min(srcColor.y, dstColor.y);
+		z = Min(srcColor.z, dstColor.z);
+		break;
+	case VK_BLEND_OP_LIGHTEN_EXT:
+		x = Max(srcColor.x, dstColor.x);
+		y = Max(srcColor.y, dstColor.y);
+		z = Max(srcColor.z, dstColor.z);
+		break;
+	case VK_BLEND_OP_COLORDODGE_EXT:
+		x = blendOpColorDodge(srcColor.x, dstColor.x);
+		y = blendOpColorDodge(srcColor.y, dstColor.y);
+		z = blendOpColorDodge(srcColor.z, dstColor.z);
+		break;
+	case VK_BLEND_OP_COLORBURN_EXT:
+		x = blendOpColorBurn(srcColor.x, dstColor.x);
+		y = blendOpColorBurn(srcColor.y, dstColor.y);
+		z = blendOpColorBurn(srcColor.z, dstColor.z);
+		break;
+	case VK_BLEND_OP_HARDLIGHT_EXT:
+		x = blendOpHardlight(srcColor.x, dstColor.x);
+		y = blendOpHardlight(srcColor.y, dstColor.y);
+		z = blendOpHardlight(srcColor.z, dstColor.z);
+		break;
+	case VK_BLEND_OP_SOFTLIGHT_EXT:
+		x = blendOpSoftlight(srcColor.x, dstColor.x);
+		y = blendOpSoftlight(srcColor.y, dstColor.y);
+		z = blendOpSoftlight(srcColor.z, dstColor.z);
+		break;
+	case VK_BLEND_OP_DIFFERENCE_EXT:
+		x = Abs(srcColor.x - dstColor.x);
+		y = Abs(srcColor.y - dstColor.y);
+		z = Abs(srcColor.z - dstColor.z);
+		break;
+	case VK_BLEND_OP_EXCLUSION_EXT:
+		x = srcColor.x + dstColor.x - (srcColor.x * dstColor.x * Float4(2.0f));
+		y = srcColor.y + dstColor.y - (srcColor.y * dstColor.y * Float4(2.0f));
+		z = srcColor.z + dstColor.z - (srcColor.z * dstColor.z * Float4(2.0f));
+		break;
+	case VK_BLEND_OP_HSL_HUE_EXT:
+		setLumSat(srcColor, dstColor, dstColor, x, y, z);
+		break;
+	case VK_BLEND_OP_HSL_SATURATION_EXT:
+		setLumSat(dstColor, srcColor, dstColor, x, y, z);
+		break;
+	case VK_BLEND_OP_HSL_COLOR_EXT:
+		setLum(srcColor, dstColor, x, y, z);
+		break;
+	case VK_BLEND_OP_HSL_LUMINOSITY_EXT:
+		setLum(dstColor, srcColor, x, y, z);
+		break;
+	default:
+		UNSUPPORTED("Unsupported advanced VkBlendOp: %d", int(state.blendState[index].blendOperation));
+		break;
+	}
+
+	Float4 p = srcColor.w * dstColor.w;
+	x *= p;
+	y *= p;
+	z *= p;
+
+	p = srcColor.w * (Float4(1.0f) - dstColor.w);
+	x += srcColor.x * p;
+	y += srcColor.y * p;
+	z += srcColor.z * p;
+
+	p = dstColor.w * (Float4(1.0f) - srcColor.w);
+	x += dstColor.x * p;
+	y += dstColor.y * p;
+	z += dstColor.z * p;
+
+	srcColor.x = x;
+	srcColor.y = y;
+	srcColor.z = z;
+}
+
 void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f &oC, const Int &x, bool clampBlendFactors)
 {
 	if(!state.blendState[index].alphaBlendEnable)
@@ -2209,14 +2438,18 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f 
 
 	blendFactor(sourceFactor, oC, pixel, state.blendState[index].sourceBlendFactor, clampBlendFactors);
 	blendFactor(destFactor, oC, pixel, state.blendState[index].destBlendFactor, clampBlendFactors);
+	blendFactorAlpha(sourceFactor, oC, pixel, state.blendState[index].sourceBlendFactorAlpha, clampBlendFactors);
+	blendFactorAlpha(destFactor, oC, pixel, state.blendState[index].destBlendFactorAlpha, clampBlendFactors);
 
 	oC.x *= sourceFactor.x;
 	oC.y *= sourceFactor.y;
 	oC.z *= sourceFactor.z;
+	oC.w *= sourceFactor.w;
 
 	pixel.x *= destFactor.x;
 	pixel.y *= destFactor.y;
 	pixel.z *= destFactor.z;
+	pixel.w *= destFactor.w;
 
 	switch(state.blendState[index].blendOperation)
 	{
@@ -2258,15 +2491,26 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f 
 		oC.y = Float4(0.0f);
 		oC.z = Float4(0.0f);
 		break;
+	case VK_BLEND_OP_MULTIPLY_EXT:
+	case VK_BLEND_OP_SCREEN_EXT:
+	case VK_BLEND_OP_OVERLAY_EXT:
+	case VK_BLEND_OP_DARKEN_EXT:
+	case VK_BLEND_OP_LIGHTEN_EXT:
+	case VK_BLEND_OP_COLORDODGE_EXT:
+	case VK_BLEND_OP_COLORBURN_EXT:
+	case VK_BLEND_OP_HARDLIGHT_EXT:
+	case VK_BLEND_OP_SOFTLIGHT_EXT:
+	case VK_BLEND_OP_DIFFERENCE_EXT:
+	case VK_BLEND_OP_EXCLUSION_EXT:
+	case VK_BLEND_OP_HSL_HUE_EXT:
+	case VK_BLEND_OP_HSL_SATURATION_EXT:
+	case VK_BLEND_OP_HSL_COLOR_EXT:
+	case VK_BLEND_OP_HSL_LUMINOSITY_EXT:
+		computeAdvancedBlendMode(index, oC, pixel);
+		break;
 	default:
 		UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperation));
 	}
-
-	blendFactorAlpha(sourceFactor, oC, pixel, state.blendState[index].sourceBlendFactorAlpha, clampBlendFactors);
-	blendFactorAlpha(destFactor, oC, pixel, state.blendState[index].destBlendFactorAlpha, clampBlendFactors);
-
-	oC.w *= sourceFactor.w;
-	pixel.w *= destFactor.w;
 
 	switch(state.blendState[index].blendOperationAlpha)
 	{
@@ -2294,6 +2538,9 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f 
 		break;
 	case VK_BLEND_OP_ZERO_EXT:
 		oC.w = Float4(0.0f);
+		break;
+	case VK_BLEND_OP_MULTIPLY_EXT:
+		oC.w = oC.w + pixel.w - (oC.w * pixel.w);
 		break;
 	default:
 		UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperationAlpha));
