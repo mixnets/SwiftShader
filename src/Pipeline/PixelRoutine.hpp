@@ -81,6 +81,17 @@ private:
 	void readPixel(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &pixel);
 	void blendFactor(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorActive);
 	void blendFactorAlpha(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorAlphaActive);
+	void computeAdvancedBlendMode(int index, Vector4f &srcColor, Vector4f &dstColor);
+	Float4 blendOpOverlay(Float4 &src, Float4 &dst);
+	Float4 blendOpColorDodge(Float4 &src, Float4 &dst);
+	Float4 blendOpColorBurn(Float4 &src, Float4 &dst);
+	Float4 blendOpHardlight(Float4 &src, Float4 &dst);
+	Float4 blendOpSoftlight(Float4 &src, Float4 &dst);
+	Float4 setLumSat(Float4 &cbase, Float4 &csat, Float4 &clum);
+	Float4 setLum(Float4 &cbase, Float4 &clum);
+	Float maxRGB(Float4 &c);
+	Float minRGB(Float4 &c);
+	Float lumRGB(Float4 &c);
 	void writeStencil(Pointer<Byte> &sBuffer, const Int &x, const Int sMask[4], const Int zMask[4], const Int cMask[4], const SampleSet &samples);
 	void writeDepth(Pointer<Byte> &zBuffer, const Int &x, const Int zMask[4], const SampleSet &samples);
 	void occlusionSampleCount(const Int zMask[4], const Int sMask[4], const SampleSet &samples);

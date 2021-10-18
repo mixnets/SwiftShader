@@ -96,7 +96,8 @@ struct BlendState : sw::Memset<BlendState>
 	           VkBlendOp blendOperation,
 	           VkBlendFactor sourceBlendFactorAlpha,
 	           VkBlendFactor destBlendFactorAlpha,
-	           VkBlendOp blendOperationAlpha)
+	           VkBlendOp blendOperationAlpha,
+	           VkBlendOverlapEXT blendOverlap)
 	    : Memset(this, 0)
 	    , alphaBlendEnable(alphaBlendEnable)
 	    , sourceBlendFactor(sourceBlendFactor)
@@ -105,6 +106,7 @@ struct BlendState : sw::Memset<BlendState>
 	    , sourceBlendFactorAlpha(sourceBlendFactorAlpha)
 	    , destBlendFactorAlpha(destBlendFactorAlpha)
 	    , blendOperationAlpha(blendOperationAlpha)
+	    , blendOverlap(blendOverlap)
 	{}
 
 	bool alphaBlendEnable;
@@ -114,6 +116,7 @@ struct BlendState : sw::Memset<BlendState>
 	VkBlendFactor sourceBlendFactorAlpha;
 	VkBlendFactor destBlendFactorAlpha;
 	VkBlendOp blendOperationAlpha;
+	VkBlendOverlapEXT blendOverlap;
 };
 
 struct DynamicState
