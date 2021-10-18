@@ -39,6 +39,30 @@
       },
       "revId": "5cd9f701741303393000b1ae0dfe521832bf0fd9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0561e263_6b7aed5c",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-18T19:33:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7240df54_fadc5c05",
+      "range": {
+        "startLine": 556,
+        "startChar": 0,
+        "endLine": 560,
+        "endChar": 2
+      },
+      "revId": "5cd9f701741303393000b1ae0dfe521832bf0fd9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
