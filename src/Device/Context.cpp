@@ -529,6 +529,27 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 				blendConstants.w = colorBlendState->blendConstants[3];
 			}
 
+			const VkBaseInStructure *extensionColorBlendInfo = reinterpret_cast<const VkBaseInStructure *>(colorBlendState->pNext);
+			while(extensionColorBlendInfo)
+			{
+				switch(extensionColorBlendInfo->sType)
+				{
+				case VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT:
+					{
+						const VkPipelineColorBlendAdvancedStateCreateInfoEXT *colorBlendAdvancedCreateInfo = reinterpret_cast<const VkPipelineColorBlendAdvancedStateCreateInfoEXT *>(extensionColorBlendInfo);
+						ASSERT(colorBlendAdvancedCreateInfo->blendOverlap == VK_BLEND_OVERLAP_UNCORRELATED_EXT);
+						ASSERT(colorBlendAdvancedCreateInfo->dstPremultiplied == VK_TRUE);
+						ASSERT(colorBlendAdvancedCreateInfo->srcPremultiplied == VK_TRUE);
+					}
+					break;
+				default:
+					UNSUPPORTED("pCreateInfo->colorBlendState->pNext sType = %s", vk::Stringify(extensionColorBlendInfo->sType).c_str());
+					break;
+				}
+
+				extensionColorBlendInfo = extensionColorBlendInfo->pNext;
+			}
+
 			ASSERT(colorBlendState->attachmentCount <= sw::MAX_COLOR_BUFFERS);
 			for(auto i = 0u; i < colorBlendState->attachmentCount; i++)
 			{
@@ -723,8 +744,22 @@ VkBlendFactor GraphicsState::sourceBlendFactor(int index) const
 	case VK_BLEND_OP_REVERSE_SUBTRACT:
 		return blendState[index].sourceBlendFactor;
 	case VK_BLEND_OP_MIN:
-		return VK_BLEND_FACTOR_ONE;
 	case VK_BLEND_OP_MAX:
+	case VK_BLEND_OP_MULTIPLY_EXT:
+	case VK_BLEND_OP_SCREEN_EXT:
+	case VK_BLEND_OP_OVERLAY_EXT:
+	case VK_BLEND_OP_DARKEN_EXT:
+	case VK_BLEND_OP_LIGHTEN_EXT:
+	case VK_BLEND_OP_COLORDODGE_EXT:
+	case VK_BLEND_OP_COLORBURN_EXT:
+	case VK_BLEND_OP_HARDLIGHT_EXT:
+	case VK_BLEND_OP_SOFTLIGHT_EXT:
+	case VK_BLEND_OP_DIFFERENCE_EXT:
+	case VK_BLEND_OP_EXCLUSION_EXT:
+	case VK_BLEND_OP_HSL_HUE_EXT:
+	case VK_BLEND_OP_HSL_SATURATION_EXT:
+	case VK_BLEND_OP_HSL_COLOR_EXT:
+	case VK_BLEND_OP_HSL_LUMINOSITY_EXT:
 		return VK_BLEND_FACTOR_ONE;
 	default:
 		ASSERT(false);
@@ -746,8 +781,22 @@ VkBlendFactor GraphicsState::destBlendFactor(int index) const
 	case VK_BLEND_OP_REVERSE_SUBTRACT:
 		return blendState[index].destBlendFactor;
 	case VK_BLEND_OP_MIN:
-		return VK_BLEND_FACTOR_ONE;
 	case VK_BLEND_OP_MAX:
+	case VK_BLEND_OP_MULTIPLY_EXT:
+	case VK_BLEND_OP_SCREEN_EXT:
+	case VK_BLEND_OP_OVERLAY_EXT:
+	case VK_BLEND_OP_DARKEN_EXT:
+	case VK_BLEND_OP_LIGHTEN_EXT:
+	case VK_BLEND_OP_COLORDODGE_EXT:
+	case VK_BLEND_OP_COLORBURN_EXT:
+	case VK_BLEND_OP_HARDLIGHT_EXT:
+	case VK_BLEND_OP_SOFTLIGHT_EXT:
+	case VK_BLEND_OP_DIFFERENCE_EXT:
+	case VK_BLEND_OP_EXCLUSION_EXT:
+	case VK_BLEND_OP_HSL_HUE_EXT:
+	case VK_BLEND_OP_HSL_SATURATION_EXT:
+	case VK_BLEND_OP_HSL_COLOR_EXT:
+	case VK_BLEND_OP_HSL_LUMINOSITY_EXT:
 		return VK_BLEND_FACTOR_ONE;
 	default:
 		ASSERT(false);
@@ -860,9 +909,23 @@ VkBlendOp GraphicsState::blendOperation(int index, const Attachments &attachment
 			}
 		}
 	case VK_BLEND_OP_MIN:
-		return VK_BLEND_OP_MIN;
 	case VK_BLEND_OP_MAX:
-		return VK_BLEND_OP_MAX;
+	case VK_BLEND_OP_MULTIPLY_EXT:
+	case VK_BLEND_OP_SCREEN_EXT:
+	case VK_BLEND_OP_OVERLAY_EXT:
+	case VK_BLEND_OP_DARKEN_EXT:
+	case VK_BLEND_OP_LIGHTEN_EXT:
+	case VK_BLEND_OP_COLORDODGE_EXT:
+	case VK_BLEND_OP_COLORBURN_EXT:
+	case VK_BLEND_OP_HARDLIGHT_EXT:
+	case VK_BLEND_OP_SOFTLIGHT_EXT:
+	case VK_BLEND_OP_DIFFERENCE_EXT:
+	case VK_BLEND_OP_EXCLUSION_EXT:
+	case VK_BLEND_OP_HSL_HUE_EXT:
+	case VK_BLEND_OP_HSL_SATURATION_EXT:
+	case VK_BLEND_OP_HSL_COLOR_EXT:
+	case VK_BLEND_OP_HSL_LUMINOSITY_EXT:
+		return blendState[index].blendOperation;
 	default:
 		ASSERT(false);
 	}
@@ -881,8 +944,22 @@ VkBlendFactor GraphicsState::sourceBlendFactorAlpha(int index) const
 	case VK_BLEND_OP_REVERSE_SUBTRACT:
 		return blendState[index].sourceBlendFactorAlpha;
 	case VK_BLEND_OP_MIN:
-		return VK_BLEND_FACTOR_ONE;
 	case VK_BLEND_OP_MAX:
+	case VK_BLEND_OP_MULTIPLY_EXT:
+	case VK_BLEND_OP_SCREEN_EXT:
+	case VK_BLEND_OP_OVERLAY_EXT:
+	case VK_BLEND_OP_DARKEN_EXT:
+	case VK_BLEND_OP_LIGHTEN_EXT:
+	case VK_BLEND_OP_COLORDODGE_EXT:
+	case VK_BLEND_OP_COLORBURN_EXT:
+	case VK_BLEND_OP_HARDLIGHT_EXT:
+	case VK_BLEND_OP_SOFTLIGHT_EXT:
+	case VK_BLEND_OP_DIFFERENCE_EXT:
+	case VK_BLEND_OP_EXCLUSION_EXT:
+	case VK_BLEND_OP_HSL_HUE_EXT:
+	case VK_BLEND_OP_HSL_SATURATION_EXT:
+	case VK_BLEND_OP_HSL_COLOR_EXT:
+	case VK_BLEND_OP_HSL_LUMINOSITY_EXT:
 		return VK_BLEND_FACTOR_ONE;
 	default:
 		ASSERT(false);
@@ -902,8 +979,22 @@ VkBlendFactor GraphicsState::destBlendFactorAlpha(int index) const
 	case VK_BLEND_OP_REVERSE_SUBTRACT:
 		return blendState[index].destBlendFactorAlpha;
 	case VK_BLEND_OP_MIN:
-		return VK_BLEND_FACTOR_ONE;
 	case VK_BLEND_OP_MAX:
+	case VK_BLEND_OP_MULTIPLY_EXT:
+	case VK_BLEND_OP_SCREEN_EXT:
+	case VK_BLEND_OP_OVERLAY_EXT:
+	case VK_BLEND_OP_DARKEN_EXT:
+	case VK_BLEND_OP_LIGHTEN_EXT:
+	case VK_BLEND_OP_COLORDODGE_EXT:
+	case VK_BLEND_OP_COLORBURN_EXT:
+	case VK_BLEND_OP_HARDLIGHT_EXT:
+	case VK_BLEND_OP_SOFTLIGHT_EXT:
+	case VK_BLEND_OP_DIFFERENCE_EXT:
+	case VK_BLEND_OP_EXCLUSION_EXT:
+	case VK_BLEND_OP_HSL_HUE_EXT:
+	case VK_BLEND_OP_HSL_SATURATION_EXT:
+	case VK_BLEND_OP_HSL_COLOR_EXT:
+	case VK_BLEND_OP_HSL_LUMINOSITY_EXT:
 		return VK_BLEND_FACTOR_ONE;
 	default:
 		ASSERT(false);
@@ -1017,6 +1108,24 @@ VkBlendOp GraphicsState::blendOperationAlpha(int index, const Attachments &attac
 		return VK_BLEND_OP_MIN;
 	case VK_BLEND_OP_MAX:
 		return VK_BLEND_OP_MAX;
+	case VK_BLEND_OP_MULTIPLY_EXT:
+	case VK_BLEND_OP_SCREEN_EXT:
+	case VK_BLEND_OP_OVERLAY_EXT:
+	case VK_BLEND_OP_DARKEN_EXT:
+	case VK_BLEND_OP_LIGHTEN_EXT:
+	case VK_BLEND_OP_COLORDODGE_EXT:
+	case VK_BLEND_OP_COLORBURN_EXT:
+	case VK_BLEND_OP_HARDLIGHT_EXT:
+	case VK_BLEND_OP_SOFTLIGHT_EXT:
+	case VK_BLEND_OP_DIFFERENCE_EXT:
+	case VK_BLEND_OP_EXCLUSION_EXT:
+	case VK_BLEND_OP_HSL_HUE_EXT:
+	case VK_BLEND_OP_HSL_SATURATION_EXT:
+	case VK_BLEND_OP_HSL_COLOR_EXT:
+	case VK_BLEND_OP_HSL_LUMINOSITY_EXT:
+		// All of these blend modes compute the alpha the same way
+		// Use VK_BLEND_OP_MULTIPLY_EXT as a placeholder
+		return VK_BLEND_OP_MULTIPLY_EXT;
 	default:
 		ASSERT(false);
 	}
