@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27bffa8b_c564cad4",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3216,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-18T15:12:40Z",
+      "side": 1,
+      "message": "Do we expect to see a test pass in the Regres CI run? Is a rebase needed for that?\n\nNot vital, but it\u0027s best to make sure we\u0027re not missing some other issue.",
+      "range": {
+        "startLine": 3215,
+        "startChar": 2,
+        "endLine": 3216,
+        "endChar": 9
+      },
+      "revId": "17addad2f852c78cd2e80d4c18e7797d7a5c37fd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
