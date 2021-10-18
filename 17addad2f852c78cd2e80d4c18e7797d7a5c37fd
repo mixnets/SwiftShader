@@ -22,6 +22,30 @@
       },
       "revId": "17addad2f852c78cd2e80d4c18e7797d7a5c37fd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "705e0e9c_5be875d3",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3216,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-18T17:37:38Z",
+      "side": 1,
+      "message": "dEQP-VK.api.info.get_physical_device_properties2.properties was failing on regres https://swiftshader-review.googlesource.com/c/SwiftShader/+/58288 because this struct wasn\u0027t present. On the master branch this test runs into UNSUPPORTED, and this CL fixes it. I\u0027m not sure why regres isn\u0027t reporting the test as fixed.",
+      "parentUuid": "27bffa8b_c564cad4",
+      "range": {
+        "startLine": 3215,
+        "startChar": 2,
+        "endLine": 3216,
+        "endChar": 9
+      },
+      "revId": "17addad2f852c78cd2e80d4c18e7797d7a5c37fd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
