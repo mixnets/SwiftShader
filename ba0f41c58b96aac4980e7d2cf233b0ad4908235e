@@ -22,6 +22,30 @@
       },
       "revId": "ba0f41c58b96aac4980e7d2cf233b0ad4908235e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5dd0e816_5dc1e6f1",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-19T14:45:21Z",
+      "side": 1,
+      "message": "Ok, I\u0027ll take a look at the call sites.",
+      "parentUuid": "94a36320_1e3ce16b",
+      "range": {
+        "startLine": 83,
+        "startChar": 1,
+        "endLine": 84,
+        "endChar": 52
+      },
+      "revId": "ba0f41c58b96aac4980e7d2cf233b0ad4908235e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
