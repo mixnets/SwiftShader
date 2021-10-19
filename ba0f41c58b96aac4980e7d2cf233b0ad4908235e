@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94a36320_1e3ce16b",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-19T14:39:47Z",
+      "side": 1,
+      "message": "I\u0027m not sure this is the right place to do this. Shouldn\u0027t we be calling the blitter with the right signedness on clear command execution?",
+      "range": {
+        "startLine": 83,
+        "startChar": 1,
+        "endLine": 84,
+        "endChar": 52
+      },
+      "revId": "ba0f41c58b96aac4980e7d2cf233b0ad4908235e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
