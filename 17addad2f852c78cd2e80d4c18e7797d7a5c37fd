@@ -70,6 +70,30 @@
       },
       "revId": "17addad2f852c78cd2e80d4c18e7797d7a5c37fd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d534c3af_f346f1bc",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3216,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-19T22:36:09Z",
+      "side": 1,
+      "message": "Yeah, when I run without this patch I get \"UNSUPPORTED\" test failures, and after the patch it seems all green. I doubt there\u0027s undefined behavior going on to explain this. It should be safe to land.",
+      "parentUuid": "76ead1b4_c76d78e7",
+      "range": {
+        "startLine": 3215,
+        "startChar": 2,
+        "endLine": 3216,
+        "endChar": 9
+      },
+      "revId": "17addad2f852c78cd2e80d4c18e7797d7a5c37fd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
