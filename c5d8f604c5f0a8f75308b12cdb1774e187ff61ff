@@ -16,6 +16,24 @@
       "message": "Note: this is moving away from VkAllocationCallbacks controlled allocations, but otherwise, it\u0027s fine.",
       "revId": "c5d8f604c5f0a8f75308b12cdb1774e187ff61ff",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6178f90_cbe64c4c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-19T04:47:33Z",
+      "side": 1,
+      "message": "Yes, that\u0027s worth highlighting. As part of b/201798871 I concluded that there\u0027s little value in closely adhering to the spec\u0027s expectations for VkAllocationCallbacks.\n\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/58208 was a failed attempt at using a custom STL allocator for the std::vector\u003c\u003e used by SpirvBinary. We would need changes to SPIRV-Tools to support this. It seems quite feasible, but it\u0027s not a priority until we encounter an actual use case.",
+      "parentUuid": "b42b4d37_0aba3a63",
+      "revId": "c5d8f604c5f0a8f75308b12cdb1774e187ff61ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
