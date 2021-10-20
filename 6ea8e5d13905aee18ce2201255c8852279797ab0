@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b81992d3_2fcaac45",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-20T23:02:47Z",
+      "side": 1,
+      "message": "Thanks Sergey! Perhaps you could set up an autoroller so we would detect build issues sooner and you get all the latest improvements on a daily basis?",
+      "revId": "6ea8e5d13905aee18ce2201255c8852279797ab0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
