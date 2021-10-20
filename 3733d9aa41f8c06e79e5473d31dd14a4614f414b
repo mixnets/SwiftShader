@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "76350d54_aa5f5e52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-20T21:52:52Z",
+      "side": 1,
+      "message": "Centralized clear calls in vk::Image, PTAL.",
+      "revId": "3733d9aa41f8c06e79e5473d31dd14a4614f414b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
