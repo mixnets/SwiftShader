@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "913b72d6_a7eadbc5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-20T21:06:48Z",
+      "side": 1,
+      "message": "I opened an issue for the missing test coverage:\nhttps://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3233",
+      "revId": "c884188eec4408b88d1738028edeb4ca73f14742",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
