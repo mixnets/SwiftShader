@@ -18,6 +18,23 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "54ff2ca5_0e0da1bd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-21T19:44:21Z",
+      "side": 1,
+      "message": "As discussed at b/203803509, let\u0027s use this CL to check if there are any more dEQP coverage gaps or VVL issues, and then remove the asserts.",
+      "revId": "6925cc7b706d0c875bb6d949b0288f7f149ae0cd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9af7dd02_dd9e698f",
