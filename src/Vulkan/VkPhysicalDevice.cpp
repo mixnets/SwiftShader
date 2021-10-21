@@ -701,10 +701,11 @@ void PhysicalDevice::getProperties(const VkExternalMemoryHandleTypeFlagBits *han
 {
 	VkExternalMemoryProperties *extMemProperties = &properties->externalMemoryProperties;
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
-	if(*handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+	if((*handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT) ||
+	   (*handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT))
 	{
-		extMemProperties->compatibleHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
-		extMemProperties->exportFromImportedHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
+		extMemProperties->compatibleHandleTypes = *handleType;
+		extMemProperties->exportFromImportedHandleTypes = *handleType;
 		extMemProperties->externalMemoryFeatures = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT | VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT;
 		return;
 	}
@@ -736,10 +737,11 @@ void PhysicalDevice::getProperties(const VkExternalMemoryHandleTypeFlagBits *han
 {
 	VkExternalMemoryProperties *extMemProperties = &properties->externalMemoryProperties;
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
-	if(*handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+	if((*handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT) ||
+	   (*handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT))
 	{
-		extMemProperties->compatibleHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
-		extMemProperties->exportFromImportedHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
+		extMemProperties->compatibleHandleTypes = *handleType;
+		extMemProperties->exportFromImportedHandleTypes = *handleType;
 		extMemProperties->externalMemoryFeatures = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT | VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT;
 		return;
 	}
@@ -824,10 +826,11 @@ void PhysicalDevice::getProperties(const VkPhysicalDeviceExternalBufferInfo *pEx
 #endif
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
-	if(*handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+	if((*handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT) ||
+	   (*handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT))
 	{
-		properties->compatibleHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
-		properties->exportFromImportedHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
+		properties->compatibleHandleTypes = *handleType;
+		properties->exportFromImportedHandleTypes = *handleType;
 		properties->externalMemoryFeatures = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT | VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT;
 		return;
 	}
