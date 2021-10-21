@@ -24,7 +24,7 @@
 class OpaqueFdExternalMemory : public vk::DeviceMemory, public vk::ObjectBase<OpaqueFdExternalMemory, VkDeviceMemory>
 {
 public:
-	static const VkExternalMemoryHandleTypeFlagBits typeFlagBit = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
+	static const VkExternalMemoryHandleTypeFlagBits typeFlagBit = static_cast<VkExternalMemoryHandleTypeFlagBits>(VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT | VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT);
 
 	static bool SupportsAllocateInfo(const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo)
 	{

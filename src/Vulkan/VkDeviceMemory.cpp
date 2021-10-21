@@ -40,7 +40,8 @@ struct OpaqueFdAllocateInfo
 	{
 		if(extendedAllocationInfo.importMemoryFdInfo)
 		{
-			if(extendedAllocationInfo.importMemoryFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+			if((extendedAllocationInfo.importMemoryFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT) &&
+			   (extendedAllocationInfo.importMemoryFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT))
 			{
 				UNSUPPORTED("VkImportMemoryFdInfoKHR::handleType %d", int(extendedAllocationInfo.importMemoryFdInfo->handleType));
 			}
@@ -50,7 +51,8 @@ struct OpaqueFdAllocateInfo
 
 		if(extendedAllocationInfo.exportMemoryAllocateInfo)
 		{
-			if(extendedAllocationInfo.exportMemoryAllocateInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+			if((extendedAllocationInfo.exportMemoryAllocateInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT) &&
+			   (extendedAllocationInfo.exportMemoryAllocateInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT))
 			{
 				UNSUPPORTED("VkExportMemoryAllocateInfo::handleTypes %d", int(extendedAllocationInfo.exportMemoryAllocateInfo->handleTypes));
 			}
@@ -181,7 +183,8 @@ VkResult DeviceMemory::ParseAllocationInfo(const VkMemoryAllocateInfo *pAllocate
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR:
 			extendedAllocationInfo->importMemoryFdInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(allocationInfo);
-			if(extendedAllocationInfo->importMemoryFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+			if((extendedAllocationInfo->importMemoryFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT) &&
+			   (extendedAllocationInfo->importMemoryFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT))
 			{
 				UNSUPPORTED("extendedAllocationInfo->importMemoryFdInfo->handleType %u", extendedAllocationInfo->importMemoryFdInfo->handleType);
 				return VK_ERROR_INVALID_EXTERNAL_HANDLE;
@@ -194,6 +197,7 @@ VkResult DeviceMemory::ParseAllocationInfo(const VkMemoryAllocateInfo *pAllocate
 			{
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 			case VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT:
+			case VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT:
 				break;
 #endif
 #if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
