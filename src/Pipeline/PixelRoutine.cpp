@@ -1721,6 +1721,8 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		current.x = As<Short4>(As<UShort4>(current.x) >> 8);
 		current.x = As<Short4>(PackUnsigned(current.x, current.x));
 		break;
+	case VK_FORMAT_R16_UNORM:
+		break;
 	case VK_FORMAT_R16G16_UNORM:
 		current.z = current.x;
 		current.x = As<Short4>(UnpackLow(current.x, current.y));
@@ -2029,6 +2031,21 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 
 			*Pointer<Short>(buffer) = Extract(current.x, 0);
 			*Pointer<Short>(buffer + pitchB) = Extract(current.x, 1);
+		}
+		break;
+	case VK_FORMAT_R16_UNORM:
+		if(rgbaWriteMask & 0x00000001)
+		{
+			buffer += 2 * x;
+
+			Short4 value = As<Short4>(Int2(*Pointer<Int>(buffer), *Pointer<Int>(buffer + pitchB)));
+
+			current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q) + xMask * 8);
+			value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q) + xMask * 8);
+			current.x |= value;
+
+			*Pointer<Int>(buffer) = Extract(As<Int2>(current.x), 0);
+			*Pointer<Int>(buffer + pitchB) = Extract(As<Int2>(current.x), 1);
 		}
 		break;
 	case VK_FORMAT_R16G16_UNORM:
@@ -3172,7 +3189,7 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 
 UShort4 PixelRoutine::convertFixed16(const Float4 &cf, bool saturate)
 {
-	return UShort4(cf * Float4(0xFFFF), saturate);
+	return UShort4(cf * Float4(0xFFFF) + Float4(0.5f), saturate);
 }
 
 Float4 PixelRoutine::convertFloat32(const UShort4 &cf)
