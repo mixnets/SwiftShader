@@ -638,11 +638,11 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyProperties(VkPhysicalDe
 
 	if(!pQueueFamilyProperties)
 	{
-		*pQueueFamilyPropertyCount = vk::Cast(physicalDevice)->getQueueFamilyPropertyCount();
+		*pQueueFamilyPropertyCount = vk::PhysicalDevice::GetQueueFamilyPropertyCount();
 	}
 	else
 	{
-		vk::Cast(physicalDevice)->getQueueFamilyProperties(*pQueueFamilyPropertyCount, pQueueFamilyProperties);
+		vk::PhysicalDevice::GetQueueFamilyProperties(*pQueueFamilyPropertyCount, pQueueFamilyProperties);
 	}
 }
 
@@ -930,7 +930,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 		}
 	}
 
-	uint32_t queueFamilyPropertyCount = vk::Cast(physicalDevice)->getQueueFamilyPropertyCount();
+	uint32_t queueFamilyPropertyCount = vk::PhysicalDevice::GetQueueFamilyPropertyCount();
 
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
@@ -3509,11 +3509,11 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyProperties2(VkPhysicalD
 
 	if(!pQueueFamilyProperties)
 	{
-		*pQueueFamilyPropertyCount = vk::Cast(physicalDevice)->getQueueFamilyPropertyCount();
+		*pQueueFamilyPropertyCount = vk::PhysicalDevice::GetQueueFamilyPropertyCount();
 	}
 	else
 	{
-		vk::Cast(physicalDevice)->getQueueFamilyProperties(*pQueueFamilyPropertyCount, pQueueFamilyProperties);
+		vk::PhysicalDevice::GetQueueFamilyProperties(*pQueueFamilyPropertyCount, pQueueFamilyProperties);
 	}
 }
 

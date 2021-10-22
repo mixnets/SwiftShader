@@ -178,8 +178,8 @@ public:
 
 private:
 	PhysicalDevice *const physicalDevice = nullptr;
-	Queue *const queues = nullptr;
-	uint32_t queueCount = 0;
+	Queue *queues[2] = {};
+	uint32_t queueCount[2] = {};
 	std::unique_ptr<sw::Blitter> blitter;
 	uint32_t enabledExtensionCount = 0;
 	typedef char ExtensionName[VK_MAX_EXTENSION_NAME_SIZE];

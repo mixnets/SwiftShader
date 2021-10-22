@@ -89,7 +89,7 @@ public:
 		if(hasResolveAttachments)
 		{
 			// TODO(b/197691918): Avoid halt-the-world synchronization.
-			executionState.renderer->synchronize();
+			if(executionState.renderer_) executionState.renderer_->synchronize();
 
 			// TODO(b/197691917): Eliminate redundant resolve operations.
 			executionState.renderPassFramebuffer->resolve(executionState.renderPass, executionState.subpassIndex);
@@ -108,7 +108,7 @@ public:
 	{
 		// Execute (implicit or explicit) VkSubpassDependency to VK_SUBPASS_EXTERNAL.
 		// TODO(b/197691918): Avoid halt-the-world synchronization.
-		executionState.renderer->synchronize();
+		if(executionState.renderer_) executionState.renderer_->synchronize();
 
 		// TODO(b/197691917): Eliminate redundant resolve operations.
 		executionState.renderPassFramebuffer->resolve(executionState.renderPass, executionState.subpassIndex);
@@ -505,10 +505,10 @@ public:
 
 				for(auto indexBuffer : indexBuffers)
 				{
-					executionState.renderer->draw(pipeline, executionState.dynamicState, indexBuffer.first, vertexOffset,
-					                              executionState.events, instance, viewID, indexBuffer.second,
-					                              executionState.renderPassFramebuffer->getExtent(),
-					                              executionState.pushConstants);
+					executionState.renderer_->draw(pipeline, executionState.dynamicState, indexBuffer.first, vertexOffset,
+					                               executionState.events, instance, viewID, indexBuffer.second,
+					                               executionState.renderPassFramebuffer->getExtent(),
+					                               executionState.pushConstants);
 				}
 			}
 
@@ -827,7 +827,7 @@ public:
 		// attachment clears are drawing operations, and so have rasterization-order guarantees.
 		// however, we don't do the clear through the rasterizer, so need to ensure prior drawing
 		// has completed first.
-		executionState.renderer->synchronize();
+		if(executionState.renderer_) executionState.renderer_->synchronize();
 		executionState.renderPassFramebuffer->clearAttachment(executionState.renderPass, executionState.subpassIndex, attachment, rect);
 	}
 
@@ -894,7 +894,7 @@ public:
 		// This is a very simple implementation that simply calls sw::Renderer::synchronize(),
 		// since the driver is free to move the source stage towards the bottom of the pipe
 		// and the target stage towards the top, so a full pipeline sync is spec compliant.
-		executionState.renderer->synchronize();
+		if(executionState.renderer_) executionState.renderer_->synchronize();
 
 		// Right now all buffers are read-only in drawcalls but a similar mechanism will be required once we support SSBOs.
 
@@ -915,7 +915,7 @@ public:
 
 	void execute(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		executionState.renderer->synchronize();
+		if(executionState.renderer_) executionState.renderer_->synchronize();
 		ev->signal();
 	}
 
@@ -957,7 +957,7 @@ public:
 
 	void execute(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		executionState.renderer->synchronize();
+		if(executionState.renderer_) executionState.renderer_->synchronize();
 		ev->wait();
 	}
 
@@ -1073,7 +1073,7 @@ public:
 
 		// The renderer accumulates the result into a single query.
 		ASSERT(queryPool->getType() == VK_QUERY_TYPE_OCCLUSION);
-		executionState.renderer->addQuery(queryPool->getQuery(query));
+		executionState.renderer_->addQuery(queryPool->getQuery(query));
 	}
 
 	std::string description() override { return "vkCmdBeginQuery()"; }
@@ -1097,7 +1097,7 @@ public:
 	{
 		// The renderer accumulates the result into a single query.
 		ASSERT(queryPool->getType() == VK_QUERY_TYPE_OCCLUSION);
-		executionState.renderer->removeQuery(queryPool->getQuery(query));
+		executionState.renderer_->removeQuery(queryPool->getQuery(query));
 
 		// "implementations may write the total result to the first query and write zero to the other queries."
 		for(uint32_t i = 1; i < executionState.viewCount(); i++)
@@ -1161,7 +1161,7 @@ public:
 			// `bottom of pipe`.
 			//
 			// FIXME(chrisforbes): once Marl is integrated, do this in a task so we don't have to stall here.
-			executionState.renderer->synchronize();
+			if(executionState.renderer_) executionState.renderer_->synchronize();
 		}
 
 		// "the timestamp uses N consecutive query indices in the query pool (starting at `query`) where
