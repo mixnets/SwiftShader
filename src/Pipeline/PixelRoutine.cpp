@@ -1294,9 +1294,6 @@ void PixelRoutine::readPixel(int index, const Pointer<Byte> &cBuffer, const Int 
 		buffer += pitchB;
 		pixel.x = Insert(pixel.x, *Pointer<Short>(buffer), 1);
 		pixel.x = UnpackLow(As<Byte8>(pixel.x), As<Byte8>(pixel.x));
-		pixel.y = Short4(0x0000);
-		pixel.z = Short4(0x0000);
-		pixel.w = Short4(0xFFFFu);
 		break;
 	case VK_FORMAT_R8G8_UNORM:
 		buffer += 2 * x;
@@ -1305,17 +1302,10 @@ void PixelRoutine::readPixel(int index, const Pointer<Byte> &cBuffer, const Int 
 		c01 = As<Short4>(Insert(As<Int2>(c01), *Pointer<Int>(buffer), 1));
 		pixel.x = (c01 & Short4(0x00FFu)) | (c01 << 8);
 		pixel.y = (c01 & Short4(0xFF00u)) | As<Short4>(As<UShort4>(c01) >> 8);
-		pixel.z = Short4(0x0000u);
-		pixel.w = Short4(0xFFFFu);
 		break;
-	case VK_FORMAT_R16G16B16A16_UNORM:
-		buffer += 8 * x;
-		pixel.x = *Pointer<Short4>(buffer + 0);
-		pixel.y = *Pointer<Short4>(buffer + 8);
-		buffer += pitchB;
-		pixel.z = *Pointer<Short4>(buffer + 0);
-		pixel.w = *Pointer<Short4>(buffer + 8);
-		transpose4x4(pixel.x, pixel.y, pixel.z, pixel.w);
+	case VK_FORMAT_R16_UNORM:
+		buffer += 2 * x;
+		pixel.x = As<Short4>(Int2(*Pointer<Int>(buffer), *Pointer<Int>(buffer + pitchB)));
 		break;
 	case VK_FORMAT_R16G16_UNORM:
 		buffer += 4 * x;
@@ -1328,8 +1318,15 @@ void PixelRoutine::readPixel(int index, const Pointer<Byte> &cBuffer, const Int 
 		pixel.y = pixel.z;
 		pixel.x = As<Short4>(UnpackLow(pixel.x, pixel.z));
 		pixel.y = As<Short4>(UnpackHigh(pixel.y, pixel.z));
-		pixel.z = Short4(0xFFFFu);
-		pixel.w = Short4(0xFFFFu);
+		break;
+	case VK_FORMAT_R16G16B16A16_UNORM:
+		buffer += 8 * x;
+		pixel.x = *Pointer<Short4>(buffer + 0);
+		pixel.y = *Pointer<Short4>(buffer + 8);
+		buffer += pitchB;
+		pixel.z = *Pointer<Short4>(buffer + 0);
+		pixel.w = *Pointer<Short4>(buffer + 8);
+		transpose4x4(pixel.x, pixel.y, pixel.z, pixel.w);
 		break;
 	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 		{
@@ -1721,6 +1718,8 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		current.x = As<Short4>(As<UShort4>(current.x) >> 8);
 		current.x = As<Short4>(PackUnsigned(current.x, current.x));
 		break;
+	case VK_FORMAT_R16_UNORM:
+		break;
 	case VK_FORMAT_R16G16_UNORM:
 		current.z = current.x;
 		current.x = As<Short4>(UnpackLow(current.x, current.y));
@@ -2029,6 +2028,21 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 
 			*Pointer<Short>(buffer) = Extract(current.x, 0);
 			*Pointer<Short>(buffer + pitchB) = Extract(current.x, 1);
+		}
+		break;
+	case VK_FORMAT_R16_UNORM:
+		if(rgbaWriteMask & 0x00000001)
+		{
+			buffer += 2 * x;
+
+			Short4 value = As<Short4>(Int2(*Pointer<Int>(buffer), *Pointer<Int>(buffer + pitchB)));
+
+			current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q) + xMask * 8);
+			value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q) + xMask * 8);
+			current.x |= value;
+
+			*Pointer<Int>(buffer) = Extract(As<Int2>(current.x), 0);
+			*Pointer<Int>(buffer + pitchB) = Extract(As<Int2>(current.x), 1);
 		}
 		break;
 	case VK_FORMAT_R16G16_UNORM:
