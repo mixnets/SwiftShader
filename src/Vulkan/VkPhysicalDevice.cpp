@@ -1620,18 +1620,30 @@ void PhysicalDevice::getImageFormatProperties(Format format, VkImageType type, V
 
 uint32_t PhysicalDevice::getQueueFamilyPropertyCount() const
 {
-	return 1;
+	return 2;
 }
 
-VkQueueFamilyProperties PhysicalDevice::getQueueFamilyProperties() const
+VkQueueFamilyProperties PhysicalDevice::getQueueFamilyProperties(uint32_t queueFamilyIndex) const
 {
 	VkQueueFamilyProperties properties = {};
+
+	if(queueFamilyIndex == 0)
+	{
+		properties.queueFlags = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
+		properties.queueCount = 1;
+	}
+	else if(queueFamilyIndex == 1)
+	{
+		properties.queueFlags = VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
+		properties.queueCount = 4;
+	}
+	else
+		UNSUPPORTED("queueFamilyIndex %d", queueFamilyIndex);
+
+	properties.timestampValidBits = 64;
 	properties.minImageTransferGranularity.width = 1;
 	properties.minImageTransferGranularity.height = 1;
 	properties.minImageTransferGranularity.depth = 1;
-	properties.queueCount = 1;
-	properties.queueFlags = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
-	properties.timestampValidBits = 64;
 
 	return properties;
 }
@@ -1641,7 +1653,7 @@ void PhysicalDevice::getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount
 {
 	for(uint32_t i = 0; i < pQueueFamilyPropertyCount; i++)
 	{
-		pQueueFamilyProperties[i] = getQueueFamilyProperties();
+		pQueueFamilyProperties[i] = getQueueFamilyProperties(i);
 	}
 }
 
@@ -1650,7 +1662,7 @@ void PhysicalDevice::getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount
 {
 	for(uint32_t i = 0; i < pQueueFamilyPropertyCount; i++)
 	{
-		pQueueFamilyProperties[i].queueFamilyProperties = getQueueFamilyProperties();
+		pQueueFamilyProperties[i].queueFamilyProperties = getQueueFamilyProperties(i);
 	}
 }
 

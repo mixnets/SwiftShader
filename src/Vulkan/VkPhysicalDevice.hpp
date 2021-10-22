@@ -86,7 +86,7 @@ public:
 
 private:
 	static VkSampleCountFlags getSampleCounts();
-	VkQueueFamilyProperties getQueueFamilyProperties() const;
+	VkQueueFamilyProperties getQueueFamilyProperties(uint32_t queueFamilyIndex) const;
 };
 
 using DispatchablePhysicalDevice = DispatchableObject<PhysicalDevice, VkPhysicalDevice>;
