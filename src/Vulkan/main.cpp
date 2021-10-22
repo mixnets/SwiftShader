@@ -57,6 +57,20 @@ static void WaitForDebugger(HINSTANCE instance)
 }
 #	endif
 
+LONG WINAPI
+VectoredHandler2(
+    struct _EXCEPTION_POINTERS *ExceptionInfo)
+{
+	UNREFERENCED_PARAMETER(ExceptionInfo);
+
+	if(true)
+	{
+		return EXCEPTION_CONTINUE_EXECUTION;
+	}
+
+	return EXCEPTION_CONTINUE_SEARCH;
+}
+
 extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 {
 	switch(reason)
@@ -71,6 +85,8 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
 			{
 				WaitForDebugger(instance);
 			}
+
+		//	PVOID h2 = AddVectoredExceptionHandler(1, VectoredHandler2);
 		}
 #	endif
 		break;

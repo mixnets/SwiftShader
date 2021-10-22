@@ -184,6 +184,17 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
     , tiling(pCreateInfo->tiling)
     , usage(pCreateInfo->usage)
 {
+	if(imageType == VK_IMAGE_TYPE_3D)
+	{
+		if(!format.isCompressed())
+		{
+			if(format.isFloatFormat())
+			{
+				format = format;
+			}
+		}
+	}
+
 	if(format.isCompressed())
 	{
 		VkImageCreateInfo compressedImageCreateInfo = *pCreateInfo;
