@@ -32,8 +32,9 @@
 
 namespace vk {
 
-Queue::Queue(Device *device, marl::Scheduler *scheduler)
+Queue::Queue(Device *device, marl::Scheduler *scheduler, VkQueueFlags flags)
     : device(device)
+    , flags(flags)
 {
 	queueThread = std::thread(&Queue::taskLoop, this, scheduler);
 }
@@ -70,7 +71,7 @@ VkResult Queue::submit(uint32_t submitCount, SubmitInfo *pSubmits, Fence *fence)
 
 void Queue::submitQueue(const Task &task)
 {
-	if(renderer == nullptr)
+	if((flags & VK_QUEUE_GRAPHICS_BIT) && (renderer == nullptr))
 	{
 		renderer.reset(new sw::Renderer(device));
 	}
@@ -97,7 +98,7 @@ void Queue::submitQueue(const Task &task)
 
 		{
 			CommandBuffer::ExecutionState executionState;
-			executionState.renderer = renderer.get();
+			executionState.renderer_ = renderer.get();
 			executionState.events = task.events.get();
 			for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
 			{
@@ -130,9 +131,13 @@ void Queue::submitQueue(const Task &task)
 
 	if(task.events)
 	{
-		// TODO: fix renderer signaling so that work submitted separately from (but before) a fence
-		// is guaranteed complete by the time the fence signals.
-		renderer->synchronize();
+		if(renderer)
+		{
+			// TODO: fix renderer signaling so that work submitted separately from (but before) a fence
+			// is guaranteed complete by the time the fence signals.
+			renderer->synchronize();
+		}
+
 		task.events->done();
 	}
 }

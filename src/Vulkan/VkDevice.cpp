@@ -17,6 +17,7 @@
 #include "VkConfig.hpp"
 #include "VkDescriptorSetLayout.hpp"
 #include "VkFence.hpp"
+#include "VkPhysicalDevice.hpp"
 #include "VkQueue.hpp"
 #include "VkSemaphore.hpp"
 #include "VkTimelineSemaphore.hpp"
@@ -117,29 +118,25 @@ const SamplerState *Device::SamplerIndexer::find(uint32_t id)
 
 Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice *physicalDevice, const VkPhysicalDeviceFeatures *enabledFeatures, const std::shared_ptr<marl::Scheduler> &scheduler)
     : physicalDevice(physicalDevice)
-    , queues(reinterpret_cast<Queue *>(mem))
     , enabledExtensionCount(pCreateInfo->enabledExtensionCount)
+    , extensions(reinterpret_cast<ExtensionName *>(mem))
     , enabledFeatures(enabledFeatures ? *enabledFeatures : VkPhysicalDeviceFeatures{})  // "Setting pEnabledFeatures to NULL and not including a VkPhysicalDeviceFeatures2 in the pNext member of VkDeviceCreateInfo is equivalent to setting all members of the structure to VK_FALSE."
     , scheduler(scheduler)
 {
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
 		const VkDeviceQueueCreateInfo &queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
-		queueCount += queueCreateInfo.queueCount;
-	}
+		auto properties = PhysicalDevice::GetQueueFamilyProperties(queueCreateInfo.queueFamilyIndex);
 
-	uint32_t queueID = 0;
-	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
-	{
-		const VkDeviceQueueCreateInfo &queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
+		queueCount[queueCreateInfo.queueFamilyIndex] = queueCreateInfo.queueCount;
+		queues[queueCreateInfo.queueFamilyIndex] = (Queue *)malloc(sizeof(Queue) * queueCreateInfo.queueCount);
 
-		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++)
+		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++)
 		{
-			new(&queues[queueID]) Queue(this, scheduler.get());
+			new(&queues[queueCreateInfo.queueFamilyIndex][j]) Queue(this, scheduler.get(), properties.queueFlags);
 		}
 	}
 
-	extensions = reinterpret_cast<ExtensionName *>(static_cast<uint8_t *>(mem) + (sizeof(Queue) * queueCount));
 	for(uint32_t i = 0; i < enabledExtensionCount; i++)
 	{
 		strncpy(extensions[i], pCreateInfo->ppEnabledExtensionNames[i], VK_MAX_EXTENSION_NAME_SIZE);
@@ -187,23 +184,25 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 
 void Device::destroy(const VkAllocationCallbacks *pAllocator)
 {
-	for(uint32_t i = 0; i < queueCount; i++)
+	for(uint32_t i = 0; i < QUEUE_FAMILY_COUNT; i++)
 	{
-		queues[i].~Queue();
+		if(queues[i])
+		{
+			for(uint32_t j = 0; j < queueCount[i]; j++)
+			{
+				queues[i][j].~Queue();
+			}
+
+			free(queues[i]);
+		}
 	}
 
-	vk::freeHostMemory(queues, pAllocator);
+	vk::freeHostMemory(extensions, pAllocator);
 }
 
 size_t Device::ComputeRequiredAllocationSize(const VkDeviceCreateInfo *pCreateInfo)
 {
-	uint32_t queueCount = 0;
-	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
-	{
-		queueCount += pCreateInfo->pQueueCreateInfos[i].queueCount;
-	}
-
-	return (sizeof(Queue) * queueCount) + (pCreateInfo->enabledExtensionCount * sizeof(ExtensionName));
+	return pCreateInfo->enabledExtensionCount * sizeof(ExtensionName);
 }
 
 bool Device::hasExtension(const char *extensionName) const
@@ -220,9 +219,10 @@ bool Device::hasExtension(const char *extensionName) const
 
 VkQueue Device::getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const
 {
-	ASSERT(queueFamilyIndex == 0);
+	ASSERT(queueFamilyIndex < PhysicalDevice::GetQueueFamilyPropertyCount());
+	ASSERT(queueIndex < queueCount[queueFamilyIndex]);
 
-	return queues[queueIndex];
+	return queues[queueFamilyIndex][queueIndex];
 }
 
 VkResult Device::waitForFences(uint32_t fenceCount, const VkFence *pFences, VkBool32 waitAll, uint64_t timeout)
@@ -344,9 +344,12 @@ VkResult Device::waitForSemaphores(const VkSemaphoreWaitInfo *pWaitInfo, uint64_
 
 VkResult Device::waitIdle()
 {
-	for(uint32_t i = 0; i < queueCount; i++)
+	for(uint32_t i = 0; i < QUEUE_FAMILY_COUNT; i++)
 	{
-		queues[i].waitIdle();
+		for(uint32_t j = 0; j < queueCount[i]; j++)
+		{
+			queues[i][j].waitIdle();
+		}
 	}
 
 	return VK_SUCCESS;
