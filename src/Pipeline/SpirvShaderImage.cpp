@@ -1100,6 +1100,13 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 	SIMD::Int packed[4];
 	int texelSize = 0;
 	auto format = static_cast<spv::ImageFormat>(imageType.definition.word(8));
+
+	if(format == spv::ImageFormatRgba32f &&
+		texel.componentCount == 3)
+	{
+		format = spv::ImageFormatR11fG11fB10f;
+	}
+
 	switch(format)
 	{
 	case spv::ImageFormatRgba32f:
