@@ -418,6 +418,9 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityDeviceGroup: capabilities.DeviceGroup = true; break;
 				case spv::CapabilityMultiView: capabilities.MultiView = true; break;
 				case spv::CapabilityStencilExportEXT: capabilities.StencilExportEXT = true; break;
+
+				case spv::CapabilityInt64: break;
+				case spv::CapabilityGeometry: break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
@@ -755,8 +758,13 @@ SpirvShader::SpirvShader(
 				if(!strcmp(ext, "SPV_KHR_multiview")) break;
 				if(!strcmp(ext, "SPV_EXT_shader_stencil_export")) break;
 				if(!strcmp(ext, "SPV_KHR_float_controls")) break;
+				if(!strcmp(ext, "SPV_GOOGLE_hlsl_functionality1")) break;
+				if(!strcmp(ext, "SPV_GOOGLE_user_type")) break;
 				UNSUPPORTED("SPIR-V Extension: %s", ext);
 			}
+			break;
+
+		case spv::OpEmitVertex:
 			break;
 
 		default:
@@ -968,6 +976,16 @@ void SpirvShader::ProcessExecutionMode(InsnIterator insn)
 	case spv::ExecutionModeOriginUpperLeft:
 		// This is always the case for a Vulkan shader. Do nothing.
 		break;
+
+	case spv::ExecutionModeOutputVertices:
+		break;
+	case spv::ExecutionModeOutputTriangleStrip:
+		break;
+	case spv::ExecutionModeInvocations:
+		break;
+	case spv::ExecutionModeTriangles:
+		break;
+
 	default:
 		UNREACHABLE("Execution mode: %d", int(mode));
 	}
@@ -2527,7 +2545,8 @@ VkShaderStageFlagBits SpirvShader::executionModelToStage(spv::ExecutionModel mod
 	case spv::ExecutionModelVertex: return VK_SHADER_STAGE_VERTEX_BIT;
 	// case spv::ExecutionModelTessellationControl:    return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
 	// case spv::ExecutionModelTessellationEvaluation: return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-	// case spv::ExecutionModelGeometry:               return VK_SHADER_STAGE_GEOMETRY_BIT;
+	case spv::ExecutionModelGeometry:
+		return VK_SHADER_STAGE_GEOMETRY_BIT;
 	case spv::ExecutionModelFragment: return VK_SHADER_STAGE_FRAGMENT_BIT;
 	case spv::ExecutionModelGLCompute: return VK_SHADER_STAGE_COMPUTE_BIT;
 	// case spv::ExecutionModelKernel:                 return VkShaderStageFlagBits(0); // Not supported by vulkan.

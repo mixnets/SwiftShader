@@ -1047,6 +1047,11 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 	return EmitResult::Continue;
 }
 
+static void wut(vk::StorageImageDescriptor *descriptor)
+{
+	descriptor = nullptr;
+}
+
 SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState *state) const
 {
 	imageWriteEmitted = true;
@@ -1104,7 +1109,12 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 		packed[0] = texel.Int(0);
 		packed[1] = texel.Int(1);
 		packed[2] = texel.Int(2);
-		packed[3] = texel.Int(3);
+		packed[3] = (texel.componentCount >= 4) ? Int4(texel.Int(3)) : Int4(0);
+
+		if(texel.componentCount < 4)
+		{
+			Call(wut, binding);
+		}
 		break;
 	case spv::ImageFormatR32f:
 	case spv::ImageFormatR32i:
