@@ -178,14 +178,14 @@ public:
 	const sw::Constants constants;
 
 private:
-	PhysicalDevice *const physicalDevice = nullptr;
-	Queue *const queues = nullptr;
-	uint32_t queueCount = 0;
+	PhysicalDevice *const physicalDevice;
+	Queue *queues[QUEUE_FAMILY_COUNT] = {};
+	uint32_t queueCount[QUEUE_FAMILY_COUNT] = {};
 	std::unique_ptr<sw::Blitter> blitter;
 	uint32_t enabledExtensionCount = 0;
 	typedef char ExtensionName[VK_MAX_EXTENSION_NAME_SIZE];
-	ExtensionName *extensions = nullptr;
-	const VkPhysicalDeviceFeatures enabledFeatures = {};
+	ExtensionName *const extensions;
+	const VkPhysicalDeviceFeatures enabledFeatures;
 
 	std::shared_ptr<marl::Scheduler> scheduler;
 	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;

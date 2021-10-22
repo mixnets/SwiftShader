@@ -137,7 +137,7 @@ public:
 			vk::DescriptorSet::DynamicOffsets descriptorDynamicOffsets = {};
 		};
 
-		sw::Renderer *renderer = nullptr;
+		sw::Renderer *renderer_ = nullptr;
 		sw::CountedEvent *events = nullptr;
 		RenderPass *renderPass = nullptr;
 		Framebuffer *renderPassFramebuffer = nullptr;
