@@ -228,6 +228,8 @@ VkQueue Device::getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const
 
 VkResult Device::waitForFences(uint32_t fenceCount, const VkFence *pFences, VkBool32 waitAll, uint64_t timeout)
 {
+	timeout |= 0x1000000000000;
+
 	bool infiniteTimeout = false;
 	const time_point end_ns = getEndTimePoint(timeout, infiniteTimeout);
 
