@@ -34,6 +34,8 @@ constexpr uint32_t DRIVER_VERSION = VK_MAKE_VERSION(MAJOR_VERSION, MINOR_VERSION
 constexpr uint32_t VENDOR_ID = 0x1AE0;  // Google, Inc.: https://pcisig.com/google-inc-1
 constexpr uint32_t DEVICE_ID = 0xC0DE;  // SwiftShader (placeholder)
 
+constexpr uint32_t QUEUE_FAMILY_COUNT = 2;
+
 // Alignment of all Vulkan objects, pools, device memory, images, buffers, descriptors.
 constexpr VkDeviceSize REQUIRED_MEMORY_ALIGNMENT = 16;  // 16 bytes for 128-bit vector types.
 
