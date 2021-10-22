@@ -81,19 +81,20 @@ public:
 	void getImageFormatProperties(Format format, VkImageType type, VkImageTiling tiling,
 	                              VkImageUsageFlags usage, VkImageCreateFlags flags,
 	                              VkImageFormatProperties *pImageFormatProperties) const;
-	uint32_t getQueueFamilyPropertyCount() const;
 
-	void getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount,
-	                              VkQueueFamilyProperties *pQueueFamilyProperties) const;
-	void getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount,
-	                              VkQueueFamilyProperties2 *pQueueFamilyProperties) const;
+	static uint32_t GetQueueFamilyPropertyCount();
+	static VkQueueFamilyProperties GetQueueFamilyProperties(uint32_t queueFamilyIndex);
+	static void GetQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount,
+	                                     VkQueueFamilyProperties *pQueueFamilyProperties);
+	static void GetQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount,
+	                                     VkQueueFamilyProperties2 *pQueueFamilyProperties);
+
 	static const VkPhysicalDeviceMemoryProperties &GetMemoryProperties();
 
 	static const VkPhysicalDeviceLimits &getLimits();
 
 private:
 	static VkSampleCountFlags getSampleCounts();
-	VkQueueFamilyProperties getQueueFamilyProperties() const;
 
 	template<typename T>
 	T getSupportedFeatures(const T *requested) const;
