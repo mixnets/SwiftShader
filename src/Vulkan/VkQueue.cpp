@@ -31,7 +31,7 @@
 
 namespace {
 
-VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubmits)
+static VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubmits)
 {
 	size_t submitSize = sizeof(VkSubmitInfo) * submitCount;
 	size_t totalSize = submitSize;
@@ -148,8 +148,9 @@ VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubm
 
 namespace vk {
 
-Queue::Queue(Device *device, marl::Scheduler *scheduler)
+Queue::Queue(Device *device, marl::Scheduler *scheduler, VkQueueFlags flags)
     : device(device)
+    , flags(flags)
 {
 	queueThread = std::thread(&Queue::taskLoop, this, scheduler);
 }
@@ -186,7 +187,7 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo *pSubmits, Fence
 
 void Queue::submitQueue(const Task &task)
 {
-	if(renderer == nullptr)
+	if((flags & VK_QUEUE_GRAPHICS_BIT) && (renderer == nullptr))
 	{
 		renderer.reset(new sw::Renderer(device));
 	}
@@ -270,9 +271,13 @@ void Queue::submitQueue(const Task &task)
 
 	if(task.events)
 	{
-		// TODO: fix renderer signaling so that work submitted separately from (but before) a fence
-		// is guaranteed complete by the time the fence signals.
-		renderer->synchronize();
+		if(renderer)
+		{
+			// TODO: fix renderer signaling so that work submitted separately from (but before) a fence
+			// is guaranteed complete by the time the fence signals.
+			renderer->synchronize();
+		}
+
 		task.events->done();
 	}
 }
