@@ -15,7 +15,8 @@
 #ifndef VK_STRUCT_CONVERSION_HPP_
 #define VK_STRUCT_CONVERSION_HPP_
 
-#include "Vulkan/VulkanPlatform.hpp"
+#include "VkMemory.hpp"
+#include "VkStringify.hpp"
 #include <vector>
 
 namespace vk {
@@ -255,6 +256,267 @@ struct Extent2D : VkExtent2D
 	Extent2D(const VkExtent3D &extent3D)
 	    : VkExtent2D{ extent3D.width, extent3D.height }
 	{}
+};
+
+struct SubmitInfo
+{
+	static SubmitInfo *Allocate(uint32_t submitCount, const VkSubmitInfo *pSubmits)
+	{
+		size_t submitSize = sizeof(SubmitInfo) * submitCount;
+		size_t totalSize = submitSize;
+		for(uint32_t i = 0; i < submitCount; i++)
+		{
+			totalSize += pSubmits[i].waitSemaphoreCount * sizeof(VkSemaphore);
+			totalSize += pSubmits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags);
+			totalSize += pSubmits[i].signalSemaphoreCount * sizeof(VkSemaphore);
+			totalSize += pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer);
+
+			for(const auto *extension = reinterpret_cast<const VkBaseInStructure *>(pSubmits[i].pNext);
+			    extension != nullptr; extension = reinterpret_cast<const VkBaseInStructure *>(extension->pNext))
+			{
+				switch(extension->sType)
+				{
+				case VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO:
+					{
+						const auto *tlsSubmitInfo = reinterpret_cast<const VkTimelineSemaphoreSubmitInfo *>(extension);
+						totalSize += tlsSubmitInfo->waitSemaphoreValueCount * sizeof(uint64_t);
+						totalSize += tlsSubmitInfo->signalSemaphoreValueCount * sizeof(uint64_t);
+					}
+					break;
+				case VK_STRUCTURE_TYPE_DEVICE_GROUP_SUBMIT_INFO:
+					// SwiftShader doesn't use device group submit info because it only supports a single physical device.
+					// However, this extension is core in Vulkan 1.1, so we must treat it as a valid structure type.
+					break;
+				case VK_STRUCTURE_TYPE_MAX_ENUM:
+					// dEQP tests that this value is ignored.
+					break;
+				default:
+					UNSUPPORTED("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
+					break;
+				}
+			}
+		}
+
+		uint8_t *mem = static_cast<uint8_t *>(
+		    vk::allocateHostMemory(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::NULL_ALLOCATION_CALLBACKS, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT));
+
+		auto submits = new(mem) SubmitInfo[submitCount];
+		mem += submitSize;
+
+		for(uint32_t i = 0; i < submitCount; i++)
+		{
+			submits[i].commandBufferCount = pSubmits[i].commandBufferCount;
+			submits[i].signalSemaphoreCount = pSubmits[i].signalSemaphoreCount;
+			submits[i].waitSemaphoreCount = pSubmits[i].waitSemaphoreCount;
+
+			submits[i].pWaitSemaphores = nullptr;
+			submits[i].pWaitDstStageMask = nullptr;
+			submits[i].pSignalSemaphores = nullptr;
+			submits[i].pCommandBuffers = nullptr;
+
+			if(pSubmits[i].waitSemaphoreCount > 0)
+			{
+				size_t size = pSubmits[i].waitSemaphoreCount * sizeof(VkSemaphore);
+				submits[i].pWaitSemaphores = reinterpret_cast<VkSemaphore *>(mem);
+				memcpy(mem, pSubmits[i].pWaitSemaphores, size);
+				mem += size;
+
+				size = pSubmits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags);
+				submits[i].pWaitDstStageMask = reinterpret_cast<VkPipelineStageFlags *>(mem);
+				memcpy(mem, pSubmits[i].pWaitDstStageMask, size);
+				mem += size;
+			}
+
+			if(pSubmits[i].signalSemaphoreCount > 0)
+			{
+				size_t size = pSubmits[i].signalSemaphoreCount * sizeof(VkSemaphore);
+				submits[i].pSignalSemaphores = reinterpret_cast<VkSemaphore *>(mem);
+				memcpy(mem, pSubmits[i].pSignalSemaphores, size);
+				mem += size;
+			}
+
+			if(pSubmits[i].commandBufferCount > 0)
+			{
+				size_t size = pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer);
+				submits[i].pCommandBuffers = reinterpret_cast<VkCommandBuffer *>(mem);
+				memcpy(mem, pSubmits[i].pCommandBuffers, size);
+				mem += size;
+			}
+
+			submits[i].waitSemaphoreValueCount = 0;
+			submits[i].pWaitSemaphoreValues = nullptr;
+			submits[i].signalSemaphoreValueCount = 0;
+			submits[i].pSignalSemaphoreValues = nullptr;
+
+			for(const auto *extension = reinterpret_cast<const VkBaseInStructure *>(pSubmits[i].pNext);
+			    extension != nullptr; extension = reinterpret_cast<const VkBaseInStructure *>(extension->pNext))
+			{
+				switch(extension->sType)
+				{
+				case VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO:
+					{
+						const VkTimelineSemaphoreSubmitInfo *tlsSubmitInfo = reinterpret_cast<const VkTimelineSemaphoreSubmitInfo *>(extension);
+
+						if(tlsSubmitInfo->waitSemaphoreValueCount > 0)
+						{
+							submits[i].waitSemaphoreValueCount = tlsSubmitInfo->waitSemaphoreValueCount;
+							size_t size = tlsSubmitInfo->waitSemaphoreValueCount * sizeof(uint64_t);
+							submits[i].pWaitSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
+							memcpy(mem, tlsSubmitInfo->pWaitSemaphoreValues, size);
+							mem += size;
+						}
+
+						if(tlsSubmitInfo->signalSemaphoreValueCount > 0)
+						{
+							submits[i].signalSemaphoreValueCount = tlsSubmitInfo->signalSemaphoreValueCount;
+							size_t size = tlsSubmitInfo->signalSemaphoreValueCount * sizeof(uint64_t);
+							submits[i].pSignalSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
+							memcpy(mem, tlsSubmitInfo->pSignalSemaphoreValues, size);
+							mem += size;
+						}
+					}
+					break;
+				case VK_STRUCTURE_TYPE_DEVICE_GROUP_SUBMIT_INFO:
+					// SwiftShader doesn't use device group submit info because it only supports a single physical device.
+					// However, this extension is core in Vulkan 1.1, so we must treat it as a valid structure type.
+					break;
+				case VK_STRUCTURE_TYPE_MAX_ENUM:
+					// dEQP tests that this value is ignored.
+					break;
+				default:
+					UNSUPPORTED("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
+					break;
+				}
+			}
+		}
+
+		return submits;
+	}
+
+	static SubmitInfo *Allocate(uint32_t submitCount, const VkSubmitInfo2KHR *pSubmits)
+	{
+		size_t submitSize = sizeof(SubmitInfo) * submitCount;
+		size_t totalSize = submitSize;
+		for(uint32_t i = 0; i < submitCount; i++)
+		{
+			totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(VkSemaphore);
+			totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(VkPipelineStageFlags);
+			totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(uint64_t);
+			totalSize += pSubmits[i].signalSemaphoreInfoCount * sizeof(VkSemaphore);
+			totalSize += pSubmits[i].signalSemaphoreInfoCount * sizeof(uint64_t);
+			totalSize += pSubmits[i].commandBufferInfoCount * sizeof(VkCommandBuffer);
+
+			for(const auto *extension = reinterpret_cast<const VkBaseInStructure *>(pSubmits[i].pNext);
+			    extension != nullptr; extension = reinterpret_cast<const VkBaseInStructure *>(extension->pNext))
+			{
+				switch(extension->sType)
+				{
+				case VK_STRUCTURE_TYPE_MAX_ENUM:
+					// dEQP tests that this value is ignored.
+					break;
+				case VK_STRUCTURE_TYPE_PERFORMANCE_QUERY_SUBMIT_INFO_KHR:           // VK_KHR_performance_query
+				case VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR:  // VK_KHR_win32_keyed_mutex
+				case VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV:   // VK_NV_win32_keyed_mutex
+				default:
+					UNSUPPORTED("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
+					break;
+				}
+			}
+		}
+
+		uint8_t *mem = static_cast<uint8_t *>(
+		    vk::allocateHostMemory(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::NULL_ALLOCATION_CALLBACKS, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT));
+
+		auto submits = new(mem) SubmitInfo[submitCount];
+		mem += submitSize;
+
+		for(uint32_t i = 0; i < submitCount; i++)
+		{
+			submits[i].commandBufferCount = pSubmits[i].commandBufferInfoCount;
+			submits[i].signalSemaphoreCount = pSubmits[i].signalSemaphoreInfoCount;
+			submits[i].waitSemaphoreCount = pSubmits[i].waitSemaphoreInfoCount;
+
+			submits[i].signalSemaphoreValueCount = pSubmits[i].signalSemaphoreInfoCount;
+			submits[i].waitSemaphoreValueCount = pSubmits[i].waitSemaphoreInfoCount;
+
+			submits[i].pWaitSemaphores = nullptr;
+			submits[i].pWaitDstStageMask = nullptr;
+			submits[i].pSignalSemaphores = nullptr;
+			submits[i].pCommandBuffers = nullptr;
+			submits[i].pWaitSemaphoreValues = nullptr;
+			submits[i].pSignalSemaphoreValues = nullptr;
+
+			if(submits[i].waitSemaphoreCount > 0)
+			{
+				size_t size = submits[i].waitSemaphoreCount * sizeof(VkSemaphore);
+				submits[i].pWaitSemaphores = reinterpret_cast<VkSemaphore *>(mem);
+				mem += size;
+
+				size = submits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags);
+				submits[i].pWaitDstStageMask = reinterpret_cast<VkPipelineStageFlags *>(mem);
+				mem += size;
+
+				size = submits[i].waitSemaphoreCount * sizeof(uint64_t);
+				submits[i].pWaitSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
+				mem += size;
+
+				for(uint32_t j = 0; j < submits[i].waitSemaphoreCount; j++)
+				{
+					submits[i].pWaitSemaphores[j] = pSubmits[i].pWaitSemaphoreInfos[j].semaphore;
+					submits[i].pWaitDstStageMask[j] = pSubmits[i].pWaitSemaphoreInfos[j].stageMask;
+					submits[i].pWaitSemaphoreValues[j] = pSubmits[i].pWaitSemaphoreInfos[j].value;
+				}
+			}
+
+			if(submits[i].signalSemaphoreCount > 0)
+			{
+				size_t size = submits[i].signalSemaphoreCount * sizeof(VkSemaphore);
+				submits[i].pSignalSemaphores = reinterpret_cast<VkSemaphore *>(mem);
+				mem += size;
+
+				size = submits[i].signalSemaphoreCount * sizeof(uint64_t);
+				submits[i].pSignalSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
+				mem += size;
+
+				for(uint32_t j = 0; j < submits[i].signalSemaphoreCount; j++)
+				{
+					submits[i].pSignalSemaphores[j] = pSubmits[i].pSignalSemaphoreInfos[j].semaphore;
+					submits[i].pSignalSemaphoreValues[j] = pSubmits[i].pSignalSemaphoreInfos[j].value;
+				}
+			}
+
+			if(submits[i].commandBufferCount > 0)
+			{
+				size_t size = submits[i].commandBufferCount * sizeof(VkCommandBuffer);
+				submits[i].pCommandBuffers = reinterpret_cast<VkCommandBuffer *>(mem);
+				mem += size;
+
+				for(uint32_t j = 0; j < submits[i].commandBufferCount; j++)
+				{
+					submits[i].pCommandBuffers[j] = pSubmits[i].pCommandBufferInfos[j].commandBuffer;
+				}
+			}
+		}
+
+		return submits;
+	}
+
+	static void Release(SubmitInfo *submitInfo)
+	{
+		vk::freeHostMemory(submitInfo, NULL_ALLOCATION_CALLBACKS);
+	}
+
+	uint32_t waitSemaphoreCount;
+	VkSemaphore *pWaitSemaphores;
+	VkPipelineStageFlags *pWaitDstStageMask;
+	uint32_t commandBufferCount;
+	VkCommandBuffer *pCommandBuffers;
+	uint32_t signalSemaphoreCount;
+	VkSemaphore *pSignalSemaphores;
+	uint32_t waitSemaphoreValueCount;
+	uint64_t *pWaitSemaphoreValues;
+	uint32_t signalSemaphoreValueCount;
+	uint64_t *pSignalSemaphoreValues;
 };
 
 }  // namespace vk
