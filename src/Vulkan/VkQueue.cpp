@@ -31,6 +31,13 @@
 
 namespace vk {
 
+template<typename T>
+Queue::SubmitInfo *Queue::DeepCopySubmitInfo(uint32_t submitCount, const T *pSubmits)
+{
+	UNREACHABLE("Unsupported template type for Queue::DeepCopySubmitInfo");
+}
+
+template<>
 Queue::SubmitInfo *Queue::DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubmits)
 {
 	size_t submitSize = sizeof(SubmitInfo) * submitCount;
@@ -88,12 +95,12 @@ Queue::SubmitInfo *Queue::DeepCopySubmitInfo(uint32_t submitCount, const VkSubmi
 		if(pSubmits[i].waitSemaphoreCount > 0)
 		{
 			size_t size = pSubmits[i].waitSemaphoreCount * sizeof(VkSemaphore);
-			submits[i].pWaitSemaphores = reinterpret_cast<const VkSemaphore *>(mem);
+			submits[i].pWaitSemaphores = reinterpret_cast<VkSemaphore *>(mem);
 			memcpy(mem, pSubmits[i].pWaitSemaphores, size);
 			mem += size;
 
 			size = pSubmits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags);
-			submits[i].pWaitDstStageMask = reinterpret_cast<const VkPipelineStageFlags *>(mem);
+			submits[i].pWaitDstStageMask = reinterpret_cast<VkPipelineStageFlags *>(mem);
 			memcpy(mem, pSubmits[i].pWaitDstStageMask, size);
 			mem += size;
 		}
@@ -101,7 +108,7 @@ Queue::SubmitInfo *Queue::DeepCopySubmitInfo(uint32_t submitCount, const VkSubmi
 		if(pSubmits[i].signalSemaphoreCount > 0)
 		{
 			size_t size = pSubmits[i].signalSemaphoreCount * sizeof(VkSemaphore);
-			submits[i].pSignalSemaphores = reinterpret_cast<const VkSemaphore *>(mem);
+			submits[i].pSignalSemaphores = reinterpret_cast<VkSemaphore *>(mem);
 			memcpy(mem, pSubmits[i].pSignalSemaphores, size);
 			mem += size;
 		}
@@ -109,7 +116,7 @@ Queue::SubmitInfo *Queue::DeepCopySubmitInfo(uint32_t submitCount, const VkSubmi
 		if(pSubmits[i].commandBufferCount > 0)
 		{
 			size_t size = pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer);
-			submits[i].pCommandBuffers = reinterpret_cast<const VkCommandBuffer *>(mem);
+			submits[i].pCommandBuffers = reinterpret_cast<VkCommandBuffer *>(mem);
 			memcpy(mem, pSubmits[i].pCommandBuffers, size);
 			mem += size;
 		}
@@ -164,6 +171,115 @@ Queue::SubmitInfo *Queue::DeepCopySubmitInfo(uint32_t submitCount, const VkSubmi
 	return submits;
 }
 
+template<>
+Queue::SubmitInfo *Queue::DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo2KHR *pSubmits)
+{
+	size_t submitSize = sizeof(SubmitInfo) * submitCount;
+	size_t totalSize = submitSize;
+	for(uint32_t i = 0; i < submitCount; i++)
+	{
+		totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(VkSemaphore);
+		totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(VkPipelineStageFlags);
+		totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(uint64_t);
+		totalSize += pSubmits[i].signalSemaphoreInfoCount * sizeof(VkSemaphore);
+		totalSize += pSubmits[i].signalSemaphoreInfoCount * sizeof(uint64_t);
+		totalSize += pSubmits[i].commandBufferInfoCount * sizeof(VkCommandBuffer);
+
+		for(const auto *extension = reinterpret_cast<const VkBaseInStructure *>(pSubmits[i].pNext);
+		    extension != nullptr; extension = reinterpret_cast<const VkBaseInStructure *>(extension->pNext))
+		{
+			switch(extension->sType)
+			{
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// dEQP tests that this value is ignored.
+				break;
+			case VK_STRUCTURE_TYPE_PERFORMANCE_QUERY_SUBMIT_INFO_KHR:           // VK_KHR_performance_query
+			case VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR:  // VK_KHR_win32_keyed_mutex
+			case VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV:   // VK_NV_win32_keyed_mutex
+			default:
+				UNSUPPORTED("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
+				break;
+			}
+		}
+	}
+
+	uint8_t *mem = static_cast<uint8_t *>(
+	    vk::allocateHostMemory(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::NULL_ALLOCATION_CALLBACKS, vk::Fence::GetAllocationScope()));
+
+	auto submits = new(mem) SubmitInfo[submitCount];
+	mem += submitSize;
+
+	for(uint32_t i = 0; i < submitCount; i++)
+	{
+		submits[i].commandBufferCount = pSubmits[i].commandBufferInfoCount;
+		submits[i].signalSemaphoreCount = pSubmits[i].signalSemaphoreInfoCount;
+		submits[i].waitSemaphoreCount = pSubmits[i].waitSemaphoreInfoCount;
+
+		submits[i].signalSemaphoreValueCount = pSubmits[i].signalSemaphoreInfoCount;
+		submits[i].waitSemaphoreValueCount = pSubmits[i].waitSemaphoreInfoCount;
+
+		submits[i].pWaitSemaphores = nullptr;
+		submits[i].pWaitDstStageMask = nullptr;
+		submits[i].pSignalSemaphores = nullptr;
+		submits[i].pCommandBuffers = nullptr;
+		submits[i].pWaitSemaphoreValues = nullptr;
+		submits[i].pSignalSemaphoreValues = nullptr;
+
+		if(submits[i].waitSemaphoreCount > 0)
+		{
+			size_t size = submits[i].waitSemaphoreCount * sizeof(VkSemaphore);
+			submits[i].pWaitSemaphores = reinterpret_cast<VkSemaphore *>(mem);
+			mem += size;
+
+			size = submits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags);
+			submits[i].pWaitDstStageMask = reinterpret_cast<VkPipelineStageFlags *>(mem);
+			mem += size;
+
+			size = submits[i].waitSemaphoreCount * sizeof(uint64_t);
+			submits[i].pWaitSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
+			mem += size;
+
+			for(uint32_t j = 0; j < submits[i].waitSemaphoreCount; j++)
+			{
+				submits[i].pWaitSemaphores[j] = pSubmits[i].pWaitSemaphoreInfos[j].semaphore;
+				submits[i].pWaitDstStageMask[j] = pSubmits[i].pWaitSemaphoreInfos[j].stageMask;
+				submits[i].pWaitSemaphoreValues[j] = pSubmits[i].pWaitSemaphoreInfos[j].value;
+			}
+		}
+
+		if(submits[i].signalSemaphoreCount > 0)
+		{
+			size_t size = submits[i].signalSemaphoreCount * sizeof(VkSemaphore);
+			submits[i].pSignalSemaphores = reinterpret_cast<VkSemaphore *>(mem);
+			mem += size;
+
+			size = submits[i].signalSemaphoreCount * sizeof(uint64_t);
+			submits[i].pSignalSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
+			mem += size;
+
+			for(uint32_t j = 0; j < submits[i].signalSemaphoreCount; j++)
+			{
+				submits[i].pSignalSemaphores[j] = pSubmits[i].pSignalSemaphoreInfos[j].semaphore;
+				submits[i].pSignalSemaphoreValues[j] = pSubmits[i].pSignalSemaphoreInfos[j].value;
+			}
+		}
+
+		if(submits[i].commandBufferCount > 0)
+		{
+			size_t size = submits[i].commandBufferCount * sizeof(VkCommandBuffer);
+			submits[i].pCommandBuffers = reinterpret_cast<VkCommandBuffer *>(mem);
+			mem += size;
+
+			for(uint32_t j = 0; j < submits[i].commandBufferCount; j++)
+			{
+				submits[i].pCommandBuffers[j] = pSubmits[i].pCommandBufferInfos[j].commandBuffer;
+			}
+		}
+	}
+
+	return submits;
+}
+
 Queue::Queue(Device *device, marl::Scheduler *scheduler)
     : device(device)
 {
@@ -182,7 +298,8 @@ Queue::~Queue()
 	garbageCollect();
 }
 
-VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo *pSubmits, Fence *fence)
+template<typename T>
+VkResult Queue::submit(uint32_t submitCount, const T *pSubmits, Fence *fence)
 {
 	garbageCollect();
 
@@ -199,6 +316,11 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo *pSubmits, Fence
 
 	return VK_SUCCESS;
 }
+
+#define InstantiateQueueSubmit(Type) template VkResult Queue::submit<Type>(uint32_t submitCount, const Type *pSubmits, Fence *fence)
+InstantiateQueueSubmit(VkSubmitInfo);
+InstantiateQueueSubmit(VkSubmitInfo2KHR);
+#undef InstantiateQueueSubmit
 
 void Queue::submitQueue(const Task &task)
 {
