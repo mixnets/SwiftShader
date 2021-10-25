@@ -144,6 +144,62 @@ VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubm
 	return submits;
 }
 
+VkSubmitInfo2KHR *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo2KHR *pSubmits)
+{
+	size_t submitSize = sizeof(VkSubmitInfo2KHR) * submitCount;
+	size_t totalSize = submitSize;
+	for(uint32_t i = 0; i < submitCount; i++)
+	{
+		totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(VkSemaphoreSubmitInfoKHR);
+		totalSize += pSubmits[i].signalSemaphoreInfoCount * sizeof(VkSemaphoreSubmitInfoKHR);
+		totalSize += pSubmits[i].commandBufferInfoCount * sizeof(VkCommandBufferSubmitInfoKHR);
+
+		for(const auto *extension = reinterpret_cast<const VkBaseInStructure *>(pSubmits[i].pNext);
+		    extension != nullptr; extension = reinterpret_cast<const VkBaseInStructure *>(extension->pNext))
+		{
+			switch(extension->sType)
+			{
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// dEQP tests that this value is ignored.
+				break;
+			case VK_STRUCTURE_TYPE_PERFORMANCE_QUERY_SUBMIT_INFO_KHR:           // VK_KHR_performance_query
+			case VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR:  // VK_KHR_win32_keyed_mutex
+			case VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV:   // VK_NV_win32_keyed_mutex
+			default:
+				UNSUPPORTED("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
+				break;
+			}
+		}
+	}
+
+	uint8_t *mem = static_cast<uint8_t *>(
+	    vk::allocateHostMemory(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::NULL_ALLOCATION_CALLBACKS, vk::Fence::GetAllocationScope()));
+
+	auto submits = new(mem) VkSubmitInfo2KHR[submitCount];
+	memcpy(mem, pSubmits, submitSize);
+	mem += submitSize;
+
+	for(uint32_t i = 0; i < submitCount; i++)
+	{
+		size_t size = pSubmits[i].waitSemaphoreInfoCount * sizeof(VkSemaphoreSubmitInfoKHR);
+		submits[i].pWaitSemaphoreInfos = reinterpret_cast<const VkSemaphoreSubmitInfoKHR *>(mem);
+		memcpy(mem, pSubmits[i].pWaitSemaphoreInfos, size);
+		mem += size;
+
+		size = pSubmits[i].signalSemaphoreInfoCount * sizeof(VkSemaphoreSubmitInfoKHR);
+		submits[i].pSignalSemaphoreInfos = reinterpret_cast<const VkSemaphoreSubmitInfoKHR *>(mem);
+		memcpy(mem, pSubmits[i].pSignalSemaphoreInfos, size);
+		mem += size;
+
+		size = pSubmits[i].commandBufferInfoCount * sizeof(VkCommandBufferSubmitInfoKHR);
+		submits[i].pCommandBufferInfos = reinterpret_cast<const VkCommandBufferSubmitInfoKHR *>(mem);
+		memcpy(mem, pSubmits[i].pCommandBufferInfos, size);
+		mem += size;
+	}
+
+	return submits;
+}
+
 }  // anonymous namespace
 
 namespace vk {
@@ -173,6 +229,24 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo *pSubmits, Fence
 	Task task;
 	task.submitCount = submitCount;
 	task.pSubmits = DeepCopySubmitInfo(submitCount, pSubmits);
+	if(fence)
+	{
+		task.events = fence->getCountedEvent();
+		task.events->add();
+	}
+
+	pending.put(task);
+
+	return VK_SUCCESS;
+}
+
+VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo2KHR *pSubmits, Fence *fence)
+{
+	garbageCollect();
+
+	Task task;
+	task.submitCount2 = submitCount;
+	task.pSubmits2 = DeepCopySubmitInfo(submitCount, pSubmits);
 	if(fence)
 	{
 		task.events = fence->getCountedEvent();
@@ -263,9 +337,63 @@ void Queue::submitQueue(const Task &task)
 		}
 	}
 
+	for(uint32_t i = 0; i < task.submitCount2; i++)
+	{
+		VkSubmitInfo2KHR &submitInfo = task.pSubmits2[i];
+
+		for(uint32_t j = 0; j < submitInfo.waitSemaphoreInfoCount; j++)
+		{
+			const auto &semaphoreInfo = submitInfo.pWaitSemaphoreInfos[j];
+			if(auto *sem = DynamicCast<TimelineSemaphore>(semaphoreInfo.semaphore))
+			{
+				sem->wait(semaphoreInfo.value);
+			}
+			else if(auto *sem = DynamicCast<BinarySemaphore>(semaphoreInfo.semaphore))
+			{
+				sem->wait(semaphoreInfo.stageMask);
+			}
+			else
+			{
+				UNSUPPORTED("Unknown semaphore type");
+			}
+		}
+
+		{
+			CommandBuffer::ExecutionState executionState;
+			executionState.renderer = renderer.get();
+			executionState.events = task.events.get();
+			for(uint32_t j = 0; j < submitInfo.commandBufferInfoCount; j++)
+			{
+				Cast(submitInfo.pCommandBufferInfos[j].commandBuffer)->submit(executionState);
+			}
+		}
+
+		for(uint32_t j = 0; j < submitInfo.signalSemaphoreInfoCount; j++)
+		{
+			const auto &semaphoreInfo = submitInfo.pWaitSemaphoreInfos[j];
+			if(auto *sem = DynamicCast<TimelineSemaphore>(semaphoreInfo.semaphore))
+			{
+				sem->signal(semaphoreInfo.value);
+			}
+			else if(auto *sem = DynamicCast<BinarySemaphore>(semaphoreInfo.semaphore))
+			{
+				sem->signal();
+			}
+			else
+			{
+				UNSUPPORTED("Unknown semaphore type");
+			}
+		}
+	}
+
 	if(task.pSubmits)
 	{
 		toDelete.put(task.pSubmits);
+	}
+
+	if(task.pSubmits2)
+	{
+		toDelete2.put(task.pSubmits2);
 	}
 
 	if(task.events)
@@ -324,8 +452,18 @@ void Queue::garbageCollect()
 	while(true)
 	{
 		auto v = toDelete.tryTake();
-		if(!v.second) { break; }
-		vk::freeHostMemory(v.first, NULL_ALLOCATION_CALLBACKS);
+		auto v2 = toDelete2.tryTake();
+		if(!v.second && !v2.second) { break; }
+
+		if(v.second)
+		{
+			vk::freeHostMemory(v.first, NULL_ALLOCATION_CALLBACKS);
+		}
+
+		if(v2.second)
+		{
+			vk::freeHostMemory(v2.first, NULL_ALLOCATION_CALLBACKS);
+		}
 	}
 }
 
