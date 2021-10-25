@@ -907,9 +907,8 @@ public:
 class CmdSignalEvent : public vk::CommandBuffer::Command
 {
 public:
-	CmdSignalEvent(vk::Event *ev, VkPipelineStageFlags stageMask)
+	CmdSignalEvent(vk::Event *ev)
 	    : ev(ev)
-	    , stageMask(stageMask)
 	{
 	}
 
@@ -923,15 +922,13 @@ public:
 
 private:
 	vk::Event *const ev;
-	const VkPipelineStageFlags stageMask;  // TODO(b/117835459): We currently ignore the flags and signal the event at the last stage
 };
 
 class CmdResetEvent : public vk::CommandBuffer::Command
 {
 public:
-	CmdResetEvent(vk::Event *ev, VkPipelineStageFlags stageMask)
+	CmdResetEvent(vk::Event *ev)
 	    : ev(ev)
-	    , stageMask(stageMask)
 	{
 	}
 
@@ -944,7 +941,6 @@ public:
 
 private:
 	vk::Event *const ev;
-	const VkPipelineStageFlags stageMask;  // FIXME(b/117835459): We currently ignore the flags and reset the event at the last stage
 };
 
 class CmdWaitEvent : public vk::CommandBuffer::Command
@@ -1144,7 +1140,7 @@ private:
 class CmdWriteTimeStamp : public vk::CommandBuffer::Command
 {
 public:
-	CmdWriteTimeStamp(vk::QueryPool *queryPool, uint32_t query, VkPipelineStageFlagBits stage)
+	CmdWriteTimeStamp(vk::QueryPool *queryPool, uint32_t query, VkPipelineStageFlagBits2KHR stage)
 	    : queryPool(queryPool)
 	    , query(query)
 	    , stage(stage)
@@ -1153,7 +1149,7 @@ public:
 
 	void execute(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		if(stage & ~(VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT | VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT))
+		if(stage & ~(VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT_KHR | VK_PIPELINE_STAGE_2_DRAW_INDIRECT_BIT_KHR))
 		{
 			// The `top of pipe` and `draw indirect` stages are handled in command buffer processing so a timestamp write
 			// done in those stages can just be done here without any additional synchronization.
@@ -1177,7 +1173,7 @@ public:
 private:
 	vk::QueryPool *const queryPool;
 	const uint32_t query;
-	const VkPipelineStageFlagBits stage;
+	const VkPipelineStageFlagBits2KHR stage;
 };
 
 class CmdCopyQueryPoolResults : public vk::CommandBuffer::Command
@@ -1300,7 +1296,7 @@ VkResult CommandBuffer::reset(VkCommandPoolResetFlags flags)
 }
 
 template<typename T, typename... Args>
-void CommandBuffer::addCommand(Args &&...args)
+void CommandBuffer::addCommand(Args &&... args)
 {
 	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
 	commands.push_back(std::make_unique<T>(std::forward<Args>(args)...));
@@ -1364,6 +1360,11 @@ void CommandBuffer::pipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelin
 	addCommand<::CmdPipelineBarrier>();
 }
 
+void CommandBuffer::pipelineBarrier(const VkDependencyInfoKHR *pDependencyInfo)
+{
+	addCommand<::CmdPipelineBarrier>();
+}
+
 void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline *pipeline)
 {
 	switch(pipelineBindPoint)
@@ -1402,6 +1403,11 @@ void CommandBuffer::resetQueryPool(QueryPool *queryPool, uint32_t firstQuery, ui
 }
 
 void CommandBuffer::writeTimestamp(VkPipelineStageFlagBits pipelineStage, QueryPool *queryPool, uint32_t query)
+{
+	addCommand<::CmdWriteTimeStamp>(queryPool, query, pipelineStage);
+}
+
+void CommandBuffer::writeTimestamp(VkPipelineStageFlags2KHR pipelineStage, QueryPool *queryPool, uint32_t query)
 {
 	addCommand<::CmdWriteTimeStamp>(queryPool, query, pipelineStage);
 }
@@ -1649,14 +1655,36 @@ void CommandBuffer::setEvent(Event *event, VkPipelineStageFlags stageMask)
 {
 	ASSERT(state == RECORDING);
 
-	addCommand<::CmdSignalEvent>(event, stageMask);
+	// FIXME(b/117835459): We currently ignore stageMask and reset the event at the last stage
+
+	addCommand<::CmdSignalEvent>(event);
+}
+
+void CommandBuffer::setEvent(Event *event, const VkDependencyInfoKHR *pDependencyInfo)
+{
+	ASSERT(state == RECORDING);
+
+	// FIXME(b/117835459): We currently ignore pDependencyInfo and reset the event at the last stage
+
+	addCommand<::CmdSignalEvent>(event);
 }
 
 void CommandBuffer::resetEvent(Event *event, VkPipelineStageFlags stageMask)
 {
 	ASSERT(state == RECORDING);
 
-	addCommand<::CmdResetEvent>(event, stageMask);
+	// FIXME(b/117835459): We currently ignore stageMask and reset the event at the last stage
+
+	addCommand<::CmdResetEvent>(event);
+}
+
+void CommandBuffer::resetEvent(Event *event, VkPipelineStageFlags2KHR stageMask)
+{
+	ASSERT(state == RECORDING);
+
+	// FIXME(b/117835459): We currently ignore stageMask and reset the event at the last stage
+
+	addCommand<::CmdResetEvent>(event);
 }
 
 void CommandBuffer::waitEvents(uint32_t eventCount, const VkEvent *pEvents, VkPipelineStageFlags srcStageMask,
@@ -1669,6 +1697,19 @@ void CommandBuffer::waitEvents(uint32_t eventCount, const VkEvent *pEvents, VkPi
 	// TODO(b/117835459): Since we always do a full barrier, all memory barrier related arguments are ignored
 
 	// Note: srcStageMask and dstStageMask are currently ignored
+	for(uint32_t i = 0; i < eventCount; i++)
+	{
+		addCommand<::CmdWaitEvent>(vk::Cast(pEvents[i]));
+	}
+}
+
+void CommandBuffer::waitEvents(uint32_t eventCount, const VkEvent *pEvents, const VkDependencyInfoKHR *pDependencyInfos)
+{
+	ASSERT(state == RECORDING);
+
+	// TODO(b/117835459): Since we always do a full barrier, all memory barrier related arguments are ignored
+
+	// Note: pDependencyInfos is currently ignored
 	for(uint32_t i = 0; i < eventCount; i++)
 	{
 		addCommand<::CmdWaitEvent>(vk::Cast(pEvents[i]));

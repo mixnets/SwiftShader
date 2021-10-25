@@ -187,6 +187,14 @@ global:
 	vkCreateDirectFBSurfaceEXT;
 	vkGetPhysicalDeviceDirectFBPresentationSupportEXT;
 
+	#VK_KHR_synchronization2
+	vkCmdPipelineBarrier2KHR;
+	vkCmdResetEvent2KHR;
+	vkCmdSetEvent2KHR;
+	vkCmdWaitEvents2KHR;
+	vkCmdWriteTimestamp2KHR;
+	vkQueueSubmit2KHR;
+
 	# Vulkan 1.1 API entry functions
 	vkEnumerateInstanceVersion;
 	vkEnumeratePhysicalDeviceGroups;
