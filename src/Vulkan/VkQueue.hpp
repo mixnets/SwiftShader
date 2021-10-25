@@ -50,7 +50,8 @@ public:
 		return reinterpret_cast<VkQueue>(this);
 	}
 
-	VkResult submit(uint32_t submitCount, const VkSubmitInfo *pSubmits, Fence *fence);
+	template<typename T>
+	VkResult submit(uint32_t submitCount, const T *pSubmits, Fence *fence);
 	VkResult waitIdle();
 #ifndef __ANDROID__
 	VkResult present(const VkPresentInfoKHR *presentInfo);
@@ -60,22 +61,22 @@ public:
 	void endDebugUtilsLabel();
 	void insertDebugUtilsLabel(const VkDebugUtilsLabelEXT *pLabelInfo);
 
-private:
 	struct SubmitInfo
 	{
 		uint32_t waitSemaphoreCount;
-		const VkSemaphore *pWaitSemaphores;
-		const VkPipelineStageFlags *pWaitDstStageMask;
+		VkSemaphore *pWaitSemaphores;
+		VkPipelineStageFlags *pWaitDstStageMask;
 		uint32_t commandBufferCount;
-		const VkCommandBuffer *pCommandBuffers;
+		VkCommandBuffer *pCommandBuffers;
 		uint32_t signalSemaphoreCount;
-		const VkSemaphore *pSignalSemaphores;
+		VkSemaphore *pSignalSemaphores;
 		uint32_t waitSemaphoreValueCount;
-		const uint64_t *pWaitSemaphoreValues;
+		uint64_t *pWaitSemaphoreValues;
 		uint32_t signalSemaphoreValueCount;
-		const uint64_t *pSignalSemaphoreValues;
+		uint64_t *pSignalSemaphoreValues;
 	};
 
+private:
 	struct Task
 	{
 		uint32_t submitCount = 0;
@@ -93,7 +94,6 @@ private:
 	void taskLoop(marl::Scheduler *scheduler);
 	void garbageCollect();
 	void submitQueue(const Task &task);
-	static SubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubmits);
 
 	Device *device;
 	std::unique_ptr<sw::Renderer> renderer;
