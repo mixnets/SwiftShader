@@ -51,6 +51,7 @@ public:
 	}
 
 	VkResult submit(uint32_t submitCount, const VkSubmitInfo *pSubmits, Fence *fence);
+	VkResult submit(uint32_t submitCount, const VkSubmitInfo2KHR *pSubmits, Fence *fence);
 	VkResult waitIdle();
 #ifndef __ANDROID__
 	VkResult present(const VkPresentInfoKHR *presentInfo);
@@ -65,6 +66,8 @@ private:
 	{
 		uint32_t submitCount = 0;
 		VkSubmitInfo *pSubmits = nullptr;
+		uint32_t submitCount2 = 0;
+		VkSubmitInfo2KHR *pSubmits2 = nullptr;
 		std::shared_ptr<sw::CountedEvent> events;
 
 		enum Type
@@ -83,6 +86,7 @@ private:
 	std::unique_ptr<sw::Renderer> renderer;
 	sw::Chan<Task> pending;
 	sw::Chan<VkSubmitInfo *> toDelete;
+	sw::Chan<VkSubmitInfo2KHR *> toDelete2;
 	std::thread queueThread;
 };
 
