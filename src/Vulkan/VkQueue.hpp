@@ -51,6 +51,7 @@ public:
 	}
 
 	VkResult submit(uint32_t submitCount, const VkSubmitInfo *pSubmits, Fence *fence);
+	VkResult submit(uint32_t submitCount, const VkSubmitInfo2KHR *pSubmits, Fence *fence);
 	VkResult waitIdle();
 #ifndef __ANDROID__
 	VkResult present(const VkPresentInfoKHR *presentInfo);
@@ -64,16 +65,16 @@ private:
 	struct SubmitInfo
 	{
 		uint32_t waitSemaphoreCount;
-		const VkSemaphore *pWaitSemaphores;
-		const VkPipelineStageFlags *pWaitDstStageMask;
+		VkSemaphore *pWaitSemaphores;
+		VkPipelineStageFlags *pWaitDstStageMask;
 		uint32_t commandBufferCount;
-		const VkCommandBuffer *pCommandBuffers;
+		VkCommandBuffer *pCommandBuffers;
 		uint32_t signalSemaphoreCount;
-		const VkSemaphore *pSignalSemaphores;
+		VkSemaphore *pSignalSemaphores;
 		uint32_t waitSemaphoreValueCount;
-		const uint64_t *pWaitSemaphoreValues;
+		uint64_t *pWaitSemaphoreValues;
 		uint32_t signalSemaphoreValueCount;
-		const uint64_t *pSignalSemaphoreValues;
+		uint64_t *pSignalSemaphoreValues;
 	};
 
 	struct Task
@@ -94,6 +95,7 @@ private:
 	void garbageCollect();
 	void submitQueue(const Task &task);
 	static SubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubmits);
+	static SubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo2KHR *pSubmits);
 
 	Device *device;
 	std::unique_ptr<sw::Renderer> renderer;
