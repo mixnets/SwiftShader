@@ -74,6 +74,7 @@ public:
 	                     uint32_t memoryBarrierCount, const VkMemoryBarrier *pMemoryBarriers,
 	                     uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier *pBufferMemoryBarriers,
 	                     uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers);
+	void pipelineBarrier(const VkDependencyInfoKHR *pDependencyInfo);
 	void bindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline *pipeline);
 	void bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCount,
 	                       const VkBuffer *pBuffers, const VkDeviceSize *pOffsets);
@@ -81,7 +82,7 @@ public:
 	void beginQuery(QueryPool *queryPool, uint32_t query, VkQueryControlFlags flags);
 	void endQuery(QueryPool *queryPool, uint32_t query);
 	void resetQueryPool(QueryPool *queryPool, uint32_t firstQuery, uint32_t queryCount);
-	void writeTimestamp(VkPipelineStageFlagBits pipelineStage, QueryPool *queryPool, uint32_t query);
+	void writeTimestamp(VkPipelineStageFlags2KHR pipelineStage, QueryPool *queryPool, uint32_t query);
 	void copyQueryPoolResults(const QueryPool *queryPool, uint32_t firstQuery, uint32_t queryCount,
 	                          Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize stride, VkQueryResultFlags flags);
 	void pushConstants(PipelineLayout *layout, VkShaderStageFlags stageFlags,
@@ -122,11 +123,13 @@ public:
 	void resolveImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
 	                  uint32_t regionCount, const VkImageResolve *pRegions);
 	void setEvent(Event *event, VkPipelineStageFlags stageMask);
-	void resetEvent(Event *event, VkPipelineStageFlags stageMask);
+	void setEvent(Event *event, const VkDependencyInfoKHR *pDependencyInfo);
+	void resetEvent(Event *event, VkPipelineStageFlags2KHR stageMask);
 	void waitEvents(uint32_t eventCount, const VkEvent *pEvents, VkPipelineStageFlags srcStageMask,
 	                VkPipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const VkMemoryBarrier *pMemoryBarriers,
 	                uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier *pBufferMemoryBarriers,
 	                uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers);
+	void waitEvents(uint32_t eventCount, const VkEvent *pEvents, const VkDependencyInfoKHR *pDependencyInfos);
 
 	void draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance);
 	void drawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance);
@@ -186,7 +189,7 @@ public:
 private:
 	void resetState();
 	template<typename T, typename... Args>
-	void addCommand(Args &&...args);
+	void addCommand(Args &&... args);
 
 	enum State
 	{
