@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7b80263_fd4fe8e3",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T04:50:46Z",
+      "side": 1,
+      "message": "I named both of these isSupported() to be consistent with the name at line 299, and to abstract away that it is actually the libraries that determine whether or not the WSI extension is supported.",
+      "range": {
+        "startLine": 317,
+        "startChar": 109,
+        "endLine": 317,
+        "endChar": 120
+      },
+      "revId": "2cde1acf0c2f41bc16f9716d25d45e8296a0fece",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
