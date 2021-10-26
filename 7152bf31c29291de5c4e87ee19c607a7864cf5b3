@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9623f739_d14f749e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T13:51:25Z",
+      "side": 1,
+      "message": "This is good context, but please open a Buganizer issue for SwiftShader that references it. Then we can ask the ANGLE team if they actually have a significant need for this from SwiftShader.",
+      "range": {
+        "startLine": 22,
+        "startChar": 5,
+        "endLine": 22,
+        "endChar": 22
+      },
+      "revId": "7152bf31c29291de5c4e87ee19c607a7864cf5b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ce0b056_ef885729",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T13:51:25Z",
+      "side": 1,
+      "message": "I don\u0027t understand enough about how this extension is used by GPU drivers, to see how it would be useful/sensible to add support for it to SwiftShader. As noted below let\u0027s open a b/ to keep track of discussions.",
+      "revId": "7152bf31c29291de5c4e87ee19c607a7864cf5b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
