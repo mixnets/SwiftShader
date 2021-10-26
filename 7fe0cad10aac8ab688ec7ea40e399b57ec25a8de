@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e29a3d6e_ffd149a9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-26T20:56:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9266c98_d52157ca",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 7
+      },
+      "revId": "7fe0cad10aac8ab688ec7ea40e399b57ec25a8de",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3b0477c1_16ba56ee",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-10-26T20:32:47Z",
       "side": 1,
       "message": "But that only happens when doing an explicit submodule update, right? Not when just doing a pull from the super project?\n\nDoes https://stackoverflow.com/questions/1777854/how-can-i-specify-a-branch-tag-when-adding-a-git-submodule/18799234#18799234 help at all?",
+      "range": {
+        "startLine": 9,
+        "startChar": 59,
+        "endLine": 10,
+        "endChar": 56
+      },
+      "revId": "7fe0cad10aac8ab688ec7ea40e399b57ec25a8de",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b28048e_d74327d3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-26T20:56:56Z",
+      "side": 1,
+      "message": "You will still need to use `git submodule update --remote third_party/git-hooks` in order to get the latest revision. Even if you use `git pull --recurse-submodules`, it won\u0027t actually update to the latest revision on the branch it\u0027s tracking. This is because a git submodule is only ever tracking a specific commit, not a repo.\n\nSo you need to explicitly change which commit a submodule refers to, it doesn\u0027t just happen automatically without a new CL.",
+      "parentUuid": "3b0477c1_16ba56ee",
       "range": {
         "startLine": 9,
         "startChar": 59,
