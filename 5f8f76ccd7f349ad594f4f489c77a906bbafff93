@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bfc695a3_612cf814",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1479,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-26T13:21:35Z",
+      "side": 1,
+      "message": "The restrictions on blitting (not clearing) between signed and unsigned values only apply to Int to Int blitting. Format conversion from Float to Unsigned Int carries no restriction, AFAIK.",
+      "parentUuid": "3386f80c_df2c99af",
+      "range": {
+        "startLine": 1476,
+        "startChar": 1,
+        "endLine": 1479,
+        "endChar": 2
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8f759363_7cb50cc5",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 8
