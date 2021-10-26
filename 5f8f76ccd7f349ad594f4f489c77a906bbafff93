@@ -71,6 +71,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6acd5b0_7407422a",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1042,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-26T21:21:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8f759363_7cb50cc5",
+      "range": {
+        "startLine": 1042,
+        "startChar": 16,
+        "endLine": 1042,
+        "endChar": 30
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "22ba835d_a65af4f0",
@@ -84,6 +108,30 @@
       "writtenOn": "2021-10-26T05:53:03Z",
       "side": 1,
       "message": "Let\u0027s make the pointee const so we\u0027re not accidentally modifying the values from the command buffer.",
+      "range": {
+        "startLine": 1068,
+        "startChar": 18,
+        "endLine": 1068,
+        "endChar": 23
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd23491c_afa192a8",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1068,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-26T21:21:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "22ba835d_a65af4f0",
       "range": {
         "startLine": 1068,
         "startChar": 18,
@@ -117,6 +165,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d132000_5f0a5fac",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1075,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-26T21:21:08Z",
+      "side": 1,
+      "message": "Removed for now, to test if using the viewFormat directly is enough.",
+      "parentUuid": "16bbf108_3c0f749d",
+      "range": {
+        "startLine": 1075,
+        "startChar": 1,
+        "endLine": 1075,
+        "endChar": 5
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0465220a_f7c04521",
@@ -130,6 +202,30 @@
       "writtenOn": "2021-10-26T05:53:03Z",
       "side": 1,
       "message": "I thin this is what causes all the confusion. We shouldn\u0027t be using the image\u0027s format as the basis for interpreting the clear values. We should use the view\u0027s format.",
+      "range": {
+        "startLine": 1141,
+        "startChar": 44,
+        "endLine": 1141,
+        "endChar": 60
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80e8be55_bae75eea",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1141,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-26T21:21:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0465220a_f7c04521",
       "range": {
         "startLine": 1141,
         "startChar": 44,
