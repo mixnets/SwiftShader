@@ -3172,7 +3172,7 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 
 UShort4 PixelRoutine::convertFixed16(const Float4 &cf, bool saturate)
 {
-	return UShort4(cf * Float4(0xFFFF), saturate);
+	return UShort4(cf * Float4(0xFFFF) + Float4(0.5f), saturate);
 }
 
 Float4 PixelRoutine::convertFloat32(const UShort4 &cf)
