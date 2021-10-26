@@ -1,7 +1,7 @@
 dEQP
 ====
 
-These steps are specifically for testing SwiftShader's OpenGL ES 3.0 implementation using dEQP on Windows (steps for Linux below the Windows instructions).
+These steps are specifically for testing SwiftShader using dEQP on Windows (steps for Linux below the Windows instructions).
 
 Prerequisites
 -------------
@@ -9,25 +9,24 @@ Prerequisites
 1. Install the latest [Python 3](https://www.python.org/downloads/)
 2. Install [Visual Studio](https://visualstudio.microsoft.com/vs/community/)
 3. Install [CMake](https://cmake.org/download/)
+  * Enable the option to add CMake to the system PATH.
 4. Install [Go](https://golang.org/doc/install)
-5. Install [MinGW-W64](http://mingw-w64.org/doku.php/download)
+5. Install [MinGW-W64](https://www.mingw-w64.org/downloads/)
   * Select 'x86_64' as Architecture during setup
 6. Install [Git](https://git-scm.com/download/win)
-7. Install [Android Studio](https://developer.android.com/studio/index.html)
-8. Run Android Studio and install Android SDK.
-9. Set environment variables: Config Panel -> System and Security -> System -> Advanced system settigns -> Environment Variables
+7. Run Android Studio and install Android SDK.
+8. Set environment variables: Config Panel -> System and Security -> System -> Advanced system settigns -> Environment Variables
   * Add `<path to python>` to your PATH environment variable
   * Add `<path to MinGW-W64>\bin` to your PATH environment variable
-  * Add `<path to adb>` to your PATH environment variable
 
-    Note: abd is in the Android SDK, typically in `C:\Users\<username>\AppData\Local\Android\sdk\platform-tools`
+set GO111MODULE=auto
 
-11. (Optional) Install [TortoiseGit](https://tortoisegit.org/)
+SWIFTSHADER_VULKAN_API_LIBRARY_INSTALL_PATH=C:\src\VK-GL-CTS\build\external\vulkancts\modules\vulkan\Debug
 
 Getting the Code
 ----------------
 
-12. Get dEQP (either in 'cmd' or by using TortoiseGit):
+9. Get dEQP (either in 'cmd' or by using TortoiseGit):
 
     `git clone https://github.com/KhronosGroup/VK-GL-CTS`
 
@@ -35,7 +34,7 @@ Getting the Code
 
 13. Get dEQP's dependencies. In your dEQP root directory, open 'cmd' and run:
 
-    `python3 external\fetch_sources.py`
+    `python external\fetch_sources.py`
 
 14. Get Cherry (either in 'cmd' or by using TortoiseGit):
 
@@ -60,7 +59,7 @@ Building the code
 
     Open `<path to dEQP>\build\dEQP-Core-default.sln` in Visual Studio and Build Solution
 
-    Note: Choose a 'Release' build, unless you really mean to debug dEQP
+    Note: Choose a 'Debug' build, unless you really mean to --debug dEQP
 
 18. Generate test cases:
     ```
@@ -69,15 +68,15 @@ Building the code
     python3 scripts\build_caselists.py <path to cherry>\data
     ```
 
-    Note: you need to run `python3 scripts\build_caselists.py <path to cherry>\data` every time you update dEQP.
+    Note: you need to run `python scripts\build_caselists.py <path to cherry>\data` every time you update dEQP.
 
 Preparing the server
 --------------------
 
 19. Edit `<path to cherry>\cherry\data.go`
 * Search for `../candy-build/deqp-wgl` and replace that by `<path to deqp>/build`
-* Just above, add an option to CommandLine: `--deqp-gl-context-type=egl`
-* Just below, modify the BinaryPath from 'Debug' to 'Release' if you did a Release build at step 17
+//* Just above, add an option to CommandLine: `--deqp-gl-context-type=egl`
+* Just below, modify the BinaryPath from 'Release' to 'Debug' if you did a Debug build at step 17
 * Remove `--deqp-watchdog=enable` to avoid timeouts during debugging.
 
 Testing OpenGL ES
