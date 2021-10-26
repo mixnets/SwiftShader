@@ -9,20 +9,21 @@ Prerequisites
 1. Install the latest [Python 3](https://www.python.org/downloads/)
 2. Install [Visual Studio](https://visualstudio.microsoft.com/vs/community/)
 3. Install [CMake](https://cmake.org/download/)
+  * Enable the option to add CMake to the system PATH.
 4. Install [Go](https://golang.org/doc/install)
-5. Install [MinGW-W64](http://mingw-w64.org/doku.php/download)
+5. Install [MinGW-W64](https://www.mingw-w64.org/downloads/)
   * Select 'x86_64' as Architecture during setup
 6. Install [Git](https://git-scm.com/download/win)
 7. Set environment variables: Config Panel -> System and Security -> System -> Advanced system settigns -> Environment Variables
   * Add `<path to python>` to your PATH environment variable
   * Add `<path to MinGW-W64>\bin` to your PATH environment variable
 
-8. (Optional) Install [TortoiseGit](https://tortoisegit.org/)
+set GO111MODULE=auto
 
 Getting the Code
 ----------------
 
-12. Get dEQP (either in 'cmd' or by using TortoiseGit):
+8. Get dEQP (either in 'cmd' or by using TortoiseGit):
 
     `git clone https://github.com/KhronosGroup/VK-GL-CTS`
 
@@ -30,7 +31,7 @@ Getting the Code
 
 13. Get dEQP's dependencies. In your dEQP root directory, open 'cmd' and run:
 
-    `python3 external\fetch_sources.py`
+    `python external\fetch_sources.py`
 
 14. Get Cherry (either in 'cmd' or by using TortoiseGit):
 
@@ -64,14 +65,14 @@ Building the code
     python3 scripts\build_caselists.py <path to cherry>\data
     ```
 
-    Note: you need to run `python3 scripts\build_caselists.py <path to cherry>\data` every time you update dEQP.
+    Note: you need to run `python scripts\build_caselists.py <path to cherry>\data` every time you update dEQP.
 
 Preparing the server
 --------------------
 
 19. Edit `<path to cherry>\cherry\data.go`
 * Search for `../candy-build/deqp-wgl` and replace that by `<path to deqp>/build`
-* Just above, add an option to CommandLine: `--deqp-gl-context-type=egl`
+* Modify 'Release' to 'Debug'.
 * Remove `--deqp-watchdog=enable` to avoid timeouts during debugging.
 
   Note: If you chose a Release build at step 17, modify the BinaryPath from 'Debug' to 'Release'.
@@ -90,7 +91,7 @@ Testing Vulkan
 
     This will cause dEQP to load SwiftShader's Vulkan implementatin directly, without going through a system-provided [loader](https://github.com/KhronosGroup/Vulkan-Loader/blob/master/loader/LoaderAndLayerInterface.md#the-loader) library or any layers.
 
-     This step can also be automated by setting the `SWIFTSHADER_VULKAN_API_LIBRARY_INSTALL_PATH` environment variable to a path where we'd like the drop-in API library to be installed. For example `<path to dEQP>/build/external/vulkancts/modules/vulkan/Debug/`.
+    This step can also be automated by setting the `SWIFTSHADER_VULKAN_API_LIBRARY_INSTALL_PATH` environment variable to a path where we'd like the drop-in API library to be installed. For example `<path to dEQP>/build/external/vulkancts/modules/vulkan/Debug/`.
 
     To use SwiftShader as an [Installable Client Driver](https://github.com/KhronosGroup/Vulkan-Loader/blob/master/loader/LoaderAndLayerInterface.md#installable-client-drivers) (ICD) instead:
     * Edit environment variables:
