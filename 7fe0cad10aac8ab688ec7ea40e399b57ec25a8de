@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9266c98_d52157ca",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T20:32:47Z",
+      "side": 1,
+      "message": "FYI note you can press the Revert button on the change in Gerrit, and it will produce a revert CL for you which references back to the landed one and also makes it clear at a glance from within Gerrit that a revert was created.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 7
+      },
+      "revId": "7fe0cad10aac8ab688ec7ea40e399b57ec25a8de",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b0477c1_16ba56ee",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T20:32:47Z",
+      "side": 1,
+      "message": "But that only happens when doing an explicit submodule update, right? Not when just doing a pull from the super project?\n\nDoes https://stackoverflow.com/questions/1777854/how-can-i-specify-a-branch-tag-when-adding-a-git-submodule/18799234#18799234 help at all?",
+      "range": {
+        "startLine": 9,
+        "startChar": 59,
+        "endLine": 10,
+        "endChar": 56
+      },
+      "revId": "7fe0cad10aac8ab688ec7ea40e399b57ec25a8de",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
