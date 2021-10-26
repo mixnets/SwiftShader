@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3386f80c_df2c99af",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1479,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T05:53:03Z",
+      "side": 1,
+      "message": "In what scenario can this still happen? Clearing a UNORM format with FLOAT values? Then we can just clamp them prior to the blit, no? In fact we already have clamping happening at line 70.",
+      "range": {
+        "startLine": 1476,
+        "startChar": 1,
+        "endLine": 1479,
+        "endChar": 2
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f759363_7cb50cc5",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1042,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T05:53:03Z",
+      "side": 1,
+      "message": "Let\u0027s make this a method of vk::Format. There\u0027s nothing Image specific about this other than obtaining the format, which is actually incorrect in the case I pointed out below.",
+      "range": {
+        "startLine": 1042,
+        "startChar": 16,
+        "endLine": 1042,
+        "endChar": 30
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22ba835d_a65af4f0",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1068,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T05:53:03Z",
+      "side": 1,
+      "message": "Let\u0027s make the pointee const so we\u0027re not accidentally modifying the values from the command buffer.",
+      "range": {
+        "startLine": 1068,
+        "startChar": 18,
+        "endLine": 1068,
+        "endChar": 23
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16bbf108_3c0f749d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1075,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T05:53:03Z",
+      "side": 1,
+      "message": "You can use VkClearColorValue to avoid the reinterprets.",
+      "range": {
+        "startLine": 1075,
+        "startChar": 1,
+        "endLine": 1075,
+        "endChar": 5
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0465220a_f7c04521",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1141,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-26T05:53:03Z",
+      "side": 1,
+      "message": "I thin this is what causes all the confusion. We shouldn\u0027t be using the image\u0027s format as the basis for interpreting the clear values. We should use the view\u0027s format.",
+      "range": {
+        "startLine": 1141,
+        "startChar": 44,
+        "endLine": 1141,
+        "endChar": 60
+      },
+      "revId": "5f8f76ccd7f349ad594f4f489c77a906bbafff93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
