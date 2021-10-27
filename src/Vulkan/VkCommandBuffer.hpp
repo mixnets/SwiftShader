@@ -103,14 +103,23 @@ public:
 	void dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ);
 	void dispatchIndirect(Buffer *buffer, VkDeviceSize offset);
 	void copyBuffer(const Buffer *srcBuffer, Buffer *dstBuffer, uint32_t regionCount, const VkBufferCopy *pRegions);
+	void copyBuffer(const Buffer *srcBuffer, Buffer *dstBuffer, uint32_t regionCount, const VkBufferCopy2KHR *pRegions);
 	void copyImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
 	               uint32_t regionCount, const VkImageCopy *pRegions);
+	void copyImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+	               uint32_t regionCount, const VkImageCopy2KHR *pRegions);
 	void blitImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
 	               uint32_t regionCount, const VkImageBlit *pRegions, VkFilter filter);
+	void blitImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+	               uint32_t regionCount, const VkImageBlit2KHR *pRegions, VkFilter filter);
 	void copyBufferToImage(Buffer *srcBuffer, Image *dstImage, VkImageLayout dstImageLayout,
 	                       uint32_t regionCount, const VkBufferImageCopy *pRegions);
+	void copyBufferToImage(Buffer *srcBuffer, Image *dstImage, VkImageLayout dstImageLayout,
+	                       uint32_t regionCount, const VkBufferImageCopy2KHR *pRegions);
 	void copyImageToBuffer(Image *srcImage, VkImageLayout srcImageLayout, Buffer *dstBuffer,
 	                       uint32_t regionCount, const VkBufferImageCopy *pRegions);
+	void copyImageToBuffer(Image *srcImage, VkImageLayout srcImageLayout, Buffer *dstBuffer,
+	                       uint32_t regionCount, const VkBufferImageCopy2KHR *pRegions);
 	void updateBuffer(Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void *pData);
 	void fillBuffer(Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data);
 	void clearColorImage(Image *image, VkImageLayout imageLayout, const VkClearColorValue *pColor,
@@ -121,6 +130,8 @@ public:
 	                      uint32_t rectCount, const VkClearRect *pRects);
 	void resolveImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
 	                  uint32_t regionCount, const VkImageResolve *pRegions);
+	void resolveImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+	                  uint32_t regionCount, const VkImageResolve2KHR *pRegions);
 	void setEvent(Event *event, VkPipelineStageFlags stageMask);
 	void resetEvent(Event *event, VkPipelineStageFlags stageMask);
 	void waitEvents(uint32_t eventCount, const VkEvent *pEvents, VkPipelineStageFlags srcStageMask,
@@ -186,7 +197,7 @@ public:
 private:
 	void resetState();
 	template<typename T, typename... Args>
-	void addCommand(Args &&...args);
+	void addCommand(Args &&... args);
 
 	enum State
 	{
