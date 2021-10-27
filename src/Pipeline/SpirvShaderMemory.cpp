@@ -219,6 +219,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		case spv::StorageClassOutput:
 		case spv::StorageClassPrivate:
 		case spv::StorageClassFunction:
+		case spv::StorageClassWorkgroup:
 			{
 				bool interleavedByLane = IsStorageInterleavedByLane(objectTy.storageClass);
 				auto ptr = GetPointerToData(resultId, 0, state);
@@ -229,6 +230,10 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 					auto robustness = OutOfBoundsBehavior::UndefinedBehavior;  // Local variables are always within bounds.
 					p.Store(initialValue.Float(el.index), robustness, state->activeLaneMask());
 				});
+				if(objectTy.storageClass == spv::StorageClassWorkgroup)
+				{
+					Yield(YieldResult::ControlBarrier);
+				}
 			}
 			break;
 		default:
