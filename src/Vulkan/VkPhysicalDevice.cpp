@@ -332,6 +332,11 @@ static void getPhysicalDeviceDepthClipEnableFeaturesExt(T *features)
 	features->depthClipEnable = VK_TRUE;
 }
 
+static void getPhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesExt(VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR *features)
+{
+	features->shaderZeroInitializeWorkgroupMemory = VK_TRUE;
+}
+
 static void getPhysicalDeviceCustomBorderColorFeaturesExt(VkPhysicalDeviceCustomBorderColorFeaturesEXT *features)
 {
 	features->customBorderColors = VK_TRUE;
@@ -440,6 +445,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT:
 			getPhysicalDeviceDepthClipEnableFeaturesExt(reinterpret_cast<VkPhysicalDeviceDepthClipEnableFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR:
+			getPhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesExt(reinterpret_cast<VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT:
 			getPhysicalDeviceCustomBorderColorFeaturesExt(reinterpret_cast<VkPhysicalDeviceCustomBorderColorFeaturesEXT *>(curExtension));
@@ -1140,6 +1148,7 @@ InstantiateHasExtendedFeatures(VkPhysicalDeviceLineRasterizationFeaturesEXT);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceProvokingVertexFeaturesEXT);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceVulkan11Features);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceVulkan12Features);
+InstantiateHasExtendedFeatures(VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceDepthClipEnableFeaturesEXT);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT);
 #undef InstantiateHasExtendedFeatures
