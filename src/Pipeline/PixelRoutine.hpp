@@ -54,7 +54,6 @@ protected:
 	void alphaTest(Int &aMask, const Short4 &alpha);
 	void alphaToCoverage(Int cMask[4], const Float4 &alpha, const SampleSet &samples);
 
-	// Raster operations
 	void alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4s &current, const Int &x);
 	void writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4f &oC, const Int &sMask, const Int &zMask, const Int &cMask);
 	void alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f &oC, const Int &x);
@@ -75,7 +74,6 @@ private:
 	Bool depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask);
 	void depthBoundsTest(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, Int &cMask);
 
-	// Raster operations
 	void blendFactor(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorActive);
 	void blendFactorAlpha(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorAlphaActive);
 	void readPixel(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &pixel);

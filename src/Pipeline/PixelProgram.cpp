@@ -290,9 +290,6 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 		case VK_FORMAT_R8G8B8A8_SRGB:
 		case VK_FORMAT_R8G8_UNORM:
 		case VK_FORMAT_R8_UNORM:
-		case VK_FORMAT_R16_UNORM:
-		case VK_FORMAT_R16G16_UNORM:
-		case VK_FORMAT_R16G16B16A16_UNORM:
 		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
 		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
@@ -324,6 +321,9 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 		case VK_FORMAT_R32_UINT:
 		case VK_FORMAT_R32G32_UINT:
 		case VK_FORMAT_R32G32B32A32_UINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16G16_UNORM:
+		case VK_FORMAT_R16G16B16A16_UNORM:
 		case VK_FORMAT_R16_SINT:
 		case VK_FORMAT_R16G16_SINT:
 		case VK_FORMAT_R16G16B16A16_SINT:
@@ -363,6 +363,8 @@ void PixelProgram::clampColor(Vector4f oC[MAX_COLOR_BUFFERS])
 		{
 			continue;
 		}
+
+		//		If the color attachment is fixed-point, the components of the source and destination values and blend factors are each clamped to [0,1] or [-1,1] respectively for an unsigned normalized or signed normalized color attachment prior to evaluating the blend operations. If the color attachment is floating-point, no clamping occurs.
 
 		switch(state.colorFormat[index])
 		{
