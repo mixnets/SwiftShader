@@ -55,7 +55,6 @@ protected:
 	void alphaToCoverage(Int cMask[4], const Float4 &alpha, const SampleSet &samples);
 
 	// Raster operations
-	void alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4s &current, const Int &x);
 	void writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4f &oC, const Int &sMask, const Int &zMask, const Int &cMask);
 	void alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f &oC, const Int &x);
 	void writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &current, const Int &sMask, const Int &zMask, const Int &cMask);

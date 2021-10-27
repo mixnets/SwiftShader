@@ -296,20 +296,6 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 		case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
-			for(unsigned int q : samples)
-			{
-				Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
-				Vector4s color;
-
-				color.x = convertFixed16(c[index].x, false);
-				color.y = convertFixed16(c[index].y, false);
-				color.z = convertFixed16(c[index].z, false);
-				color.w = convertFixed16(c[index].w, false);
-
-				alphaBlend(index, buffer, color, x);
-				writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
-			}
-			break;
 		case VK_FORMAT_R16_SFLOAT:
 		case VK_FORMAT_R16G16_SFLOAT:
 		case VK_FORMAT_R16G16B16A16_SFLOAT:

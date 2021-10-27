@@ -1366,127 +1366,6 @@ void PixelRoutine::readPixel(int index, const Pointer<Byte> &cBuffer, const Int 
 	}
 }
 
-void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4s &current, const Int &x)
-{
-	if(!state.blendState[index].alphaBlendEnable)
-	{
-		return;
-	}
-
-	ASSERT(state.colorFormat[index].supportsColorAttachmentBlend());
-
-	Vector4s pixel;
-	readPixel(index, cBuffer, x, pixel);
-
-	// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
-	Vector4s sourceFactor;
-	Vector4s destFactor;
-
-	blendFactor(sourceFactor, current, pixel, state.blendState[index].sourceBlendFactor);
-	blendFactor(destFactor, current, pixel, state.blendState[index].destBlendFactor);
-
-	if(state.blendState[index].sourceBlendFactor != VK_BLEND_FACTOR_ONE && state.blendState[index].sourceBlendFactor != VK_BLEND_FACTOR_ZERO)
-	{
-		current.x = MulHigh(As<UShort4>(current.x), As<UShort4>(sourceFactor.x));
-		current.y = MulHigh(As<UShort4>(current.y), As<UShort4>(sourceFactor.y));
-		current.z = MulHigh(As<UShort4>(current.z), As<UShort4>(sourceFactor.z));
-	}
-
-	if(state.blendState[index].destBlendFactor != VK_BLEND_FACTOR_ONE && state.blendState[index].destBlendFactor != VK_BLEND_FACTOR_ZERO)
-	{
-		pixel.x = MulHigh(As<UShort4>(pixel.x), As<UShort4>(destFactor.x));
-		pixel.y = MulHigh(As<UShort4>(pixel.y), As<UShort4>(destFactor.y));
-		pixel.z = MulHigh(As<UShort4>(pixel.z), As<UShort4>(destFactor.z));
-	}
-
-	switch(state.blendState[index].blendOperation)
-	{
-	case VK_BLEND_OP_ADD:
-		current.x = AddSat(As<UShort4>(current.x), As<UShort4>(pixel.x));
-		current.y = AddSat(As<UShort4>(current.y), As<UShort4>(pixel.y));
-		current.z = AddSat(As<UShort4>(current.z), As<UShort4>(pixel.z));
-		break;
-	case VK_BLEND_OP_SUBTRACT:
-		current.x = SubSat(As<UShort4>(current.x), As<UShort4>(pixel.x));
-		current.y = SubSat(As<UShort4>(current.y), As<UShort4>(pixel.y));
-		current.z = SubSat(As<UShort4>(current.z), As<UShort4>(pixel.z));
-		break;
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		current.x = SubSat(As<UShort4>(pixel.x), As<UShort4>(current.x));
-		current.y = SubSat(As<UShort4>(pixel.y), As<UShort4>(current.y));
-		current.z = SubSat(As<UShort4>(pixel.z), As<UShort4>(current.z));
-		break;
-	case VK_BLEND_OP_MIN:
-		current.x = Min(As<UShort4>(current.x), As<UShort4>(pixel.x));
-		current.y = Min(As<UShort4>(current.y), As<UShort4>(pixel.y));
-		current.z = Min(As<UShort4>(current.z), As<UShort4>(pixel.z));
-		break;
-	case VK_BLEND_OP_MAX:
-		current.x = Max(As<UShort4>(current.x), As<UShort4>(pixel.x));
-		current.y = Max(As<UShort4>(current.y), As<UShort4>(pixel.y));
-		current.z = Max(As<UShort4>(current.z), As<UShort4>(pixel.z));
-		break;
-	case VK_BLEND_OP_SRC_EXT:
-		// No operation
-		break;
-	case VK_BLEND_OP_DST_EXT:
-		current.x = pixel.x;
-		current.y = pixel.y;
-		current.z = pixel.z;
-		break;
-	case VK_BLEND_OP_ZERO_EXT:
-		current.x = Short4(0x0000);
-		current.y = Short4(0x0000);
-		current.z = Short4(0x0000);
-		break;
-	default:
-		UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperation));
-	}
-
-	blendFactorAlpha(sourceFactor, current, pixel, state.blendState[index].sourceBlendFactorAlpha);
-	blendFactorAlpha(destFactor, current, pixel, state.blendState[index].destBlendFactorAlpha);
-
-	if(state.blendState[index].sourceBlendFactorAlpha != VK_BLEND_FACTOR_ONE && state.blendState[index].sourceBlendFactorAlpha != VK_BLEND_FACTOR_ZERO)
-	{
-		current.w = MulHigh(As<UShort4>(current.w), As<UShort4>(sourceFactor.w));
-	}
-
-	if(state.blendState[index].destBlendFactorAlpha != VK_BLEND_FACTOR_ONE && state.blendState[index].destBlendFactorAlpha != VK_BLEND_FACTOR_ZERO)
-	{
-		pixel.w = MulHigh(As<UShort4>(pixel.w), As<UShort4>(destFactor.w));
-	}
-
-	switch(state.blendState[index].blendOperationAlpha)
-	{
-	case VK_BLEND_OP_ADD:
-		current.w = AddSat(As<UShort4>(current.w), As<UShort4>(pixel.w));
-		break;
-	case VK_BLEND_OP_SUBTRACT:
-		current.w = SubSat(As<UShort4>(current.w), As<UShort4>(pixel.w));
-		break;
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		current.w = SubSat(As<UShort4>(pixel.w), As<UShort4>(current.w));
-		break;
-	case VK_BLEND_OP_MIN:
-		current.w = Min(As<UShort4>(current.w), As<UShort4>(pixel.w));
-		break;
-	case VK_BLEND_OP_MAX:
-		current.w = Max(As<UShort4>(current.w), As<UShort4>(pixel.w));
-		break;
-	case VK_BLEND_OP_SRC_EXT:
-		// No operation
-		break;
-	case VK_BLEND_OP_DST_EXT:
-		current.w = pixel.w;
-		break;
-	case VK_BLEND_OP_ZERO_EXT:
-		current.w = Short4(0x0000);
-		break;
-	default:
-		UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperationAlpha));
-	}
-}
-
 void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &current, const Int &sMask, const Int &zMask, const Int &cMask)
 {
 	if(isSRGB(index))
@@ -2329,10 +2208,6 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f 
 	// Non-float and non-fixed point formats are not alpha blended.
 	Vector4f pixel;
 
-	Vector4s color;
-	Short4 c01;
-	Short4 c23;
-
 	Float4 one;
 	if(format.isFloatFormat())
 	{
@@ -2435,7 +2310,16 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f 
 		pixel.w = one;
 		break;
 	default:
-		UNSUPPORTED("VkFormat: %d", int(state.colorFormat[index]));
+		{
+			// Attempt to read an integer based format and convert it to float
+			Vector4s color;
+			readPixel(index, cBuffer, x, color);
+			pixel.x = convertFloat32(color.x);
+			pixel.y = convertFloat32(color.y);
+			pixel.z = convertFloat32(color.z);
+			pixel.w = convertFloat32(color.w);
+		}
+		break;
 	}
 
 	// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
@@ -2582,7 +2466,15 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		transpose4x4(oC.x, oC.y, oC.z, oC.w);
 		break;
 	default:
-		UNSUPPORTED("VkFormat: %d", int(state.colorFormat[index]));
+		{
+			Vector4s current;
+			current.x = convertFixed16(oC.x, true);
+			current.y = convertFixed16(oC.y, true);
+			current.z = convertFixed16(oC.z, true);
+			current.w = convertFixed16(oC.w, true);
+			writeColor(index, cBuffer, x, current, sMask, zMask, cMask);
+		}
+		return;
 	}
 
 	int rgbaWriteMask = state.colorWriteActive(index);
