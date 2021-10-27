@@ -219,6 +219,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		case spv::StorageClassOutput:
 		case spv::StorageClassPrivate:
 		case spv::StorageClassFunction:
+		case spv::StorageClassWorkgroup:
 			{
 				bool interleavedByLane = IsStorageInterleavedByLane(objectTy.storageClass);
 				auto ptr = GetPointerToData(resultId, 0, state);
