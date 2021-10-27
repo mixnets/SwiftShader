@@ -339,6 +339,7 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	{ { VK_KHR_DRIVER_PROPERTIES_EXTENSION_NAME, VK_KHR_DRIVER_PROPERTIES_SPEC_VERSION } },
 	// Vulkan 1.1 promoted extensions
 	{ { VK_KHR_BIND_MEMORY_2_EXTENSION_NAME, VK_KHR_BIND_MEMORY_2_SPEC_VERSION } },
+	{ { VK_KHR_COPY_COMMANDS_2_EXTENSION_NAME, VK_KHR_COPY_COMMANDS_2_SPEC_VERSION } },
 	{ { VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME, VK_KHR_CREATE_RENDERPASS_2_SPEC_VERSION } },
 	{ { VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME, VK_KHR_DEDICATED_ALLOCATION_SPEC_VERSION } },
 	{ { VK_KHR_DESCRIPTOR_UPDATE_TEMPLATE_EXTENSION_NAME, VK_KHR_DESCRIPTOR_UPDATE_TEMPLATE_SPEC_VERSION } },
@@ -2608,12 +2609,28 @@ VKAPI_ATTR void VKAPI_CALL vkCmdCopyBuffer(VkCommandBuffer commandBuffer, VkBuff
 	vk::Cast(commandBuffer)->copyBuffer(vk::Cast(srcBuffer), vk::Cast(dstBuffer), regionCount, pRegions);
 }
 
+void vkCmdCopyBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferInfo2KHR *pCopyBufferInfo)
+{
+	TRACE("(VkCommandBuffer commandBuffer = %p, const VkCopyBufferInfo2KHR* pCopyBufferInfo = %p)",
+	      commandBuffer, pCopyBufferInfo);
+
+	vk::Cast(commandBuffer)->copyBuffer(vk::Cast(pCopyBufferInfo->srcBuffer), vk::Cast(pCopyBufferInfo->dstBuffer), pCopyBufferInfo->regionCount, pCopyBufferInfo->pRegions);
+}
+
 VKAPI_ATTR void VKAPI_CALL vkCmdCopyImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageCopy *pRegions)
 {
 	TRACE("(VkCommandBuffer commandBuffer = %p, VkImage srcImage = %p, VkImageLayout srcImageLayout = %d, VkImage dstImage = %p, VkImageLayout dstImageLayout = %d, uint32_t regionCount = %d, const VkImageCopy* pRegions = %p)",
 	      commandBuffer, static_cast<void *>(srcImage), srcImageLayout, static_cast<void *>(dstImage), dstImageLayout, int(regionCount), pRegions);
 
 	vk::Cast(commandBuffer)->copyImage(vk::Cast(srcImage), srcImageLayout, vk::Cast(dstImage), dstImageLayout, regionCount, pRegions);
+}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdCopyImage2KHR(VkCommandBuffer commandBuffer, const VkCopyImageInfo2KHR *pCopyImageInfo)
+{
+	TRACE("(VkCommandBuffer commandBuffer = %p, const VkCopyImageInfo2KHR* pCopyImageInfo = %p)",
+	      commandBuffer, pCopyImageInfo);
+
+	vk::Cast(commandBuffer)->copyImage(vk::Cast(pCopyImageInfo->srcImage), pCopyImageInfo->srcImageLayout, vk::Cast(pCopyImageInfo->dstImage), pCopyImageInfo->dstImageLayout, pCopyImageInfo->regionCount, pCopyImageInfo->pRegions);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdBlitImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageBlit *pRegions, VkFilter filter)
@@ -2624,6 +2641,14 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBlitImage(VkCommandBuffer commandBuffer, VkImage
 	vk::Cast(commandBuffer)->blitImage(vk::Cast(srcImage), srcImageLayout, vk::Cast(dstImage), dstImageLayout, regionCount, pRegions, filter);
 }
 
+VKAPI_ATTR void VKAPI_CALL vkCmdBlitImage2KHR(VkCommandBuffer commandBuffer, const VkBlitImageInfo2KHR *pBlitImageInfo)
+{
+	TRACE("(VkCommandBuffer commandBuffer = %p, const VkBlitImageInfo2KHR* pBlitImageInfo = %p)",
+	      commandBuffer, pBlitImageInfo);
+
+	vk::Cast(commandBuffer)->blitImage(vk::Cast(pBlitImageInfo->srcImage), pBlitImageInfo->srcImageLayout, vk::Cast(pBlitImageInfo->dstImage), pBlitImageInfo->dstImageLayout, pBlitImageInfo->regionCount, pBlitImageInfo->pRegions, pBlitImageInfo->filter);
+}
+
 VKAPI_ATTR void VKAPI_CALL vkCmdCopyBufferToImage(VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkBufferImageCopy *pRegions)
 {
 	TRACE("(VkCommandBuffer commandBuffer = %p, VkBuffer srcBuffer = %p, VkImage dstImage = %p, VkImageLayout dstImageLayout = %d, uint32_t regionCount = %d, const VkBufferImageCopy* pRegions = %p)",
@@ -2632,12 +2657,28 @@ VKAPI_ATTR void VKAPI_CALL vkCmdCopyBufferToImage(VkCommandBuffer commandBuffer,
 	vk::Cast(commandBuffer)->copyBufferToImage(vk::Cast(srcBuffer), vk::Cast(dstImage), dstImageLayout, regionCount, pRegions);
 }
 
+VKAPI_ATTR void VKAPI_CALL vkCmdCopyBufferToImage2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferToImageInfo2KHR *pCopyBufferToImageInfo)
+{
+	TRACE("(VkCommandBuffer commandBuffer = %p, const VkCopyBufferToImageInfo2KHR* pCopyBufferToImageInfo = %p)",
+	      commandBuffer, pCopyBufferToImageInfo);
+
+	vk::Cast(commandBuffer)->copyBufferToImage(vk::Cast(pCopyBufferToImageInfo->srcBuffer), vk::Cast(pCopyBufferToImageInfo->dstImage), pCopyBufferToImageInfo->dstImageLayout, pCopyBufferToImageInfo->regionCount, pCopyBufferToImageInfo->pRegions);
+}
+
 VKAPI_ATTR void VKAPI_CALL vkCmdCopyImageToBuffer(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferImageCopy *pRegions)
 {
 	TRACE("(VkCommandBuffer commandBuffer = %p, VkImage srcImage = %p, VkImageLayout srcImageLayout = %d, VkBuffer dstBuffer = %p, uint32_t regionCount = %d, const VkBufferImageCopy* pRegions = %p)",
 	      commandBuffer, static_cast<void *>(srcImage), int(srcImageLayout), static_cast<void *>(dstBuffer), int(regionCount), pRegions);
 
 	vk::Cast(commandBuffer)->copyImageToBuffer(vk::Cast(srcImage), srcImageLayout, vk::Cast(dstBuffer), regionCount, pRegions);
+}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdCopyImageToBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2KHR *pCopyImageToBufferInfo)
+{
+	TRACE("(VkCommandBuffer commandBuffer = %p, const VkCopyImageToBufferInfo2KHR* pCopyImageToBufferInfo = %p)",
+	      commandBuffer, pCopyImageToBufferInfo);
+
+	vk::Cast(commandBuffer)->copyImageToBuffer(vk::Cast(pCopyImageToBufferInfo->srcImage), pCopyImageToBufferInfo->srcImageLayout, vk::Cast(pCopyImageToBufferInfo->dstBuffer), pCopyImageToBufferInfo->regionCount, pCopyImageToBufferInfo->pRegions);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdUpdateBuffer(VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void *pData)
@@ -2686,6 +2727,14 @@ VKAPI_ATTR void VKAPI_CALL vkCmdResolveImage(VkCommandBuffer commandBuffer, VkIm
 	      commandBuffer, static_cast<void *>(srcImage), int(srcImageLayout), static_cast<void *>(dstImage), int(dstImageLayout), regionCount, pRegions);
 
 	vk::Cast(commandBuffer)->resolveImage(vk::Cast(srcImage), srcImageLayout, vk::Cast(dstImage), dstImageLayout, regionCount, pRegions);
+}
+
+VKAPI_ATTR void VKAPI_CALL vkCmdResolveImage2KHR(VkCommandBuffer commandBuffer, const VkResolveImageInfo2KHR *pResolveImageInfo)
+{
+	TRACE("(VkCommandBuffer commandBuffer = %p, const VkResolveImageInfo2KHR* pResolveImageInfo = %p)",
+	      commandBuffer, pResolveImageInfo);
+
+	vk::Cast(commandBuffer)->resolveImage(vk::Cast(pResolveImageInfo->srcImage), pResolveImageInfo->srcImageLayout, vk::Cast(pResolveImageInfo->dstImage), pResolveImageInfo->dstImageLayout, pResolveImageInfo->regionCount, pResolveImageInfo->pRegions);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdSetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask)
