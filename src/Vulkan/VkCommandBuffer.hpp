@@ -102,15 +102,20 @@ public:
 	void bindIndexBuffer(Buffer *buffer, VkDeviceSize offset, VkIndexType indexType);
 	void dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ);
 	void dispatchIndirect(Buffer *buffer, VkDeviceSize offset);
-	void copyBuffer(const Buffer *srcBuffer, Buffer *dstBuffer, uint32_t regionCount, const VkBufferCopy *pRegions);
+	template<typename BufferCopy>
+	void copyBuffer(const Buffer *srcBuffer, Buffer *dstBuffer, uint32_t regionCount, const BufferCopy *pRegions);
+	template<typename ImageCopy>
 	void copyImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
-	               uint32_t regionCount, const VkImageCopy *pRegions);
+	               uint32_t regionCount, const ImageCopy *pRegions);
+	template<typename ImageBlit>
 	void blitImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
-	               uint32_t regionCount, const VkImageBlit *pRegions, VkFilter filter);
+	               uint32_t regionCount, const ImageBlit *pRegions, VkFilter filter);
+	template<typename BufferImageCopy>
 	void copyBufferToImage(Buffer *srcBuffer, Image *dstImage, VkImageLayout dstImageLayout,
-	                       uint32_t regionCount, const VkBufferImageCopy *pRegions);
+	                       uint32_t regionCount, const BufferImageCopy *pRegions);
+	template<typename BufferImageCopy>
 	void copyImageToBuffer(Image *srcImage, VkImageLayout srcImageLayout, Buffer *dstBuffer,
-	                       uint32_t regionCount, const VkBufferImageCopy *pRegions);
+	                       uint32_t regionCount, const BufferImageCopy *pRegions);
 	void updateBuffer(Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void *pData);
 	void fillBuffer(Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data);
 	void clearColorImage(Image *image, VkImageLayout imageLayout, const VkClearColorValue *pColor,
@@ -119,8 +124,9 @@ public:
 	                            uint32_t rangeCount, const VkImageSubresourceRange *pRanges);
 	void clearAttachments(uint32_t attachmentCount, const VkClearAttachment *pAttachments,
 	                      uint32_t rectCount, const VkClearRect *pRects);
+	template<typename ImageResolve>
 	void resolveImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
-	                  uint32_t regionCount, const VkImageResolve *pRegions);
+	                  uint32_t regionCount, const ImageResolve *pRegions);
 	void setEvent(Event *event, VkPipelineStageFlags stageMask);
 	void resetEvent(Event *event, VkPipelineStageFlags stageMask);
 	void waitEvents(uint32_t eventCount, const VkEvent *pEvents, VkPipelineStageFlags srcStageMask,
@@ -186,7 +192,7 @@ public:
 private:
 	void resetState();
 	template<typename T, typename... Args>
-	void addCommand(Args &&...args);
+	void addCommand(Args &&... args);
 
 	enum State
 	{
