@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1abe4a77_7fe2594d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-27T15:55:58Z",
+      "side": 1,
+      "message": "Sean can you do approval review? Thanks",
+      "revId": "3627e0465c151b1d221900b1b8886d36e7db83b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "448854a4_15486cc1",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-27T15:55:58Z",
+      "side": 1,
+      "message": "note: This code would probably look a lot simpler if we didn\u0027t bother with the allocation callbacks. b/201798871 pretty much concludes that it\u0027s not helpful. I think readability is more important to us for the foreseeable future. If we ever do need accurate callback usage we can probably hook new/delete and not need invasive changes.\n\nAnyway, just a note in case this or other code is easier to write without all this complexity. LGTM to keep it where it\u0027s no trouble.",
+      "range": {
+        "startLine": 71,
+        "startChar": 10,
+        "endLine": 71,
+        "endChar": 13
+      },
+      "revId": "3627e0465c151b1d221900b1b8886d36e7db83b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
