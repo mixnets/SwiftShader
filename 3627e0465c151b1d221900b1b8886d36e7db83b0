@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "728d451e_fd74d474",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1531,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T12:43:52Z",
+      "side": 0,
+      "message": "This can now contain VK_EVENT_CREATE_DEVICE_ONLY_BIT_KHR, but it doesn\u0027t affect SwiftShader\u0027s behavior, so this check was simply removed.",
+      "range": {
+        "startLine": 1531,
+        "startChar": 4,
+        "endLine": 1531,
+        "endChar": 22
+      },
+      "revId": "3627e0465c151b1d221900b1b8886d36e7db83b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
