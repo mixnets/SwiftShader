@@ -117,6 +117,30 @@
       },
       "revId": "7fe0cad10aac8ab688ec7ea40e399b57ec25a8de",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c232edf5_a33cb979",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-27T18:19:48Z",
+      "side": 1,
+      "message": "Yeah, part of me is wondering how easy it is to set up a gerrit bot that creates a new CL on SwiftShader each time git-hooks is updated.",
+      "parentUuid": "8683cd5e_4f55d28e",
+      "range": {
+        "startLine": 9,
+        "startChar": 59,
+        "endLine": 10,
+        "endChar": 56
+      },
+      "revId": "7fe0cad10aac8ab688ec7ea40e399b57ec25a8de",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
