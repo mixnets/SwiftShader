@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2c9303bf_9b035d8f",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T19:37:50Z",
+      "side": 0,
+      "message": "vkCmdSetEvent2KHR now uses VkDependencyInfoKHR, which contains neither VkPipelineStageFlags nor VkPipelineStageFlags2KHR.",
+      "parentUuid": "cb634548_5d474a92",
+      "range": {
+        "startLine": 926,
+        "startChar": 1,
+        "endLine": 926,
+        "endChar": 130
+      },
+      "revId": "3627e0465c151b1d221900b1b8886d36e7db83b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cf1ccaae_f70956d4",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 4
@@ -37,6 +61,30 @@
       "writtenOn": "2021-10-27T15:47:03Z",
       "side": 0,
       "message": "Same as above. Let\u0027s also make this FIXME a TODO.",
+      "range": {
+        "startLine": 947,
+        "startChar": 43,
+        "endLine": 947,
+        "endChar": 48
+      },
+      "revId": "3627e0465c151b1d221900b1b8886d36e7db83b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "119e5784_cf041ce0",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 947,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T19:37:50Z",
+      "side": 0,
+      "message": "This one is doable, so done.",
+      "parentUuid": "cf1ccaae_f70956d4",
       "range": {
         "startLine": 947,
         "startChar": 43,
@@ -84,6 +132,30 @@
       "side": 0,
       "message": "Please make this check that no other flags are being used.",
       "parentUuid": "728d451e_fd74d474",
+      "range": {
+        "startLine": 1531,
+        "startChar": 4,
+        "endLine": 1531,
+        "endChar": 22
+      },
+      "revId": "3627e0465c151b1d221900b1b8886d36e7db83b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "080ff666_98038aab",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1531,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T19:37:50Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "84441912_8ae938e3",
       "range": {
         "startLine": 1531,
         "startChar": 4,

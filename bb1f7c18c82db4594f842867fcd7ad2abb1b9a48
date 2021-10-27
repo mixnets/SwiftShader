@@ -60,6 +60,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3352a3c5_533cb243",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1658,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T19:37:50Z",
+      "side": 1,
+      "message": "Done for resetEvent, kept as is for setEvent.",
+      "parentUuid": "94e54096_db37658f",
+      "range": {
+        "startLine": 1658,
+        "startChar": 4,
+        "endLine": 1658,
+        "endChar": 9
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "615fb09c_4a8cbc03",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 4
@@ -71,6 +95,30 @@
       "writtenOn": "2021-10-27T15:47:03Z",
       "side": 1,
       "message": "I think this one can be removed now, always using the new one which takes the 64-bit flags mask?\n\nNote that the spec states \"The VkPipelineStageFlags2KHR bitmask goes beyond the 31 individual bit flags allowable within a C99 enum, which is how VkPipelineStageFlagBits is defined. The first 31 values are common to both, and are interchangeable.\"",
+      "range": {
+        "startLine": 85,
+        "startChar": 1,
+        "endLine": 85,
+        "endChar": 98
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4a55b9c_efea495a",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T19:37:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "615fb09c_4a8cbc03",
       "range": {
         "startLine": 85,
         "startChar": 1,
@@ -104,6 +152,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "39a6b304_4c912bd0",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T19:37:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85fc044b_2c3685e5",
+      "range": {
+        "startLine": 129,
+        "startChar": 31,
+        "endLine": 129,
+        "endChar": 56
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1dedd67e_b53ab597",
@@ -117,6 +189,24 @@
       "writtenOn": "2021-10-27T18:17:49Z",
       "side": 1,
       "message": "Nit: I think this should be the last case in the switch statement above the default case to mirror everywhere else it appears in the code.",
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71f39805_325485c0",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T19:37:50Z",
+      "side": 1,
+      "message": "Well, it is, in a way, since every other case falls through to the default case.",
+      "parentUuid": "1dedd67e_b53ab597",
       "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
@@ -138,6 +228,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7ce2bf8_30e9f83c",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T19:37:50Z",
+      "side": 1,
+      "message": "Good catch, that\u0027s copied from old code and makes absolutely no sense. SubmitInfo and VkSubmitInfo2KHR are two different structures with different memory layouts. Removed it.",
+      "parentUuid": "4bf86ebd_f5e6ec7c",
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "550e92b2_5ee9a33f",
@@ -151,6 +259,30 @@
       "writtenOn": "2021-10-27T15:47:03Z",
       "side": 1,
       "message": "Can this duplication be avoided?",
+      "range": {
+        "startLine": 53,
+        "startChar": 1,
+        "endLine": 54,
+        "endChar": 87
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d30f205_586f29ef",
+        "filename": "src/Vulkan/VkQueue.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-27T19:37:50Z",
+      "side": 1,
+      "message": "Done. Now a template function.",
+      "parentUuid": "550e92b2_5ee9a33f",
       "range": {
         "startLine": 53,
         "startChar": 1,
