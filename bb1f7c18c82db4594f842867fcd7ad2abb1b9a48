@@ -106,6 +106,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1dedd67e_b53ab597",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-27T18:17:49Z",
+      "side": 1,
+      "message": "Nit: I think this should be the last case in the switch statement above the default case to mirror everywhere else it appears in the code.",
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4bf86ebd_f5e6ec7c",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-10-27T18:17:49Z",
+      "side": 1,
+      "message": "I\u0027m curious about why memcpy is used here but not with the allocation on line 74",
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "550e92b2_5ee9a33f",
         "filename": "src/Vulkan/VkQueue.hpp",
         "patchSetId": 4
