@@ -18,6 +18,115 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "956b0dcf_3cc1253a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-27T15:47:03Z",
+      "side": 1,
+      "message": "Cool! Sean, can you have a look as well?",
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94e54096_db37658f",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1658,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-27T15:47:03Z",
+      "side": 1,
+      "message": "TODO, since it\u0027s not a bug to ignore this. Also I would move this back into the command as also suggested above.",
+      "range": {
+        "startLine": 1658,
+        "startChar": 4,
+        "endLine": 1658,
+        "endChar": 9
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "615fb09c_4a8cbc03",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-27T15:47:03Z",
+      "side": 1,
+      "message": "I think this one can be removed now, always using the new one which takes the 64-bit flags mask?\n\nNote that the spec states \"The VkPipelineStageFlags2KHR bitmask goes beyond the 31 individual bit flags allowable within a C99 enum, which is how VkPipelineStageFlagBits is defined. The first 31 values are common to both, and are interchangeable.\"",
+      "range": {
+        "startLine": 85,
+        "startChar": 1,
+        "endLine": 85,
+        "endChar": 98
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85fc044b_2c3685e5",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-27T15:47:03Z",
+      "side": 1,
+      "message": "Same, can the one on line 128 be eliminated?",
+      "range": {
+        "startLine": 129,
+        "startChar": 31,
+        "endLine": 129,
+        "endChar": 56
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "550e92b2_5ee9a33f",
+        "filename": "src/Vulkan/VkQueue.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-27T15:47:03Z",
+      "side": 1,
+      "message": "Can this duplication be avoided?",
+      "range": {
+        "startLine": 53,
+        "startChar": 1,
+        "endLine": 54,
+        "endChar": 87
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7a1043ac_b6321575",
