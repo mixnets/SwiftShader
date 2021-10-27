@@ -295,10 +295,7 @@ func (r *regres) run() error {
 	for {
 		if now := time.Now(); toDate(now) != lastUpdatedTestLists {
 			lastUpdatedTestLists = toDate(now)
-			if err := r.runDaily(client, backendLLVM, false); err != nil {
-				log.Println(err.Error())
-			}
-			if err := r.runDaily(client, backendSubzero, true); err != nil {
+			if err := r.runDaily(client, [2]reactorBackend{backendLLVM, backendSubzero}, [2]bool{false, true}); err != nil {
 				log.Println(err.Error())
 			}
 		}
@@ -664,22 +661,7 @@ func (r *regres) testParent(change *changeInfo, testlists testlist.Lists, d deqp
 // new or existing gerrit change. If genCov is true, then coverage
 // information will be generated for the run, and commiteed to the
 // coverageBranch.
-func (r *regres) runDaily(client *gerrit.Client, reactorBackend reactorBackend, genCov bool) error {
-	// TODO(b/152192800): Generating coverage data is currently broken.
-	genCov = false
-
-	log.Printf("Updating test lists (Backend: %v)\n", reactorBackend)
-
-	if genCov {
-		if r.githubUser == "" {
-			log.Println("--gh-user not specified and SS_GITHUB_USER not set. Disabling code coverage generation")
-			genCov = false
-		} else if r.githubPass == "" {
-			log.Println("--gh-pass not specified and SS_GITHUB_PASS not set. Disabling code coverage generation")
-			genCov = false
-		}
-	}
-
+func (r *regres) runDaily(client *gerrit.Client, reactorBackends [2]reactorBackend, genCovs [2]bool) error {
 	dailyHash := git.Hash{}
 	if r.dailyChange == "" {
 		headHash, err := git.FetchRefHash("HEAD", gitURL)
@@ -691,47 +673,69 @@ func (r *regres) runDaily(client *gerrit.Client, reactorBackend reactorBackend, 
 		dailyHash = git.ParseHash(r.dailyChange)
 	}
 
-	return r.runDailyTest(dailyHash, reactorBackend, genCov,
-		func(test *test, testLists testlist.Lists, results *deqp.Results) error {
-			errs := []error{}
-
-			if err := r.postDailyResults(client, test, testLists, results, reactorBackend, dailyHash); err != nil {
-				errs = append(errs, err)
-			}
-
-			if genCov {
-				if err := r.postCoverageResults(results.Coverage, dailyHash); err != nil {
-					errs = append(errs, err)
-				}
-			}
-
-			return cause.Merge(errs...)
-		})
-}
-
-// runDailyTest performs the full deqp run on the HEAD change, calling
-// withResults with the test results.
-func (r *regres) runDailyTest(dailyHash git.Hash, reactorBackend reactorBackend, genCov bool, withResults func(*test, testlist.Lists, *deqp.Results) error) error {
-	// Get the full test results.
-	test := r.newTest(dailyHash).setReactorBackend(reactorBackend)
-	defer test.cleanup()
+	t := r.newTest(dailyHash)
+	defer t.cleanup()
 
 	// Always need to checkout the change.
-	if err := test.checkout(); err != nil {
+	if err := t.checkout(); err != nil {
 		return cause.Wrap(err, "Failed to checkout '%s'", dailyHash)
 	}
 
-	d, err := r.getOrBuildDEQP(test, true)
+	deqpBuild, err := r.getOrBuildDEQP(t, true)
 	if err != nil {
 		return cause.Wrap(err, "Failed to build deqp for '%s'", dailyHash)
 	}
 
 	// Load the test lists.
-	testLists, err := test.loadTestLists(fullTestListRelPath)
+	testLists, err := t.loadTestLists(fullTestListRelPath)
 	if err != nil {
 		return cause.Wrap(err, "Failed to load full test lists for '%s'", dailyHash)
 	}
 
+	errs := []error{}
+	for idx := range reactorBackends {
+		reactorBackend := reactorBackends[idx]
+		genCov := genCovs[idx]
+		// TODO(b/162192800): Generating coverage data is currently broken.
+		genCov = false
+		if genCov {
+			if r.githubUser == "" {
+				log.Println("--gh-user not specified and SS_GITHUB_USER not set. Disabling code coverage generation")
+				genCov = false
+			} else if r.githubPass == "" {
+				log.Println("--gh-pass not specified and SS_GITHUB_PASS not set. Disabling code coverage generation")
+				genCov = false
+			}
+		}
+
+		t = t.setReactorBackend(reactorBackend)
+		if err := r.runDailyTest(dailyHash, t, testLists, genCov, deqpBuild,
+			func(t *test, testLists testlist.Lists, results *deqp.Results) error {
+				errs := []error{}
+
+				if err := r.postDailyResults(client, t, testLists, results, reactorBackend, dailyHash); err != nil {
+					errs = append(errs, err)
+				}
+
+				if genCov {
+					if err := r.postCoverageResults(results.Coverage, dailyHash); err != nil {
+						errs = append(errs, err)
+					}
+				}
+
+				return cause.Merge(errs...)
+			}); err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	return cause.Merge(errs...)
+}
+
+// runDailyTest performs the full deqp run on the HEAD change, calling
+// withResults with the test results.
+func (r *regres) runDailyTest(dailyHash git.Hash, test *test, testLists testlist.Lists, genCov bool, d deqpBuild, withResults func(*test, testlist.Lists, *deqp.Results) error) error {
+	// Get the full test results.
 	if genCov {
 		test.coverageEnv = &cov.Env{
 			LLVM:     *r.toolchain,
