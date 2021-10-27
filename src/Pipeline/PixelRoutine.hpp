@@ -55,9 +55,8 @@ protected:
 	void alphaToCoverage(Int cMask[4], const Float4 &alpha, const SampleSet &samples);
 
 	// Raster operations
-	void alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4s &current, const Int &x);
 	void writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4f &oC, const Int &sMask, const Int &zMask, const Int &cMask);
-	void alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f &oC, const Int &x);
+	void alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f &oC, const Int &x, bool clampBlendFactors);
 	void writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &current, const Int &sMask, const Int &zMask, const Int &cMask);
 
 	bool isSRGB(int index) const;
@@ -76,11 +75,9 @@ private:
 	void depthBoundsTest(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, Int &cMask);
 
 	// Raster operations
-	void blendFactor(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorActive);
-	void blendFactorAlpha(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorAlphaActive);
 	void readPixel(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &pixel);
-	void blendFactor(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorActive);
-	void blendFactorAlpha(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorAlphaActive);
+	void blendFactor(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorActive, bool clampBlendFactors);
+	void blendFactorAlpha(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorAlphaActive, bool clampBlendFactors);
 	void writeStencil(Pointer<Byte> &sBuffer, const Int &x, const Int sMask[4], const Int zMask[4], const Int cMask[4], const SampleSet &samples);
 	void writeDepth(Pointer<Byte> &zBuffer, const Int &x, const Int zMask[4], const SampleSet &samples);
 	void occlusionSampleCount(const Int zMask[4], const Int sMask[4], const SampleSet &samples);

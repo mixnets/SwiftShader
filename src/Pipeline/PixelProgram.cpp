@@ -299,14 +299,15 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 			for(unsigned int q : samples)
 			{
 				Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
+
+				Vector4f colorf = c[index];
+				alphaBlend(index, buffer, colorf, x, true);
+
 				Vector4s color;
-
-				color.x = convertFixed16(c[index].x, false);
-				color.y = convertFixed16(c[index].y, false);
-				color.z = convertFixed16(c[index].z, false);
-				color.w = convertFixed16(c[index].w, false);
-
-				alphaBlend(index, buffer, color, x);
+				color.x = convertFixed16(colorf.x, false);
+				color.y = convertFixed16(colorf.y, false);
+				color.z = convertFixed16(colorf.z, false);
+				color.w = convertFixed16(colorf.w, false);
 				writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 			}
 			break;
@@ -344,7 +345,7 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 				Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
 				Vector4f color = c[index];
 
-				alphaBlend(index, buffer, color, x);
+				alphaBlend(index, buffer, color, x, false);
 				writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 			}
 			break;

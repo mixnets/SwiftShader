@@ -931,137 +931,6 @@ void PixelRoutine::stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkS
 	}
 }
 
-void PixelRoutine::blendFactor(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorActive)
-{
-	switch(blendFactorActive)
-	{
-	case VK_BLEND_FACTOR_ZERO:
-		// Optimized
-		break;
-	case VK_BLEND_FACTOR_ONE:
-		// Optimized
-		break;
-	case VK_BLEND_FACTOR_SRC_COLOR:
-		blendFactor.x = current.x;
-		blendFactor.y = current.y;
-		blendFactor.z = current.z;
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR:
-		blendFactor.x = Short4(0xFFFFu) - current.x;
-		blendFactor.y = Short4(0xFFFFu) - current.y;
-		blendFactor.z = Short4(0xFFFFu) - current.z;
-		break;
-	case VK_BLEND_FACTOR_DST_COLOR:
-		blendFactor.x = pixel.x;
-		blendFactor.y = pixel.y;
-		blendFactor.z = pixel.z;
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR:
-		blendFactor.x = Short4(0xFFFFu) - pixel.x;
-		blendFactor.y = Short4(0xFFFFu) - pixel.y;
-		blendFactor.z = Short4(0xFFFFu) - pixel.z;
-		break;
-	case VK_BLEND_FACTOR_SRC_ALPHA:
-		blendFactor.x = current.w;
-		blendFactor.y = current.w;
-		blendFactor.z = current.w;
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA:
-		blendFactor.x = Short4(0xFFFFu) - current.w;
-		blendFactor.y = Short4(0xFFFFu) - current.w;
-		blendFactor.z = Short4(0xFFFFu) - current.w;
-		break;
-	case VK_BLEND_FACTOR_DST_ALPHA:
-		blendFactor.x = pixel.w;
-		blendFactor.y = pixel.w;
-		blendFactor.z = pixel.w;
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA:
-		blendFactor.x = Short4(0xFFFFu) - pixel.w;
-		blendFactor.y = Short4(0xFFFFu) - pixel.w;
-		blendFactor.z = Short4(0xFFFFu) - pixel.w;
-		break;
-	case VK_BLEND_FACTOR_SRC_ALPHA_SATURATE:
-		blendFactor.x = Short4(0xFFFFu) - pixel.w;
-		blendFactor.x = Min(As<UShort4>(blendFactor.x), As<UShort4>(current.w));
-		blendFactor.y = blendFactor.x;
-		blendFactor.z = blendFactor.x;
-		break;
-	case VK_BLEND_FACTOR_CONSTANT_COLOR:
-		blendFactor.x = *Pointer<Short4>(data + OFFSET(DrawData, factor.blendConstant4W[0]));
-		blendFactor.y = *Pointer<Short4>(data + OFFSET(DrawData, factor.blendConstant4W[1]));
-		blendFactor.z = *Pointer<Short4>(data + OFFSET(DrawData, factor.blendConstant4W[2]));
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR:
-		blendFactor.x = *Pointer<Short4>(data + OFFSET(DrawData, factor.invBlendConstant4W[0]));
-		blendFactor.y = *Pointer<Short4>(data + OFFSET(DrawData, factor.invBlendConstant4W[1]));
-		blendFactor.z = *Pointer<Short4>(data + OFFSET(DrawData, factor.invBlendConstant4W[2]));
-		break;
-	case VK_BLEND_FACTOR_CONSTANT_ALPHA:
-		blendFactor.x = *Pointer<Short4>(data + OFFSET(DrawData, factor.blendConstant4W[3]));
-		blendFactor.y = *Pointer<Short4>(data + OFFSET(DrawData, factor.blendConstant4W[3]));
-		blendFactor.z = *Pointer<Short4>(data + OFFSET(DrawData, factor.blendConstant4W[3]));
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA:
-		blendFactor.x = *Pointer<Short4>(data + OFFSET(DrawData, factor.invBlendConstant4W[3]));
-		blendFactor.y = *Pointer<Short4>(data + OFFSET(DrawData, factor.invBlendConstant4W[3]));
-		blendFactor.z = *Pointer<Short4>(data + OFFSET(DrawData, factor.invBlendConstant4W[3]));
-		break;
-	default:
-		UNSUPPORTED("VkBlendFactor: %d", int(blendFactorActive));
-	}
-}
-
-void PixelRoutine::blendFactorAlpha(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorAlphaActive)
-{
-	switch(blendFactorAlphaActive)
-	{
-	case VK_BLEND_FACTOR_ZERO:
-		// Optimized
-		break;
-	case VK_BLEND_FACTOR_ONE:
-		// Optimized
-		break;
-	case VK_BLEND_FACTOR_SRC_COLOR:
-		blendFactor.w = current.w;
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR:
-		blendFactor.w = Short4(0xFFFFu) - current.w;
-		break;
-	case VK_BLEND_FACTOR_DST_COLOR:
-		blendFactor.w = pixel.w;
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR:
-		blendFactor.w = Short4(0xFFFFu) - pixel.w;
-		break;
-	case VK_BLEND_FACTOR_SRC_ALPHA:
-		blendFactor.w = current.w;
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA:
-		blendFactor.w = Short4(0xFFFFu) - current.w;
-		break;
-	case VK_BLEND_FACTOR_DST_ALPHA:
-		blendFactor.w = pixel.w;
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA:
-		blendFactor.w = Short4(0xFFFFu) - pixel.w;
-		break;
-	case VK_BLEND_FACTOR_SRC_ALPHA_SATURATE:
-		blendFactor.w = Short4(0xFFFFu);
-		break;
-	case VK_BLEND_FACTOR_CONSTANT_COLOR:
-	case VK_BLEND_FACTOR_CONSTANT_ALPHA:
-		blendFactor.w = *Pointer<Short4>(data + OFFSET(DrawData, factor.blendConstant4W[3]));
-		break;
-	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR:
-	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA:
-		blendFactor.w = *Pointer<Short4>(data + OFFSET(DrawData, factor.invBlendConstant4W[3]));
-		break;
-	default:
-		UNSUPPORTED("VkBlendFactor: %d", int(blendFactorAlphaActive));
-	}
-}
-
 bool PixelRoutine::isSRGB(int index) const
 {
 	return vk::Format(state.colorFormat[index]).isSRGBformat();
@@ -1363,127 +1232,6 @@ void PixelRoutine::readPixel(int index, const Pointer<Byte> &cBuffer, const Int 
 	if(isSRGB(index))
 	{
 		sRGBtoLinear16_12_16(pixel);
-	}
-}
-
-void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4s &current, const Int &x)
-{
-	if(!state.blendState[index].alphaBlendEnable)
-	{
-		return;
-	}
-
-	ASSERT(state.colorFormat[index].supportsColorAttachmentBlend());
-
-	Vector4s pixel;
-	readPixel(index, cBuffer, x, pixel);
-
-	// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
-	Vector4s sourceFactor;
-	Vector4s destFactor;
-
-	blendFactor(sourceFactor, current, pixel, state.blendState[index].sourceBlendFactor);
-	blendFactor(destFactor, current, pixel, state.blendState[index].destBlendFactor);
-
-	if(state.blendState[index].sourceBlendFactor != VK_BLEND_FACTOR_ONE && state.blendState[index].sourceBlendFactor != VK_BLEND_FACTOR_ZERO)
-	{
-		current.x = MulHigh(As<UShort4>(current.x), As<UShort4>(sourceFactor.x));
-		current.y = MulHigh(As<UShort4>(current.y), As<UShort4>(sourceFactor.y));
-		current.z = MulHigh(As<UShort4>(current.z), As<UShort4>(sourceFactor.z));
-	}
-
-	if(state.blendState[index].destBlendFactor != VK_BLEND_FACTOR_ONE && state.blendState[index].destBlendFactor != VK_BLEND_FACTOR_ZERO)
-	{
-		pixel.x = MulHigh(As<UShort4>(pixel.x), As<UShort4>(destFactor.x));
-		pixel.y = MulHigh(As<UShort4>(pixel.y), As<UShort4>(destFactor.y));
-		pixel.z = MulHigh(As<UShort4>(pixel.z), As<UShort4>(destFactor.z));
-	}
-
-	switch(state.blendState[index].blendOperation)
-	{
-	case VK_BLEND_OP_ADD:
-		current.x = AddSat(As<UShort4>(current.x), As<UShort4>(pixel.x));
-		current.y = AddSat(As<UShort4>(current.y), As<UShort4>(pixel.y));
-		current.z = AddSat(As<UShort4>(current.z), As<UShort4>(pixel.z));
-		break;
-	case VK_BLEND_OP_SUBTRACT:
-		current.x = SubSat(As<UShort4>(current.x), As<UShort4>(pixel.x));
-		current.y = SubSat(As<UShort4>(current.y), As<UShort4>(pixel.y));
-		current.z = SubSat(As<UShort4>(current.z), As<UShort4>(pixel.z));
-		break;
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		current.x = SubSat(As<UShort4>(pixel.x), As<UShort4>(current.x));
-		current.y = SubSat(As<UShort4>(pixel.y), As<UShort4>(current.y));
-		current.z = SubSat(As<UShort4>(pixel.z), As<UShort4>(current.z));
-		break;
-	case VK_BLEND_OP_MIN:
-		current.x = Min(As<UShort4>(current.x), As<UShort4>(pixel.x));
-		current.y = Min(As<UShort4>(current.y), As<UShort4>(pixel.y));
-		current.z = Min(As<UShort4>(current.z), As<UShort4>(pixel.z));
-		break;
-	case VK_BLEND_OP_MAX:
-		current.x = Max(As<UShort4>(current.x), As<UShort4>(pixel.x));
-		current.y = Max(As<UShort4>(current.y), As<UShort4>(pixel.y));
-		current.z = Max(As<UShort4>(current.z), As<UShort4>(pixel.z));
-		break;
-	case VK_BLEND_OP_SRC_EXT:
-		// No operation
-		break;
-	case VK_BLEND_OP_DST_EXT:
-		current.x = pixel.x;
-		current.y = pixel.y;
-		current.z = pixel.z;
-		break;
-	case VK_BLEND_OP_ZERO_EXT:
-		current.x = Short4(0x0000);
-		current.y = Short4(0x0000);
-		current.z = Short4(0x0000);
-		break;
-	default:
-		UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperation));
-	}
-
-	blendFactorAlpha(sourceFactor, current, pixel, state.blendState[index].sourceBlendFactorAlpha);
-	blendFactorAlpha(destFactor, current, pixel, state.blendState[index].destBlendFactorAlpha);
-
-	if(state.blendState[index].sourceBlendFactorAlpha != VK_BLEND_FACTOR_ONE && state.blendState[index].sourceBlendFactorAlpha != VK_BLEND_FACTOR_ZERO)
-	{
-		current.w = MulHigh(As<UShort4>(current.w), As<UShort4>(sourceFactor.w));
-	}
-
-	if(state.blendState[index].destBlendFactorAlpha != VK_BLEND_FACTOR_ONE && state.blendState[index].destBlendFactorAlpha != VK_BLEND_FACTOR_ZERO)
-	{
-		pixel.w = MulHigh(As<UShort4>(pixel.w), As<UShort4>(destFactor.w));
-	}
-
-	switch(state.blendState[index].blendOperationAlpha)
-	{
-	case VK_BLEND_OP_ADD:
-		current.w = AddSat(As<UShort4>(current.w), As<UShort4>(pixel.w));
-		break;
-	case VK_BLEND_OP_SUBTRACT:
-		current.w = SubSat(As<UShort4>(current.w), As<UShort4>(pixel.w));
-		break;
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		current.w = SubSat(As<UShort4>(pixel.w), As<UShort4>(current.w));
-		break;
-	case VK_BLEND_OP_MIN:
-		current.w = Min(As<UShort4>(current.w), As<UShort4>(pixel.w));
-		break;
-	case VK_BLEND_OP_MAX:
-		current.w = Max(As<UShort4>(current.w), As<UShort4>(pixel.w));
-		break;
-	case VK_BLEND_OP_SRC_EXT:
-		// No operation
-		break;
-	case VK_BLEND_OP_DST_EXT:
-		current.w = pixel.w;
-		break;
-	case VK_BLEND_OP_ZERO_EXT:
-		current.w = Short4(0x0000);
-		break;
-	default:
-		UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperationAlpha));
 	}
 }
 
@@ -2174,7 +1922,7 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 	}
 }
 
-void PixelRoutine::blendFactor(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorActive)
+void PixelRoutine::blendFactor(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorActive, bool clampBlendFactors)
 {
 	switch(blendFactorActive)
 	{
@@ -2258,9 +2006,16 @@ void PixelRoutine::blendFactor(Vector4f &blendFactor, const Vector4f &oC, const 
 	default:
 		UNSUPPORTED("VkBlendFactor: %d", int(blendFactorActive));
 	}
+
+	if(clampBlendFactors && (blendFactorActive != VK_BLEND_FACTOR_ZERO) && (blendFactorActive != VK_BLEND_FACTOR_ONE))
+	{
+		blendFactor.x = Min(Max(blendFactor.x, Float4(0.0f)), Float4(1.0f));
+		blendFactor.y = Min(Max(blendFactor.y, Float4(0.0f)), Float4(1.0f));
+		blendFactor.z = Min(Max(blendFactor.z, Float4(0.0f)), Float4(1.0f));
+	}
 }
 
-void PixelRoutine::blendFactorAlpha(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorAlphaActive)
+void PixelRoutine::blendFactorAlpha(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorAlphaActive, bool clampBlendFactors)
 {
 	switch(blendFactorAlphaActive)
 	{
@@ -2308,9 +2063,14 @@ void PixelRoutine::blendFactorAlpha(Vector4f &blendFactor, const Vector4f &oC, c
 	default:
 		UNSUPPORTED("VkBlendFactor: %d", int(blendFactorAlphaActive));
 	}
+
+	if(clampBlendFactors && (blendFactorAlphaActive != VK_BLEND_FACTOR_ZERO) && (blendFactorAlphaActive != VK_BLEND_FACTOR_ONE))
+	{
+		blendFactor.w = Min(Max(blendFactor.w, Float4(0.0f)), Float4(1.0f));
+	}
 }
 
-void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f &oC, const Int &x)
+void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f &oC, const Int &x, bool clampBlendFactors)
 {
 	if(!state.blendState[index].alphaBlendEnable)
 	{
@@ -2328,10 +2088,6 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f 
 	// integers. Half-floats are stored as full 32-bit floats.
 	// Non-float and non-fixed point formats are not alpha blended.
 	Vector4f pixel;
-
-	Vector4s color;
-	Short4 c01;
-	Short4 c23;
 
 	Float4 one;
 	if(format.isFloatFormat())
@@ -2435,15 +2191,24 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f 
 		pixel.w = one;
 		break;
 	default:
-		UNSUPPORTED("VkFormat: %d", int(state.colorFormat[index]));
+		{
+			// Attempt to read an integer based format and convert it to float
+			Vector4s color;
+			readPixel(index, cBuffer, x, color);
+			pixel.x = convertFloat32(color.x);
+			pixel.y = convertFloat32(color.y);
+			pixel.z = convertFloat32(color.z);
+			pixel.w = convertFloat32(color.w);
+		}
+		break;
 	}
 
 	// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
 	Vector4f sourceFactor;
 	Vector4f destFactor;
 
-	blendFactor(sourceFactor, oC, pixel, state.blendState[index].sourceBlendFactor);
-	blendFactor(destFactor, oC, pixel, state.blendState[index].destBlendFactor);
+	blendFactor(sourceFactor, oC, pixel, state.blendState[index].sourceBlendFactor, clampBlendFactors);
+	blendFactor(destFactor, oC, pixel, state.blendState[index].destBlendFactor, clampBlendFactors);
 
 	oC.x *= sourceFactor.x;
 	oC.y *= sourceFactor.y;
@@ -2497,8 +2262,8 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f 
 		UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperation));
 	}
 
-	blendFactorAlpha(sourceFactor, oC, pixel, state.blendState[index].sourceBlendFactorAlpha);
-	blendFactorAlpha(destFactor, oC, pixel, state.blendState[index].destBlendFactorAlpha);
+	blendFactorAlpha(sourceFactor, oC, pixel, state.blendState[index].sourceBlendFactorAlpha, clampBlendFactors);
+	blendFactorAlpha(destFactor, oC, pixel, state.blendState[index].destBlendFactorAlpha, clampBlendFactors);
 
 	oC.w *= sourceFactor.w;
 	pixel.w *= destFactor.w;
