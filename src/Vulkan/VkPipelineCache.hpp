@@ -73,6 +73,11 @@ public:
 		const bool optimize;
 	};
 
+	// getSpirv() queries the cache for a shader with the given key.
+	// If one is found, it is returned through outShader and the function returns true.
+	// Otherwise, the function returns false.
+	inline bool getSpirv(const PipelineCache::SpirvBinaryKey &key, sw::SpirvBinary &outShader);
+
 	// getOrOptimizeSpirv() queries the cache for a shader with the given key.
 	// If one is found, it is returned, otherwise create() is called, the
 	// returned SPIR-V binary is added to the cache, and it is returned.
@@ -141,6 +146,20 @@ std::shared_ptr<sw::ComputeProgram> PipelineCache::getOrCreateComputeProgram(con
 	computePrograms.emplace(key, created);
 
 	return created;
+}
+
+inline bool PipelineCache::getSpirv(const PipelineCache::SpirvBinaryKey &key, sw::SpirvBinary &outShader)
+{
+	marl::lock lock(spirvShadersMutex);
+
+	auto it = spirvShaders.find(key);
+	if(it != spirvShaders.end())
+	{
+		outShader = it->second;
+		return true;
+	}
+
+	return false;
 }
 
 template<typename Function>

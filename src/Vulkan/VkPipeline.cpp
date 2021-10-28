@@ -202,7 +202,7 @@ const std::shared_ptr<sw::SpirvShader> GraphicsPipeline::getShader(const VkShade
 	}
 }
 
-void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, const VkGraphicsPipelineCreateInfo *pCreateInfo, PipelineCache *pPipelineCache)
+VkResult GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, const VkGraphicsPipelineCreateInfo *pCreateInfo, PipelineCache *pPipelineCache)
 {
 	for(auto pStage = pCreateInfo->pStages; pStage != pCreateInfo->pStages + pCreateInfo->stageCount; pStage++)
 	{
@@ -225,9 +225,23 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 
 		if(pPipelineCache)
 		{
-			spirv = pPipelineCache->getOrOptimizeSpirv(key, [&] {
-				return optimizeSpirv(key);
-			});
+			if(pCreateInfo->flags & VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_EXT)
+			{
+				if(!pPipelineCache->getSpirv(key, spirv))
+				{
+					return VK_PIPELINE_COMPILE_REQUIRED_EXT;
+				}
+			}
+			else
+			{
+				spirv = pPipelineCache->getOrOptimizeSpirv(key, [&] {
+					return optimizeSpirv(key);
+				});
+			}
+		}
+		else if(pCreateInfo->flags & VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_EXT)
+		{
+			return VK_PIPELINE_COMPILE_REQUIRED_EXT;
 		}
 		else
 		{
@@ -247,6 +261,8 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 
 		setShader(pStage->stage, shader);
 	}
+
+	return VK_SUCCESS;
 }
 
 ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo *pCreateInfo, void *mem, Device *device)
@@ -265,7 +281,7 @@ size_t ComputePipeline::ComputeRequiredAllocationSize(const VkComputePipelineCre
 	return 0;
 }
 
-void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, const VkComputePipelineCreateInfo *pCreateInfo, PipelineCache *pPipelineCache)
+VkResult ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, const VkComputePipelineCreateInfo *pCreateInfo, PipelineCache *pPipelineCache)
 {
 	auto &stage = pCreateInfo->stage;
 	const ShaderModule *module = vk::Cast(stage.module);
@@ -285,9 +301,23 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 
 	if(pPipelineCache)
 	{
-		spirv = pPipelineCache->getOrOptimizeSpirv(shaderKey, [&] {
-			return optimizeSpirv(shaderKey);
-		});
+		if(pCreateInfo->flags & VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_EXT)
+		{
+			if(!pPipelineCache->getSpirv(shaderKey, spirv))
+			{
+				return VK_PIPELINE_COMPILE_REQUIRED_EXT;
+			}
+		}
+		else
+		{
+			spirv = pPipelineCache->getOrOptimizeSpirv(shaderKey, [&] {
+				return optimizeSpirv(shaderKey);
+			});
+		}
+	}
+	else if(pCreateInfo->flags & VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_EXT)
+	{
+		return VK_PIPELINE_COMPILE_REQUIRED_EXT;
 	}
 	else
 	{
@@ -317,6 +347,8 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	{
 		program = createProgram(device, shader, layout);
 	}
+
+	return VK_SUCCESS;
 }
 
 void ComputePipeline::run(uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ,
