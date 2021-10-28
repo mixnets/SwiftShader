@@ -418,6 +418,8 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	{ { VK_KHR_SPIRV_1_4_EXTENSION_NAME, VK_KHR_SPIRV_1_4_SPEC_VERSION } },
 	{ { VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_EXTENSION_NAME, VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_SPEC_VERSION } },
 	{ { VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, VK_KHR_TIMELINE_SEMAPHORE_SPEC_VERSION } },
+	// Other extensions
+	{ { VK_EXT_PIPELINE_CREATION_CACHE_CONTROL_EXTENSION_NAME, VK_EXT_PIPELINE_CREATION_CACHE_CONTROL_SPEC_VERSION } },
 };
 
 static uint32_t numSupportedExtensions(const ExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
@@ -858,6 +860,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 
 				// VK_EXT_host_query_reset is always enabled.
 				(void)hostQueryResetFeatures->hostQueryReset;
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES_EXT:
+			{
+				const VkPhysicalDevicePipelineCreationCacheControlFeaturesEXT *pipelineCreationCacheControlFeatures = reinterpret_cast<const VkPhysicalDevicePipelineCreationCacheControlFeaturesEXT *>(extensionCreateInfo);
+
+				// VK_EXT_pipeline_creation_cache_control is always enabled.
+				(void)pipelineCreationCacheControlFeatures->pipelineCreationCacheControl;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES:
@@ -1987,10 +1997,24 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateGraphicsPipelines(VkDevice device, VkPipe
 
 		if(result == VK_SUCCESS)
 		{
-			static_cast<vk::GraphicsPipeline *>(vk::Cast(pPipelines[i]))->compileShaders(pAllocator, &pCreateInfos[i], vk::Cast(pipelineCache));
+			result = static_cast<vk::GraphicsPipeline *>(vk::Cast(pPipelines[i]))->compileShaders(pAllocator, &pCreateInfos[i], vk::Cast(pipelineCache));
+			if(result != VK_SUCCESS)
+			{
+				vk::destroy(pPipelines[i], pAllocator);
+			}
 		}
-		else
+
+		if(result != VK_SUCCESS)
 		{
+			if(pCreateInfos[i].flags & VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT_EXT)
+			{
+				for(uint32_t j = i; j < createInfoCount; j++)
+				{
+					pPipelines[j] = VK_NULL_HANDLE;
+				}
+				return result;
+			}
+
 			// According to the Vulkan spec, section 9.4. Multiple Pipeline Creation
 			// "When an application attempts to create many pipelines in a single command,
 			//  it is possible that some subset may fail creation. In that case, the
@@ -2019,10 +2043,24 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateComputePipelines(VkDevice device, VkPipel
 
 		if(result == VK_SUCCESS)
 		{
-			static_cast<vk::ComputePipeline *>(vk::Cast(pPipelines[i]))->compileShaders(pAllocator, &pCreateInfos[i], vk::Cast(pipelineCache));
+			result = static_cast<vk::ComputePipeline *>(vk::Cast(pPipelines[i]))->compileShaders(pAllocator, &pCreateInfos[i], vk::Cast(pipelineCache));
+			if(result != VK_SUCCESS)
+			{
+				vk::destroy(pPipelines[i], pAllocator);
+			}
 		}
-		else
+
+		if(result != VK_SUCCESS)
 		{
+			if(pCreateInfos[i].flags & VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT_EXT)
+			{
+				for(uint32_t j = i; j < createInfoCount; j++)
+				{
+					pPipelines[j] = VK_NULL_HANDLE;
+				}
+				return result;
+			}
+
 			// According to the Vulkan spec, section 9.4. Multiple Pipeline Creation
 			// "When an application attempts to create many pipelines in a single command,
 			//  it is possible that some subset may fail creation. In that case, the
