@@ -33,6 +33,24 @@
       "message": "Doesn\u0027t address the actual issue. See b/204322086#comment3. Please wait for my changes that fix the 16-bit component formats before picking this up again.",
       "revId": "5f60e2b5079d20024afbd87949b7c45582254568",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e339f116_3ac26893",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-28T19:09:41Z",
+      "side": 1,
+      "message": "This CL isn\u0027t meant to address the entire issue, but can be a part of the solution as it only includes the portion of the solution required for the VK_EXT_blend_operation_advanced implementation. I can change the bug ID of this CL to b/203652972 if you want, I just thought it was related to b/204322086, based on the bug description.",
+      "parentUuid": "511f0406_f6965e89",
+      "revId": "5f60e2b5079d20024afbd87949b7c45582254568",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
