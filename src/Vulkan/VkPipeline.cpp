@@ -120,6 +120,101 @@ std::shared_ptr<sw::ComputeProgram> createProgram(vk::Device *device, std::share
 	return program;
 }
 
+class PipelineCreationFeedback
+{
+public:
+	PipelineCreationFeedback(const VkGraphicsPipelineCreateInfo *pCreateInfo)
+	{
+		start(pCreateInfo->pNext);
+	}
+
+	PipelineCreationFeedback(const VkComputePipelineCreateInfo *pCreateInfo)
+	{
+		start(pCreateInfo->pNext);
+	}
+
+	void start(uint32_t stage)
+	{
+		if(pipelineCreationFeedback)
+		{
+			// Record stage creation start time
+			pipelineCreationFeedback->pPipelineStageCreationFeedbacks[stage].duration = now();
+		}
+	}
+
+	void cacheHit(uint32_t stage)
+	{
+		if(pipelineCreationFeedback)
+		{
+			pipelineCreationFeedback->pPipelineCreationFeedback->flags |=
+			    VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT_EXT;
+			pipelineCreationFeedback->pPipelineStageCreationFeedbacks[stage].flags |=
+			    VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT_EXT;
+		}
+	}
+
+	void endValid(uint32_t stage)
+	{
+		if(pipelineCreationFeedback)
+		{
+			pipelineCreationFeedback->pPipelineStageCreationFeedbacks[stage].flags |=
+			    VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT_EXT;
+			pipelineCreationFeedback->pPipelineStageCreationFeedbacks[stage].duration =
+			    now() - pipelineCreationFeedback->pPipelineStageCreationFeedbacks[stage].duration;
+		}
+	}
+
+	void endValid()
+	{
+		if(pipelineCreationFeedback)
+		{
+			pipelineCreationFeedback->pPipelineCreationFeedback->flags |=
+			    VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT_EXT;
+			pipelineCreationFeedback->pPipelineCreationFeedback->duration =
+			    now() - pipelineCreationFeedback->pPipelineCreationFeedback->duration;
+		}
+	}
+
+private:
+	void start(const void *pNext)
+	{
+		const VkBaseInStructure *extensionCreateInfo = reinterpret_cast<const VkBaseInStructure *>(pNext);
+		while(extensionCreateInfo)
+		{
+			switch(extensionCreateInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT:
+				pipelineCreationFeedback = reinterpret_cast<const VkPipelineCreationFeedbackCreateInfoEXT *>(extensionCreateInfo);
+				break;
+			default:
+				break;
+			}
+
+			extensionCreateInfo = extensionCreateInfo->pNext;
+		}
+
+		if(pipelineCreationFeedback)
+		{
+			// Clear all flags
+			pipelineCreationFeedback->pPipelineCreationFeedback->flags = 0;
+			for(uint32_t i = 0; i < pipelineCreationFeedback->pipelineStageCreationFeedbackCount; i++)
+			{
+				pipelineCreationFeedback->pPipelineStageCreationFeedbacks[i].flags = 0;
+			}
+
+			// Record pipeline creation start time
+			pipelineCreationFeedback->pPipelineCreationFeedback->duration = now();
+		}
+	}
+
+	uint64_t now()
+	{
+		return std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now()).time_since_epoch().count();
+	}
+
+	const VkPipelineCreationFeedbackCreateInfoEXT *pipelineCreationFeedback = nullptr;
+};
+
 }  // anonymous namespace
 
 namespace vk {
@@ -204,8 +299,13 @@ const std::shared_ptr<sw::SpirvShader> GraphicsPipeline::getShader(const VkShade
 
 VkResult GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, const VkGraphicsPipelineCreateInfo *pCreateInfo, PipelineCache *pPipelineCache)
 {
-	for(auto pStage = pCreateInfo->pStages; pStage != pCreateInfo->pStages + pCreateInfo->stageCount; pStage++)
+	PipelineCreationFeedback pipelineCreationFeedback(pCreateInfo);
+
+	uint32_t stage = 0;
+	for(auto pStage = pCreateInfo->pStages; pStage != pCreateInfo->pStages + pCreateInfo->stageCount; pStage++, stage++)
 	{
+		pipelineCreationFeedback.start(stage);
+
 		if(pStage->flags != 0)
 		{
 			// Vulkan 1.2: "flags must be 0"
@@ -231,9 +331,11 @@ VkResult GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocato
 
 		if(pPipelineCache)
 		{
-			spirv = pPipelineCache->getOrOptimizeSpirv(key, [&] {
-				return optimizeSpirv(key);
-			});
+			if(pPipelineCache->getOrOptimizeSpirv(
+			       key, [&] { return optimizeSpirv(key); }, spirv))
+			{
+				pipelineCreationFeedback.cacheHit(stage);
+			}
 		}
 		else
 		{
@@ -252,7 +354,11 @@ VkResult GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocato
 		                                                vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass, robustBufferAccess, dbgctx);
 
 		setShader(pStage->stage, shader);
+
+		pipelineCreationFeedback.endValid(stage);
 	}
+
+	pipelineCreationFeedback.endValid();
 
 	return VK_SUCCESS;
 }
@@ -275,6 +381,8 @@ size_t ComputePipeline::ComputeRequiredAllocationSize(const VkComputePipelineCre
 
 VkResult ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, const VkComputePipelineCreateInfo *pCreateInfo, PipelineCache *pPipelineCache)
 {
+	PipelineCreationFeedback pipelineCreationFeedback(pCreateInfo);
+
 	auto &stage = pCreateInfo->stage;
 	const ShaderModule *module = vk::Cast(stage.module);
 
@@ -299,9 +407,11 @@ VkResult ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator
 
 	if(pPipelineCache)
 	{
-		spirv = pPipelineCache->getOrOptimizeSpirv(shaderKey, [&] {
-			return optimizeSpirv(shaderKey);
-		});
+		if(pPipelineCache->getOrOptimizeSpirv(
+		       shaderKey, [&] { return optimizeSpirv(shaderKey); }, spirv))
+		{
+			pipelineCreationFeedback.cacheHit(0);
+		}
 	}
 	else
 	{
@@ -331,6 +441,9 @@ VkResult ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator
 	{
 		program = createProgram(device, shader, layout);
 	}
+
+	pipelineCreationFeedback.endValid(0);
+	pipelineCreationFeedback.endValid();
 
 	return VK_SUCCESS;
 }
