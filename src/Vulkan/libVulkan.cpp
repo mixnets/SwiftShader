@@ -418,6 +418,8 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	{ { VK_KHR_SPIRV_1_4_EXTENSION_NAME, VK_KHR_SPIRV_1_4_SPEC_VERSION } },
 	{ { VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_EXTENSION_NAME, VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_SPEC_VERSION } },
 	{ { VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, VK_KHR_TIMELINE_SEMAPHORE_SPEC_VERSION } },
+	// Other extensions
+	{ { VK_EXT_PRIVATE_DATA_EXTENSION_NAME, VK_EXT_PRIVATE_DATA_SPEC_VERSION } },
 };
 
 static uint32_t numSupportedExtensions(const ExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
@@ -905,6 +907,22 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				{
 					return VK_ERROR_FEATURE_NOT_PRESENT;
 				}
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES_EXT:
+			{
+				const auto *privateDataFeatures = reinterpret_cast<const VkPhysicalDevicePrivateDataFeaturesEXT *>(extensionCreateInfo);
+				bool hasFeatures = vk::Cast(physicalDevice)->hasExtendedFeatures(privateDataFeatures);
+				if(!hasFeatures)
+				{
+					return VK_ERROR_FEATURE_NOT_PRESENT;
+				}
+			}
+			break;
+		case VK_STRUCTURE_TYPE_DEVICE_PRIVATE_DATA_CREATE_INFO_EXT:
+			{
+				const auto *privateDataCreateInfo = reinterpret_cast<const VkDevicePrivateDataCreateInfoEXT *>(extensionCreateInfo);
+				(void)privateDataCreateInfo->privateDataSlotRequestCount;
 			}
 			break;
 		// These structs are supported, but no behavior changes based on their feature bools
@@ -3693,6 +3711,39 @@ VKAPI_ATTR void VKAPI_CALL vkCmdSetLineStippleEXT(VkCommandBuffer commandBuffer,
 	      commandBuffer, lineStippleFactor, lineStipplePattern);
 
 	UNSUPPORTED("VkPhysicalDeviceLineRasterizationFeaturesEXT::stippled*Lines");
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkCreatePrivateDataSlotEXT(VkDevice device, const VkPrivateDataSlotCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPrivateDataSlotEXT *pPrivateDataSlot)
+{
+	TRACE("(VkDevice device = %p, const VkPrivateDataSlotCreateInfoEXT* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkPrivateDataSlotEXT* pPrivateDataSlot = %p)",
+	      device, pCreateInfo, pAllocator, pPrivateDataSlot);
+
+	return vk::PrivateData::Create(pAllocator, pCreateInfo, pPrivateDataSlot);
+}
+
+VKAPI_ATTR void VKAPI_CALL vkDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlotEXT privateDataSlot, const VkAllocationCallbacks *pAllocator)
+{
+	TRACE("(VkDevice device = %p, VkPrivateDataSlotEXT privateDataSlot = %p, const VkAllocationCallbacks* pAllocator = %p)",
+	      device, static_cast<void *>(privateDataSlot), pAllocator);
+
+	vk::Cast(device)->removePrivateDataSlot(vk::Cast(privateDataSlot));
+	vk::destroy(privateDataSlot, pAllocator);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t data)
+{
+	TRACE("(VkDevice device = %p, VkObjectType objectType = %d, uint64_t objectHandle = %" PRIu64 ", VkPrivateDataSlotEXT privateDataSlot = %p, uint64_t data = %" PRIu64 ")",
+	      device, objectType, objectHandle, static_cast<void *>(privateDataSlot), data);
+
+	return vk::Cast(device)->setPrivateData(objectType, objectHandle, vk::Cast(privateDataSlot), data);
+}
+
+VKAPI_ATTR void VKAPI_CALL vkGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t *pData)
+{
+	TRACE("(VkDevice device = %p, VkObjectType objectType = %d, uint64_t objectHandle = %" PRIu64 ", VkPrivateDataSlotEXT privateDataSlot = %p, uint64_t* pData = %p)",
+	      device, objectType, objectHandle, static_cast<void *>(privateDataSlot), pData);
+
+	vk::Cast(device)->getPrivateData(objectType, objectHandle, vk::Cast(privateDataSlot), pData);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdBeginDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo)

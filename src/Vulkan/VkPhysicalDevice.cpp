@@ -332,6 +332,11 @@ static void getPhysicalDevicCustomBorderColorFeaturesExt(VkPhysicalDeviceCustomB
 	features->customBorderColorWithoutFormat = VK_TRUE;
 }
 
+static void getPhysicalDevicePrivateDataFeaturesExt(VkPhysicalDevicePrivateDataFeaturesEXT *features)
+{
+	features->privateData = VK_TRUE;
+}
+
 static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsFeaturesEXT *features)
 {
 	features->formatA4R4G4B4 = VK_TRUE;
@@ -429,6 +434,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT:
 			getPhysicalDevicCustomBorderColorFeaturesExt(reinterpret_cast<VkPhysicalDeviceCustomBorderColorFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES_EXT:
+			getPhysicalDevicePrivateDataFeaturesExt(reinterpret_cast<VkPhysicalDevicePrivateDataFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT:
 			getPhysicalDevice4444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
@@ -1112,6 +1120,7 @@ InstantiateHasExtendedFeatures(VkPhysicalDeviceProvokingVertexFeaturesEXT);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceVulkan11Features);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceVulkan12Features);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceDepthClipEnableFeaturesEXT);
+InstantiateHasExtendedFeatures(VkPhysicalDevicePrivateDataFeaturesEXT);
 #undef InstantiateHasExtendedFeatures
 
 void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFormatProperties)
