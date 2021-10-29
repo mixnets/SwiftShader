@@ -46,6 +46,30 @@
       },
       "revId": "bcd192115ebe2e21f735f9a5be76e48d5c291a2e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5974867_ae9da2f3",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-29T03:08:01Z",
+      "side": 1,
+      "message": "Used template functions to reduce duplication. PTAL.",
+      "parentUuid": "1e48d474_08d924e3",
+      "range": {
+        "startLine": 105,
+        "startChar": 1,
+        "endLine": 106,
+        "endChar": 117
+      },
+      "revId": "bcd192115ebe2e21f735f9a5be76e48d5c291a2e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
