@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4b9a32f_6bec6377",
+        "filename": "src/Device/SetupProcessor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-29T19:45:54Z",
+      "side": 1,
+      "message": "This should be more explicit, so that no other value can slip through and be ignored, like:\nswitch(pipelineState.getSubpixelPrecisionBits())\n{\ncase 4:\n    state.subpixelPrecisionBits \u003d 0;\n    break;\ncase 8:\n    state.subpixelPrecisionBits \u003d 1;\n    break;\ndefault:\n    UNREACHABLE(...\n}",
+      "range": {
+        "startLine": 81,
+        "startChar": 1,
+        "endLine": 81,
+        "endChar": 85
+      },
+      "revId": "9b82548d6000e04cda815381e4f6938c9da72a2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77073cff_a760c0d4",
+        "filename": "src/Device/SetupProcessor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-29T19:45:54Z",
+      "side": 1,
+      "message": "Nit: Maybe this name could be more explicit? Like: subpixelPrecision8Bits (1 for true, 0 for false). Could also be highSubpixelPrecisionBits (1 for true, 0 for false).",
+      "range": {
+        "startLine": 64,
+        "startChar": 15,
+        "endLine": 64,
+        "endChar": 36
+      },
+      "revId": "9b82548d6000e04cda815381e4f6938c9da72a2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "003e69c7_55a72e64",
+        "filename": "src/Device/SetupProcessor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-10-29T19:45:54Z",
+      "side": 1,
+      "message": "Nit: please clearly indicate which is which in the comment, since this field only has 1 bit",
+      "range": {
+        "startLine": 64,
+        "startChar": 45,
+        "endLine": 64,
+        "endChar": 51
+      },
+      "revId": "9b82548d6000e04cda815381e4f6938c9da72a2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
