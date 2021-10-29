@@ -343,6 +343,12 @@ static void getPhysicalDeviceBlendOperationAdvancedFeaturesExt(VkPhysicalDeviceB
 	features->advancedBlendCoherentOperations = VK_FALSE;
 }
 
+static void getPhysicalDeviceSubgroupSizeControlFeatures(VkPhysicalDeviceSubgroupSizeControlFeatures *features)
+{
+	features->subgroupSizeControl = VK_TRUE;
+	features->computeFullSubgroups = VK_TRUE;
+}
+
 static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsFeaturesEXT *features)
 {
 	features->formatA4R4G4B4 = VK_TRUE;
@@ -446,6 +452,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT:
 			getPhysicalDeviceBlendOperationAdvancedFeaturesExt(reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES:
+			getPhysicalDeviceSubgroupSizeControlFeatures(reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlFeatures *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT:
 			getPhysicalDevice4444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
@@ -1054,6 +1063,16 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceBlendOperationAdvancedPropert
 	properties->advancedBlendAllOperations = VK_FALSE;
 }
 
+void PhysicalDevice::getProperties(VkPhysicalDeviceSubgroupSizeControlProperties *properties) const
+{
+	VkPhysicalDeviceSubgroupProperties subgroupProperties = {};
+	getProperties(&subgroupProperties);
+	properties->minSubgroupSize = subgroupProperties.subgroupSize;
+	properties->maxSubgroupSize = subgroupProperties.subgroupSize;
+	properties->maxComputeWorkgroupSubgroups = subgroupProperties.subgroupSize;
+	properties->requiredSubgroupSizeStages = subgroupProperties.supportedStages;
+}
+
 template<typename T>
 static void getSamplerFilterMinmaxProperties(T *properties)
 {
@@ -1227,6 +1246,15 @@ bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceBlendOperationAdv
 
 	return CheckFeature(requested, supported, advancedBlendCoherentOperations);
 }
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceSubgroupSizeControlFeatures *requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, subgroupSizeControl) &&
+	       CheckFeature(requested, supported, computeFullSubgroups);
+}
+
 #undef CheckFeature
 
 void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFormatProperties)
