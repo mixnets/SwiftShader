@@ -89,9 +89,6 @@ struct Constants
 	float4 weight[16];
 
 	// Fragment offsets
-	int Xf[4];
-	int Yf[4];
-
 	float4 X[4];
 	float4 Y[4];
 
