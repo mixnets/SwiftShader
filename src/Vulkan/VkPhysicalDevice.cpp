@@ -332,6 +332,12 @@ static void getPhysicalDevicCustomBorderColorFeaturesExt(VkPhysicalDeviceCustomB
 	features->customBorderColorWithoutFormat = VK_TRUE;
 }
 
+static void getPhysicalDeviceSubgroupSizeControlFeaturesExt(VkPhysicalDeviceSubgroupSizeControlFeaturesEXT *features)
+{
+	features->subgroupSizeControl = VK_TRUE;
+	features->computeFullSubgroups = VK_TRUE;
+}
+
 static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsFeaturesEXT *features)
 {
 	features->formatA4R4G4B4 = VK_TRUE;
@@ -429,6 +435,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT:
 			getPhysicalDevicCustomBorderColorFeaturesExt(reinterpret_cast<VkPhysicalDeviceCustomBorderColorFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT:
+			getPhysicalDeviceSubgroupSizeControlFeaturesExt(reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT:
 			getPhysicalDevice4444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
@@ -1025,6 +1034,16 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceCustomBorderColorPropertiesEX
 	properties->maxCustomBorderColorSamplers = MAX_SAMPLER_ALLOCATION_COUNT;
 }
 
+void PhysicalDevice::getProperties(VkPhysicalDeviceSubgroupSizeControlPropertiesEXT *properties) const
+{
+	VkPhysicalDeviceSubgroupProperties subgroupProperties = {};
+	getProperties(&subgroupProperties);
+	properties->minSubgroupSize = subgroupProperties.subgroupSize;
+	properties->maxSubgroupSize = subgroupProperties.subgroupSize;
+	properties->maxComputeWorkgroupSubgroups = subgroupProperties.subgroupSize;
+	properties->requiredSubgroupSizeStages = subgroupProperties.supportedStages;
+}
+
 template<typename T>
 static void getSamplerFilterMinmaxProperties(T *properties)
 {
@@ -1112,6 +1131,7 @@ InstantiateHasExtendedFeatures(VkPhysicalDeviceProvokingVertexFeaturesEXT);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceVulkan11Features);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceVulkan12Features);
 InstantiateHasExtendedFeatures(VkPhysicalDeviceDepthClipEnableFeaturesEXT);
+InstantiateHasExtendedFeatures(VkPhysicalDeviceSubgroupSizeControlFeaturesEXT);
 #undef InstantiateHasExtendedFeatures
 
 void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFormatProperties)
