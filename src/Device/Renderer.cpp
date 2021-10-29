@@ -269,6 +269,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	draw->descriptorSetObjects = inputs.getDescriptorSetObjects();
 	draw->pipelineLayout = pipelineState.getPipelineLayout();
 	draw->depthClipEnable = pipelineState.getDepthClipEnable();
+	draw->subpixelPrecisionFactor = pipelineState.getSubpixelPrecisionFactor();
 
 	draw->vertexRoutine = vertexRoutine;
 	draw->setupRoutine = setupRoutine;
@@ -343,7 +344,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 		float N = viewport.minDepth;
 		float F = viewport.maxDepth;
 		float Z = F - N;
-		constexpr float subPixF = vk::SUBPIXEL_PRECISION_FACTOR;
+		float subPixF = pipelineState.getSubpixelPrecisionFactor();
 
 		data->WxF = float4(W * subPixF);
 		data->HxF = float4(H * subPixF);
@@ -866,7 +867,7 @@ bool DrawCall::setupLine(Primitive &primitive, Triangle &triangle, const DrawCal
 		return false;
 	}
 
-	constexpr float subPixF = vk::SUBPIXEL_PRECISION_FACTOR;
+	float subPixF = draw.subpixelPrecisionFactor;
 
 	const float W = data.WxF[0] * (1.0f / subPixF);
 	const float H = data.HxF[0] * (1.0f / subPixF);

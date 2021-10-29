@@ -1055,4 +1055,9 @@ int GraphicsState::colorWriteActive(int index, const Attachments &attachments) c
 	return colorWriteMask[index];
 }
 
+float GraphicsState::getSubpixelPrecisionFactor() const
+{
+	return static_cast<float>(1 << subpixelBits);
+}
+
 }  // namespace vk

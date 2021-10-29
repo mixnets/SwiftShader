@@ -514,7 +514,7 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits()
 		{ 65535, 65535, 65535 },                     // maxComputeWorkGroupCount[3]
 		256,                                         // maxComputeWorkGroupInvocations
 		{ 256, 256, 64 },                            // maxComputeWorkGroupSize[3]
-		vk::SUBPIXEL_PRECISION_BITS,                 // subPixelPrecisionBits
+		vk::DEFAULT_SUBPIXEL_PRECISION_BITS,         // subPixelPrecisionBits
 		4,                                           // subTexelPrecisionBits
 		4,                                           // mipmapPrecisionBits
 		UINT32_MAX,                                  // maxDrawIndexedIndexValue
@@ -923,7 +923,7 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceDriverProperties *properties)
 
 void PhysicalDevice::getProperties(VkPhysicalDeviceLineRasterizationPropertiesEXT *properties) const
 {
-	properties->lineSubPixelPrecisionBits = vk::SUBPIXEL_PRECISION_BITS;
+	properties->lineSubPixelPrecisionBits = vk::DEFAULT_SUBPIXEL_PRECISION_BITS;
 }
 
 void PhysicalDevice::getProperties(VkPhysicalDeviceProvokingVertexPropertiesEXT *properties) const

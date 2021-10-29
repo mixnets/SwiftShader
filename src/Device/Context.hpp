@@ -191,6 +191,9 @@ struct GraphicsState
 	bool stencilActive(const Attachments &attachments) const;
 	bool depthBoundsTestActive(const Attachments &attachments) const;
 
+	int getSubpixelPrecisionBits() const { return subpixelBits; }
+	float getSubpixelPrecisionFactor() const;
+
 private:
 	inline bool hasDynamicState(VkDynamicState dynamicState) const { return (dynamicStateFlags & (1 << dynamicState)) != 0; }
 
@@ -254,6 +257,9 @@ private:
 	sw::float4 blendConstants = {};
 
 	BlendState blendState[sw::MAX_COLOR_BUFFERS] = {};
+
+	// TODO(jmadill): Replace with extension struct. http://b/204560787
+	int subpixelBits = DEFAULT_SUBPIXEL_PRECISION_BITS;
 };
 
 }  // namespace vk
