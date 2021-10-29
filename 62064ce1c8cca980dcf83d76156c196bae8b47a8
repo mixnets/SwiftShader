@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "81607103_f831d166",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-10-29T07:27:15Z",
+      "side": 1,
+      "message": "It seems there\u0027s regression with 32bit packed formats. When I had a closer look I noticed something odd: these 32bit packed formats are the only ones that do bit expansion when converting the channels to 16 bit during texture sampling.\n\nFor example full 5 bit channel in A1R5G6B5_PACK16 becomes 0xf800 by shifting those five bits to the high bits of 16 bit uint. With A2R10G10B10_PACK32 full 10 bit channel is first shifted in a similar way, becoming 0xffc0. But then the high bits are repeated to lower bits (see a2r10g10b10Unpack function). I know this is how integers are usually converted to higher bit width, but why is it only done for the 32bit packed formats?\n\nAn easy way to fix regression would be to use 0xffff as a scale for the 32bit packed formats, but that sounds like a workaround for an issue somewhere else.",
+      "revId": "62064ce1c8cca980dcf83d76156c196bae8b47a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c82c048b_995844c6",
