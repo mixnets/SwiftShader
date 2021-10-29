@@ -343,6 +343,11 @@ static void getPhysicalDeviceBlendOperationAdvancedFeaturesExt(VkPhysicalDeviceB
 	features->advancedBlendCoherentOperations = VK_FALSE;
 }
 
+static void getPhysicalDevicePrivateDataFeatures(VkPhysicalDevicePrivateDataFeatures *features)
+{
+	features->privateData = VK_TRUE;
+}
+
 static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsFeaturesEXT *features)
 {
 	features->formatA4R4G4B4 = VK_TRUE;
@@ -446,6 +451,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT:
 			getPhysicalDeviceBlendOperationAdvancedFeaturesExt(reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES:
+			getPhysicalDevicePrivateDataFeatures(reinterpret_cast<VkPhysicalDevicePrivateDataFeatures *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT:
 			getPhysicalDevice4444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
@@ -1226,6 +1234,13 @@ bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceBlendOperationAdv
 	auto supported = getSupportedFeatures(requested);
 
 	return CheckFeature(requested, supported, advancedBlendCoherentOperations);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDevicePrivateDataFeatures* requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, privateData);
 }
 #undef CheckFeature
 
