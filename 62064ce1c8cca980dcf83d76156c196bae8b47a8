@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f2fc0351_c5270531",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-30T08:29:28Z",
+      "side": 1,
+      "message": "Good observation! The reason for this difference is merely \"historical\". Direct3D 8 only had fixed-point pixel pipelines and CPUs were slow at floating-point. We later improved the filtering precision of formats with 8-bit components, and then for formats with smaller components, first by using the bit replication method to make 0xFFFF represent 1.0, and later by putting the bits in the high part of the vector elements and correcting the scaling in floating-point. We apparently initially left out formats with more than 8 bits per component, but eventually did have to improve the precision of A2R10G10B10 conversion as part of Vulkan 1.2 conformance (https://issuetracker.google.com/146633956), but it sufficed to use the bit replication method.\n\nLong story short, I think this format should now be handled the same way as the other ones. Please file a bug for it. Note a similar issue cropped up for blending: https://issuetracker.google.com/204322086.\n\nI\u0027m fine with using 0xFFFF as the scaling factor if that makes the tests pass. One complication with making changes that affect precision/rounding is that it may require \u0027rebasing\u0027 of expected results for Chrome, so it helps to keep these issues separate.",
+      "parentUuid": "81607103_f831d166",
+      "revId": "62064ce1c8cca980dcf83d76156c196bae8b47a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c82c048b_995844c6",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 4
