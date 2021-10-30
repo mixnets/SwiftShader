@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb6f939d_2e1eddfb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-30T07:14:52Z",
+      "side": 1,
+      "message": "I don\u0027t understand the usage of this extension. There\u0027s nothing being \u0027attached\u0027 to our Vulkan objects, in this implementation, as far as I can tell.\n\nIt looks like if this gets promoted to Vulkan 1.3, it will allow us to set VkPhysicalDevicePrivateDataFeaturesEXT::privateData to false and be done.\n\nIf there\u0027s a significant use case for this functionality and it makes sense for SwiftShader to support it, please explain the rationale and design in b/204502114.",
+      "range": {
+        "startLine": 10,
+        "startChar": 14,
+        "endLine": 10,
+        "endChar": 23
+      },
+      "revId": "4de10ddffd33ab5d05180ab02acdac822254ddf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63cb6e97_ade3c93f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-10-30T07:14:52Z",
+      "side": 1,
+      "message": "Vulkan 1.3 isn\u0027t ratified yet, so unless it\u0027s a sure thing that this extension will get promoted I would remove this comment for now.",
+      "range": {
+        "startLine": 421,
+        "startChar": 1,
+        "endLine": 421,
+        "endChar": 34
+      },
+      "revId": "4de10ddffd33ab5d05180ab02acdac822254ddf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
