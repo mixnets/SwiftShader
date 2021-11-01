@@ -87,6 +87,24 @@
       "parentUuid": "f57c48f2_089be857",
       "revId": "5f60e2b5079d20024afbd87949b7c45582254568",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac6dbec8_616ecc83",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-01T20:33:46Z",
+      "side": 1,
+      "message": "Oh, I think the crucial part I was missing is that support for advanced blending of formats like R8G8B8A8 is *broken* without this CL. It\u0027s not just a lack of test coverage, it\u0027s that if the test coverage was provided we definitely would fail it. That\u0027s a huge difference with what I initially thought was essentially just a lack of code coverage on our end.\n\nPlease mention the Khronos bug for improving the dEQP coverage in b/203652972, so we don\u0027t lose track of that important work.\n\nI think we can move ahead with a CL like this, to unblock your work on VK_EXT_blend_operation_advanced. Note that it\u0027s a step back in performance though, since it will make us convert formats to Vectror4s and then Vector4f (and then back), instead of going straight to floating-point, but it\u0027s probably best not to conflate optimization work with necessary new features.",
+      "parentUuid": "43fc427a_e304351b",
+      "revId": "5f60e2b5079d20024afbd87949b7c45582254568",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
