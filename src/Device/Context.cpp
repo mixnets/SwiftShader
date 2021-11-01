@@ -379,6 +379,12 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 				depthClipEnable = depthClipInfo->depthClipEnable != VK_FALSE;
 			}
 			break;
+		case VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_SUBPIXEL_PRECISION_STATE_CREATE_INFO_GOOGLE:
+			{
+				const auto *subpixelBitsInfo = reinterpret_cast<const VkPipelineRasterizationSubpixelPrecisionStateCreateInfoGOOGLE *>(extensionCreateInfo);
+				subpixelBits = subpixelBitsInfo->subPixelPrecisionBits;
+			}
+			break;
 		case VK_STRUCTURE_TYPE_APPLICATION_INFO:
 			// SwiftShader doesn't interact with application info, but dEQP includes it
 			break;

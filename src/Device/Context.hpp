@@ -258,7 +258,6 @@ private:
 
 	BlendState blendState[sw::MAX_COLOR_BUFFERS] = {};
 
-	// TODO(jmadill): Replace with extension struct. http://b/204560787
 	int subpixelBits = SUBPIXEL_PRECISION_BITS;
 };
 
