@@ -33,6 +33,29 @@
       "message": "Confirmed locally that this + the following CL + an ANGLE CL fixes the rendering.",
       "revId": "b7744da75d02dd70f2e558226f3ce13cbbbef56a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60ba07dc_961f9d25",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-01T19:12:25Z",
+      "side": 1,
+      "message": "Nit: I think you could wrap this inside of a \"if(state.enableMultiSampling)\" statement.",
+      "range": {
+        "startLine": 168,
+        "startChar": 2,
+        "endLine": 172,
+        "endChar": 3
+      },
+      "revId": "b7744da75d02dd70f2e558226f3ce13cbbbef56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
