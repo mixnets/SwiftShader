@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1603a433_8a8ee485",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-01T15:07:30Z",
+      "side": 1,
+      "message": "I wrote a clarification request to get more info from the author:\nhttps://github.com/KhronosGroup/Vulkan-Docs/issues/1675",
+      "parentUuid": "fb6f939d_2e1eddfb",
+      "range": {
+        "startLine": 10,
+        "startChar": 14,
+        "endLine": 10,
+        "endChar": 23
+      },
+      "revId": "4de10ddffd33ab5d05180ab02acdac822254ddf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "63cb6e97_ade3c93f",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 3
