@@ -54,6 +54,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2fa46751_315cb051",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2021-11-01T19:53:55Z",
+      "side": 1,
+      "message": "I left these as-is. I should probably make a note of that in the commit message.",
+      "parentUuid": "c1a82a60_b86d1674",
+      "revId": "b7744da75d02dd70f2e558226f3ce13cbbbef56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c3346a13_5fa7385a",
         "filename": "src/Pipeline/Constants.hpp",
         "patchSetId": 1
@@ -65,6 +83,30 @@
       "writtenOn": "2021-11-01T19:21:29Z",
       "side": 1,
       "message": "Should this also be affected?",
+      "range": {
+        "startLine": 122,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 240
+      },
+      "revId": "b7744da75d02dd70f2e558226f3ce13cbbbef56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a9c9cd9_e9307296",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2021-11-01T19:53:55Z",
+      "side": 1,
+      "message": "Done.. yes, thanks for catching.",
+      "parentUuid": "c3346a13_5fa7385a",
       "range": {
         "startLine": 122,
         "startChar": 0,
