@@ -37,6 +37,46 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c1a82a60_b86d1674",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-01T19:21:29Z",
+      "side": 1,
+      "message": "Also, what happens with these:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Vulkan/VkPhysicalDevice.cpp;l\u003d517\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Vulkan/VkPhysicalDevice.cpp;l\u003d926\n",
+      "revId": "b7744da75d02dd70f2e558226f3ce13cbbbef56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3346a13_5fa7385a",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-01T19:21:29Z",
+      "side": 1,
+      "message": "Should this also be affected?",
+      "range": {
+        "startLine": 122,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 240
+      },
+      "revId": "b7744da75d02dd70f2e558226f3ce13cbbbef56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "60ba07dc_961f9d25",
         "filename": "src/Pipeline/SetupRoutine.cpp",
         "patchSetId": 1
