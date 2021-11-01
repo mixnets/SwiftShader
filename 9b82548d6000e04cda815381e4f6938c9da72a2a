@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3373fb69_d67f9498",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2021-11-01T14:04:23Z",
+      "side": 1,
+      "message": "I was missing a change-id tag, please see https://swiftshader-review.googlesource.com/c/SwiftShader/+/58848",
+      "revId": "9b82548d6000e04cda815381e4f6938c9da72a2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a4b9a32f_6bec6377",
@@ -38,6 +55,30 @@
       "side": 1,
       "message": "I\u0027d suggest to just pass the value verbatim. See my other comment.",
       "parentUuid": "a4b9a32f_6bec6377",
+      "range": {
+        "startLine": 81,
+        "startChar": 1,
+        "endLine": 81,
+        "endChar": 85
+      },
+      "revId": "9b82548d6000e04cda815381e4f6938c9da72a2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4cfbf26_076ea282",
+        "filename": "src/Device/SetupProcessor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2021-11-01T14:04:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a3966ea7_14866fff",
       "range": {
         "startLine": 81,
         "startChar": 1,
@@ -112,6 +153,78 @@
         "startChar": 39,
         "endLine": 64,
         "endChar": 40
+      },
+      "revId": "9b82548d6000e04cda815381e4f6938c9da72a2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "003a27cd_0fde2679",
+        "filename": "src/Device/SetupProcessor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2021-11-01T14:04:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd1635f7_6e77c563",
+      "range": {
+        "startLine": 64,
+        "startChar": 39,
+        "endLine": 64,
+        "endChar": 40
+      },
+      "revId": "9b82548d6000e04cda815381e4f6938c9da72a2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9587d734_4de40586",
+        "filename": "src/Device/SetupProcessor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2021-11-01T14:04:23Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "77073cff_a760c0d4",
+      "range": {
+        "startLine": 64,
+        "startChar": 15,
+        "endLine": 64,
+        "endChar": 36
+      },
+      "revId": "9b82548d6000e04cda815381e4f6938c9da72a2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "20a22508_e4fc45f8",
+        "filename": "src/Device/SetupProcessor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2021-11-01T14:04:23Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "003e69c7_55a72e64",
+      "range": {
+        "startLine": 64,
+        "startChar": 45,
+        "endLine": 64,
+        "endChar": 51
       },
       "revId": "9b82548d6000e04cda815381e4f6938c9da72a2a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
