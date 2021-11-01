@@ -16,6 +16,23 @@
       "message": "follow-up from https://swiftshader-review.googlesource.com/c/SwiftShader/+/58768 with a change-id tag",
       "revId": "b7744da75d02dd70f2e558226f3ce13cbbbef56a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f596952d_c6f4a826",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2021-11-01T18:42:05Z",
+      "side": 1,
+      "message": "Confirmed locally that this + the following CL + an ANGLE CL fixes the rendering.",
+      "revId": "b7744da75d02dd70f2e558226f3ce13cbbbef56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
