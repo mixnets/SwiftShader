@@ -69,6 +69,24 @@
       "parentUuid": "e339f116_3ac26893",
       "revId": "5f60e2b5079d20024afbd87949b7c45582254568",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43fc427a_e304351b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-01T19:05:37Z",
+      "side": 1,
+      "message": "It does, but that\u0027s because the floating point path is the only path exercised by the tests. The non floating point path removed here was never covered by the tests, so that was causing a large gap in the tests, which is gone if we have a single path for blending.",
+      "parentUuid": "f57c48f2_089be857",
+      "revId": "5f60e2b5079d20024afbd87949b7c45582254568",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
