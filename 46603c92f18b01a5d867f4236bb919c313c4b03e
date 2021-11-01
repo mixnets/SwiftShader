@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a9c6279_5e1b761c",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2671,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-01T15:15:01Z",
+      "side": 1,
+      "message": "Maybe a comment? It isn\u0027t intuitive that this code works as intended for VK_FORMAT_R16_SINT.\n\nAlso, nit: it\u0027s harder to review a CL when it\u0027s mostly name changes, with small functional changes peppered into it.",
+      "range": {
+        "startLine": 2671,
+        "startChar": 3,
+        "endLine": 2671,
+        "endChar": 61
+      },
+      "revId": "46603c92f18b01a5d867f4236bb919c313c4b03e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
