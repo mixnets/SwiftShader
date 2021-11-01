@@ -22,6 +22,30 @@
       },
       "revId": "46603c92f18b01a5d867f4236bb919c313c4b03e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d091be8_e08729de",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2671,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-01T16:59:03Z",
+      "side": 1,
+      "message": "Note that in several other cases of handling UINT and SINT color writes we also convert to one or the other before the actual write. It\u0027s just the Pack operations that are signedness specific since they perform saturation. In this case, it\u0027s completely analogous to C code.",
+      "parentUuid": "9a9c6279_5e1b761c",
+      "range": {
+        "startLine": 2671,
+        "startChar": 3,
+        "endLine": 2671,
+        "endChar": 61
+      },
+      "revId": "46603c92f18b01a5d867f4236bb919c313c4b03e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
