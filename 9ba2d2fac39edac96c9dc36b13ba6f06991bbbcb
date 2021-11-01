@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb94a879_a112552c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-01T20:23:10Z",
+      "side": 1,
+      "message": "This could be implemented by adding arrays to each object, but it seems more centralized to just use a map inside the device. We also currently don\u0027t have a direct way of mapping an object handle + type to an object pointer of that type (although that\u0027s probably not hard to do).",
+      "revId": "9ba2d2fac39edac96c9dc36b13ba6f06991bbbcb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
