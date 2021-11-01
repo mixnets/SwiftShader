@@ -51,6 +51,24 @@
       "parentUuid": "511f0406_f6965e89",
       "revId": "5f60e2b5079d20024afbd87949b7c45582254568",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f57c48f2_089be857",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-01T18:40:34Z",
+      "side": 1,
+      "message": "Thanks for clarifying this change is related to b/204322086. I\u0027m still missing exactly how it\u0027s related though. It appears https://swiftshader-review.googlesource.com/c/SwiftShader/+/58348 passed all tests before rebasing it onto this change?",
+      "parentUuid": "e339f116_3ac26893",
+      "revId": "5f60e2b5079d20024afbd87949b7c45582254568",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
