@@ -74,6 +74,30 @@
       },
       "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "542d49e0_908a3c8e",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-02T13:56:08Z",
+      "side": 1,
+      "message": "Since it did affect some tests I would say no. I can do some printing tomorrow to make sure.",
+      "parentUuid": "24441a22_2247887c",
+      "range": {
+        "startLine": 200,
+        "startChar": 3,
+        "endLine": 207,
+        "endChar": 10
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
