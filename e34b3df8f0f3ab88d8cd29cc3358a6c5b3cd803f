@@ -98,6 +98,52 @@
       },
       "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f4f886a_1a5331f0",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2011,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-02T16:16:53Z",
+      "side": 1,
+      "message": "4?",
+      "range": {
+        "startLine": 2011,
+        "startChar": 27,
+        "endLine": 2011,
+        "endChar": 28
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29add761_1fd9ee1b",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2106,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-02T16:16:53Z",
+      "side": 1,
+      "message": "0?",
+      "range": {
+        "startLine": 2106,
+        "startChar": 27,
+        "endLine": 2106,
+        "endChar": 28
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
