@@ -2436,14 +2436,14 @@ Vector4f PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, const
 		blendedColor.z = Max(sourceColor.z, destColor.z);
 		break;
 	case VK_BLEND_OP_SRC_EXT:
-		blendedColor.x = sourceColor.x * sourceFactor.x;  // TODO(b/204583457)
-		blendedColor.y = sourceColor.y * sourceFactor.y;  // TODO(b/204583457)
-		blendedColor.z = sourceColor.z * sourceFactor.z;  // TODO(b/204583457)
+		blendedColor.x = sourceColor.x;
+		blendedColor.y = sourceColor.y;
+		blendedColor.z = sourceColor.z;
 		break;
 	case VK_BLEND_OP_DST_EXT:
-		blendedColor.x = destColor.x * destFactor.x;  // TODO(b/204583457)
-		blendedColor.y = destColor.y * destFactor.y;  // TODO(b/204583457)
-		blendedColor.z = destColor.z * destFactor.z;  // TODO(b/204583457)
+		blendedColor.x = destColor.x;
+		blendedColor.y = destColor.y;
+		blendedColor.z = destColor.z;
 		break;
 	case VK_BLEND_OP_ZERO_EXT:
 		blendedColor.x = Float4(0.0f);
