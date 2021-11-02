@@ -19,4 +19,7 @@ const (
 	// TestListUpdateCommitSubjectPrefix is the commit message prefix on commits
 	// that update the full test lists results.
 	TestListUpdateCommitSubjectPrefix = "Regres: Update test lists @ "
+	// TestListFastForwardCommitSubjectPrefix is the commit message prefix on commits
+	// that retries the latest set of tests from dEQP
+	TestListFastForwardCommitSubjectPrefix = "Regres: Copy test lists from dEQP @ "
 )

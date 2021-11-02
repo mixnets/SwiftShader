@@ -26,6 +26,7 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
@@ -72,6 +73,8 @@ const (
 	fullTestListRelPath   = "tests/regres/full-tests.json"
 	ciTestListRelPath     = "tests/regres/ci-tests.json"
 	deqpConfigRelPath     = "tests/regres/deqp.json"
+	swsTestlists          = "tests/regres/testlists"
+	deqpTestlists         = "external/vulkancts/mustpass/master"
 )
 
 var (
@@ -657,6 +660,116 @@ func (r *regres) testParent(change *changeInfo, testlists testlist.Lists, d deqp
 	return results, nil
 }
 
+func copyFileIfDifferent(src, dst string) (bool, error) {
+	srcContents, err := os.ReadFile(src)
+	if err != nil {
+		return false, err
+	}
+
+	dstContents, err := os.ReadFile(dst)
+	// If the file doesn't exist, we can still write out the file anyways
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return false, err
+	}
+
+	if bytes.Equal(srcContents, dstContents) {
+		return false, nil
+	} else {
+		if err := os.WriteFile(dst, srcContents, 0640); err != nil {
+			return false, err
+		}
+	}
+
+	return true, nil
+}
+
+func (r *regres) copyTestLists(client *gerrit.Client, deqpBuild deqpBuild, test *test) error {
+	log.Println("Copying deqp's vulkan testlist to checkout %s", test.commit)
+	deqpTestlistDir := path.Join(deqpBuild.path, deqpTestlists)
+	swsTestlistDir := path.Join(test.checkoutDir, swsTestlists)
+
+	deqpDefault := path.Join(deqpTestlistDir, "vk-default.txt")
+	swsDefault := path.Join(swsTestlistDir, "vk-master.txt")
+
+	workToDo, err := copyFileIfDifferent(deqpDefault, swsDefault)
+	if err != nil {
+		return cause.Wrap(err, "Failed to copy '%s' to '%s'", deqpDefault, swsDefault)
+	}
+
+	if workToDo {
+		if err := git.Add(test.checkoutDir, swsDefault); err != nil {
+			return cause.Wrap(err, "Failed to add vk-master.txt to change list")
+		}
+	}
+
+	files, err := ioutil.ReadDir(path.Join(deqpTestlistDir, "vk-default"))
+	if err != nil {
+		return cause.Wrap(err, "Could not read files from %s/vk-default/", deqpTestlistDir)
+	}
+
+	for _, f := range files {
+		if f.IsDir() {
+			continue
+		}
+
+		swsFile := path.Join(swsTestlistDir, "vk-default", f.Name())
+		deqpFile := path.Join(deqpTestlistDir, "vk-default", f.Name())
+
+		copied, err := copyFileIfDifferent(deqpFile, swsFile)
+		if err != nil {
+			return cause.Wrap(err, "Failed to copy '%s' to '%s'", deqpFile, swsFile)
+		}
+		if copied {
+			workToDo = true
+			if err := git.Add(test.checkoutDir, swsFile); err != nil {
+				return cause.Wrap(err, "Failed to add '%v' to change list", f.Name())
+			}
+		}
+	}
+
+	if !workToDo {
+		// No new dEQP tests
+		log.Println("No new tests!")
+		return nil
+	}
+
+	log.Println("Checking for existing test list")
+	existingChange, err := r.findTestListChange(client, consts.TestListFastForwardCommitSubjectPrefix)
+	if err != nil {
+		return err
+	}
+
+	commitMsg := strings.Builder{}
+	commitMsg.WriteString(consts.TestListFastForwardCommitSubjectPrefix + deqpBuild.hash[:8])
+	if existingChange != nil {
+		// Reuse gerrit change ID if there's already a change up for review.
+		commitMsg.WriteString("\n\n")
+		commitMsg.WriteString("Change-Id: " + existingChange.ChangeID + "\n")
+	}
+
+	if err := git.Commit(test.checkoutDir, commitMsg.String(), git.CommitFlags{
+		Name:  "SwiftShader Regression Bot",
+		Email: r.gerritEmail,
+	}); err != nil {
+		return cause.Wrap(err, "Failed to commit test results")
+	}
+
+	if r.dryRun {
+		log.Printf("DRY RUN: post updated testlists for review")
+	} else {
+		log.Println("Pushing testlists for review")
+		if err := git.Push(test.checkoutDir, gitURL, "HEAD", "refs/for/master", git.PushFlags{
+			Username: r.gerritUser,
+			Password: r.gerritPass,
+		}); err != nil {
+			return cause.Wrap(err, "Failed to push test results for review")
+		}
+		log.Println("Testlists posted for review")
+	}
+
+	return nil
+}
+
 // runDaily runs a full deqp run on the HEAD change, posting the results to a
 // new or existing gerrit change. If genCov is true, then coverage
 // information will be generated for the run, and commiteed to the
@@ -686,6 +799,14 @@ func (r *regres) runDaily(client *gerrit.Client, reactorBackends [2]reactorBacke
 		return cause.Wrap(err, "Failed to build deqp for '%s'", dailyHash)
 	}
 
+	if err := r.copyTestLists(client, deqpBuild, t); err != nil {
+		return cause.Wrap(err, "Failed to copy up-to-date test lists for '%s' (deqp hash: '%s')", dailyHash, deqpBuild.hash)
+	}
+	defer func() {
+		// Reset checkout to state prior to updating the test list after daily tests run
+		t.checkout()
+	}()
+
 	// Load the test lists.
 	testLists, err := t.loadTestLists(fullTestListRelPath)
 	if err != nil {
@@ -709,7 +830,7 @@ func (r *regres) runDaily(client *gerrit.Client, reactorBackends [2]reactorBacke
 		}
 
 		t = t.setReactorBackend(reactorBackend)
-		if err := r.runDailyTest(dailyHash, t, testLists, genCov, deqpBuild,
+		if err := r.runDailyTest(t, testLists, genCov, deqpBuild,
 			func(t *test, testLists testlist.Lists, results *deqp.Results) error {
 				errs := []error{}
 
@@ -734,7 +855,7 @@ func (r *regres) runDaily(client *gerrit.Client, reactorBackends [2]reactorBacke
 
 // runDailyTest performs the full deqp run on the HEAD change, calling
 // withResults with the test results.
-func (r *regres) runDailyTest(dailyHash git.Hash, test *test, testLists testlist.Lists, genCov bool, d deqpBuild, withResults func(*test, testlist.Lists, *deqp.Results) error) error {
+func (r *regres) runDailyTest(test *test, testLists testlist.Lists, genCov bool, d deqpBuild, withResults func(*test, testlist.Lists, *deqp.Results) error) error {
 	// Get the full test results.
 	if genCov {
 		test.coverageEnv = &cov.Env{
@@ -747,13 +868,13 @@ func (r *regres) runDailyTest(dailyHash git.Hash, test *test, testLists testlist
 
 	// Build the change.
 	if err := test.build(); err != nil {
-		return cause.Wrap(err, "Failed to build '%s'", dailyHash)
+		return cause.Wrap(err, "Failed to build '%s'", test.commit)
 	}
 
 	// Run the tests on the change.
 	results, err := test.run(testLists, d)
 	if err != nil {
-		return cause.Wrap(err, "Failed to test '%s'", dailyHash)
+		return cause.Wrap(err, "Failed to test '%s'", test.commit)
 	}
 
 	return withResults(test, testLists, results)
@@ -786,7 +907,7 @@ func (r *regres) postDailyResults(
 	}
 
 	log.Println("Checking for existing test list")
-	existingChange, err := r.findTestListChange(client)
+	existingChange, err := r.findTestListChange(client, consts.TestListUpdateCommitSubjectPrefix)
 	if err != nil {
 		return err
 	}
@@ -828,7 +949,7 @@ func (r *regres) postDailyResults(
 	}
 	log.Println("Checked out parent commit")
 
-	change, err := r.findTestListChange(client)
+	change, err := r.findTestListChange(client, consts.TestListUpdateCommitSubjectPrefix)
 	if err != nil {
 		return err
 	}
@@ -938,11 +1059,12 @@ func (r *regres) postMostCommonFailures(client *gerrit.Client, change *gerrit.Ch
 	return nil
 }
 
-func (r *regres) findTestListChange(client *gerrit.Client) (*gerrit.ChangeInfo, error) {
+func (r *regres) findTestListChange(client *gerrit.Client, message string) (*gerrit.ChangeInfo, error) {
 	log.Println("Checking for existing test list change")
+	log.Println("gerrit Email:", r.gerritEmail)
 	changes, _, err := client.Changes.QueryChanges(&gerrit.QueryChangeOptions{
 		QueryOptions: gerrit.QueryOptions{
-			Query: []string{fmt.Sprintf(`status:open+owner:"%v"`, r.gerritEmail)},
+			Query: []string{fmt.Sprintf(`status:open+owner:"%v"+message:"%v"`, r.gerritEmail, message)},
 			Limit: 1,
 		},
 		ChangeOptions: gerrit.ChangeOptions{
@@ -950,7 +1072,7 @@ func (r *regres) findTestListChange(client *gerrit.Client) (*gerrit.ChangeInfo, 
 		},
 	})
 	if err != nil {
-		return nil, cause.Wrap(err, "Failed to checking for existing test list")
+		return nil, cause.Wrap(err, "Failed to check for existing test list")
 	}
 	if len(*changes) > 0 {
 		// TODO: This currently assumes that only change changes from
