@@ -16,6 +16,24 @@
       "message": "There doesn\u0027t appear to be any test for this in dEQP. I\u0027m not sure how testable this feature is, though.",
       "revId": "dd6c4d06985be3e76580cea86a1f272daf9343b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5430e688_00ccc64c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-03T04:55:04Z",
+      "side": 1,
+      "message": "I\u0027ve added \"Tests: dEQP-VK.*\" to make sure.\n\nSeems quite testable to me. The spec states that \"If shaderZeroInitializeWorkgroupMemory is not enabled, any OpVariable with Workgroup as its Storage Class must not have an Initializer operand\", and we should currently hit this assert: https://cs.opensource.google/swiftshader/SwiftShader/+/master:src/Pipeline/SpirvShaderMemory.cpp;drc\u003db7b7cb76042a6374b038f1d18f4863d714960bb0;l\u003d235\n\nWe could ask Alan Baker for clarification.",
+      "parentUuid": "2dadd0c2_7370aff2",
+      "revId": "dd6c4d06985be3e76580cea86a1f272daf9343b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
