@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7c027d5_5bfe526c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-03T04:41:27Z",
+      "side": 1,
+      "message": "Could you list the features a bit more explicitly? \"more control\" is very vague, \"early return\" could mention on pipeline creation failure, and I\u0027m not sure what you mean by force the use of a cache and what bit of this CL corresponds to that.",
+      "range": {
+        "startLine": 10,
+        "startChar": 12,
+        "endLine": 11,
+        "endChar": 41
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4181c58f_5a8681ed",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-03T04:41:27Z",
+      "side": 1,
+      "message": "This appears to only be used to check if the entry is present, and the output actually gets discarded? In that case it should probably be just a \"contains\" method which returns a boolean and nothing else.",
+      "range": {
+        "startLine": 79,
+        "startChar": 13,
+        "endLine": 79,
+        "endChar": 21
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c61e002_3f8d5bea",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-03T04:41:27Z",
+      "side": 1,
+      "message": "Remove",
+      "range": {
+        "startLine": 421,
+        "startChar": 1,
+        "endLine": 421,
+        "endChar": 34
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4480534_7fcf7a1a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2003,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-03T04:41:27Z",
+      "side": 1,
+      "message": "This was probably needed before this extension as well? I assume dEQP uses VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_EXT to test the failure path? Does it check that the allocator callback gets used? Just curious.",
+      "range": {
+        "startLine": 2003,
+        "startChar": 8,
+        "endLine": 2003,
+        "endChar": 15
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa6ec3c0_8575b1de",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2019,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-03T04:41:27Z",
+      "side": 1,
+      "message": "I feel like this should be moved above the comment at 2009, to avoid confusion about that applying to this extension behavior.",
+      "range": {
+        "startLine": 2019,
+        "startChar": 3,
+        "endLine": 2019,
+        "endChar": 81
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33878147_c163d68e",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2024,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-03T04:41:27Z",
+      "side": 1,
+      "message": "Is this actually required by the extension? I don\u0027t immediately see it mentioned.",
+      "range": {
+        "startLine": 2021,
+        "startChar": 4,
+        "endLine": 2024,
+        "endChar": 5
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
