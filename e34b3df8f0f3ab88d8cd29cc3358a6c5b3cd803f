@@ -126,6 +126,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b1c7dc15_42101bb8",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-03T14:58:00Z",
+      "side": 1,
+      "message": "Or more likely just making the for loop sized four to cover snorm correctly. I was also considering to remove the snorm case and let the default handle that too, but the default has no Max. But I fear the fault could also require that same Max if it\u0027s ever hit with a signed format.",
+      "parentUuid": "cdbaa86e_cf833b29",
+      "range": {
+        "startLine": 200,
+        "startChar": 3,
+        "endLine": 207,
+        "endChar": 10
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f4f886a_1a5331f0",
         "filename": "src/Vulkan/VkFormat.cpp",
         "patchSetId": 5
