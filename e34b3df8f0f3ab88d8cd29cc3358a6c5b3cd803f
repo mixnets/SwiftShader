@@ -174,6 +174,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "70489903_7da7f8e4",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-03T17:51:50Z",
+      "side": 1,
+      "message": "Sure, I\u0027ll have a look on Friday (I\u0027m off for Thursday)",
+      "parentUuid": "9a25b927_1dec6674",
+      "range": {
+        "startLine": 200,
+        "startChar": 3,
+        "endLine": 207,
+        "endChar": 10
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f4f886a_1a5331f0",
         "filename": "src/Vulkan/VkFormat.cpp",
         "patchSetId": 5
