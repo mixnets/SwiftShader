@@ -102,6 +102,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cdbaa86e_cf833b29",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-03T14:54:27Z",
+      "side": 1,
+      "message": "The difference is that the default case scales only the active components, but mine scales all. And using the default case breaks some of the CTS tests:\n\nTest case \u0027dEQP-VK.pipeline.sampler.border_swizzle.r16_unorm.rgba.opaque_white.gather_0.no_swizzle_hint\u0027..\n  Fail (Ref:(1, 1, 1, 1) Threshold:(0, 0, 0, 0) Color:(1, 65535, 65535, 65535) at vktPipelineSamplerBorderSwizzleTests.cpp:1059)\n  \n Reading the unused components should provide some default values (for example full alpha for formats without alpha channel), so maybe these values are now off?\n \n I\u0027m thinking of just replacing the current default case with the one I added for 16bit unorm formats.",
+      "parentUuid": "542d49e0_908a3c8e",
+      "range": {
+        "startLine": 200,
+        "startChar": 3,
+        "endLine": 207,
+        "endChar": 10
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f4f886a_1a5331f0",
         "filename": "src/Vulkan/VkFormat.cpp",
         "patchSetId": 5
@@ -113,6 +137,30 @@
       "writtenOn": "2021-11-02T16:16:53Z",
       "side": 1,
       "message": "4?",
+      "range": {
+        "startLine": 2011,
+        "startChar": 27,
+        "endLine": 2011,
+        "endChar": 28
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9ecc435_4fc0ec84",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2011,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-03T14:54:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0f4f886a_1a5331f0",
       "range": {
         "startLine": 2011,
         "startChar": 27,
@@ -136,6 +184,30 @@
       "writtenOn": "2021-11-02T16:16:53Z",
       "side": 1,
       "message": "0?",
+      "range": {
+        "startLine": 2106,
+        "startChar": 27,
+        "endLine": 2106,
+        "endChar": 28
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4e58f04_d34e1e48",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2106,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-03T14:54:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "29add761_1fd9ee1b",
       "range": {
         "startLine": 2106,
         "startChar": 27,
