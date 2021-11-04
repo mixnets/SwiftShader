@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b800450a_46bcd1b4",
+        "filename": "tests/regres/deqp.json",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T17:16:05Z",
+      "side": 1,
+      "message": "Question: Didn\u0027t we want this to be a \"once a day\" thing which updates once nightly, not a \"whenever\" thing, so that the Regres runs we do during the day aren\u0027t using a different version from the last nightly run?",
+      "range": {
+        "startLine": 3,
+        "startChar": 15,
+        "endLine": 3,
+        "endChar": 21
+      },
+      "revId": "e383d83f2d833b5cbb314ee93e8597b8e0495b92",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
