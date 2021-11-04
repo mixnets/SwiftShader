@@ -14,8 +14,9 @@
 
 #include "SpirvShader.hpp"
 
-#include "SamplerCore.hpp"  // TODO: Figure out what's needed.
+#include "SamplerCore.hpp"
 #include "Device/Config.hpp"
+#include "Pipeline/Constants.hpp"
 #include "System/Debug.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkDescriptorSetLayout.hpp"

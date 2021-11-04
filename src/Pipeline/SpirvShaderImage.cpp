@@ -268,13 +268,12 @@ Pointer<Byte> SpirvShader::lookupSamplerFunction(Pointer<Byte> imageDescriptor, 
 	}
 
 	auto &cache = state->routine->samplerCache.at(instruction.position);
-	auto cacheHit = (cache.imageDescriptor == imageDescriptor) && (cache.samplerId == samplerId);  // TODO(b/205566405): Skip sampler ID check for samplerless instructions.
+	Bool cacheHit = (cache.imageDescriptor == imageDescriptor) && (cache.samplerId == samplerId);  // TODO(b/205566405): Skip sampler ID check for samplerless instructions.
 
 	If(!cacheHit)
 	{
 		rr::Int imageViewId = *Pointer<rr::Int>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, imageViewId));
-		Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, device));
-		cache.function = Call(getImageSampler, device, instruction.state, samplerId, imageViewId);
+		cache.function = Call(getImageSampler, state->routine->device, instruction.state, samplerId, imageViewId);
 		cache.imageDescriptor = imageDescriptor;
 		cache.samplerId = samplerId;
 	}
@@ -366,7 +365,7 @@ void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD:
 
 	Pointer<Byte> texture = imageDescriptor + OFFSET(vk::SampledImageDescriptor, texture);  // sw::Texture*
 
-	Call<ImageSampler>(samplerFunction, texture, &in[0], &out[0], state->routine->constants);
+	Call<ImageSampler>(samplerFunction, texture, &in[0], &out[0], state->routine->device);
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const

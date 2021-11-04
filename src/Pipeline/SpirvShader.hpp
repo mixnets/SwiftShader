@@ -65,6 +65,7 @@ namespace sw {
 
 // Forward declarations.
 class SpirvRoutine;
+struct Constants;
 
 // Incrementally constructed complex bundle of rvalues
 // Effectively a restricted vector, supporting only:
@@ -1475,7 +1476,7 @@ public:
 	Pointer<Pointer<Byte>> descriptorSets;
 	Pointer<Int> descriptorDynamicOffsets;
 	Pointer<Byte> pushConstants;
-	Pointer<Byte> constants;
+	Pointer<Byte> device;
 	Int killMask = Int{ 0 };
 
 	// Shader invocation state.
