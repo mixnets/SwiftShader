@@ -427,7 +427,11 @@ SpirvShader::SpirvShader(
 			break;
 
 		case spv::OpMemoryModel:
-			break;  // Memory model does not affect our code generation until we decide to do Vulkan Memory Model support.
+			{
+				spv::AddressingModel addressingModel = static_cast<spv::AddressingModel>(insn.word(1));
+				spv::MemoryModel memoryModel = static_cast<spv::MemoryModel>(insn.word(2));
+			}
+			break;
 
 		case spv::OpFunction:
 			{

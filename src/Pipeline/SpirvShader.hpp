@@ -581,6 +581,7 @@ public:
 		Object::ID resultId = 0;
 		Object::ID sampledImageId = 0;
 		Object::ID coordinateId = 0;
+		Object::ID texelId = 0;
 		Object::ID drefId = 0;
 		Object::ID lodOrBiasId = 0;
 		Object::ID gradDxId = 0;
@@ -590,6 +591,7 @@ public:
 
 	private:
 		static ImageInstructionState parseVariantAndMethod(InsnIterator insn);
+		static uint32_t getImageOperandsOffset(InsnIterator insn);
 		static uint32_t getImageOperands(InsnIterator insn);
 	};
 
