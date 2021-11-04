@@ -35,6 +35,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0c3a373_515b61c1",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2496,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T18:53:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5bb1343d_19290418",
+      "revId": "76df8965bad2fe383ed89b200ecf0936de84893c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ad4c35ca_3f7ec8f2",
@@ -48,6 +66,30 @@
       "writtenOn": "2021-11-02T20:12:14Z",
       "side": 1,
       "message": "This is false on most implementations. Even if we can support it, do we lose anything by setting it to false? Is it demanded by ES 3.2? If not, I think we should be conservative here. Possibly easier to enable it later than to disable it, and might help prevent applications assume it\u0027s available.\n\nhttps://vulkan.gpuinfo.org/listfeaturesextensions.php?extension\u003dVK_EXT_blend_operation_advanced\u0026platform\u003dall",
+      "range": {
+        "startLine": 337,
+        "startChar": 45,
+        "endLine": 337,
+        "endChar": 52
+      },
+      "revId": "76df8965bad2fe383ed89b200ecf0936de84893c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b535c9d_68817e31",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T18:53:48Z",
+      "side": 1,
+      "message": "According to the spec:\n\"advancedBlendCoherentOperations specifies whether blending using advanced blend operations is guaranteed to execute atomically and in primitive order. If this is VK_TRUE, VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT is treated the same as VK_ACCESS_COLOR_ATTACHMENT_READ_BIT, and advanced blending needs no additional synchronization over basic blending. If this is VK_FALSE, then memory dependencies are required to guarantee order between two advanced blending operations that occur on the same sample.\"\n\nAFAIK, in SwiftShader, we don\u0027t have to do anything to support this, \"VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT is treated the same as VK_ACCESS_COLOR_ATTACHMENT_READ_BIT, and advanced blending needs no additional synchronization over basic blending\" is already true.\n\nI think it should be advertised properly, as applications using SwiftShader need to know that SwiftShader isn\u0027t a way to test whether their synchronization code works, since it doesn\u0027t require any.",
+      "parentUuid": "ad4c35ca_3f7ec8f2",
       "range": {
         "startLine": 337,
         "startChar": 45,
@@ -83,6 +125,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "758de9cc_9465aa83",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1038,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T18:53:48Z",
+      "side": 1,
+      "message": "No, we don\u0027t have to do anything to support multiple attachments. In our implementation, there\u0027s no difference between how we treat advanced blend modes VS regular blend modes.",
+      "parentUuid": "64052ff8_6788e116",
+      "range": {
+        "startLine": 1038,
+        "startChar": 48,
+        "endLine": 1038,
+        "endChar": 69
+      },
+      "revId": "76df8965bad2fe383ed89b200ecf0936de84893c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1f315c98_d90b585c",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 8
@@ -94,6 +160,30 @@
       "writtenOn": "2021-11-02T20:12:14Z",
       "side": 1,
       "message": "nit: GL_KHR_",
+      "range": {
+        "startLine": 374,
+        "startChar": 29,
+        "endLine": 374,
+        "endChar": 33
+      },
+      "revId": "76df8965bad2fe383ed89b200ecf0936de84893c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4347c722_32a555ad",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T18:53:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f315c98_d90b585c",
       "range": {
         "startLine": 374,
         "startChar": 29,
