@@ -14,8 +14,9 @@
 
 #include "SpirvShader.hpp"
 
-#include "SamplerCore.hpp"  // TODO: Figure out what's needed.
+#include "SamplerCore.hpp"
 #include "Device/Config.hpp"
+#include "Pipeline/Constants.hpp"
 #include "System/Debug.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkDescriptorSetLayout.hpp"
@@ -30,8 +31,10 @@
 
 namespace sw {
 
-SpirvShader::ImageSampler *SpirvShader::getImageSampler(const vk::Device *device, uint32_t inst, uint32_t samplerId, uint32_t imageViewId)
+SpirvShader::ImageSampler *SpirvShader::getImageSampler(const sw::Constants *constants, uint32_t inst, uint32_t samplerId, uint32_t imageViewId)
 {
+	const vk::Device *device = constants->device;
+
 	ImageInstructionState instruction(inst);
 	ASSERT(imageViewId != 0 && (samplerId != 0 || instruction.samplerMethod == Fetch));
 	ASSERT(device);

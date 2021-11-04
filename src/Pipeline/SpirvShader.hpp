@@ -65,6 +65,7 @@ namespace sw {
 
 // Forward declarations.
 class SpirvRoutine;
+struct Constants;
 
 // Incrementally constructed complex bundle of rvalues
 // Effectively a restricted vector, supporting only:
@@ -1371,7 +1372,7 @@ private:
 	// Returns the pair <significand, exponent>
 	std::pair<SIMD::Float, SIMD::Int> Frexp(RValue<SIMD::Float> val) const;
 
-	static ImageSampler *getImageSampler(const vk::Device *device, uint32_t instruction, uint32_t samplerId, uint32_t imageViewId);
+	static ImageSampler *getImageSampler(const sw::Constants *constants, uint32_t instruction, uint32_t samplerId, uint32_t imageViewId);
 	static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstructionState instruction, const Sampler &samplerState);
 
 	// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.

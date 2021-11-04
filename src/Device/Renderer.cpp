@@ -148,7 +148,6 @@ DrawCall::DrawCall()
 {
 	// TODO(b/140991626): Use allocateUninitialized() instead of allocateZeroOrPoison() to improve startup peformance.
 	data = (DrawData *)sw::allocateZeroOrPoison(sizeof(DrawData));
-	data->constants = &Constants::Get();
 }
 
 DrawCall::~DrawCall()
@@ -196,6 +195,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 		draw = drawCallPool.borrow();
 	}
 	draw->id = id;
+	draw->data->constants = device->getConstants();
 
 	const vk::GraphicsState &pipelineState = pipeline->getState(dynamicState);
 	pixelProcessor.setBlendConstant(pipelineState.getBlendConstants());

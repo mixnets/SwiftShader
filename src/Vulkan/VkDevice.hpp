@@ -17,6 +17,7 @@
 
 #include "VkImageView.hpp"
 #include "VkSampler.hpp"
+#include "Pipeline/Constants.hpp"
 #include "Reactor/Routine.hpp"
 #include "System/LRUCache.hpp"
 
@@ -176,6 +177,8 @@ public:
 	void emitDeviceMemoryReport(VkDeviceMemoryReportEventTypeEXT type, uint64_t memoryObjectId, VkDeviceSize size, VkObjectType objectType, uint64_t objectHandle, uint32_t heapIndex = 0);
 #endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 
+	const sw::Constants *getConstants() const { return &constants; }
+
 private:
 	PhysicalDevice *const physicalDevice = nullptr;
 	Queue *const queues = nullptr;
@@ -192,6 +195,8 @@ private:
 
 	marl::mutex imageViewSetMutex;
 	std::unordered_set<ImageView *> imageViewSet GUARDED_BY(imageViewSetMutex);
+
+	const sw::Constants constants;
 
 #ifdef ENABLE_VK_DEBUGGER
 	struct
