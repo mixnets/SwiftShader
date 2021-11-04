@@ -144,7 +144,7 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 	if(!sptr)
 	{
 		marl::Scheduler::Config cfg;
-		cfg.setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 16));
+		cfg.setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 1));
 		cfg.setWorkerThreadInitializer([](int) {
 			sw::CPUID::setFlushToZero(true);
 			sw::CPUID::setDenormalsAreZero(true);
