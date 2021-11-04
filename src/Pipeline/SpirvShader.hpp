@@ -65,6 +65,7 @@ namespace sw {
 
 // Forward declarations.
 class SpirvRoutine;
+struct Constants;
 
 // Incrementally constructed complex bundle of rvalues
 // Effectively a restricted vector, supporting only:
@@ -251,6 +252,11 @@ public:
 		{
 			ASSERT(hasResultAndType());
 			return word(2);
+		}
+
+		uint32_t distanceFrom(const InsnIterator &other) const
+		{
+			return static_cast<uint32_t>(iter - other.iter);
 		}
 
 		bool operator==(InsnIterator const &other) const
@@ -513,13 +519,13 @@ public:
 		}
 
 		// Unmarshal from raw 32-bit data
-		ImageInstruction(uint32_t parameters)
+		explicit ImageInstruction(uint32_t parameters)
 		    : parameters(parameters)
 		{}
 
 		SamplerFunction getSamplerFunction() const
 		{
-			return { static_cast<SamplerMethod>(samplerMethod), offset != 0, sample != 0 };
+			return { static_cast<SamplerMethod>(samplerMethod), offset != 0, sample_ != 0 };
 		}
 
 		bool isDref() const
@@ -546,7 +552,7 @@ public:
 				/*	uint32_t lodOrBias : 1; */  // Indicated by SamplerMethod::Lod|Bias|Fetch
 				uint32_t grad : 2;              // 0-3 components (for each of dx / dy)
 				uint32_t offset : 2;            // 0-3 components
-				uint32_t sample : 1;            // 0-1 scalar integer
+				uint32_t sample_ : 1;           // 0-1 scalar integer
 			};
 
 			uint32_t parameters;
@@ -624,6 +630,7 @@ public:
 		bool ImageQuery : 1;
 		bool DerivativeControl : 1;
 		bool InterpolationFunction : 1;
+		bool StorageImageWriteWithoutFormat : 1;
 		bool GroupNonUniform : 1;
 		bool GroupNonUniformVote : 1;
 		bool GroupNonUniformBallot : 1;
@@ -1267,6 +1274,8 @@ private:
 	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
 	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
 
+	void EmitImageWriteUnconditional(ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
+
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 	SIMD::Pointer GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const;
 	uint32_t GetConstScalarInt(Object::ID id) const;
@@ -1330,8 +1339,9 @@ private:
 	// Returns the pair <significand, exponent>
 	std::pair<SIMD::Float, SIMD::Int> Frexp(RValue<SIMD::Float> val) const;
 
-	static ImageSampler *getImageSampler(const vk::Device *device, uint32_t instruction, uint32_t samplerId, uint32_t imageViewId);
+	static ImageSampler *getImageSampler(const sw::Constants *constants, uint32_t instruction, uint32_t samplerId, uint32_t imageViewId);
 	static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState);
+	static std::shared_ptr<rr::Routine> emitWriteRoutine(ImageInstruction instruction, const Sampler &samplerState);
 
 	// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
 	static sw::FilterType convertFilterMode(const vk::SamplerState *samplerState, VkImageViewType imageViewType, SamplerMethod samplerMethod);
@@ -1423,7 +1433,7 @@ public:
 	vk::PipelineLayout const *const pipelineLayout;
 
 	std::unordered_map<SpirvShader::Object::ID, Variable> variables;
-	std::unordered_map<SpirvShader::Object::ID, SamplerCache> samplerCache;
+	std::unordered_map<uint32_t, SamplerCache> samplerCache;  // Indexed by the instruction location, in words.
 	Variable inputs = Variable{ MAX_INTERFACE_COMPONENTS };
 	Variable outputs = Variable{ MAX_INTERFACE_COMPONENTS };
 	InterpolationData interpolationData;

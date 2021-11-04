@@ -43,13 +43,15 @@ struct alignas(16) SampledImageDescriptor
 	int mipLevels;
 	int sampleCount;
 
-	Device *device;
+	///////////Device *device;
 	ImageView *memoryOwner;  // Pointer to the view which owns the memory used by the descriptor set
 };
 
 struct alignas(16) StorageImageDescriptor
 {
 	~StorageImageDescriptor() = delete;
+
+	uint32_t imageViewId;
 
 	void *ptr;
 	int width;
@@ -65,6 +67,8 @@ struct alignas(16) StorageImageDescriptor
 	int stencilRowPitchBytes;
 	int stencilSlicePitchBytes;  // Layer pitch in case of array image
 	int stencilSamplePitchBytes;
+
+	////////////////////////////spv::ImageFormat format;
 
 	ImageView *memoryOwner;  // Pointer to the view which owns the memory used by the descriptor set
 };
