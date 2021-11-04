@@ -327,10 +327,9 @@ void ComputePipeline::run(uint32_t baseGroupX, uint32_t baseGroupY, uint32_t bas
                           vk::Pipeline::PushConstantStorage const &pushConstants)
 {
 	ASSERT_OR_RETURN(program != nullptr);
-	program->run(
-	    descriptorSetObjects, descriptorSets, descriptorDynamicOffsets, pushConstants,
-	    baseGroupX, baseGroupY, baseGroupZ,
-	    groupCountX, groupCountY, groupCountZ);
+	program->run(descriptorSetObjects, descriptorSets, descriptorDynamicOffsets, pushConstants,
+	             baseGroupX, baseGroupY, baseGroupZ,
+	             groupCountX, groupCountY, groupCountZ);
 }
 
 }  // namespace vk

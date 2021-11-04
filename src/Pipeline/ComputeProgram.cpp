@@ -13,9 +13,10 @@
 // limitations under the License.
 
 #include "ComputeProgram.hpp"
-#include "Constants.hpp"
 
+#include "Constants.hpp"
 #include "System/Debug.hpp"
+#include "Vulkan/VkDevice.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 
 #include "marl/defer.h"
@@ -235,7 +236,7 @@ void ComputeProgram::run(
 	data.invocationsPerWorkgroup = invocationsPerWorkgroup;
 	data.subgroupsPerWorkgroup = subgroupsPerWorkgroup;
 	data.pushConstants = pushConstants;
-	data.constants = &sw::Constants::Get();
+	data.constants = &device->constants;  ///////////////////// &sw::Constants::Get();
 
 	marl::WaitGroup wg;
 	const uint32_t batchCount = 16;
