@@ -34,7 +34,8 @@ enum SamplerMethod : uint32_t
 	Base,      // Sample base level.
 	Query,     // Return implicit LOD.
 	Gather,    // Return one channel of each texel in footprint.
-	SAMPLER_METHOD_LAST = Gather,
+	Write,
+	SAMPLER_METHOD_LAST = Write,
 };
 
 // TODO(b/129523279): Eliminate and use SpirvShader::ImageInstruction instead.

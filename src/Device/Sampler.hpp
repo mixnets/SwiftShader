@@ -214,6 +214,27 @@ struct Sampler
 
 		return false;
 	}
+
+	int dims() const
+	{
+		switch(textureType)
+		{
+		case VK_IMAGE_VIEW_TYPE_1D:
+		case VK_IMAGE_VIEW_TYPE_1D_ARRAY:
+			return 1;
+		case VK_IMAGE_VIEW_TYPE_2D:
+		case VK_IMAGE_VIEW_TYPE_2D_ARRAY:
+			return 2;
+		case VK_IMAGE_VIEW_TYPE_3D:
+		case VK_IMAGE_VIEW_TYPE_CUBE:
+		case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY:
+			return 3;
+		default:
+			UNSUPPORTED("VkImageViewType %d", (int)textureType);
+		}
+
+		return false;
+	}
 };
 
 }  // namespace sw
