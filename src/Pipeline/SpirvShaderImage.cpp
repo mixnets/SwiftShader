@@ -91,9 +91,18 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
     : ImageInstructionState(parseVariantAndMethod(insn))
     , position(insn.distanceFrom(spirv.begin()))
 {
-	resultId = insn.resultId();     // word(2)
-	sampledImageId = insn.word(3);  // For OpImageFetch this is just an Image, not a SampledImage.
-	coordinateId = insn.word(4);
+	if(samplerMethod == Write)
+	{
+		sampledImageId = insn.word(1);  // For OpImageRead this is just an Image, not a SampledImage.
+		coordinateId = insn.word(2);
+		texelId = insn.word(3);
+	}
+	else
+	{
+		resultId = insn.resultId();     // word(2)
+		sampledImageId = insn.word(3);  // For OpImageFetch this is just an Image, not a SampledImage.
+		coordinateId = insn.word(4);
+	}
 
 	const Object &coordinateObject = spirv.getObject(coordinateId);
 	const Type &coordinateType = spirv.getType(coordinateObject);
@@ -109,31 +118,33 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
 		gatherComponent = !isDref() ? spirv.getObject(insn.word(5)).constantValue[0] : 0;
 	}
 
-	uint32_t imageOperands = getImageOperands(insn);                   // The mask which indicates which operands are provided.
-	uint32_t operand = (isDref() || samplerMethod == Gather) ? 7 : 6;  // The first actual operand <id> location.
+	uint32_t operandsOffset = getImageOperandsOffset(insn);
+	uint32_t imageOperands = (operandsOffset != 0) ? insn.word(operandsOffset) : 0;  // The mask which indicates which operands are provided.
+
+	operandsOffset += 1;  // Advance to the first actual operand <id> location.
 
 	if(imageOperands & spv::ImageOperandsBiasMask)
 	{
 		ASSERT(samplerMethod == Bias);
-		lodOrBiasId = insn.word(operand);
-		operand++;
+		lodOrBiasId = insn.word(operandsOffset);
+		operandsOffset += 1;
 		imageOperands &= ~spv::ImageOperandsBiasMask;
 	}
 
 	if(imageOperands & spv::ImageOperandsLodMask)
 	{
 		ASSERT(samplerMethod == Lod || samplerMethod == Fetch);
-		lodOrBiasId = insn.word(operand);
-		operand++;
+		lodOrBiasId = insn.word(operandsOffset);
+		operandsOffset += 1;
 		imageOperands &= ~spv::ImageOperandsLodMask;
 	}
 
 	if(imageOperands & spv::ImageOperandsGradMask)
 	{
 		ASSERT(samplerMethod == Grad);
-		gradDxId = insn.word(operand + 0);
-		gradDyId = insn.word(operand + 1);
-		operand += 2;
+		gradDxId = insn.word(operandsOffset + 0);
+		gradDyId = insn.word(operandsOffset + 1);
+		operandsOffset += 2;
 		imageOperands &= ~spv::ImageOperandsGradMask;
 
 		grad = spirv.getObjectType(gradDxId).componentCount;
@@ -141,8 +152,8 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
 
 	if(imageOperands & spv::ImageOperandsConstOffsetMask)
 	{
-		offsetId = insn.word(operand);
-		operand++;
+		offsetId = insn.word(operandsOffset);
+		operandsOffset += 1;
 		imageOperands &= ~spv::ImageOperandsConstOffsetMask;
 
 		offset = spirv.getObjectType(offsetId).componentCount;
@@ -150,11 +161,24 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
 
 	if(imageOperands & spv::ImageOperandsSampleMask)
 	{
-		ASSERT(samplerMethod == Fetch);
-		sampleId = insn.word(operand);
+		ASSERT(samplerMethod == Fetch || samplerMethod == Write);
+		sampleId = insn.word(operandsOffset);
+		operandsOffset += 1;
 		imageOperands &= ~spv::ImageOperandsSampleMask;
 
 		sample = true;
+	}
+
+	// TODO(b/174475384)
+	if(imageOperands & spv::ImageOperandsZeroExtendMask)
+	{
+		ASSERT(samplerMethod == Write);
+		imageOperands &= ~spv::ImageOperandsZeroExtendMask;
+	}
+	else if(imageOperands & spv::ImageOperandsSignExtendMask)
+	{
+		ASSERT(samplerMethod == Write);
+		imageOperands &= ~spv::ImageOperandsSignExtendMask;
 	}
 
 	if(imageOperands != 0)
@@ -183,6 +207,7 @@ SpirvShader::ImageInstructionState SpirvShader::ImageInstruction::parseVariantAn
 	case spv::OpImageDrefGather: return { Dref, Gather };
 	case spv::OpImageFetch: return { None, Fetch };
 	case spv::OpImageQueryLod: return { None, Query };
+	case spv::OpImageWrite: return { None, Write };
 
 	default:
 		ASSERT(false);
@@ -190,35 +215,43 @@ SpirvShader::ImageInstructionState SpirvShader::ImageInstruction::parseVariantAn
 	}
 }
 
-uint32_t SpirvShader::ImageInstruction::getImageOperands(InsnIterator insn)
+uint32_t SpirvShader::ImageInstruction::getImageOperandsOffset(InsnIterator insn)
 {
 	switch(insn.opcode())
 	{
 	case spv::OpImageSampleImplicitLod:
 	case spv::OpImageSampleProjImplicitLod:
-		return insn.wordCount() > 5 ? insn.word(5) : 0;  // Optional
+		return insn.wordCount() > 5 ? 5 : 0;  // Optional
 	case spv::OpImageSampleExplicitLod:
 	case spv::OpImageSampleProjExplicitLod:
-		return insn.word(5);  // "Either Lod or Grad image operands must be present."
+		return 5;  // "Either Lod or Grad image operands must be present."
 	case spv::OpImageSampleDrefImplicitLod:
 	case spv::OpImageSampleProjDrefImplicitLod:
-		return insn.wordCount() > 6 ? insn.word(6) : 0;  // Optional
+		return insn.wordCount() > 6 ? 6 : 0;  // Optional
 	case spv::OpImageSampleDrefExplicitLod:
 	case spv::OpImageSampleProjDrefExplicitLod:
-		return insn.word(6);  // "Either Lod or Grad image operands must be present."
+		return 6;  // "Either Lod or Grad image operands must be present."
 	case spv::OpImageGather:
 	case spv::OpImageDrefGather:
-		return insn.wordCount() > 6 ? insn.word(6) : 0;  // Optional
+		return insn.wordCount() > 6 ? 6 : 0;  // Optional
 	case spv::OpImageFetch:
-		return insn.wordCount() > 5 ? insn.word(5) : 0;  // Optional
+		return insn.wordCount() > 5 ? 5 : 0;  // Optional
 	case spv::OpImageQueryLod:
 		ASSERT(insn.wordCount() == 5);
 		return 0;
+	case spv::OpImageWrite:
+		return insn.wordCount() > 4 ? 4 : 0;  // Optional
 
 	default:
 		ASSERT(false);
 		return 0;
 	}
+}
+
+uint32_t SpirvShader::ImageInstruction::getImageOperands(InsnIterator insn)
+{
+	uint32_t operandsOffset = getImageOperandsOffset(insn);
+	return (operandsOffset != 0) ? insn.word(operandsOffset) : 0;
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageSample(InsnIterator insn, EmitState *state) const
@@ -268,13 +301,13 @@ Pointer<Byte> SpirvShader::lookupSamplerFunction(Pointer<Byte> imageDescriptor, 
 	}
 
 	auto &cache = state->routine->samplerCache.at(instruction.position);
-	auto cacheHit = (cache.imageDescriptor == imageDescriptor) && (cache.samplerId == samplerId);  // TODO(b/205566405): Skip sampler ID check for samplerless instructions.
+	Bool cacheHit = (cache.imageDescriptor == imageDescriptor) && (cache.samplerId == samplerId);  // TODO(b/205566405): Skip sampler ID check for samplerless instructions.
 
 	If(!cacheHit)
 	{
 		rr::Int imageViewId = *Pointer<rr::Int>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, imageViewId));
-		Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, device));
-		cache.function = Call(getImageSampler, device, instruction.state, samplerId, imageViewId);
+		//////////////////////Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, device));
+		cache.function = Call(getImageSampler, state->routine->constants, instruction.state, samplerId, imageViewId);
 		cache.imageDescriptor = imageDescriptor;
 		cache.samplerId = samplerId;
 	}
@@ -367,6 +400,124 @@ void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD:
 	Pointer<Byte> texture = imageDescriptor + OFFSET(vk::SampledImageDescriptor, texture);  // sw::Texture*
 
 	Call<ImageSampler>(samplerFunction, texture, &in[0], &out[0], state->routine->constants);
+}
+
+void SpirvShader::EmitImageWriteUnconditional(const ImageInstruction &instruction, EmitState *state) const
+{
+	Pointer<Byte> imageDescriptor = state->getPointer(instruction.sampledImageId /* imageId ******/).base;  // vk::StorageImageDescriptor*
+	//////////////////////Pointer<Byte> imageDescriptor = state->getPointer(instruction.sampledImageId).base;  // vk::SampledImageDescriptor*
+	//////////////auto &image = getObject(imageId);
+
+	/////////////Pointer<Byte> texture = imageDescriptor;  ///////////////// +OFFSET(vk::StorageImageDescriptor, ptr);  // sw::Texture*
+
+	auto coordinate = Operand(this, state, instruction.coordinateId);
+
+	Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
+
+	uint32_t coordinates = coordinate.componentCount - instruction.isProj();
+
+	uint32_t i = 0;
+	for(; i < coordinates; i++)
+	{
+		//if(instruction.isProj())
+		//{
+		//	in[i] = coordinate.Float(i) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+		//}
+		//else
+		{
+			in[i] = coordinate.Float(i);
+		}
+	}
+
+	//if(instruction.isDref())
+	//{
+	//	auto drefValue = Operand(this, state, insn.word(5));
+
+	//	if(instruction.isProj())
+	//	{
+	//		in[i] = drefValue.Float(0) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+	//	}
+	//	else
+	//	{
+	//		in[i] = drefValue.Float(0);
+	//	}
+
+	//	i++;
+	//}
+
+	//if(lodOrBias)
+	//{
+	//	auto lodValue = Operand(this, state, lodOrBiasId);
+	//	in[i] = lodValue.Float(0);
+	//	i++;
+	//}
+	//else if(grad)
+	//{
+	//	auto dxValue = Operand(this, state, gradDxId);
+	//	auto dyValue = Operand(this, state, gradDyId);
+	//	ASSERT(dxValue.componentCount == dxValue.componentCount);
+
+	//	instruction.grad = dxValue.componentCount;
+
+	//	for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
+	//	{
+	//		in[i] = dxValue.Float(j);
+	//	}
+
+	//	for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
+	//	{
+	//		in[i] = dyValue.Float(j);
+	//	}
+	//}
+	//else if(instruction.samplerMethod == Fetch)
+	//{
+	//	// The instruction didn't provide a lod operand, but the sampler's Fetch
+	//	// function requires one to be present. If no lod is supplied, the default
+	//	// is zero.
+	//	in[i] = As<SIMD::Float>(SIMD::Int(0));
+	//	i++;
+	//}
+
+	//if(constOffset)
+	//{
+	//	auto offsetValue = Operand(this, state, offsetId);
+	//	instruction.offset = offsetValue.componentCount;
+
+	//	for(uint32_t j = 0; j < offsetValue.componentCount; j++, i++)
+	//	{
+	//		in[i] = As<SIMD::Float>(offsetValue.Int(j));  // Integer values, but transfered as float.
+	//	}
+	//}
+
+	if(instruction.sample)
+	{
+		auto sampleValue = Operand(this, state, instruction.sampleId);
+		in[i] = As<SIMD::Float>(sampleValue.Int(0));
+	}
+
+	auto &cache = state->routine->samplerCache.at(instruction.position);
+	Bool cacheHit = (cache.imageDescriptor == imageDescriptor);
+
+	If(!cacheHit)
+	{
+		rr::Int imageViewId = *Pointer<rr::Int>(imageDescriptor + OFFSET(vk::StorageImageDescriptor, imageViewId));
+		/////////////Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::StorageImageDescriptor, device));
+		cache.function = Call(getImageSampler, state->routine->constants, instruction.state, 0, imageViewId);
+		cache.imageDescriptor = imageDescriptor;
+		cache.samplerId = 0;  ////////////////////////////////////////////////////////////////////////////////////////////////////
+	}
+
+	//Pointer<Byte> texture;      ///////////////////////////////////////////////////
+	Array<SIMD::Int> out(5);  ///////////////////////////////////////////////////
+
+	auto texel = Operand(this, state, instruction.texelId);
+	out[0] = texel.Int(0);
+	out[1] = texel.Int(1);
+	out[2] = texel.Int(2);
+	out[3] = texel.Int(3);
+	out[4] = state->activeStoresAndAtomicsMask();
+
+	Call<ImageSampler>(cache.function, imageDescriptor, &in[0], &out[0], state->routine->constants);
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const
@@ -519,6 +670,11 @@ SpirvShader::EmitResult SpirvShader::EmitImageQuerySamples(InsnIterator insn, Em
 	return EmitResult::Continue;
 }
 
+static int uv()
+{
+	return 1;
+}
+
 SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const
 {
 	auto routine = state->routine;
@@ -533,6 +689,8 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 	{
 		v = coordinate.Int(1);
 	}
+
+	Call(uv);
 
 	if(dim == spv::DimSubpassData)
 	{
@@ -649,6 +807,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 			sampleId = insn.word(operand++);
 			imageOperands &= ~spv::ImageOperandsSampleMask;
 		}
+
 		// TODO(b/174475384)
 		if(imageOperands & spv::ImageOperandsZeroExtendMask)
 		{
@@ -1076,44 +1235,33 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 {
 	imageWriteEmitted = true;
 
-	auto imageId = Object::ID(insn.word(1));
-	auto &image = getObject(imageId);
+	ImageInstruction instruction(insn, *this);
+
+	auto &image = getObject(instruction.sampledImageId);
 	auto &imageType = getType(image);
 
 	ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
+	ASSERT(static_cast<spv::Dim>(imageType.definition.word(3)) != spv::DimSubpassData);  // "Its Dim operand must not be SubpassData."
 
-	Object::ID sampleId = 0;
-
-	if(insn.wordCount() > 4)
+	if(true)
 	{
-		int operand = 5;
-		uint32_t imageOperands = insn.word(4);
-		if(imageOperands & spv::ImageOperandsSampleMask)
+		// TODO(b/153380916): When we're in a code path that is always executed,
+		// i.e. post-dominators of the entry block, we don't have to dynamically
+		// check whether any lanes are active, and can elide the jump.
+		////////////////////////////////////////////////////////////////////////////////////////If(AnyTrue(state->activeLaneMask()))
 		{
-			sampleId = insn.word(operand++);
-			imageOperands &= ~spv::ImageOperandsSampleMask;
-		}
-		// TODO(b/174475384)
-		if(imageOperands & spv::ImageOperandsZeroExtendMask)
-		{
-			imageOperands &= ~spv::ImageOperandsZeroExtendMask;
-		}
-		else if(imageOperands & spv::ImageOperandsSignExtendMask)
-		{
-			imageOperands &= ~spv::ImageOperandsSignExtendMask;
+
+			EmitImageWriteUnconditional(instruction, state);
 		}
 
-		// Should be no remaining image operands.
-		if(imageOperands != 0)
-		{
-			UNSUPPORTED("Image operands 0x%08X", (int)imageOperands);
-		}
+		return EmitResult::Continue;
 	}
+	//////////////////////////////////////////////////////////////////////////////////////////
 
 	auto coordinate = Operand(this, state, insn.word(2));
 	auto texel = Operand(this, state, insn.word(3));
 
-	Pointer<Byte> binding = state->getPointer(imageId).base;
+	Pointer<Byte> binding = state->getPointer(instruction.sampledImageId).base;
 	Pointer<Byte> imageBase = *Pointer<Pointer<Byte>>(binding + OFFSET(vk::StorageImageDescriptor, ptr));
 	auto imageSizeInBytes = *Pointer<Int>(binding + OFFSET(vk::StorageImageDescriptor, sizeInBytes));
 
@@ -1293,7 +1441,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 	// - https://www.khronos.org/registry/vulkan/specs/1.2/html/chap16.html#textures-output-coordinate-validation
 	auto robustness = OutOfBoundsBehavior::Nullify;
 
-	auto texelPtr = GetTexelAddress(state, imageBase, imageSizeInBytes, coordinate, imageType, binding, texelSize, sampleId, false, robustness);
+	auto texelPtr = GetTexelAddress(state, imageBase, imageSizeInBytes, coordinate, imageType, binding, texelSize, instruction.sampleId, false, robustness);
 
 	// Scatter packed texel data.
 	// TODO(b/160531165): Provide scatter abstractions for various element sizes.

@@ -137,7 +137,7 @@ struct DrawCall
 	using Pool = marl::BoundedPool<DrawCall, MaxDrawCount, marl::PoolPolicy::Preserve>;
 	using SetupFunction = int (*)(Triangle *triangles, Primitive *primitives, const DrawCall *drawCall, int count);
 
-	DrawCall();
+	DrawCall(/*const Constants *constants*/);
 	~DrawCall();
 
 	static void run(const marl::Loan<DrawCall> &draw, marl::Ticket::Queue *tickets, marl::Ticket::Queue clusterQueues[MaxClusterCount]);

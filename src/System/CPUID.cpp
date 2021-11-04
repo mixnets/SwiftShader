@@ -157,7 +157,7 @@ int CPUID::processAffinity()
 void CPUID::setFlushToZero(bool enable)
 {
 #if defined(_MSC_VER)
-	_controlfp(enable ? _DN_FLUSH : _DN_SAVE, _MCW_DN);
+	//_controlfp(enable ? _DN_FLUSH : _DN_SAVE, _MCW_DN);
 #else
 	                     // Unimplemented
 #endif
