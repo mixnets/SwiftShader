@@ -50,6 +50,8 @@ struct alignas(16) StorageImageDescriptor
 {
 	~StorageImageDescriptor() = delete;
 
+	uint32_t imageViewId;
+
 	void *ptr;
 	int width;
 	int height;

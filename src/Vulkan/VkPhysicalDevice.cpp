@@ -71,7 +71,7 @@ const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
 		VK_TRUE,   // shaderStorageImageExtendedFormats
 		VK_TRUE,   // shaderStorageImageMultisample
 		VK_FALSE,  // shaderStorageImageReadWithoutFormat
-		VK_FALSE,  // shaderStorageImageWriteWithoutFormat
+		VK_TRUE,   // shaderStorageImageWriteWithoutFormat
 		VK_TRUE,   // shaderUniformBufferArrayDynamicIndexing
 		VK_TRUE,   // shaderSampledImageArrayDynamicIndexing
 		VK_TRUE,   // shaderStorageBufferArrayDynamicIndexing
@@ -1353,7 +1353,6 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFor
 	case VK_FORMAT_R8_UINT:
 		pFormatProperties->optimalTilingFeatures |=
 		    VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT;
-		// [[fallthrough]]
 		pFormatProperties->bufferFeatures |=
 		    VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT;
 		break;
