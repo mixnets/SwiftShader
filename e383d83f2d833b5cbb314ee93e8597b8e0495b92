@@ -70,6 +70,30 @@
       },
       "revId": "e383d83f2d833b5cbb314ee93e8597b8e0495b92",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6425a65e_bba59ec3",
+        "filename": "tests/regres/deqp.json",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-04T20:25:31Z",
+      "side": 1,
+      "message": "I was wondering how you were going to work around the cache key based on the hash of this file*, but I see you\u0027ve tried to address this in the child changes.\n\nI think it might be better to put this at the top of the stack, given that this isn\u0027t going to behave well without the fixes.\n\n(*) https://github.com/google/swiftshader/blob/e733a26e2ba04c8eb37aece51a81600a99e01612/tests/regres/cmd/regres/main.go#L462-L469",
+      "parentUuid": "826ce420_01105042",
+      "range": {
+        "startLine": 3,
+        "startChar": 15,
+        "endLine": 3,
+        "endChar": 21
+      },
+      "revId": "e383d83f2d833b5cbb314ee93e8597b8e0495b92",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
