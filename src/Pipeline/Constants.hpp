@@ -19,11 +19,15 @@
 #include "System/Types.hpp"
 #include "Vulkan/VkConfig.hpp"
 
+namespace vk {
+class Device;
+}
+
 namespace sw {
 
 struct Constants
 {
-	static const Constants &Get();
+	//static const Constants &Get();
 
 	unsigned int transposeBit0[16];
 	unsigned int transposeBit1[16];
@@ -143,8 +147,11 @@ struct Constants
 
 	float half2float[65536];
 
-private:
-	Constants();
+	//private:
+	Constants(const vk::Device *device);
+	//Constants();
+
+	const vk::Device *device;
 };
 
 }  // namespace sw

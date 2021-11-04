@@ -144,11 +144,11 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 	return true;
 }
 
-DrawCall::DrawCall()
+DrawCall::DrawCall(/*const Constants *constants*/)
 {
 	// TODO(b/140991626): Use allocateUninitialized() instead of allocateZeroOrPoison() to improve startup peformance.
 	data = (DrawData *)sw::allocateZeroOrPoison(sizeof(DrawData));
-	data->constants = &Constants::Get();
+	/////////////data->constants = constants;
 }
 
 DrawCall::~DrawCall()
@@ -196,6 +196,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 		draw = drawCallPool.borrow();
 	}
 	draw->id = id;
+	draw->data->constants = &device->constants;
 
 	const vk::GraphicsState &pipelineState = pipeline->getState(dynamicState);
 	pixelProcessor.setBlendConstant(pipelineState.getBlendConstants());

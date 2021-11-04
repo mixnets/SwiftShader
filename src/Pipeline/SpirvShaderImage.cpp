@@ -322,21 +322,216 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		in[i] = As<SIMD::Float>(sampleValue.Int(0));
 	}
 
-	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
+	uint32_t instructionPosition = insn.distanceFrom(this->begin());
+	auto cacheIt = state->routine->samplerCache.find(instructionPosition);
 	ASSERT(cacheIt != state->routine->samplerCache.end());
 	auto &cache = cacheIt->second;
-	auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.samplerId == samplerId;
+	auto cacheHit = (cache.imageDescriptor == imageDescriptor) && (cache.samplerId == samplerId);
 
 	If(!cacheHit)
 	{
 		rr::Int imageViewId = *Pointer<rr::Int>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, imageViewId));
-		Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, device));
-		cache.function = Call(getImageSampler, device, instruction.parameters, samplerId, imageViewId);
+		//////////////////Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, device));
+		cache.function = Call(getImageSampler, state->routine->constants, instruction.parameters, samplerId, imageViewId);
 		cache.imageDescriptor = imageDescriptor;
 		cache.samplerId = samplerId;
 	}
 
 	Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+}
+
+void SpirvShader::EmitImageWriteUnconditional(ImageInstruction instruction, InsnIterator insn, EmitState *state) const
+{
+	Object::ID imageId = insn.word(1);  ///////////////////////  // For OpImageFetch this is just an Image, not a SampledImage.
+	Object::ID coordinateId = insn.word(2);
+	Object::ID texelId = insn.word(3);
+
+	auto imageDescriptor = state->getPointer(imageId).base;  // vk::StorageImageDescriptor*
+	auto &image = getObject(imageId);
+
+	/////////////Pointer<Byte> texture = imageDescriptor;  ///////////////// +OFFSET(vk::StorageImageDescriptor, ptr);  // sw::Texture*
+
+	auto coordinate = Operand(this, state, coordinateId);
+
+	uint32_t imageOperands = spv::ImageOperandsMaskNone;
+	bool lodOrBias = false;
+	Object::ID lodOrBiasId = 0;
+	bool grad = false;
+	Object::ID gradDxId = 0;
+	Object::ID gradDyId = 0;
+	bool constOffset = false;
+	Object::ID offsetId = 0;
+	bool sample = false;
+	Object::ID sampleId = 0;
+
+	uint32_t operand = 4;
+
+	if(insn.wordCount() > operand)
+	{
+		imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(operand++));
+
+		//if(imageOperands & spv::ImageOperandsBiasMask)
+		//{
+		//	lodOrBias = true;
+		//	lodOrBiasId = insn.word(operand);
+		//	operand++;
+		//	imageOperands &= ~spv::ImageOperandsBiasMask;
+
+		//	ASSERT(instruction.samplerMethod == Implicit);
+		//	instruction.samplerMethod = Bias;
+		//}
+
+		//if(imageOperands & spv::ImageOperandsLodMask)
+		//{
+		//	lodOrBias = true;
+		//	lodOrBiasId = insn.word(operand);
+		//	operand++;
+		//	imageOperands &= ~spv::ImageOperandsLodMask;
+		//}
+
+		//if(imageOperands & spv::ImageOperandsGradMask)
+		//{
+		//	ASSERT(!lodOrBias);  // SPIR-V 1.3: "It is invalid to set both the Lod and Grad bits." Bias is for ImplicitLod, Grad for ExplicitLod.
+		//	grad = true;
+		//	gradDxId = insn.word(operand + 0);
+		//	gradDyId = insn.word(operand + 1);
+		//	operand += 2;
+		//	imageOperands &= ~spv::ImageOperandsGradMask;
+		//}
+
+		//if(imageOperands & spv::ImageOperandsConstOffsetMask)
+		//{
+		//	constOffset = true;
+		//	offsetId = insn.word(operand);
+		//	operand++;
+		//	imageOperands &= ~spv::ImageOperandsConstOffsetMask;
+		//}
+
+		//if(imageOperands & spv::ImageOperandsSampleMask)
+		//{
+		//	sample = true;
+		//	sampleId = insn.word(operand);
+		//	imageOperands &= ~spv::ImageOperandsSampleMask;
+
+		//	ASSERT(instruction.samplerMethod == Fetch);
+		//	instruction.sample = true;
+		//}
+
+		if(imageOperands != 0)
+		{
+			UNSUPPORTED("Image operands 0x%08X", imageOperands);
+		}
+	}
+
+	Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
+
+	uint32_t coordinates = coordinate.componentCount - instruction.isProj();
+	instruction.coordinates = coordinates;
+
+	uint32_t i = 0;
+	for(; i < coordinates; i++)
+	{
+		//if(instruction.isProj())
+		//{
+		//	in[i] = coordinate.Float(i) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+		//}
+		//else
+		{
+			in[i] = coordinate.Float(i);
+		}
+	}
+
+	//if(instruction.isDref())
+	//{
+	//	auto drefValue = Operand(this, state, insn.word(5));
+
+	//	if(instruction.isProj())
+	//	{
+	//		in[i] = drefValue.Float(0) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+	//	}
+	//	else
+	//	{
+	//		in[i] = drefValue.Float(0);
+	//	}
+
+	//	i++;
+	//}
+
+	//if(lodOrBias)
+	//{
+	//	auto lodValue = Operand(this, state, lodOrBiasId);
+	//	in[i] = lodValue.Float(0);
+	//	i++;
+	//}
+	//else if(grad)
+	//{
+	//	auto dxValue = Operand(this, state, gradDxId);
+	//	auto dyValue = Operand(this, state, gradDyId);
+	//	ASSERT(dxValue.componentCount == dxValue.componentCount);
+
+	//	instruction.grad = dxValue.componentCount;
+
+	//	for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
+	//	{
+	//		in[i] = dxValue.Float(j);
+	//	}
+
+	//	for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
+	//	{
+	//		in[i] = dyValue.Float(j);
+	//	}
+	//}
+	//else if(instruction.samplerMethod == Fetch)
+	//{
+	//	// The instruction didn't provide a lod operand, but the sampler's Fetch
+	//	// function requires one to be present. If no lod is supplied, the default
+	//	// is zero.
+	//	in[i] = As<SIMD::Float>(SIMD::Int(0));
+	//	i++;
+	//}
+
+	//if(constOffset)
+	//{
+	//	auto offsetValue = Operand(this, state, offsetId);
+	//	instruction.offset = offsetValue.componentCount;
+
+	//	for(uint32_t j = 0; j < offsetValue.componentCount; j++, i++)
+	//	{
+	//		in[i] = As<SIMD::Float>(offsetValue.Int(j));  // Integer values, but transfered as float.
+	//	}
+	//}
+
+	if(sample)
+	{
+		auto sampleValue = Operand(this, state, sampleId);
+		in[i] = As<SIMD::Float>(sampleValue.Int(0));
+	}
+
+	uint32_t instructionPosition = insn.distanceFrom(this->begin());
+	auto cacheIt = state->routine->samplerCache.find(instructionPosition);
+	ASSERT(cacheIt != state->routine->samplerCache.end());
+	auto &cache = cacheIt->second;
+	auto cacheHit = (cache.imageDescriptor == imageDescriptor);
+
+	If(!cacheHit)
+	{
+		rr::Int imageViewId = *Pointer<rr::Int>(imageDescriptor + OFFSET(vk::StorageImageDescriptor, imageViewId));
+		/////////////Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::StorageImageDescriptor, device));
+		cache.function = Call(getImageSampler, state->routine->constants, instruction.parameters, 0, imageViewId);
+		cache.imageDescriptor = imageDescriptor;
+		cache.samplerId = 0;  ////////////////////////////////////////////////////////////////////////////////////////////////////
+	}
+
+	//Pointer<Byte> texture;      ///////////////////////////////////////////////////
+	Array<SIMD::Float> out(4);  ///////////////////////////////////////////////////
+
+	auto texel = Operand(this, state, insn.word(3));
+	out[0] = texel.Float(0);
+	out[1] = texel.Float(1);
+	out[2] = texel.Float(2);
+	out[3] = texel.Float(3);
+
+	Call<ImageSampler>(cache.function, imageDescriptor, &in[0], &out[0], state->routine->constants);
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const
@@ -1056,6 +1251,19 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 	auto &imageType = getType(image);
 
 	ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
+	ASSERT(static_cast<spv::Dim>(imageType.definition.word(3)) != spv::DimSubpassData);  // "Its Dim operand must not be SubpassData."
+
+	// TODO(b/153380916): When we're in a code path that is always executed,
+	// i.e. post-dominators of the entry block, we don't have to dynamically
+	// check whether any lanes are active, and can elide the jump.
+	////////////////////////////////////////////////////////////////////////////////////////If(AnyTrue(state->activeLaneMask()))
+	{
+		EmitImageWriteUnconditional({ None, Write }, insn, state);
+	}
+
+	return EmitResult::Continue;
+
+	//////////////////////////////////////////////////////////////////////////////////////////
 
 	Object::ID sampleId = 0;
 
