@@ -16,6 +16,23 @@
       "message": "If this Patchset doesn\u0027t change Regres results, please file a request for dEQP coverage.",
       "revId": "83da11deb4c5d3ef9830a1bc6f685efe003c8afa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "940a6c9f_cb6bbcf2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T20:59:30Z",
+      "side": 1,
+      "message": "We need a Spirv-Tools update before we can implement this extension. We\u0027re missing this adjustment to the check in our current version of Spirv-Tools:\nhttps://github.com/KhronosGroup/SPIRV-Tools/blob/master/source/val/validate_memory.cpp#L607",
+      "revId": "83da11deb4c5d3ef9830a1bc6f685efe003c8afa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
