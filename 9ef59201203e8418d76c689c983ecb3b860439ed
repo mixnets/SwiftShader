@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d75128a2_6d83e0c9",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-04T20:48:25Z",
+      "side": 1,
+      "message": "I don\u0027t think this is the right approach to take, and this will break lots of things in exciting ways.\n\nYou\u0027re having to work around the config hashing in the next few changes, and this system was not designed to have these cache directories be mutable.\n\nPreviously, the cacheDir is uniquely keyed to a single CTS revision and the content *does not change*. The directory may be deleted (see L477), in which case source of the hash gave you everything you needed to recreate it. You\u0027re now making the cacheDir mutable, so the [cacheDir -\u003e immutable build] property is now gone.\n\nYou want Regres tests to be deterministic: re-spinning regress on the same Gerrit change *should* give you the same results. For that to happen, you need a hermetic build. Changing the cached CTS output breaks this - one update of this can now produce wildly different results for in-flight reviews.\n\nI think the simplest solution for what you\u0027re trying to do is to have the nightly run modify the \u0027sha\u0027 field of the `tests/regres/deqp.json` file. \nThe nightly run will post a new CL for review if any of the source files change, so this should be a much smaller modification to regres.\n\nThat way, everything here can remain the same, and you have a stable dEQP build for all in-review gerrit changes.\n\nWant to update SwiftShader\u0027s baseline dEQP version? Land the nightly CL. All future CLs will use it.\n\nWant to roll your in-review change forward to the latest dEQP set of tests? Rebase your change.\n\nWant to test a new PS against the same dEQP version as before? Don\u0027t rebase your change.\n\nEverything just works.",
+      "range": {
+        "startLine": 489,
+        "startChar": 3,
+        "endLine": 489,
+        "endChar": 21
+      },
+      "revId": "9ef59201203e8418d76c689c983ecb3b860439ed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "babcd653_ccdf0f08",
+        "filename": "tests/regres/git/git.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-04T20:48:25Z",
+      "side": 1,
+      "message": "git pull is not a guaranteed way to fast-forward. The behaviour of `git pull` is configurable.",
+      "range": {
+        "startLine": 226,
+        "startChar": 50,
+        "endLine": 226,
+        "endChar": 56
+      },
+      "revId": "9ef59201203e8418d76c689c983ecb3b860439ed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
