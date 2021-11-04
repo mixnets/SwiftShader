@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8715550_b1ed5928",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T19:32:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e7c027d5_5bfe526c",
+      "range": {
+        "startLine": 10,
+        "startChar": 12,
+        "endLine": 11,
+        "endChar": 41
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4181c58f_5a8681ed",
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1a2be4af_748ce49d",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T19:32:17Z",
+      "side": 1,
+      "message": "It wasn\u0027t discarded, it was stored in outShader. In any case, I changed it to a \"contains\" function, I don\u0027t think querying the cache twice is that costly (correct me if I\u0027m wrong).",
+      "parentUuid": "4181c58f_5a8681ed",
+      "range": {
+        "startLine": 79,
+        "startChar": 13,
+        "endLine": 79,
+        "endChar": 21
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9c61e002_3f8d5bea",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 2
@@ -60,6 +108,30 @@
       "writtenOn": "2021-11-03T04:41:27Z",
       "side": 1,
       "message": "Remove",
+      "range": {
+        "startLine": 421,
+        "startChar": 1,
+        "endLine": 421,
+        "endChar": 34
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24c299a7_8b00c510",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T19:32:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9c61e002_3f8d5bea",
       "range": {
         "startLine": 421,
         "startChar": 1,
@@ -95,6 +167,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "703e26ee_c88685f6",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2003,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T19:32:17Z",
+      "side": 1,
+      "message": "It wasn\u0027t required before because the only way to fail pipeline creation before this CL involves not creating the pipeline object. With this CL, the pipeline object might be created and then return an error code.",
+      "parentUuid": "c4480534_7fcf7a1a",
+      "range": {
+        "startLine": 2003,
+        "startChar": 8,
+        "endLine": 2003,
+        "endChar": 15
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "aa6ec3c0_8575b1de",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 2
@@ -106,6 +202,30 @@
       "writtenOn": "2021-11-03T04:41:27Z",
       "side": 1,
       "message": "I feel like this should be moved above the comment at 2009, to avoid confusion about that applying to this extension behavior.",
+      "range": {
+        "startLine": 2019,
+        "startChar": 3,
+        "endLine": 2019,
+        "endChar": 81
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18cdaba0_e11ad356",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2019,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T19:32:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aa6ec3c0_8575b1de",
       "range": {
         "startLine": 2019,
         "startChar": 3,
@@ -129,6 +249,30 @@
       "writtenOn": "2021-11-03T04:41:27Z",
       "side": 1,
       "message": "Is this actually required by the extension? I don\u0027t immediately see it mentioned.",
+      "range": {
+        "startLine": 2021,
+        "startChar": 4,
+        "endLine": 2024,
+        "endChar": 5
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b5e448bc_f2053937",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2024,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-04T19:32:17Z",
+      "side": 1,
+      "message": "Not by the extension, but that\u0027s required by the spec, see line 2015 above:\n\"The implementation will attempt to create all pipelines, and only return VK_NULL_HANDLE values for those that actually failed\".\n\nIIUC, all pipelines past the point of failure are considered to have failed creation.",
+      "parentUuid": "33878147_c163d68e",
       "range": {
         "startLine": 2021,
         "startChar": 4,
