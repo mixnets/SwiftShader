@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "70b6e4ae_5418d586",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-05T17:46:36Z",
+      "side": 1,
+      "message": "I\u0027ve change it so that deqp.json and the files in testlists are updated in postDailyResults. This should also make the other changes unceessary.",
+      "parentUuid": "d75128a2_6d83e0c9",
+      "range": {
+        "startLine": 489,
+        "startChar": 3,
+        "endLine": 489,
+        "endChar": 21
+      },
+      "revId": "9ef59201203e8418d76c689c983ecb3b860439ed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "babcd653_ccdf0f08",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-11-04T20:48:25Z",
       "side": 1,
       "message": "git pull is not a guaranteed way to fast-forward. The behaviour of `git pull` is configurable.",
+      "range": {
+        "startLine": 226,
+        "startChar": 50,
+        "endLine": 226,
+        "endChar": 56
+      },
+      "revId": "9ef59201203e8418d76c689c983ecb3b860439ed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4259ad7_4f1d0fef",
+        "filename": "tests/regres/git/git.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-05T17:46:36Z",
+      "side": 1,
+      "message": "This function has been removed.",
+      "parentUuid": "babcd653_ccdf0f08",
       "range": {
         "startLine": 226,
         "startChar": 50,
