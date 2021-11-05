@@ -33,6 +33,24 @@
       "message": "TBR: sugoi@\n\nSafe to land since it only affects Chromium, it was already approved before chromium:1259170 forced us to revert, and ultimately we want to check if this passes presubmit tests run by the autoroller.\n\nTBR will be disabled any moment (b/203796752), so this is also a test to see if that\u0027s already the case...",
       "revId": "4cb265bdc6d212dacf46a9fba07fa2991b835ea4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43115dac_e7d09472",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-05T02:11:32Z",
+      "side": 1,
+      "message": "Looks like no-TBR isn\u0027t active yet. This is attempted to be rolled into Chromium at https://chromium-review.googlesource.com/c/chromium/src/+/3262641\n\nAlexis, please approve cl/407713542 at your convenience. Thanks!",
+      "parentUuid": "055111aa_9975d42a",
+      "revId": "4cb265bdc6d212dacf46a9fba07fa2991b835ea4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
