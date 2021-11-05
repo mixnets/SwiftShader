@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1d0f5c4_65496bed",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-05T00:23:31Z",
+      "side": 1,
+      "message": "nit: return .find() !\u003d .end();",
+      "range": {
+        "startLine": 153,
+        "startChar": 1,
+        "endLine": 159,
+        "endChar": 14
+      },
+      "revId": "367e663311caaca8b6b2074b8958251157e7651c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

@@ -189,6 +189,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc42f455_537c62ed",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2003,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-05T00:23:31Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "703e26ee_c88685f6",
+      "range": {
+        "startLine": 2003,
+        "startChar": 8,
+        "endLine": 2003,
+        "endChar": 15
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "aa6ec3c0_8575b1de",
@@ -273,6 +297,30 @@
       "side": 1,
       "message": "Not by the extension, but that\u0027s required by the spec, see line 2015 above:\n\"The implementation will attempt to create all pipelines, and only return VK_NULL_HANDLE values for those that actually failed\".\n\nIIUC, all pipelines past the point of failure are considered to have failed creation.",
       "parentUuid": "33878147_c163d68e",
+      "range": {
+        "startLine": 2021,
+        "startChar": 4,
+        "endLine": 2024,
+        "endChar": 5
+      },
+      "revId": "2c0bfa9041c6dcfec27f2ea43335e3a3d115f0a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4112a18_e200b4d2",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2024,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-05T00:23:31Z",
+      "side": 1,
+      "message": "nit: Makes sense, thanks. Perhaps we should just memset the whole array on entry. Same end result and looks less out of place than handling it on exit, in my opinion. Also ensures that future refactorings don\u0027t forget to set some entries to null.\n\nAnyway, your call.",
+      "parentUuid": "b5e448bc_f2053937",
       "range": {
         "startLine": 2021,
         "startChar": 4,
