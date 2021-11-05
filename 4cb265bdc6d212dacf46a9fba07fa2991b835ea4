@@ -16,6 +16,23 @@
       "message": "The previous MemorySanitizer errors appear to be fixed by https://chromium-review.googlesource.com/c/chromium/src/+/3251939, as tested by https://chromium-review.googlesource.com/c/chromium/src/+/3256074",
       "revId": "4cb265bdc6d212dacf46a9fba07fa2991b835ea4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "055111aa_9975d42a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-05T00:39:13Z",
+      "side": 1,
+      "message": "TBR: sugoi@\n\nSafe to land since it only affects Chromium, it was already approved before chromium:1259170 forced us to revert, and ultimately we want to check if this passes presubmit tests run by the autoroller.\n\nTBR will be disabled any moment (b/203796752), so this is also a test to see if that\u0027s already the case...",
+      "revId": "4cb265bdc6d212dacf46a9fba07fa2991b835ea4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
