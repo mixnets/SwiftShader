@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7fa1b454_95d7374e",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T18:20:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3132713c_3cf0c944",
+      "range": {
+        "startLine": 128,
+        "startChar": 2,
+        "endLine": 128,
+        "endChar": 7
+      },
+      "revId": "4da964b09513b92b3bdbfcf5aca269d9b37fbd0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ae16adac_4d1bf43e",
@@ -41,6 +65,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0e47876_2d3502f8",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T18:20:57Z",
+      "side": 1,
+      "message": "Done. I added a function to specify that the output is invalid.",
+      "parentUuid": "ae16adac_4d1bf43e",
+      "revId": "4da964b09513b92b3bdbfcf5aca269d9b37fbd0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "24f33ed5_7285ae81",
@@ -54,6 +96,30 @@
       "writtenOn": "2021-11-05T03:22:05Z",
       "side": 1,
       "message": "nit: \"stageCreationBegins\" would be clearer.",
+      "range": {
+        "startLine": 136,
+        "startChar": 6,
+        "endLine": 136,
+        "endChar": 11
+      },
+      "revId": "4da964b09513b92b3bdbfcf5aca269d9b37fbd0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "19baffc4_57b78757",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T18:20:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "24f33ed5_7285ae81",
       "range": {
         "startLine": 136,
         "startChar": 6,
@@ -87,6 +153,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "23104c27_2c502473",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T18:20:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7138fef_037dec86",
+      "range": {
+        "startLine": 156,
+        "startChar": 6,
+        "endLine": 156,
+        "endChar": 14
+      },
+      "revId": "4da964b09513b92b3bdbfcf5aca269d9b37fbd0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0b52fd8c_f09b6454",
@@ -110,6 +200,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6f8d6ba_8e1d0445",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T18:20:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0b52fd8c_f09b6454",
+      "range": {
+        "startLine": 167,
+        "startChar": 6,
+        "endLine": 167,
+        "endChar": 14
+      },
+      "revId": "4da964b09513b92b3bdbfcf5aca269d9b37fbd0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "217f6966_672f16b9",
@@ -123,6 +237,30 @@
       "writtenOn": "2021-11-05T03:22:05Z",
       "side": 1,
       "message": "I assume we already check for recognized extension structs elsewhere, so this can just be an if().",
+      "range": {
+        "startLine": 184,
+        "startChar": 3,
+        "endLine": 186,
+        "endChar": 7
+      },
+      "revId": "4da964b09513b92b3bdbfcf5aca269d9b37fbd0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f53093d5_96ce1758",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T18:20:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "217f6966_672f16b9",
       "range": {
         "startLine": 184,
         "startChar": 3,
@@ -158,6 +296,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cf067fcd_7a8ebdf4",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T18:20:57Z",
+      "side": 1,
+      "message": "I did add a specialized function to assign it in the constructor, but I haven\u0027t made it const, since I now set it to null on error.",
+      "parentUuid": "3751242c_28e1d339",
+      "range": {
+        "startLine": 215,
+        "startChar": 47,
+        "endLine": 215,
+        "endChar": 48
+      },
+      "revId": "4da964b09513b92b3bdbfcf5aca269d9b37fbd0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6dfa281d_2d6f2639",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 5
@@ -169,6 +331,30 @@
       "writtenOn": "2021-11-05T03:22:05Z",
       "side": 1,
       "message": "nit: This might be cleaner if this loop merely used an integer `stageIndex`, and then inside the loop body there\u0027s a `const VkPipelineShaderStageCreateInfo \u0026stageInfo \u003d pCreateInfo-\u003epStages[stageIndex];`",
+      "range": {
+        "startLine": 305,
+        "startChar": 1,
+        "endLine": 305,
+        "endChar": 4
+      },
+      "revId": "4da964b09513b92b3bdbfcf5aca269d9b37fbd0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "138e4f37_6b529a78",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T18:20:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6dfa281d_2d6f2639",
       "range": {
         "startLine": 305,
         "startChar": 1,
@@ -192,6 +378,30 @@
       "writtenOn": "2021-11-05T03:22:05Z",
       "side": 1,
       "message": "nit: I don\u0027t find it very intuitive that this returns a boolean to indicate whether there was a cache hit. Perhaps we could have something like:\n\nauto onCacheMiss \u003d [\u0026] { return optimizeSpirv(key); };\nauto onCacheHit \u003d [\u0026] { pipelineCreationFeedback.cacheHit(stage); };\nspirv \u003d pPipelineCache-\u003egetOrOptimizeSpirv(key, onCacheMiss, onCacheHit);",
+      "range": {
+        "startLine": 334,
+        "startChar": 3,
+        "endLine": 334,
+        "endChar": 5
+      },
+      "revId": "4da964b09513b92b3bdbfcf5aca269d9b37fbd0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56660c0b_c157f22b",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T18:20:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5beae33d_fd81406a",
       "range": {
         "startLine": 334,
         "startChar": 3,
