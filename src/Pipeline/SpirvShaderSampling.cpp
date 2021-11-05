@@ -401,6 +401,13 @@ std::shared_ptr<rr::Routine> SpirvShader::emitWriteRoutine(ImageInstruction inst
 			            ((SIMD::UInt(Round(Min(Max(texel.Float(2), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 16) |
 			            ((SIMD::UInt(Round(Min(Max(texel.Float(3), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 24);
 			break;
+		case VK_FORMAT_B8G8R8A8_UNORM:
+			texelSize = 4;
+			packed[0] = (SIMD::UInt(Round(Min(Max(texel.Float(2), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) |
+			            ((SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 8) |
+			            ((SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 16) |
+			            ((SIMD::UInt(Round(Min(Max(texel.Float(3), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 24);
+			break;
 		case VK_FORMAT_R8G8B8A8_SNORM:
 			texelSize = 4;
 			packed[0] = (SIMD::Int(Round(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
@@ -421,6 +428,13 @@ std::shared_ptr<rr::Routine> SpirvShader::emitWriteRoutine(ImageInstruction inst
 			packed[0] = (SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xff))) |
 			            (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xff)) << 8) |
 			            (SIMD::UInt(texel.UInt(2) & SIMD::UInt(0xff)) << 16) |
+			            (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0xff)) << 24);
+			break;
+		case VK_FORMAT_B8G8R8A8_UINT:
+			texelSize = 4;
+			packed[0] = (SIMD::UInt(texel.UInt(2) & SIMD::UInt(0xff))) |
+			            (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xff)) << 8) |
+			            (SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xff)) << 16) |
 			            (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0xff)) << 24);
 			break;
 		case VK_FORMAT_R16G16B16A16_SFLOAT:

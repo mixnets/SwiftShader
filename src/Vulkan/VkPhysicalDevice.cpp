@@ -1321,6 +1321,9 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFor
 	case VK_FORMAT_R8G8_UINT:
 	case VK_FORMAT_R16_UINT:
 	case VK_FORMAT_R8_UINT:
+	//
+	case VK_FORMAT_B8G8R8A8_UNORM:
+	case VK_FORMAT_B8G8R8A8_UINT:
 		pFormatProperties->optimalTilingFeatures |=
 		    VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT;
 		// [[fallthrough]]
