@@ -124,6 +124,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4fb1a904_2488a087",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T03:02:34Z",
+      "side": 1,
+      "message": "Ok. Done.",
+      "parentUuid": "16da789a_70429a82",
+      "range": {
+        "startLine": 337,
+        "startChar": 45,
+        "endLine": 337,
+        "endChar": 52
+      },
+      "revId": "76df8965bad2fe383ed89b200ecf0936de84893c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "64052ff8_6788e116",
@@ -185,6 +209,30 @@
       "side": 1,
       "message": "Upon reading the OpenGL ES 3.2 spec, it clearly limits this to just 1 attachment, and I think we should follow suite so that the VVL can check that ANGLE behaves correctly on such implementations. A comment could be added here, in the commit message, or on b/203652972 to clarify that we could support multiple attachments.",
       "parentUuid": "758de9cc_9465aa83",
+      "range": {
+        "startLine": 1038,
+        "startChar": 48,
+        "endLine": 1038,
+        "endChar": 69
+      },
+      "revId": "76df8965bad2fe383ed89b200ecf0936de84893c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68cc4349_297a2888",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1038,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-05T03:02:34Z",
+      "side": 1,
+      "message": "Ok. Done.",
+      "parentUuid": "10739b8b_5e35c4c1",
       "range": {
         "startLine": 1038,
         "startChar": 48,
