@@ -198,6 +198,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "090c9f45_b916ea81",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-05T06:44:59Z",
+      "side": 1,
+      "message": "The failing case is using textureGather which in turn doesn\u0027t do the applySwizzle calls. The code only handles swizzle zero/one cases with a comment saying\n\n```\n// R/G/B/A swizzles affect the component collected from each texel earlier.\n// Handle the ZERO and ONE cases here because we don\u0027t need to know the format.\n```\n\nAdding the applySwizzle does fix the failing test, but I\u0027m not sure if we want this:\n\n```\nif(swizzle \u003d\u003d VK_COMPONENT_SWIZZLE_ZERO)\n{\n\tc.x \u003d c.y \u003d c.z \u003d c.w \u003d Float4(0);\n}\nelse if(swizzle \u003d\u003d VK_COMPONENT_SWIZZLE_ONE)\n{\n\tbool integer \u003d hasUnnormalizedIntegerTexture();\n\tc.x \u003d c.y \u003d c.z \u003d c.w \u003d integer ? As\u003cFloat4\u003e(Int4(1)) : RValue\u003cFloat4\u003e(Float4(1.0f));\n}\n// TODO Ari\nelse\n{\n\tconst Vector4f col \u003d c;\n\tbool integer \u003d hasUnnormalizedIntegerTexture();\n\tc.x \u003d applySwizzle(col, swizzle, integer);\n\tc.y \u003d applySwizzle(col, swizzle, integer);\n\tc.z \u003d applySwizzle(col, swizzle, integer);\n\tc.w \u003d applySwizzle(col, swizzle, integer);\n}\n```",
+      "parentUuid": "70489903_7da7f8e4",
+      "range": {
+        "startLine": 200,
+        "startChar": 3,
+        "endLine": 207,
+        "endChar": 10
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f4f886a_1a5331f0",
         "filename": "src/Vulkan/VkFormat.cpp",
         "patchSetId": 5
