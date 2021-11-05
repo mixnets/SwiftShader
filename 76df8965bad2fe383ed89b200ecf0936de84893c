@@ -102,6 +102,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "16da789a_70429a82",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-05T02:02:20Z",
+      "side": 1,
+      "message": "\u003e I think it should be advertised properly, as applications using SwiftShader need to know that SwiftShader isn\u0027t a way to test whether their synchronization code works, since it doesn\u0027t require any.\n\nIt\u0027s true that currently we wouldn\u0027t visually help detect when an application got the synchronization code wrong, but I don\u0027t think that should ever be expected. Also we can still decide later to effectively make it non-coherent. Note that OpenGL ES 3.2 doesn\u0027t demand coherency. I\u0027ve added some details to https://issuetracker.google.com/203652972#comment1.\n\nIt still appears that this will be a rarely used feature, so I\u0027d rather play it safe and keep the claimed features to a minimum until there\u0027s a demand for more. A comment could be added here to clarify that we currently do have coherency, but it\u0027s not required for OpenGL ES 3.2 translation.",
+      "parentUuid": "8b535c9d_68817e31",
+      "range": {
+        "startLine": 337,
+        "startChar": 45,
+        "endLine": 337,
+        "endChar": 52
+      },
+      "revId": "76df8965bad2fe383ed89b200ecf0936de84893c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "64052ff8_6788e116",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 8
@@ -137,6 +161,30 @@
       "side": 1,
       "message": "No, we don\u0027t have to do anything to support multiple attachments. In our implementation, there\u0027s no difference between how we treat advanced blend modes VS regular blend modes.",
       "parentUuid": "64052ff8_6788e116",
+      "range": {
+        "startLine": 1038,
+        "startChar": 48,
+        "endLine": 1038,
+        "endChar": 69
+      },
+      "revId": "76df8965bad2fe383ed89b200ecf0936de84893c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10739b8b_5e35c4c1",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1038,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-05T02:02:20Z",
+      "side": 1,
+      "message": "Upon reading the OpenGL ES 3.2 spec, it clearly limits this to just 1 attachment, and I think we should follow suite so that the VVL can check that ANGLE behaves correctly on such implementations. A comment could be added here, in the commit message, or on b/203652972 to clarify that we could support multiple attachments.",
+      "parentUuid": "758de9cc_9465aa83",
       "range": {
         "startLine": 1038,
         "startChar": 48,

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4a610e6_cafb703d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-05T02:02:20Z",
+      "side": 1,
+      "message": "LGTM but I think the exposed features should match the OpenGL ES 3.2 requirements. We can always increase them later if the need arises:",
+      "revId": "0f4a0e46eb716a2e4b0286f075ada67309375209",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
