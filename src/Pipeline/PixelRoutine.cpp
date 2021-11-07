@@ -1778,6 +1778,26 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 	}
 }
 
+Float PixelRoutine::blendConstant(vk::Format format, bool inverse, int component)
+{
+	if(format.isUnsignedNormalized())
+	{
+		return inverse ? *Pointer<Float>(data + OFFSET(DrawData, factor.invBlendConstantU[component]))
+		               : *Pointer<Float>(data + OFFSET(DrawData, factor.blendConstantU[component]));
+	}
+	else if(format.isSignedNormalized())
+	{
+		return inverse ? *Pointer<Float>(data + OFFSET(DrawData, factor.invBlendConstantS[component]))
+		               : *Pointer<Float>(data + OFFSET(DrawData, factor.blendConstantS[component]));
+	}
+	else  // Floating-point format
+	{
+		ASSERT(format.isFloatFormat());
+		return inverse ? *Pointer<Float>(data + OFFSET(DrawData, factor.invBlendConstantF[component]))
+		               : *Pointer<Float>(data + OFFSET(DrawData, factor.blendConstantF[component]));
+	}
+}
+
 void PixelRoutine::blendFactorRGB(Vector4f &blendFactor, const Vector4f &sourceColor, const Vector4f &destColor, VkBlendFactor colorBlendFactor, vk::Format format)
 {
 	switch(colorBlendFactor)
@@ -1839,24 +1859,24 @@ void PixelRoutine::blendFactorRGB(Vector4f &blendFactor, const Vector4f &sourceC
 		blendFactor.z = blendFactor.x;
 		break;
 	case VK_BLEND_FACTOR_CONSTANT_COLOR:
-		blendFactor.x = *Pointer<Float4>(data + OFFSET(DrawData, factor.blendConstant4F[0]));
-		blendFactor.y = *Pointer<Float4>(data + OFFSET(DrawData, factor.blendConstant4F[1]));
-		blendFactor.z = *Pointer<Float4>(data + OFFSET(DrawData, factor.blendConstant4F[2]));
+		blendFactor.x = Float4(blendConstant(format, false, 0));
+		blendFactor.y = Float4(blendConstant(format, false, 1));
+		blendFactor.z = Float4(blendConstant(format, false, 2));
 		break;
 	case VK_BLEND_FACTOR_CONSTANT_ALPHA:
-		blendFactor.x = *Pointer<Float4>(data + OFFSET(DrawData, factor.blendConstant4F[3]));
-		blendFactor.y = *Pointer<Float4>(data + OFFSET(DrawData, factor.blendConstant4F[3]));
-		blendFactor.z = *Pointer<Float4>(data + OFFSET(DrawData, factor.blendConstant4F[3]));
+		blendFactor.x = Float4(blendConstant(format, false, 3));
+		blendFactor.y = Float4(blendConstant(format, false, 3));
+		blendFactor.z = Float4(blendConstant(format, false, 3));
 		break;
 	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR:
-		blendFactor.x = *Pointer<Float4>(data + OFFSET(DrawData, factor.invBlendConstant4F[0]));
-		blendFactor.y = *Pointer<Float4>(data + OFFSET(DrawData, factor.invBlendConstant4F[1]));
-		blendFactor.z = *Pointer<Float4>(data + OFFSET(DrawData, factor.invBlendConstant4F[2]));
+		blendFactor.x = Float4(blendConstant(format, true, 0));
+		blendFactor.y = Float4(blendConstant(format, true, 1));
+		blendFactor.z = Float4(blendConstant(format, true, 2));
 		break;
 	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA:
-		blendFactor.x = *Pointer<Float4>(data + OFFSET(DrawData, factor.invBlendConstant4F[3]));
-		blendFactor.y = *Pointer<Float4>(data + OFFSET(DrawData, factor.invBlendConstant4F[3]));
-		blendFactor.z = *Pointer<Float4>(data + OFFSET(DrawData, factor.invBlendConstant4F[3]));
+		blendFactor.x = Float4(blendConstant(format, true, 3));
+		blendFactor.y = Float4(blendConstant(format, true, 3));
+		blendFactor.z = Float4(blendConstant(format, true, 3));
 		break;
 
 	default:
@@ -1922,11 +1942,11 @@ void PixelRoutine::blendFactorAlpha(Float4 &blendFactorAlpha, const Float4 &sour
 		break;
 	case VK_BLEND_FACTOR_CONSTANT_COLOR:
 	case VK_BLEND_FACTOR_CONSTANT_ALPHA:
-		blendFactorAlpha = *Pointer<Float4>(data + OFFSET(DrawData, factor.blendConstant4F[3]));
+		blendFactorAlpha = Float4(blendConstant(format, false, 3));
 		break;
 	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR:
 	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA:
-		blendFactorAlpha = *Pointer<Float4>(data + OFFSET(DrawData, factor.invBlendConstant4F[3]));
+		blendFactorAlpha = Float4(blendConstant(format, true, 3));
 		break;
 	default:
 		UNSUPPORTED("VkBlendFactor: %d", int(alphaBlendFactor));
@@ -2213,12 +2233,11 @@ bool PixelRoutine::blendFactorCanExceedFormatRange(VkBlendFactor blendFactor, vk
 	case VK_BLEND_FACTOR_CONSTANT_ALPHA:
 	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR:
 	case VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA:
-		// TODO(b/204546345): Use pre-clamped blend constants.
-		return true;
+		return false;
 
 	default:
 		UNSUPPORTED("VkBlendFactor: %d", int(blendFactor));
-		return true;
+		return false;
 	}
 }
 
