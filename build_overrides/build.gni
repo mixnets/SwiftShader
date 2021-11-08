@@ -13,3 +13,32 @@
 # limitations under the License.
 
 build_with_chromium = false
+<<<<<<< HEAD   (4905e5 Update SPIR-V Headers to 29817199b)
+=======
+
+declare_args() {
+  # Android 32-bit non-component, non-clang builds cannot have symbol_level=2
+  # due to 4GiB file size limit, see https://crbug.com/648948.
+  # Set this flag to true to skip the assertion.
+  ignore_elf32_limitations = false
+
+  # Use the system install of Xcode for tools like ibtool, libtool, etc.
+  # This does not affect the compiler. When this variable is false, targets will
+  # instead use a hermetic install of Xcode. [The hermetic install can be
+  # obtained with gclient sync after setting the environment variable
+  # FORCE_MAC_TOOLCHAIN].
+  use_system_xcode = ""
+}
+
+if (use_system_xcode == "") {
+  if (target_os == "mac") {
+    _result = exec_script("//build/mac/should_use_hermetic_xcode.py",
+                          [ target_os ],
+                          "value")
+    use_system_xcode = _result == 0
+  }
+  if (target_os == "ios") {
+    use_system_xcode = true
+  }
+}
+>>>>>>> BRANCH (00e0af Squashed 'third_party/SPIRV-Tools/' changes from f37547c73..)
