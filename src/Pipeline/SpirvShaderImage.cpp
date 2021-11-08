@@ -144,21 +144,14 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	return EmitResult::Continue;
 }
 
-void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const
+Pointer<Byte> SpirvShader::lookupSamplerFunction(Pointer<Byte> imageDescriptor, ImageInstruction instruction, InsnIterator insn, EmitState *state) const
 {
 	Object::ID sampledImageId = insn.word(3);  // For OpImageFetch this is just an Image, not a SampledImage.
-	Object::ID coordinateId = insn.word(4);
-
-	auto imageDescriptor = state->getPointer(sampledImageId).base;  // vk::SampledImageDescriptor*
 
 	// If using a separate sampler, look through the OpSampledImage instruction to find the sampler descriptor
 	auto &sampledImage = getObject(sampledImageId);
 	auto samplerDescriptor = (sampledImage.opcode() == spv::OpSampledImage) ? state->getPointer(sampledImage.definition.word(4)).base : imageDescriptor;
-
-	auto coordinate = Operand(this, state, coordinateId);
-
 	rr::Int samplerId = *Pointer<rr::Int>(samplerDescriptor + OFFSET(vk::SampledImageDescriptor, samplerId));  // vk::Sampler::id
-	Pointer<Byte> texture = imageDescriptor + OFFSET(vk::SampledImageDescriptor, texture);                     // sw::Texture*
 
 	// Above we assumed that if the SampledImage operand is not the result of an OpSampledImage,
 	// it must be a combined image sampler loaded straight from the descriptor set. For OpImageFetch
@@ -168,6 +161,35 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		samplerId = Int(0);
 	}
 
+	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
+	ASSERT(cacheIt != state->routine->samplerCache.end());
+	auto &cache = cacheIt->second;
+	auto cacheHit = (cache.imageDescriptor == imageDescriptor) && (cache.samplerId == samplerId);  // TODO(b/205566405): Omit sampler comparison if samplerless.
+
+	If(!cacheHit)
+	{
+		rr::Int imageViewId = *Pointer<rr::Int>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, imageViewId));
+		Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, device));
+		cache.function = Call(getImageSampler, device, instruction.parameters, samplerId, imageViewId);
+		cache.imageDescriptor = imageDescriptor;
+		cache.samplerId = samplerId;
+	}
+
+	return cache.function;
+}
+
+void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const
+{
+	Object::ID sampledImageId = insn.word(3);                                // For OpImageFetch this is just an Image, not a SampledImage.
+	Pointer<Byte> imageDescriptor = state->getPointer(sampledImageId).base;  // vk::SampledImageDescriptor*
+
+	Pointer<Byte> samplerFunction = lookupSamplerFunction(imageDescriptor, instruction, insn, state);
+
+	callSamplerFunction(samplerFunction, out, imageDescriptor, instruction, insn, state);
+}
+
+void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD::Float> &out, Pointer<Byte> imageDescriptor, ImageInstruction instruction, InsnIterator insn, EmitState *state) const
+{
 	uint32_t imageOperands = spv::ImageOperandsMaskNone;
 	bool lodOrBias = false;
 	Object::ID lodOrBiasId = 0;
@@ -240,6 +262,8 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 
 	Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
 
+	Object::ID coordinateId = insn.word(4);
+	auto coordinate = Operand(this, state, coordinateId);
 	uint32_t coordinates = coordinate.componentCount - instruction.isProj();
 	instruction.coordinates = coordinates;
 
@@ -322,21 +346,9 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		in[i] = As<SIMD::Float>(sampleValue.Int(0));
 	}
 
-	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
-	ASSERT(cacheIt != state->routine->samplerCache.end());
-	auto &cache = cacheIt->second;
-	auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.samplerId == samplerId;
+	Pointer<Byte> texture = imageDescriptor + OFFSET(vk::SampledImageDescriptor, texture);  // sw::Texture*
 
-	If(!cacheHit)
-	{
-		rr::Int imageViewId = *Pointer<rr::Int>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, imageViewId));
-		Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, device));
-		cache.function = Call(getImageSampler, device, instruction.parameters, samplerId, imageViewId);
-		cache.imageDescriptor = imageDescriptor;
-		cache.samplerId = samplerId;
-	}
-
-	Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+	Call<ImageSampler>(samplerFunction, texture, &in[0], &out[0], state->routine->constants);
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const
