@@ -203,6 +203,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 					yyyy += Float4(Constants::SampleLocationsY[samples[0]]);
 				}
 
+				int usedInterpolant = 0;
 				for(int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
 				{
 					auto const &input = spirvShader->inputs[interpolant];
@@ -212,23 +213,24 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 						{
 							routine.inputs[interpolant] =
 							    SpirvRoutine::interpolateAtXY(XXXX, YYYY, rhwCentroid,
-							                                  primitive + OFFSET(Primitive, V[interpolant]),
+							                                  primitive + OFFSET(Primitive, V[usedInterpolant]),
 							                                  input.Flat, !input.NoPerspective);
 						}
 						else if(perSampleShading)
 						{
 							routine.inputs[interpolant] =
 							    SpirvRoutine::interpolateAtXY(xxxx, yyyy, rhw,
-							                                  primitive + OFFSET(Primitive, V[interpolant]),
+							                                  primitive + OFFSET(Primitive, V[usedInterpolant]),
 							                                  input.Flat, !input.NoPerspective);
 						}
 						else
 						{
 							routine.inputs[interpolant] =
 							    interpolate(xxxx, Dv[interpolant], rhw,
-							                primitive + OFFSET(Primitive, V[interpolant]),
+							                primitive + OFFSET(Primitive, V[usedInterpolant]),
 							                input.Flat, !input.NoPerspective);
 						}
+						usedInterpolant++;
 					}
 				}
 

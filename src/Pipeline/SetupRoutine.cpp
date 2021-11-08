@@ -487,15 +487,17 @@ void SetupRoutine::generate()
 			}
 		}
 
+		int usedInterpolant = 0;
 		for(int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
 		{
 			if(state.gradient[interpolant].Type != SpirvShader::ATTRIBTYPE_UNUSED)
 			{
 				setupGradient(primitive, tri, w012, M, v0, v1, v2,
 				              OFFSET(Vertex, v[interpolant]),
-				              OFFSET(Primitive, V[interpolant]),
+				              OFFSET(Primitive, V[usedInterpolant]),
 				              state.gradient[interpolant].Flat,
 				              !state.gradient[interpolant].NoPerspective);
+				usedInterpolant++;
 			}
 		}
 
