@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "50352583_1c5a0b17",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1783,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-08T23:47:40Z",
+      "side": 1,
+      "message": "note: We should probably consider sRGB formats to be unsigned normalized so we don\u0027t need this explicit pair. I had to make this change a couple more times below. I\u0027ll follow up with a cleanup patch.",
+      "range": {
+        "startLine": 1783,
+        "startChar": 4,
+        "endLine": 1783,
+        "endChar": 58
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf78c340_8cc6b39d",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2240,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-08T23:47:40Z",
+      "side": 1,
+      "message": "I changed this to false too so that the compiler may recognize that clamping is never needed and eliminates the code. I\u0027m keeping this function and the clamp logic in place just to illustrate where the clamp would happen, if we needed it.",
+      "range": {
+        "startLine": 2240,
+        "startChar": 9,
+        "endLine": 2240,
+        "endChar": 14
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
