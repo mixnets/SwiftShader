@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d9f2c7c_34369d80",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 714,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-08T17:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1d0431da_5cf22aff",
+      "range": {
+        "startLine": 714,
+        "startChar": 5,
+        "endLine": 714,
+        "endChar": 24
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c66f8a87_8ce2d315",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-11-08T15:35:24Z",
       "side": 1,
       "message": "govet will moan about an else-block if the true-block ends in a return.\nJust inline the else-block statements after the if, or flip the conditional and have the else-block be the if-true block.",
+      "range": {
+        "startLine": 727,
+        "startChar": 3,
+        "endLine": 727,
+        "endChar": 9
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e672cdb_da29f82f",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 727,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-08T17:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c66f8a87_8ce2d315",
       "range": {
         "startLine": 727,
         "startChar": 3,
@@ -70,6 +118,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "551a4ea9_74172568",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-08T17:12:17Z",
+      "side": 1,
+      "message": "I\u0027ve made it copy the permissions from the source file.",
+      "parentUuid": "a2111c41_4e95622a",
+      "range": {
+        "startLine": 728,
+        "startChar": 43,
+        "endLine": 728,
+        "endChar": 47
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "568f7c5a_0942e554",
@@ -83,6 +155,30 @@
       "writtenOn": "2021-11-08T15:35:24Z",
       "side": 1,
       "message": "dEQP revision",
+      "range": {
+        "startLine": 737,
+        "startChar": 60,
+        "endLine": 737,
+        "endChar": 68
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b32cb9d_db54e7d7",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 737,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-08T17:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "568f7c5a_0942e554",
       "range": {
         "startLine": 737,
         "startChar": 60,
@@ -139,6 +235,54 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9569a2e_71a638ca",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-08T17:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "117fb800_cae51ec6",
+      "range": {
+        "startLine": 740,
+        "startChar": 21,
+        "endLine": 740,
+        "endChar": 35
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "13f775dd_8bccbe3c",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-08T17:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9b833a54_edd1afc2",
+      "range": {
+        "startLine": 740,
+        "startChar": 12,
+        "endLine": 740,
+        "endChar": 15
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8b00b416_5d652859",
@@ -162,6 +306,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "099e751a_e26ce1c8",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 780,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-08T17:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8b00b416_5d652859",
+      "range": {
+        "startLine": 780,
+        "startChar": 63,
+        "endLine": 780,
+        "endChar": 95
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "49d8b99e_7be1e3fa",
@@ -175,6 +343,24 @@
       "writtenOn": "2021-11-08T15:35:24Z",
       "side": 1,
       "message": "Please update comment",
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c2759c8_068faf02",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-08T17:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "49d8b99e_7be1e3fa",
       "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
