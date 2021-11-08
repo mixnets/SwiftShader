@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f37bbca_3d52e5b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-08T15:07:01Z",
+      "side": 1,
+      "message": "Nighly Regres amends any open test list update CLs if it has new results, so the one produced by Sean\u0027s bot got overwritten with a correct one. So I\u0027ll remove his -2 and land this.\n\nSean, note that you can Abandon CLs produced by your bot if they shouldn\u0027t be landed.",
+      "revId": "1ac58d9bd3a6966946588e079de72deb300b6626",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0d2c4de_74f0a92f",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 105572,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-08T15:07:01Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/58728",
+      "range": {
+        "startLine": 105572,
+        "startChar": 17,
+        "endLine": 105572,
+        "endChar": 34
+      },
+      "revId": "1ac58d9bd3a6966946588e079de72deb300b6626",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
