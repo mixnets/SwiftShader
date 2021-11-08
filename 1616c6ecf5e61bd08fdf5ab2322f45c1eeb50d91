@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1d0431da_5cf22aff",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 714,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T15:35:24Z",
+      "side": 1,
+      "message": "Please add a comment",
+      "range": {
+        "startLine": 714,
+        "startChar": 5,
+        "endLine": 714,
+        "endChar": 24
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c66f8a87_8ce2d315",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 727,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T15:35:24Z",
+      "side": 1,
+      "message": "govet will moan about an else-block if the true-block ends in a return.\nJust inline the else-block statements after the if, or flip the conditional and have the else-block be the if-true block.",
+      "range": {
+        "startLine": 727,
+        "startChar": 3,
+        "endLine": 727,
+        "endChar": 9
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2111c41_4e95622a",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T15:35:24Z",
+      "side": 1,
+      "message": "nit: Slightly unusual file permission mask. 0644 or 0666 are more common in my experience. Ideally, we\u0027d be copying the permission mask from the source file.",
+      "range": {
+        "startLine": 728,
+        "startChar": 43,
+        "endLine": 728,
+        "endChar": 47
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "568f7c5a_0942e554",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 737,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T15:35:24Z",
+      "side": 1,
+      "message": "dEQP revision",
+      "range": {
+        "startLine": 737,
+        "startChar": 60,
+        "endLine": 737,
+        "endChar": 68
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "117fb800_cae51ec6",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T15:35:24Z",
+      "side": 1,
+      "message": "Do you need to build DEQP here? I guess that would prevent you pointing to a potentially broken version. If this is intentional, please add a comment.",
+      "range": {
+        "startLine": 740,
+        "startChar": 21,
+        "endLine": 740,
+        "endChar": 35
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b833a54_edd1afc2",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T15:35:24Z",
+      "side": 1,
+      "message": "check err",
+      "range": {
+        "startLine": 740,
+        "startChar": 12,
+        "endLine": 740,
+        "endChar": 15
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b00b416_5d652859",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 780,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T15:35:24Z",
+      "side": 1,
+      "message": "We don\u0027t want to modify the Regres version of the dEQP config file. If the file doesn\u0027t exist, error and bail.",
+      "range": {
+        "startLine": 780,
+        "startChar": 63,
+        "endLine": 780,
+        "endChar": 95
+      },
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49d8b99e_7be1e3fa",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T15:35:24Z",
+      "side": 1,
+      "message": "Please update comment",
+      "revId": "1616c6ecf5e61bd08fdf5ab2322f45c1eeb50d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
