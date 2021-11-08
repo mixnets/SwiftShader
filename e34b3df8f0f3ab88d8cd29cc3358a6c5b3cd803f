@@ -222,6 +222,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eb590bef_996ccc51",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-08T17:16:33Z",
+      "side": 1,
+      "message": "Ah, nice find! This normalization code doesn\u0027t take into account that gather operations produce four times the same component. I\u0027ve filed b/205576016\n\nThis is a separate bug that shouldn\u0027t block this border issue, so I suggest submitting this CL as-is (or with a TODO(b/205576016) comment).\n\nThanks Ari!",
+      "parentUuid": "090c9f45_b916ea81",
+      "range": {
+        "startLine": 200,
+        "startChar": 3,
+        "endLine": 207,
+        "endChar": 10
+      },
+      "revId": "e34b3df8f0f3ab88d8cd29cc3358a6c5b3cd803f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f4f886a_1a5331f0",
         "filename": "src/Vulkan/VkFormat.cpp",
         "patchSetId": 5
