@@ -16,6 +16,29 @@
       "message": "cf. http://b/203200623#comment3 Did you run the script on Windows? Sean recently made a change to skip the clang-format on Windows. I\u0027m curious if it\u0027s also a problem on Linux or whether you were at an older revision.",
       "revId": "0d651b75abc52067da4f196403b1576468b964d0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc9d3eab_2e446d67",
+        "filename": "third_party/update-spirvheaders.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-08T15:14:09Z",
+      "side": 1,
+      "message": "FYI: \"This option bypasses the pre-commit and commit-msg hooks.\"\n\nIt works around the slow clang-format problem, and also omits adding a Change-Id to the commit message. That seems okay considering that we\u0027re not supposed to manually amend these script-generated commits. Just something to be aware of in case these hooks are used for additional functionality that shouldn\u0027t be skipped.",
+      "range": {
+        "startLine": 18,
+        "startChar": 11,
+        "endLine": 18,
+        "endChar": 22
+      },
+      "revId": "0d651b75abc52067da4f196403b1576468b964d0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
