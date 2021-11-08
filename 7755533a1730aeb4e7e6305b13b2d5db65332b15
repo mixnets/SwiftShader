@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af4fa6a3_efdecf3c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-08T19:11:17Z",
+      "side": 1,
+      "message": "178477034 has more specific background info about the issue this addresses.",
+      "range": {
+        "startLine": 18,
+        "startChar": 7,
+        "endLine": 18,
+        "endChar": 16
+      },
+      "revId": "7755533a1730aeb4e7e6305b13b2d5db65332b15",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a2b29a5_e3b79456",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-08T19:11:17Z",
+      "side": 1,
+      "message": "LGTM with one comment and assuming it passes Kokoro:",
+      "revId": "7755533a1730aeb4e7e6305b13b2d5db65332b15",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
