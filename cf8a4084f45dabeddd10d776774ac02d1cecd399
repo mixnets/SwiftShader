@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68ee1532_971f6651",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T18:00:29Z",
+      "side": 1,
+      "message": "Looks great, Sean. Thank you for all the changes.\nI have a bunch of nits, but have a +2 as they\u0027re all minor.",
+      "revId": "cf8a4084f45dabeddd10d776774ac02d1cecd399",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4db1c57a_9cb5a470",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 715,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T18:00:29Z",
+      "side": 1,
+      "message": "überdöober nit: My entirely personal preference is to have (dst, src). But that\u0027s just me. Feel entirely free to ignore.",
+      "range": {
+        "startLine": 715,
+        "startChar": 25,
+        "endLine": 715,
+        "endChar": 33
+      },
+      "revId": "cf8a4084f45dabeddd10d776774ac02d1cecd399",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44de2978_bcbde17d",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 776,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T18:00:29Z",
+      "side": 1,
+      "message": "nit: Combine the statement with the if, when possible:\n\n if err :\u003d copyFileIfDifferent(deqpFile, swsFile); err !\u003d nil {",
+      "range": {
+        "startLine": 776,
+        "startChar": 2,
+        "endLine": 776,
+        "endChar": 17
+      },
+      "revId": "cf8a4084f45dabeddd10d776774ac02d1cecd399",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44a132c7_f38176ab",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 783,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T18:00:29Z",
+      "side": 1,
+      "message": "nit: this local var doesn\u0027t seem to give you much over using test.checkoutDir instead.",
+      "range": {
+        "startLine": 783,
+        "startChar": 1,
+        "endLine": 783,
+        "endChar": 12
+      },
+      "revId": "cf8a4084f45dabeddd10d776774ac02d1cecd399",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c25f3823_8fbdbb0c",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 789,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T18:00:29Z",
+      "side": 1,
+      "message": "Does this message serve a purpose any more?",
+      "range": {
+        "startLine": 787,
+        "startChar": 3,
+        "endLine": 789,
+        "endChar": 2
+      },
+      "revId": "cf8a4084f45dabeddd10d776774ac02d1cecd399",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be870e16_b6157dc3",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 790,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-08T18:00:29Z",
+      "side": 1,
+      "message": "nit: I\u0027d probably use 0666 here.",
+      "range": {
+        "startLine": 790,
+        "startChar": 80,
+        "endLine": 790,
+        "endChar": 84
+      },
+      "revId": "cf8a4084f45dabeddd10d776774ac02d1cecd399",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
