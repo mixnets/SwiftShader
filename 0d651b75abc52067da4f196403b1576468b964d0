@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9721d858_3d65f97c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-08T14:44:20Z",
+      "side": 1,
+      "message": "cf. http://b/203200623#comment3 Did you run the script on Windows? Sean recently made a change to skip the clang-format on Windows. I\u0027m curious if it\u0027s also a problem on Linux or whether you were at an older revision.",
+      "revId": "0d651b75abc52067da4f196403b1576468b964d0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
