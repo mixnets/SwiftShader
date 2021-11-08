@@ -1314,6 +1314,7 @@ private:
 
 	// Fragment input interpolation functions
 	uint32_t GetNumInputComponents(int32_t location) const;
+	uint32_t GetPackedInterpolant(int32_t location) const;
 	enum InterpolationType
 	{
 		Centroid,
