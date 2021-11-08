@@ -785,9 +785,13 @@ if(SWIFTSHADER_BUILD_EGL)
     add_subdirectory(src/OpenGL/libEGL) # Add libEGL target
 endif()
 
+<<<<<<< HEAD   (0d651b No format verification in SPIR-V headers and tools update sc)
 if(SWIFTSHADER_BUILD_GLESv2)
     add_subdirectory(src/OpenGL/libGLESv2) # Add libGLESv2 target
 endif()
+=======
+    set(config_install_dir "${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}")
+>>>>>>> BRANCH (b8e7bb Squashed 'third_party/SPIRV-Headers/' changes from 8bb2420b4)
 
 if(SWIFTSHADER_BUILD_VULKAN)
     if (NOT TARGET SPIRV-Tools)
@@ -967,6 +971,7 @@ if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
         ${PVR_VULKAN_TARGET_OTHER}
     )
 
+<<<<<<< HEAD   (0d651b No format verification in SPIR-V headers and tools update sc)
     set(PVR_GLES_TARGET
         ${PVR_GLES_TARGET_GOOD}
         ${PVR_GLES_TARGET_OTHER}
@@ -1026,4 +1031,11 @@ endif()
 
 if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
     add_subdirectory(${TESTS_DIR}/VulkanUnitTests) # Add VulkanUnitTests target
+=======
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SPIRV-Headers.pc.in ${CMAKE_BINARY_DIR}/SPIRV-Headers.pc @ONLY)
+    install(
+        FILES "${CMAKE_BINARY_DIR}/SPIRV-Headers.pc"
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig
+    )
+>>>>>>> BRANCH (b8e7bb Squashed 'third_party/SPIRV-Headers/' changes from 8bb2420b4)
 endif()

@@ -1,0 +1,10 @@
+<<<<<<< HEAD   (0d651b No format verification in SPIR-V headers and tools update sc)
+=======
+#!/usr/bin/env bash
+
+python3 bin/makeExtinstHeaders.py
+
+cd ../../include/spirv/unified1
+../../../tools/buildHeaders/build/install/bin/buildSpvHeaders -H spirv.core.grammar.json
+dos2unix spirv.* spv.*
+>>>>>>> BRANCH (b8e7bb Squashed 'third_party/SPIRV-Headers/' changes from 8bb2420b4)
