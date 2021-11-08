@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45ea57a7_982b193c",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-08T18:50:38Z",
+      "side": 1,
+      "message": "Looks like this works, according to Regres. Please make sure this code makes sense for StorageClassWorkgroup. I think the storage class doesn\u0027t matter here, as we\u0027re just accessing and storing a constant, but I\u0027m not 100% sure about it.",
+      "range": {
+        "startLine": 222,
+        "startChar": 0,
+        "endLine": 222,
+        "endChar": 34
+      },
+      "revId": "993898326510367520f84f983f66daf506f19fc7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
