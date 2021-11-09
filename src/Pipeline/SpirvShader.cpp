@@ -81,7 +81,7 @@ SpirvShader::SpirvShader(
 
 				if(stage == pipelineStage && strcmp(name, entryPointName) == 0)
 				{
-					ASSERT_MSG(this->entryPoint == 0, "Duplicate entry point with name '%s' and stage %d", name, int(stage));
+					ASSERT_MSG(!this->entryPoint, "Duplicate entry point with name '%s' and stage %d", name, int(stage));
 					this->entryPoint = entryPoint;
 					this->executionModel = executionModel;
 
@@ -432,7 +432,7 @@ SpirvShader::SpirvShader(
 		case spv::OpFunction:
 			{
 				auto functionId = Function::ID(insn.word(2));
-				ASSERT_MSG(currentFunction == 0, "Functions %d and %d overlap", currentFunction.value(), functionId.value());
+				ASSERT_MSG(!currentFunction, "Functions %d and %d overlap", currentFunction.value(), functionId.value());
 				currentFunction = functionId;
 				auto &function = functions[functionId];
 				function.result = Type::ID(insn.word(1));
@@ -446,7 +446,7 @@ SpirvShader::SpirvShader(
 						break;
 					}
 				}
-				ASSERT_MSG(function.entry != 0, "Function<%d> has no label", currentFunction.value());
+				ASSERT_MSG(function.entry, "Function<%d> has no label", currentFunction.value());
 			}
 			break;
 
@@ -764,7 +764,7 @@ SpirvShader::SpirvShader(
 		}
 	}
 
-	ASSERT_MSG(entryPoint != 0, "Entry point '%s' not found", entryPointName);
+	ASSERT_MSG(entryPoint, "Entry point '%s' not found", entryPointName);
 	for(auto &it : functions)
 	{
 		it.second.AssignBlockFields();
@@ -1622,21 +1622,6 @@ void SpirvShader::emitProlog(SpirvRoutine *routine) const
 			}
 			break;
 
-		case spv::OpImageDrefGather:
-		case spv::OpImageFetch:
-		case spv::OpImageGather:
-		case spv::OpImageQueryLod:
-		case spv::OpImageSampleDrefExplicitLod:
-		case spv::OpImageSampleDrefImplicitLod:
-		case spv::OpImageSampleExplicitLod:
-		case spv::OpImageSampleImplicitLod:
-		case spv::OpImageSampleProjDrefExplicitLod:
-		case spv::OpImageSampleProjDrefImplicitLod:
-		case spv::OpImageSampleProjExplicitLod:
-		case spv::OpImageSampleProjImplicitLod:
-			routine->samplerCache.emplace(insn.resultId(), SpirvRoutine::SamplerCache{});
-			break;
-
 		default:
 			// Nothing else produces interface variables, so can all be safely ignored.
 			break;
@@ -1958,46 +1943,24 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 		return EmitKill(insn, state);
 
 	case spv::OpImageSampleImplicitLod:
-		return EmitImageSampleImplicitLod(None, insn, state);
-
 	case spv::OpImageSampleExplicitLod:
-		return EmitImageSampleExplicitLod(None, insn, state);
-
 	case spv::OpImageSampleDrefImplicitLod:
-		return EmitImageSampleImplicitLod(Dref, insn, state);
-
 	case spv::OpImageSampleDrefExplicitLod:
-		return EmitImageSampleExplicitLod(Dref, insn, state);
-
 	case spv::OpImageSampleProjImplicitLod:
-		return EmitImageSampleImplicitLod(Proj, insn, state);
-
 	case spv::OpImageSampleProjExplicitLod:
-		return EmitImageSampleExplicitLod(Proj, insn, state);
-
 	case spv::OpImageSampleProjDrefImplicitLod:
-		return EmitImageSampleImplicitLod(ProjDref, insn, state);
-
 	case spv::OpImageSampleProjDrefExplicitLod:
-		return EmitImageSampleExplicitLod(ProjDref, insn, state);
-
 	case spv::OpImageGather:
-		return EmitImageGather(None, insn, state);
-
 	case spv::OpImageDrefGather:
-		return EmitImageGather(Dref, insn, state);
-
 	case spv::OpImageFetch:
-		return EmitImageFetch(insn, state);
+	case spv::OpImageQueryLod:
+		return EmitImageSample(insn, state);
 
 	case spv::OpImageQuerySizeLod:
 		return EmitImageQuerySizeLod(insn, state);
 
 	case spv::OpImageQuerySize:
 		return EmitImageQuerySize(insn, state);
-
-	case spv::OpImageQueryLod:
-		return EmitImageQueryLod(insn, state);
 
 	case spv::OpImageQueryLevels:
 		return EmitImageQueryLevels(insn, state);

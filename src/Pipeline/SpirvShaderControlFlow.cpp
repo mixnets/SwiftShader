@@ -771,14 +771,15 @@ void SpirvShader::WriteCFGGraphVizDotFile(const char *path) const
 		{
 			if(block.second.kind == Block::Loop)
 			{
-				if(block.second.mergeBlock != 0)
+				if(block.second.mergeBlock)
 				{
 					file << "    block_" << block.first.value() << " -> "
 					     << "block_" << block.second.mergeBlock.value()
 					     << "[label=\"M\" style=dashed color=blue]"
 					     << std::endl;
 				}
-				if(block.second.continueTarget != 0)
+
+				if(block.second.continueTarget)
 				{
 					file << "    block_" << block.first.value() << " -> "
 					     << "block_" << block.second.continueTarget.value()

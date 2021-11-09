@@ -38,6 +38,12 @@ public:
 	// value returns the numerical value of the identifier.
 	inline uint32_t value() const;
 
+	// Returns whether this is a valid id
+	operator bool() const
+	{
+		return id != 0;  // "0 < id < Bound"
+	}
+
 private:
 	uint32_t id = 0;
 };

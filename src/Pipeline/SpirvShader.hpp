@@ -492,7 +492,7 @@ public:
 	};
 
 	// OpImageSample variants
-	enum Variant
+	enum Variant : uint32_t
 	{
 		None,  // No Dref or Proj. Also used by OpImageFetch and OpImageQueryLod.
 		Dref,
@@ -519,7 +519,7 @@ public:
 
 		SamplerFunction getSamplerFunction() const
 		{
-			return { static_cast<SamplerMethod>(samplerMethod), offset != 0, sample != 0 };
+			return { samplerMethod, offset != 0, sample != 0 };
 		}
 
 		bool isDref() const
@@ -532,12 +532,22 @@ public:
 			return (variant == Proj) || (variant == ProjDref);
 		}
 
+		bool hasLod() const
+		{
+			return samplerMethod == Lod || samplerMethod == Fetch;  // We always pas a Lod operand for Fetch operations.
+		}
+
+		bool hasGrad() const
+		{
+			return samplerMethod == Grad;
+		}
+
 		union
 		{
 			struct
 			{
-				uint32_t variant : BITS(VARIANT_LAST);
-				uint32_t samplerMethod : BITS(SAMPLER_METHOD_LAST);
+				Variant variant : BITS(VARIANT_LAST);
+				SamplerMethod samplerMethod : BITS(SAMPLER_METHOD_LAST);
 				uint32_t gatherComponent : 2;
 
 				// Parameters are passed to the sampling routine in this order:
@@ -554,6 +564,143 @@ public:
 	};
 
 	static_assert(sizeof(ImageInstruction) == sizeof(uint32_t), "ImageInstruction must be 32-bit");
+
+	struct ImageInstruction2 : public ImageInstruction  //, public InsnIterator
+	{
+		ImageInstruction2(InsnIterator insn, const SpirvShader &spirv)
+		    : ImageInstruction(parse(insn))
+		//  , InsnIterator(insn)
+		{
+			resultId = insn.resultId();     // word(2)
+			sampledImageId = insn.word(3);  // For OpImageFetch this is just an Image, not a SampledImage.
+			coordinateId = insn.word(4);
+
+			const Object &coordinateObject = spirv.getObject(coordinateId);
+			const Type &coordinateType = spirv.getType(coordinateObject);
+			coordinates = coordinateType.componentCount - (isProj() ? 1 : 0);
+
+			if(isDref())
+			{
+				drefId = insn.word(5);
+			}
+
+			uint32_t imageOperands = getImageOperands(insn);
+			uint32_t operand = (isDref() || samplerMethod == Gather) ? 6 : 5;
+
+			if(imageOperands & spv::ImageOperandsBiasMask)
+			{
+				ASSERT(samplerMethod == Bias);
+				lodOrBiasId = insn.word(operand);
+				operand++;
+				imageOperands &= ~spv::ImageOperandsBiasMask;
+			}
+
+			if(imageOperands & spv::ImageOperandsLodMask)
+			{
+				ASSERT(samplerMethod == Lod || samplerMethod == Fetch);
+				lodOrBiasId = insn.word(operand);
+				operand++;
+				imageOperands &= ~spv::ImageOperandsLodMask;
+			}
+
+			if(imageOperands & spv::ImageOperandsGradMask)
+			{
+				ASSERT(samplerMethod == Grad);
+				gradDxId = insn.word(operand + 0);
+				gradDyId = insn.word(operand + 1);
+				operand += 2;
+				imageOperands &= ~spv::ImageOperandsGradMask;
+			}
+
+			if(imageOperands & spv::ImageOperandsConstOffsetMask)
+			{
+				offsetId = insn.word(operand);
+				operand++;
+				imageOperands &= ~spv::ImageOperandsConstOffsetMask;
+			}
+
+			if(imageOperands & spv::ImageOperandsSampleMask)
+			{
+				ASSERT(samplerMethod == Fetch);
+				sampleId = insn.word(operand);
+				imageOperands &= ~spv::ImageOperandsSampleMask;
+			}
+
+			if(imageOperands != 0)
+			{
+				UNSUPPORTED("Image operands 0x%08X", imageOperands);
+			}
+		}
+
+		Object::ID resultId = 0;
+		Object::ID sampledImageId = 0;
+		Object::ID coordinateId = 0;
+		Object::ID drefId = 0;
+		Object::ID lodOrBiasId = 0;
+		Object::ID gradDxId = 0;
+		Object::ID gradDyId = 0;
+		Object::ID offsetId = 0;
+		Object::ID sampleId = 0;
+
+	private:
+		ImageInstruction parse(InsnIterator insn)
+		{
+			uint32_t imageOperands = getImageOperands(insn);
+			bool bias = imageOperands & spv::ImageOperandsBiasMask;
+			bool grad = imageOperands & spv::ImageOperandsGradMask;
+
+			switch(insn.opcode())
+			{
+			case spv::OpImageSampleImplicitLod: return { None, bias ? Bias : Implicit };
+			case spv::OpImageSampleExplicitLod: return { None, grad ? Grad : Lod };
+			case spv::OpImageSampleDrefImplicitLod: return { Dref, bias ? Bias : Implicit };
+			case spv::OpImageSampleDrefExplicitLod: return { Dref, grad ? Grad : Lod };
+			case spv::OpImageSampleProjImplicitLod: return { Proj, bias ? Bias : Implicit };
+			case spv::OpImageSampleProjExplicitLod: return { Proj, grad ? Grad : Lod };
+			case spv::OpImageSampleProjDrefImplicitLod: return { ProjDref, bias ? Bias : Implicit };
+			case spv::OpImageSampleProjDrefExplicitLod: return { ProjDref, grad ? Grad : Lod };
+			case spv::OpImageGather: return { None, Gather };
+			case spv::OpImageDrefGather: return { Dref, Gather };
+			case spv::OpImageFetch: return { None, Fetch };
+			case spv::OpImageQueryLod: return { None, Query };
+
+			default:
+				ASSERT(false);
+				return { None, Implicit };
+			}
+		}
+
+		uint32_t getImageOperands(InsnIterator insn)
+		{
+			switch(insn.opcode())
+			{
+			case spv::OpImageSampleImplicitLod:
+			case spv::OpImageSampleProjImplicitLod:
+				return insn.wordCount() > 5 ? insn.word(5) : 0;  // Optional
+			case spv::OpImageSampleExplicitLod:
+			case spv::OpImageSampleProjExplicitLod:
+				return insn.word(5);  // "Either Lod or Grad image operands must be present."
+			case spv::OpImageSampleDrefImplicitLod:
+			case spv::OpImageSampleProjDrefImplicitLod:
+				return insn.wordCount() > 6 ? insn.word(6) : 0;  // Optional
+			case spv::OpImageSampleDrefExplicitLod:
+			case spv::OpImageSampleProjDrefExplicitLod:
+				return insn.word(6);  // "Either Lod or Grad image operands must be present."
+			case spv::OpImageGather:
+			case spv::OpImageDrefGather:
+				return insn.wordCount() > 6 ? insn.word(6) : 0;  // Optional
+			case spv::OpImageFetch:
+				return insn.wordCount() > 5 ? insn.word(5) : 0;  // Optional
+			case spv::OpImageQueryLod:
+				ASSERT(insn.wordCount() == 5);
+				return 0;
+
+			default:
+				ASSERT(false);
+				return 0;
+			}
+		}
+	};
 
 	// This method is for retrieving an ID that uniquely identifies the
 	// shader entry point represented by this object.
@@ -1241,14 +1388,9 @@ private:
 	EmitResult EmitKill(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitFunctionCall(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageSampleImplicitLod(Variant variant, InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageSampleExplicitLod(Variant variant, InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageGather(Variant variant, InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageFetch(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageSample(ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
+	EmitResult EmitImageSample(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQuerySize(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageQueryLod(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQueryLevels(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQuerySamples(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageRead(InsnIterator insn, EmitState *state) const;
@@ -1265,10 +1407,10 @@ private:
 	EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
 
 	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
-	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
+	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, const ImageInstruction2 &instruction, EmitState *state) const;
 
-	Pointer<Byte> lookupSamplerFunction(Pointer<Byte> imageDescriptor, ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
-	void callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD::Float> &out, Pointer<Byte> imageDescriptor, ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
+	Pointer<Byte> lookupSamplerFunction(Pointer<Byte> imageDescriptor, const ImageInstruction2 &instruction, EmitState *state) const;
+	void callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD::Float> &out, Pointer<Byte> imageDescriptor, const ImageInstruction2 &instruction, EmitState *state) const;
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 	SIMD::Pointer GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const;
