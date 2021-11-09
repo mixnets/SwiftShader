@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bc24f604_8bb26e5e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "Having 2 levels of indirection hides the information from the first level of indirection in the SPIR-V operation. The failing case was:\n  fs_in_pos_screen_sample[1].x\n  \nWhich includes both \"[1]\" and \".x\". The \".x\" makes it look like we\u0027re addressing a single variable and all information about the fact that this was an array is gone from the current instruction (it has already been handled by a previous instruction).\n\nAll we know at this point is that we\u0027re accessing the first element of the vec2 object at \"fs_in_pos_screen_sample[1]\", we don\u0027t know that the object itself is stored within an array, that information has been stripped away.\n\nIn any case, there might be other ways to go around this issue, but I think tightly packing the PlaneEquations array is what makes the simplest Reactor code, as it removes the more complicated way of computing the offset.",
+      "parentUuid": "56ad1fc9_4f115f94",
+      "range": {
+        "startLine": 14,
+        "startChar": 8,
+        "endLine": 14,
+        "endChar": 24
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "37ec7865_a5d6b1a6",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2021-11-09T20:35:01Z",
       "side": 1,
       "message": "Could it be made available? I fail to see where the previous logic went wrong and how this could be fixed without tight packing. As noted at b/179925303#comment3, at least logically the interpolants are not expected to be packed.\n\nI just want to make sure we have a full grasp of the issue now and tight packing is the best solution which will address it once-and-for-all.",
+      "range": {
+        "startLine": 15,
+        "startChar": 32,
+        "endLine": 15,
+        "endChar": 62
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3085a29c_19822276",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "Tight packing is a good solution because it makes addressing an array the same as addressing a scalar, if we compute an offset by location, from the start of a variable. SPIR-V isn\u0027t aware that we\u0027re not tightly packing interpolant and the location information we have isn\u0027t taking extra spaces in between members of the array into account.",
+      "parentUuid": "37ec7865_a5d6b1a6",
       "range": {
         "startLine": 15,
         "startChar": 32,
@@ -104,6 +152,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "07fffd41_cb5a90c1",
+        "filename": "src/Device/QuadRasterizer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "38fb18aa_7ca23856",
+      "range": {
+        "startLine": 150,
+        "startChar": 8,
+        "endLine": 150,
+        "endChar": 23
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8f3fcf0d_f1d65c3d",
@@ -117,6 +189,30 @@
       "writtenOn": "2021-11-09T20:35:01Z",
       "side": 1,
       "message": "Perhaps rename this to interfaceInterpolant to clearly keep them apart.",
+      "range": {
+        "startLine": 151,
+        "startChar": 12,
+        "endLine": 151,
+        "endChar": 23
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3092539_d37509c6",
+        "filename": "src/Device/QuadRasterizer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8f3fcf0d_f1d65c3d",
       "range": {
         "startLine": 151,
         "startChar": 12,
@@ -150,6 +246,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4b34fb7_909fa2c2",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0e40ce54_c0070a07",
+      "range": {
+        "startLine": 206,
+        "startChar": 8,
+        "endLine": 206,
+        "endChar": 23
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7bd7d20d_2f925998",
@@ -163,6 +283,30 @@
       "writtenOn": "2021-11-09T20:35:01Z",
       "side": 1,
       "message": "interfaceInterpolant",
+      "range": {
+        "startLine": 207,
+        "startChar": 12,
+        "endLine": 207,
+        "endChar": 23
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f4d3f7c_d8d32261",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7bd7d20d_2f925998",
       "range": {
         "startLine": 207,
         "startChar": 12,
@@ -196,6 +340,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8da8864f_ff066c40",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "54b74a3b_ec4d2991",
+      "range": {
+        "startLine": 490,
+        "startChar": 6,
+        "endLine": 490,
+        "endChar": 21
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6fee6a9e_69725a3a",
@@ -209,6 +377,30 @@
       "writtenOn": "2021-11-09T20:35:01Z",
       "side": 1,
       "message": "interfaceInterpolant",
+      "range": {
+        "startLine": 491,
+        "startChar": 10,
+        "endLine": 491,
+        "endChar": 21
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba40db31_9488f940",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6fee6a9e_69725a3a",
       "range": {
         "startLine": 491,
         "startChar": 10,
@@ -244,6 +436,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fc80f506_027c0e9e",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1055,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "This is Reactor code, Reactor always optimizes \"/ 4\" ?",
+      "parentUuid": "e8877526_a32e304c",
+      "range": {
+        "startLine": 1055,
+        "startChar": 72,
+        "endLine": 1055,
+        "endChar": 76
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "83355cf7_65f8026e",
         "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
         "patchSetId": 1
@@ -255,6 +471,30 @@
       "writtenOn": "2021-11-09T20:35:01Z",
       "side": 1,
       "message": "/ 4",
+      "range": {
+        "startLine": 1063,
+        "startChar": 42,
+        "endLine": 1063,
+        "endChar": 46
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59b794b4_a2120bff",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1063,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T22:49:20Z",
+      "side": 1,
+      "message": "I\u0027d rather keep this the same as the one above, unless you tell me Reactor code always optimizes away divisions by POT.",
+      "parentUuid": "83355cf7_65f8026e",
       "range": {
         "startLine": 1063,
         "startChar": 42,
