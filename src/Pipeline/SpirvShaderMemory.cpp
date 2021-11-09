@@ -232,7 +232,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			}
 			break;
 		default:
-			ASSERT_MSG(initializerId == 0, "Vulkan does not permit variables of storage class %d to have initializers", int(objectTy.storageClass));
+			ASSERT_MSG(!initializerId, "Vulkan does not permit variables of storage class %d to have initializers", int(objectTy.storageClass));
 		}
 	}
 

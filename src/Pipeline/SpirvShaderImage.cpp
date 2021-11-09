@@ -406,7 +406,7 @@ void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultT
 		UNREACHABLE("Image descriptorType: %d", int(descriptorType));
 	}
 
-	if(lodId != 0)
+	if(lodId)
 	{
 		auto lodVal = Operand(this, state, lodId);
 		ASSERT(lodVal.componentCount == 1);

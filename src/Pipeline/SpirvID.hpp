@@ -15,6 +15,8 @@
 #ifndef sw_ID_hpp
 #define sw_ID_hpp
 
+#include "System/Debug.hpp"
+
 #include <cstdint>
 #include <unordered_map>
 
@@ -31,12 +33,16 @@ class SpirvID
 public:
 	SpirvID() = default;
 	inline SpirvID(uint32_t id);
+
 	inline bool operator==(const SpirvID<T> &rhs) const;
 	inline bool operator!=(const SpirvID<T> &rhs) const;
 	inline bool operator<(const SpirvID<T> &rhs) const;
 
-	// value returns the numerical value of the identifier.
+	// Returns the numerical value of the identifier.
 	inline uint32_t value() const;
+
+	// Returns whether this is a valid id.
+	inline operator bool() const;
 
 private:
 	uint32_t id = 0;
@@ -68,7 +74,17 @@ bool SpirvID<T>::operator<(const SpirvID<T> &rhs) const
 template<typename T>
 uint32_t SpirvID<T>::value() const
 {
+	// Assert that we don't attempt to use unassigned IDs.
+	// Use operator bool to avoid invalid code paths (e.g. if(id) { ... }).
+	ASSERT(id != 0);
+
 	return id;
+}
+
+template<typename T>
+SpirvID<T>::operator bool() const
+{
+	return id != 0;  // "0 < id < Bound"
 }
 
 // HandleMap<T> is an unordered map of SpirvID<T> to T.
