@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d69b6de_4c1643b6",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2021-11-09T19:06:54Z",
+      "side": 1,
+      "message": "The compiler can easily make that optimization. I think it\u0027s slightly less confusing to only have input parameters on the right-hand side and keep each formula on one line.",
+      "parentUuid": "49528eef_ce97d07c",
+      "range": {
+        "startLine": 63,
+        "startChar": 39,
+        "endLine": 63,
+        "endChar": 74
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ef656fba_1a0cbfc6",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-11-09T15:08:18Z",
       "side": 1,
       "message": "Nit: factor.blendConstantS[i]",
+      "range": {
+        "startLine": 65,
+        "startChar": 39,
+        "endLine": 65,
+        "endChar": 75
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ce67c43_f5e187af",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2021-11-09T19:06:54Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ef656fba_1a0cbfc6",
       "range": {
         "startLine": 65,
         "startChar": 39,
@@ -96,6 +144,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "4a874d16_adf49175",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1783,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2021-11-09T19:06:54Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/59229",
+      "parentUuid": "cfd821c2_ee12faae",
+      "range": {
+        "startLine": 1783,
+        "startChar": 4,
+        "endLine": 1783,
+        "endChar": 58
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "bf78c340_8cc6b39d",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 2
@@ -130,6 +202,30 @@
       "writtenOn": "2021-11-09T15:08:18Z",
       "side": 1,
       "message": "Nit: You can ignore this if you want, I just find the readability of having a boolean in the middle of the function call not that clear on what the boolean means just by reading the line of code.\n\nSuggestion to improve readability:\n\nenum { NON_INVERSE, INVERSE };\nFloat blendConstant(vk::Format format, int component, bool inverse \u003d NON_INVERSE);\n\nAnd then in the code, it would look like:\nblendConstant(format, component);\nor\nblendConstant(format, component, INVERSE);",
+      "range": {
+        "startLine": 77,
+        "startChar": 21,
+        "endLine": 77,
+        "endChar": 67
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "07e46329_3c501d37",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2021-11-09T19:06:54Z",
+      "side": 1,
+      "message": "I created a follow-up change: https://swiftshader-review.googlesource.com/c/SwiftShader/+/59228",
+      "parentUuid": "820be901_8ace2e84",
       "range": {
         "startLine": 77,
         "startChar": 21,
