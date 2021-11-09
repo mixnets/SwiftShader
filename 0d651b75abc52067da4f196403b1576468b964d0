@@ -38,6 +38,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "7274c7c2_6df4c00e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T05:48:07Z",
+      "side": 1,
+      "message": "Thanks. That\u0027s odd though. https://swiftshader-review.googlesource.com/c/git-hooks/+/58589 should already skip clang-format on commit, on Windows. Are your git modules out of date?",
+      "parentUuid": "c2de1a21_22c741d3",
+      "revId": "0d651b75abc52067da4f196403b1576468b964d0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "cc9d3eab_2e446d67",
         "filename": "third_party/update-spirvheaders.sh",
         "patchSetId": 1
