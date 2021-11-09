@@ -39,6 +39,30 @@
       },
       "revId": "8676572cff23e5694d9c8245bce04637b8b87efa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "719ca1ed_36d86e2a",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T17:08:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "43243795_1a84c47a",
+      "range": {
+        "startLine": 537,
+        "startChar": 72,
+        "endLine": 537,
+        "endChar": 75
+      },
+      "revId": "8676572cff23e5694d9c8245bce04637b8b87efa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
