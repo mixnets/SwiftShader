@@ -22,6 +22,30 @@
       },
       "revId": "6e2138db1d8c46be40bb3b7749952a2128b8d22a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f28e3205_c3ad264e",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1110,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2021-11-09T19:28:48Z",
+      "side": 1,
+      "message": "I generally try to use it everywhere. It gives us access to the helper methods. They\u0027re not used in this case, but future changes might. I don\u0027t think there are noteworthy downsides.",
+      "parentUuid": "42299c6e_c0d53c85",
+      "range": {
+        "startLine": 1110,
+        "startChar": 1,
+        "endLine": 1110,
+        "endChar": 11
+      },
+      "revId": "6e2138db1d8c46be40bb3b7749952a2128b8d22a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
