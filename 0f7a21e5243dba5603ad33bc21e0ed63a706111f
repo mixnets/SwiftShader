@@ -1,6 +1,52 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "56ad1fc9_4f115f94",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "Do we know exactly what these cases are?",
+      "range": {
+        "startLine": 14,
+        "startChar": 8,
+        "endLine": 14,
+        "endChar": 24
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37ec7865_a5d6b1a6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "Could it be made available? I fail to see where the previous logic went wrong and how this could be fixed without tight packing. As noted at b/179925303#comment3, at least logically the interpolants are not expected to be packed.\n\nI just want to make sure we have a full grasp of the issue now and tight packing is the best solution which will address it once-and-for-all.",
+      "range": {
+        "startLine": 15,
+        "startChar": 32,
+        "endLine": 15,
+        "endChar": 62
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "e575cc79_831630ed",
@@ -14,6 +60,207 @@
       "writtenOn": "2021-11-09T14:10:49Z",
       "side": 1,
       "message": "Seems to work. PTAL.",
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c814d586_1d8bf286",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "This looks fine to me at a high level. Just a few nits. I haven\u0027t fully wrapped my head around this issue though, and I\u0027m curious if it\u0027s clear why the tests currently fail and why packing is the solution when it previously was determined that we shouldn\u0027t have to (b/179925303). Sean, since you\u0027ve spent some time investigating this issue as well, can you do approval review?\n\nOne thing that makes me a little hesitant is that we\u0027ll lose 1:1 mapping between interface variables and interpolants. That should only affect debugging though.",
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38fb18aa_7ca23856",
+        "filename": "src/Device/QuadRasterizer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "Let\u0027s call this packedInterpolant to match the GetPackedInterpolant() method.",
+      "range": {
+        "startLine": 150,
+        "startChar": 8,
+        "endLine": 150,
+        "endChar": 23
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f3fcf0d_f1d65c3d",
+        "filename": "src/Device/QuadRasterizer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "Perhaps rename this to interfaceInterpolant to clearly keep them apart.",
+      "range": {
+        "startLine": 151,
+        "startChar": 12,
+        "endLine": 151,
+        "endChar": 23
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e40ce54_c0070a07",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "packedInterpolant",
+      "range": {
+        "startLine": 206,
+        "startChar": 8,
+        "endLine": 206,
+        "endChar": 23
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bd7d20d_2f925998",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "interfaceInterpolant",
+      "range": {
+        "startLine": 207,
+        "startChar": 12,
+        "endLine": 207,
+        "endChar": 23
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54b74a3b_ec4d2991",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "packedInterpolant",
+      "range": {
+        "startLine": 490,
+        "startChar": 6,
+        "endLine": 490,
+        "endChar": 21
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fee6a9e_69725a3a",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "interfaceInterpolant",
+      "range": {
+        "startLine": 491,
+        "startChar": 10,
+        "endLine": 491,
+        "endChar": 21
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8877526_a32e304c",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1055,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "/ 4\n\nThe compiler will optimize this, and the division is more readable.",
+      "range": {
+        "startLine": 1055,
+        "startChar": 72,
+        "endLine": 1055,
+        "endChar": 76
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83355cf7_65f8026e",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1063,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:35:01Z",
+      "side": 1,
+      "message": "/ 4",
+      "range": {
+        "startLine": 1063,
+        "startChar": 42,
+        "endLine": 1063,
+        "endChar": 46
+      },
       "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
