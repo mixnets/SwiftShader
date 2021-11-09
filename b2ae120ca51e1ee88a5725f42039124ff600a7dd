@@ -22,6 +22,30 @@
       },
       "revId": "b2ae120ca51e1ee88a5725f42039124ff600a7dd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "479aeb27_36ffc7a4",
+        "filename": "src/Pipeline/SpirvID.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T14:26:02Z",
+      "side": 1,
+      "message": "Why not an:\n  inline operator uint32_t() const;\n\n?\n\nSeems like this would be more intuitive for an integer wrapper class and you can use it with the same syntax.",
+      "parentUuid": "f610864e_91468db4",
+      "range": {
+        "startLine": 45,
+        "startChar": 8,
+        "endLine": 45,
+        "endChar": 21
+      },
+      "revId": "b2ae120ca51e1ee88a5725f42039124ff600a7dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
