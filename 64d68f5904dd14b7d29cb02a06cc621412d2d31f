@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "35c8e8f9_d9162ab6",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2021-11-09T19:35:38Z",
+      "side": 1,
+      "message": "The SPIR-V binary format is a low-level spec and we regularly use things like word(#) for parsing the fields. I don\u0027t think literals like this would benefit from using symbolic constants since they\u0027ll never change and are rarely used more than once.\n\nhttps://www.youtube.com/watch?v\u003d-IOMNUayJjI",
+      "parentUuid": "2553930f_f0dfd0c3",
+      "range": {
+        "startLine": 297,
+        "startChar": 40,
+        "endLine": 297,
+        "endChar": 41
+      },
+      "revId": "64d68f5904dd14b7d29cb02a06cc621412d2d31f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "cb29e4c0_97070cc4",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 1
