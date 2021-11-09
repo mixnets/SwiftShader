@@ -406,7 +406,7 @@ void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultT
 		UNREACHABLE("Image descriptorType: %d", int(descriptorType));
 	}
 
-	if(lodId != 0)
+	if(lodId)
 	{
 		auto lodVal = Operand(this, state, lodId);
 		ASSERT(lodVal.componentCount == 1);
@@ -557,7 +557,7 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 	}
 
 	SIMD::Int n = 0;
-	if(sampleId.value())
+	if(sampleId)
 	{
 		Operand sample(this, state, sampleId);
 		if(!sample.isConstantZero())
@@ -587,7 +587,7 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 			oobMask |= As<SIMD::Int>(CmpNLT(As<SIMD::UInt>(w), SIMD::UInt(depth)));
 		}
 
-		if(sampleId.value())
+		if(sampleId)
 		{
 			Operand sample(this, state, sampleId);
 			if(!sample.isConstantZero())

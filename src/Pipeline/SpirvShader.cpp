@@ -81,7 +81,7 @@ SpirvShader::SpirvShader(
 
 				if(stage == pipelineStage && strcmp(name, entryPointName) == 0)
 				{
-					ASSERT_MSG(this->entryPoint == 0, "Duplicate entry point with name '%s' and stage %d", name, int(stage));
+					ASSERT_MSG(!this->entryPoint, "Duplicate entry point with name '%s' and stage %d", name, int(stage));
 					this->entryPoint = entryPoint;
 					this->executionModel = executionModel;
 
@@ -207,7 +207,7 @@ SpirvShader::SpirvShader(
 
 		case spv::OpLabel:
 			{
-				ASSERT(currentBlock.value() == 0);
+				ASSERT(!currentBlock);
 				currentBlock = Block::ID(insn.word(1));
 				blockStart = insn;
 			}
@@ -224,8 +224,8 @@ SpirvShader::SpirvShader(
 		case spv::OpKill:
 		case spv::OpUnreachable:
 			{
-				ASSERT(currentBlock.value() != 0);
-				ASSERT(currentFunction.value() != 0);
+				ASSERT(currentBlock);
+				ASSERT(currentFunction);
 
 				auto blockEnd = insn;
 				blockEnd++;
@@ -432,7 +432,7 @@ SpirvShader::SpirvShader(
 		case spv::OpFunction:
 			{
 				auto functionId = Function::ID(insn.word(2));
-				ASSERT_MSG(currentFunction == 0, "Functions %d and %d overlap", currentFunction.value(), functionId.value());
+				ASSERT_MSG(!currentFunction, "Functions %d and %d overlap", currentFunction.value(), functionId.value());
 				currentFunction = functionId;
 				auto &function = functions[functionId];
 				function.result = Type::ID(insn.word(1));
@@ -446,7 +446,7 @@ SpirvShader::SpirvShader(
 						break;
 					}
 				}
-				ASSERT_MSG(function.entry != 0, "Function<%d> has no label", currentFunction.value());
+				ASSERT_MSG(function.entry, "Function<%d> has no label", currentFunction.value());
 			}
 			break;
 
@@ -764,7 +764,7 @@ SpirvShader::SpirvShader(
 		}
 	}
 
-	ASSERT_MSG(entryPoint != 0, "Entry point '%s' not found", entryPointName);
+	ASSERT_MSG(entryPoint, "Entry point '%s' not found", entryPointName);
 	for(auto &it : functions)
 	{
 		it.second.AssignBlockFields();
