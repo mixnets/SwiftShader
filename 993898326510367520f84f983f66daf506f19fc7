@@ -22,6 +22,30 @@
       },
       "revId": "993898326510367520f84f983f66daf506f19fc7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e24573c0_e1afcfbf",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T20:13:08Z",
+      "side": 1,
+      "message": "This code stores the initializer value into the variable. Other than the data layout this works the same for global or local variables (Private and Function storage class, respectively). However, workgroup memory is shared among multiple invocations, and I\u0027m not sure if we\u0027re meant to do this initialization on every invocation the same way global and local variables are handled.\n\nI\u0027ve asked Alan for clarification at b/204356514#comment2",
+      "parentUuid": "45ea57a7_982b193c",
+      "range": {
+        "startLine": 222,
+        "startChar": 0,
+        "endLine": 222,
+        "endChar": 34
+      },
+      "revId": "993898326510367520f84f983f66daf506f19fc7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
