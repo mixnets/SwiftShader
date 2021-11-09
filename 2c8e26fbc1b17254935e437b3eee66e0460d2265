@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6d42d17_8962e827",
+        "filename": "third_party/SPIRV-Tools/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T23:26:08Z",
+      "side": 1,
+      "message": "What\u0027s the logic behind this?",
+      "range": {
+        "startLine": 102,
+        "startChar": 254,
+        "endLine": 102,
+        "endChar": 265
+      },
+      "revId": "2c8e26fbc1b17254935e437b3eee66e0460d2265",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
