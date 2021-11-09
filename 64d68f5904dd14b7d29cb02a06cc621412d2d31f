@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2553930f_f0dfd0c3",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T14:54:29Z",
+      "side": 1,
+      "message": "nit: maybe define as \"static constexpr size_t HEADER_SIZE \u003d 5\" or something like that.",
+      "range": {
+        "startLine": 297,
+        "startChar": 40,
+        "endLine": 297,
+        "endChar": 41
+      },
+      "revId": "64d68f5904dd14b7d29cb02a06cc621412d2d31f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
