@@ -3,6 +3,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "49528eef_ce97d07c",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T15:08:18Z",
+      "side": 1,
+      "message": "Nit: factor.blendConstantU[i]",
+      "range": {
+        "startLine": 63,
+        "startChar": 39,
+        "endLine": 63,
+        "endChar": 74
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef656fba_1a0cbfc6",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T15:08:18Z",
+      "side": 1,
+      "message": "Nit: factor.blendConstantS[i]",
+      "range": {
+        "startLine": 65,
+        "startChar": 39,
+        "endLine": 65,
+        "endChar": 75
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "50352583_1c5a0b17",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 2
@@ -14,6 +60,30 @@
       "writtenOn": "2021-11-08T23:47:40Z",
       "side": 1,
       "message": "note: We should probably consider sRGB formats to be unsigned normalized so we don\u0027t need this explicit pair. I had to make this change a couple more times below. I\u0027ll follow up with a cleanup patch.",
+      "range": {
+        "startLine": 1783,
+        "startChar": 4,
+        "endLine": 1783,
+        "endChar": 58
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cfd821c2_ee12faae",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1783,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T15:08:18Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "50352583_1c5a0b17",
       "range": {
         "startLine": 1783,
         "startChar": 4,
@@ -42,6 +112,29 @@
         "startChar": 9,
         "endLine": 2240,
         "endChar": 14
+      },
+      "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "820be901_8ace2e84",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T15:08:18Z",
+      "side": 1,
+      "message": "Nit: You can ignore this if you want, I just find the readability of having a boolean in the middle of the function call not that clear on what the boolean means just by reading the line of code.\n\nSuggestion to improve readability:\n\nenum { NON_INVERSE, INVERSE };\nFloat blendConstant(vk::Format format, int component, bool inverse \u003d NON_INVERSE);\n\nAnd then in the code, it would look like:\nblendConstant(format, component);\nor\nblendConstant(format, component, INVERSE);",
+      "range": {
+        "startLine": 77,
+        "startChar": 21,
+        "endLine": 77,
+        "endChar": 67
       },
       "revId": "bbd921f7f216dc4e5b5e822323271ae49a0c89a5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
