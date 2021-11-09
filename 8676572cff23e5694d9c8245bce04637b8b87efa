@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f63151e_a8c16ae0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T14:47:23Z",
+      "side": 1,
+      "message": "LGTM",
+      "revId": "8676572cff23e5694d9c8245bce04637b8b87efa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43243795_1a84c47a",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T14:47:23Z",
+      "side": 1,
+      "message": "pass",
+      "range": {
+        "startLine": 537,
+        "startChar": 72,
+        "endLine": 537,
+        "endChar": 75
+      },
+      "revId": "8676572cff23e5694d9c8245bce04637b8b87efa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
