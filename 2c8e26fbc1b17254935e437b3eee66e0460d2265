@@ -22,6 +22,30 @@
       },
       "revId": "2c8e26fbc1b17254935e437b3eee66e0460d2265",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b7c6358_c4118d67",
+        "filename": "third_party/SPIRV-Tools/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T23:30:10Z",
+      "side": 1,
+      "message": "This makes it equivalent to the BUILD.gn file:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/third_party/SPIRV-Tools/BUILD.gn;l\u003d315\n\nFor example, you can see \"CLDEBUG100_\" being used the same way in both this file and the BUILD.gn file.",
+      "parentUuid": "a6d42d17_8962e827",
+      "range": {
+        "startLine": 102,
+        "startChar": 254,
+        "endLine": 102,
+        "endChar": 265
+      },
+      "revId": "2c8e26fbc1b17254935e437b3eee66e0460d2265",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
