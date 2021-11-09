@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f610864e_91468db4",
+        "filename": "src/Pipeline/SpirvID.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T14:13:48Z",
+      "side": 1,
+      "message": "Admittedly this is a bit of a compromise. Ideally I\u0027d like to continue to use id !\u003d 0 syntax to check whether an id is valid, but that requires comparison against a raw integer, which means we\u0027d lose the static type checking advantage this class offers.\n\nThe alternative would have been an isValid() method but I find that a bit verbose and it strays away from treating this class as an integer wrapper.",
+      "range": {
+        "startLine": 45,
+        "startChar": 8,
+        "endLine": 45,
+        "endChar": 21
+      },
+      "revId": "b2ae120ca51e1ee88a5725f42039124ff600a7dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
