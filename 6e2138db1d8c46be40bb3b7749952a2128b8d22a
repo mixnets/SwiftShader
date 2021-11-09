@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42299c6e_c0d53c85",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1110,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-09T14:51:16Z",
+      "side": 1,
+      "message": "Question: any reason this is using the vk::Format class and not just the VkFormat enum?",
+      "range": {
+        "startLine": 1110,
+        "startChar": 1,
+        "endLine": 1110,
+        "endChar": 11
+      },
+      "revId": "6e2138db1d8c46be40bb3b7749952a2128b8d22a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
