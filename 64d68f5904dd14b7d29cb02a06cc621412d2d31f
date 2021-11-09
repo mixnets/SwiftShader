@@ -22,6 +22,29 @@
       },
       "revId": "64d68f5904dd14b7d29cb02a06cc621412d2d31f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb29e4c0_97070cc4",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-09T14:58:32Z",
+      "side": 1,
+      "message": "This will throw an exception when the element isn\u0027t found. It makes the assert redundant and also avoids having to use the iterator as intermediate step.\n\nWhile it also throws an exception in Release builds, and we generally don\u0027t want exceptions, we\u0027d crash anyway in the event the entry isn\u0027t found, or even have dangerous undefined behavior. So a well-defined exception, even though not handled, seems better. Either way, this-should-never-happen.",
+      "range": {
+        "startLine": 344,
+        "startChar": 44,
+        "endLine": 344,
+        "endChar": 46
+      },
+      "revId": "64d68f5904dd14b7d29cb02a06cc621412d2d31f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
