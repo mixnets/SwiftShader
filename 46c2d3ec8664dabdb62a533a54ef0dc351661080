@@ -39,6 +39,30 @@
       },
       "revId": "46c2d3ec8664dabdb62a533a54ef0dc351661080",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1fc3ba5b_87d093dd",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-10T13:22:51Z",
+      "side": 1,
+      "message": "Good catch! Done.",
+      "parentUuid": "59a634a3_275c07e4",
+      "range": {
+        "startLine": 976,
+        "startChar": 37,
+        "endLine": 976,
+        "endChar": 61
+      },
+      "revId": "46c2d3ec8664dabdb62a533a54ef0dc351661080",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
