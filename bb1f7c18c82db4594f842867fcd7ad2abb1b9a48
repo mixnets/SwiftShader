@@ -84,6 +84,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "61053f7d_7e301f5d",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1658,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-10T16:58:56Z",
+      "side": 1,
+      "message": "I ended up removing all unused parameters, as it makes it trivial to not duplicate any of the CommandBuffer member functions.",
+      "parentUuid": "3352a3c5_533cb243",
+      "range": {
+        "startLine": 1658,
+        "startChar": 4,
+        "endLine": 1658,
+        "endChar": 9
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "615fb09c_4a8cbc03",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 4
