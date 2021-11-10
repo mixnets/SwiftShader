@@ -48,6 +48,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e9ff268_b8bb7a0e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-10T06:25:24Z",
+      "side": 1,
+      "message": "\u003e we don\u0027t know that the object itself is stored within an array, that information has been stripped away.\n\nI don\u0027t think that\u0027s true. SPIR-V has a hierarchical type system which allows us to know that a scalar was extracted from a vec2 which was indexed from an array. If I recall correctly we don\u0027t have to support cases more complicated than that, so we probably just missed one extra \u0027walk\u0027 of the access chain and type system in old code.\n\nAnyway, things indeed become simpler when the interpolants are tightly packed, and we can probably take more advantage of that in the future to avoid wasting storage.",
+      "parentUuid": "bc24f604_8bb26e5e",
+      "range": {
+        "startLine": 14,
+        "startChar": 8,
+        "endLine": 14,
+        "endChar": 24
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "37ec7865_a5d6b1a6",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "Tight packing is a good solution because it makes addressing an array the same as addressing a scalar, if we compute an offset by location, from the start of a variable. SPIR-V isn\u0027t aware that we\u0027re not tightly packing interpolant and the location information we have isn\u0027t taking extra spaces in between members of the array into account.",
       "parentUuid": "37ec7865_a5d6b1a6",
+      "range": {
+        "startLine": 15,
+        "startChar": 32,
+        "endLine": 15,
+        "endChar": 62
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ef0e876_38c53cac",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-10T06:25:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3085a29c_19822276",
       "range": {
         "startLine": 15,
         "startChar": 32,
@@ -458,6 +506,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cffc6530_3060aade",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1055,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-10T06:25:24Z",
+      "side": 1,
+      "message": "Ah yes, I probably asked about this before. 8-)\n\nLLVM definitely optimizes this, and while Subzero has a peephole optimization [0] that performs this transformation, we\u0027re missing some constant propagation for it to recognize the pattern. So this is blocked on b/155302798. Let\u0027s keep the shift for now.\n\n[0] https://cs.opensource.google/swiftshader/SwiftShader/+/master:third_party/subzero/src/IceTargetLoweringX8664.cpp;drc\u003d557d0158079f292ea7c37f8475cb1b1f669bce66;l\u003d1966",
+      "parentUuid": "fc80f506_027c0e9e",
+      "range": {
+        "startLine": 1055,
+        "startChar": 72,
+        "endLine": 1055,
+        "endChar": 76
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "83355cf7_65f8026e",
@@ -495,6 +567,30 @@
       "side": 1,
       "message": "I\u0027d rather keep this the same as the one above, unless you tell me Reactor code always optimizes away divisions by POT.",
       "parentUuid": "83355cf7_65f8026e",
+      "range": {
+        "startLine": 1063,
+        "startChar": 42,
+        "endLine": 1063,
+        "endChar": 46
+      },
+      "revId": "0f7a21e5243dba5603ad33bc21e0ed63a706111f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f861eb08_42cef178",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1063,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-10T06:25:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "59b794b4_a2120bff",
       "range": {
         "startLine": 1063,
         "startChar": 42,

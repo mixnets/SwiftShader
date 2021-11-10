@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1866f38_f183c79b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-10T06:25:24Z",
+      "side": 1,
+      "message": "+1 again, passing to Sean for +2 review. Spotted a now unused variable:",
+      "revId": "46c2d3ec8664dabdb62a533a54ef0dc351661080",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59a634a3_275c07e4",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-10T06:25:24Z",
+      "side": 1,
+      "message": "unused",
+      "range": {
+        "startLine": 976,
+        "startChar": 37,
+        "endLine": 976,
+        "endChar": 61
+      },
+      "revId": "46c2d3ec8664dabdb62a533a54ef0dc351661080",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
