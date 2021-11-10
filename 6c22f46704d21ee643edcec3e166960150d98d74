@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c073d2ba_a4bb0b0b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-10T16:43:42Z",
+      "side": 1,
+      "message": "I removed unused parameters from the CommandBuffer class and moved some TODOs to libVulkan.cpp, which allows this CL to not have duplicate member functions in CommandBuffer.",
+      "revId": "6c22f46704d21ee643edcec3e166960150d98d74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
