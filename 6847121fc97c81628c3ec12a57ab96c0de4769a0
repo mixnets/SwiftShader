@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "c7efecef_5f671714",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-10T16:49:07Z",
+      "side": 1,
+      "message": "I was using \"functions receiving ...\" it in the sense \"since functions receive ...\", but I\u0027ll rephrase.",
+      "parentUuid": "e94cd8bb_50ff50ce",
+      "revId": "6847121fc97c81628c3ec12a57ab96c0de4769a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "2f46debc_cdd28510",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 3
