@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e94cd8bb_50ff50ce",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-10T16:12:34Z",
+      "side": 1,
+      "message": "\"functions *receive* their parameters at...\"",
+      "revId": "6847121fc97c81628c3ec12a57ab96c0de4769a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f46debc_cdd28510",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-10T16:12:34Z",
+      "side": 1,
+      "message": "+2 assuming commit comment is updated ",
+      "revId": "6847121fc97c81628c3ec12a57ab96c0de4769a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
