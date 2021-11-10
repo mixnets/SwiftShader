@@ -314,6 +314,30 @@
       },
       "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cfee075c_3ed2c8a8",
+        "filename": "src/Vulkan/vk_swiftshader.def",
+        "patchSetId": 4
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-10T16:57:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1043ac_b6321575",
+      "range": {
+        "startLine": 179,
+        "startChar": 22,
+        "endLine": 179,
+        "endChar": 25
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
