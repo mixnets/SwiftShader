@@ -70,6 +70,30 @@
       },
       "revId": "bcd192115ebe2e21f735f9a5be76e48d5c291a2e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb429d71_ed0cf79d",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-10T22:18:32Z",
+      "side": 1,
+      "message": "Obsolete. See new version.",
+      "parentUuid": "d5974867_ae9da2f3",
+      "range": {
+        "startLine": 105,
+        "startChar": 1,
+        "endLine": 106,
+        "endChar": 117
+      },
+      "revId": "bcd192115ebe2e21f735f9a5be76e48d5c291a2e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
