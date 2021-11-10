@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a92df0f_605123b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-10T19:38:14Z",
+      "side": 1,
+      "message": "This is the result of running `./tests/regres/run.sh --dailynow`.",
+      "revId": "7b100c35c9bc1bd7b04692adfd657116b494fa7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ebb57fe8_4356f341",
+        "filename": "tests/regres/deqp.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-10T19:38:14Z",
+      "side": 1,
+      "message": "Looks like something went wrong here?",
+      "range": {
+        "startLine": 7,
+        "startChar": 78,
+        "endLine": 7,
+        "endChar": 118
+      },
+      "revId": "7b100c35c9bc1bd7b04692adfd657116b494fa7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
