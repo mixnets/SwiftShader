@@ -46,6 +46,30 @@
       },
       "revId": "2c8e26fbc1b17254935e437b3eee66e0460d2265",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e95ad1d8_c5780627",
+        "filename": "third_party/SPIRV-Tools/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-10T00:07:35Z",
+      "side": 1,
+      "message": "I mean the current error is:\n\nerror: external/swiftshader/third_party/SPIRV-Tools/Android.bp:58:1: \"swiftshader_spvtools_generate_grammar_tables\" depends on undefined module \"swiftshader_spirv_headers_unified1_extinst.nonsemantic.shader.debuginfo.100.grammar.json\"\n\nI\u0027m just not sure how this change addresses that. Great if it does, of course.",
+      "parentUuid": "7b7c6358_c4118d67",
+      "range": {
+        "startLine": 102,
+        "startChar": 254,
+        "endLine": 102,
+        "endChar": 265
+      },
+      "revId": "2c8e26fbc1b17254935e437b3eee66e0460d2265",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
