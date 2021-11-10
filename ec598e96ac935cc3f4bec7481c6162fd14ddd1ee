@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dab9133e_59b5b5a1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-10T22:17:00Z",
+      "side": 1,
+      "message": "New version where all the codebase is adapted to the new *2KHR structures and the complexity is hidden away in a few conversion structures.",
+      "revId": "ec598e96ac935cc3f4bec7481c6162fd14ddd1ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
