@@ -327,6 +327,24 @@ public:
 		Type::ID typeId() const { return definition.resultTypeId(); }
 		Object::ID id() const { return definition.resultId(); }
 
+		bool isConstantZero() const
+		{
+			if(kind != Kind::Constant)
+			{
+				return false;
+			}
+
+			for(int i = 0; i < constantValue.size(); i++)
+			{
+				if(constantValue[i] != 0)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		InsnIterator definition;
 		std::vector<uint32_t> constantValue;
 
@@ -479,6 +497,7 @@ public:
 
 	// TypeOrObjectID is an identifier that represents a Type or an Object,
 	// and supports implicit casting to and from Type::ID or Object::ID.
+	///////////////////// only used for decorations. split into typedecorations and objectdecorations instead?
 	class TypeOrObjectID : public SpirvID<TypeOrObject>
 	{
 	public:
@@ -555,6 +574,8 @@ public:
 				Variant variant : BITS(VARIANT_LAST);
 				SamplerMethod samplerMethod : BITS(SAMPLER_METHOD_LAST);
 				uint32_t gatherComponent : 2;
+				uint32_t dim : 3;  // spv::Dim
+				uint32_t arrayed : 1;
 
 				// Parameters are passed to the sampling routine in this order:
 				uint32_t coordinates : 3;       // 1-4 (does not contain projection component)
@@ -580,7 +601,8 @@ public:
 
 		Type::ID resultTypeId = 0;
 		Object::ID resultId = 0;
-		Object::ID sampledImageId = 0;
+		Object::ID imageId = 0;
+		Object::ID samplerId = 0;
 		Object::ID coordinateId = 0;
 		Object::ID texelId = 0;
 		Object::ID drefId = 0;
@@ -1159,8 +1181,6 @@ private:
 			return SIMD::UInt(constant[i]);
 		}
 
-		bool isConstantZero() const;
-
 	private:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
 
@@ -1315,7 +1335,7 @@ private:
 	void EmitImageWriteUnconditional(const ImageInstruction &instruction, EmitState *state) const;
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
-	SIMD::Pointer GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const;
+	static SIMD::Pointer GetTexelAddress(ImageInstructionState instruction, EmitState const *state, SIMD::Int coordinate[], SIMD::Int sample, Pointer<Byte> descriptor, int texelSize, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior);
 	uint32_t GetConstScalarInt(Object::ID id) const;
 	void EvalSpecConstantOp(InsnIterator insn);
 	void EvalSpecConstantUnaryOp(InsnIterator insn);
