@@ -34,6 +34,24 @@
       "parentUuid": "53b2e1fa_010fae4d",
       "revId": "d24bb9e95373e49a55f19dd3f328be3c7681c1c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ad4841c3_53d22c45",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-11T21:52:24Z",
+      "side": 1,
+      "message": "The result for Patchset 5 is well within expected variability. https://swiftshader-review.googlesource.com/c/SwiftShader/+/59410 doesn\u0027t report any slowdown in dEQP-VK.api.command_buffers.record_many_draws_secondary* at all.\n\nI ran nightly Regres with Sean\u0027s changes on the Cloudtop instance, so that explains large variability for those results.",
+      "parentUuid": "ede6d7d7_28d119bc",
+      "revId": "d24bb9e95373e49a55f19dd3f328be3c7681c1c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
