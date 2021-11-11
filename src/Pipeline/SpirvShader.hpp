@@ -514,7 +514,6 @@ public:
 	struct ImageInstructionSignature
 	{
 		ImageInstructionSignature(Variant variant, SamplerMethod samplerMethod)
-		    : signature(0)
 		{
 			this->variant = variant;
 			this->samplerMethod = samplerMethod;
@@ -557,6 +556,9 @@ public:
 				Variant variant : BITS(VARIANT_LAST);
 				SamplerMethod samplerMethod : BITS(SAMPLER_METHOD_LAST);
 				uint32_t gatherComponent : 2;
+				uint32_t dim : BITS(spv::DimSubpassData);  // spv::Dim
+				uint32_t arrayed : 1;
+				uint32_t imageFormat : BITS(spv::ImageFormatR64i);  // spv::ImageFormat
 
 				// Parameters are passed to the sampling routine in this order:
 				uint32_t coordinates : 3;       // 1-4 (does not contain projection component)
@@ -567,7 +569,7 @@ public:
 				uint32_t sample : 1;            // 0-1 scalar integer
 			};
 
-			uint32_t signature;
+			uint32_t signature = 0;
 		};
 	};
 
@@ -1313,7 +1315,7 @@ private:
 	void callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD::Float> &out, Pointer<Byte> imageDescriptor, const ImageInstruction &instruction, EmitState *state) const;
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
-	SIMD::Pointer GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const;
+	static SIMD::Pointer GetTexelAddress(ImageInstructionSignature instruction, EmitState const *state, SIMD::Int coordinate[], SIMD::Int sample, Pointer<Byte> descriptor, int texelSize, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior);
 	uint32_t GetConstScalarInt(Object::ID id) const;
 	void EvalSpecConstantOp(InsnIterator insn);
 	void EvalSpecConstantUnaryOp(InsnIterator insn);
