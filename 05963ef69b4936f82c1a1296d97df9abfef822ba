@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57f3f95c_effa887f",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1122,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-11T17:40:56Z",
+      "side": 0,
+      "message": "Note that you can create a template class with specializations, so that you can have NumFeatures\u003cT\u003e::value instead of the sizeof formula. Can be as compact as one line per struct: template\u003c\u003e struct NumFeatures\u003cVkPhysicalDeviceBlendOperationAdvancedFeaturesEXT\u003e { static constexpr value \u003d 1; };",
+      "range": {
+        "startLine": 1122,
+        "startChar": 22,
+        "endLine": 1122,
+        "endChar": 74
+      },
+      "revId": "05963ef69b4936f82c1a1296d97df9abfef822ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
