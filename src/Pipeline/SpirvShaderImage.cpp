@@ -23,7 +23,7 @@
 
 namespace {
 
-VkFormat SpirvFormatToVulkanFormat(spv::ImageFormat format)
+vk::Format SpirvFormatToVulkanFormat(spv::ImageFormat format)
 {
 	switch(format)
 	{
@@ -125,6 +125,21 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
 
 		coordinateId = insn.word(4);
 	}
+
+	// `imageId` can represent either a Sampled Image, a samplerless Image, or a pointer to an Image.
+	// To get to the OpTypeImage operands, traverse the OpTypeSampledImage or OpTypePointer.
+	const Type &imageObjectType = spirv.getObjectType(imageId);
+	const Type &imageReferenceType = (imageObjectType.opcode() == spv::OpTypeSampledImage)
+	                                     ? spirv.getType(imageObjectType.definition.word(2))
+	                                     : imageObjectType;
+	const Type &imageType = ((imageReferenceType.opcode() == spv::OpTypePointer)
+	                             ? spirv.getType(imageReferenceType.element)
+	                             : imageReferenceType);
+
+	ASSERT(imageType.opcode() == spv::OpTypeImage);
+	dim = imageType.definition.word(3);
+	arrayed = imageType.definition.word(5);
+	imageFormat = imageType.definition.word(8);
 
 	const Object &coordinateObject = spirv.getObject(coordinateId);
 	const Type &coordinateType = spirv.getType(coordinateObject);
@@ -1354,7 +1369,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageTexelPointer(const ImageInstructio
 	ASSERT(imageType.opcode() == spv::OpTypeImage);
 	ASSERT(resultType.storageClass == spv::StorageClassImage);
 
-	ASSERT(getType(resultType.element).opcode() == spv::OpTypeInt);
+	ASSERT(SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(instruction.imageFormat)).bytes() == 4);
 	const int texelSize = sizeof(uint32_t);
 
 	auto coordinate = Operand(this, state, instruction.coordinateId);
