@@ -94,6 +94,30 @@
       },
       "revId": "bcd192115ebe2e21f735f9a5be76e48d5c291a2e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b669c3df_8cdd71fe",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-11T07:14:55Z",
+      "side": 1,
+      "message": "Excellent! I like that a lot better than templates which hide the real types and could have been bug prone.",
+      "parentUuid": "cb429d71_ed0cf79d",
+      "range": {
+        "startLine": 105,
+        "startChar": 1,
+        "endLine": 106,
+        "endChar": 117
+      },
+      "revId": "bcd192115ebe2e21f735f9a5be76e48d5c291a2e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
