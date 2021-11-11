@@ -56,6 +56,30 @@
       },
       "revId": "ec598e96ac935cc3f4bec7481c6162fd14ddd1ee",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd58dd6f_f68a8e2d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-11T13:56:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "032244c3_455a71a8",
+      "range": {
+        "startLine": 262,
+        "startChar": 21,
+        "endLine": 262,
+        "endChar": 25
+      },
+      "revId": "ec598e96ac935cc3f4bec7481c6162fd14ddd1ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
