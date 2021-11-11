@@ -600,36 +600,36 @@ SpirvShader::EmitResult SpirvShader::EmitImageQuerySamples(InsnIterator insn, Em
 	return EmitResult::Continue;
 }
 
-SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const
+SIMD::Pointer SpirvShader::GetTexelAddress(ImageInstructionSignature instruction, Pointer<Byte> descriptor, SIMD::Int coordinate[], SIMD::Int sample, vk::Format imageFormat, OutOfBoundsBehavior outOfBoundsBehavior, const EmitState *state)
 {
-	auto routine = state->routine;
-	bool isArrayed = imageType.definition.word(5) != 0;
-	auto dim = static_cast<spv::Dim>(imageType.definition.word(3));
-	int dims = coordinate.componentCount - (isArrayed ? 1 : 0);
+	bool isArrayed = instruction.arrayed;
+	spv::Dim dim = static_cast<spv::Dim>(instruction.dim);
+	int dims = instruction.coordinates - (isArrayed ? 1 : 0);
 
-	SIMD::Int u = coordinate.Int(0);
+	SIMD::Int u = coordinate[0];
 	SIMD::Int v = SIMD::Int(0);
 
-	if(coordinate.componentCount > 1)
+	if(dims > 1)
 	{
-		v = coordinate.Int(1);
+		v = coordinate[1];
 	}
 
 	if(dim == spv::DimSubpassData)
 	{
-		u += routine->windowSpacePosition[0];
-		v += routine->windowSpacePosition[1];
+		u += state->routine->windowSpacePosition[0];
+		v += state->routine->windowSpacePosition[1];
 	}
 
-	auto rowPitch = SIMD::Int(*Pointer<Int>(descriptor + (useStencilAspect
+	const int texelSize = imageFormat.bytes();
+	auto rowPitch = SIMD::Int(*Pointer<Int>(descriptor + (imageFormat.isStencil()
 	                                                          ? OFFSET(vk::StorageImageDescriptor, stencilRowPitchBytes)
 	                                                          : OFFSET(vk::StorageImageDescriptor, rowPitchBytes))));
 	auto slicePitch = SIMD::Int(
-	    *Pointer<Int>(descriptor + (useStencilAspect
+	    *Pointer<Int>(descriptor + (imageFormat.isStencil()
 	                                    ? OFFSET(vk::StorageImageDescriptor, stencilSlicePitchBytes)
 	                                    : OFFSET(vk::StorageImageDescriptor, slicePitchBytes))));
 	auto samplePitch = SIMD::Int(
-	    *Pointer<Int>(descriptor + (useStencilAspect
+	    *Pointer<Int>(descriptor + (imageFormat.isStencil()
 	                                    ? OFFSET(vk::StorageImageDescriptor, stencilSamplePitchBytes)
 	                                    : OFFSET(vk::StorageImageDescriptor, samplePitchBytes))));
 
@@ -645,12 +645,12 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 	{
 		if(dims > 2)
 		{
-			w += coordinate.Int(2);
+			w += coordinate[2];
 		}
 
 		if(isArrayed)
 		{
-			w += coordinate.Int(dims);
+			w += coordinate[dims];
 		}
 
 		ptrOffset += w * slicePitch;
@@ -659,18 +659,12 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 	if(dim == spv::DimSubpassData)
 	{
 		// Multiview input attachment access is to the layer corresponding to the current view
-		ptrOffset += SIMD::Int(routine->viewID) * slicePitch;
+		ptrOffset += SIMD::Int(state->routine->viewID) * slicePitch;
 	}
 
-	SIMD::Int n = 0;
-	if(sampleId != 0)
+	if(instruction.sample)
 	{
-		if(!getObject(sampleId).isConstantZero())
-		{
-			Operand sample(this, state, sampleId);
-			n = sample.Int(0);
-			ptrOffset += n * samplePitch;
-		}
+		ptrOffset += sample * samplePitch;
 	}
 
 	// If the out-of-bounds behavior is set to nullify, then each coordinate must be tested individually.
@@ -693,13 +687,10 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 			oobMask |= As<SIMD::Int>(CmpNLT(As<SIMD::UInt>(w), SIMD::UInt(depth)));
 		}
 
-		if(sampleId != 0)
+		if(instruction.sample)
 		{
-			if(!getObject(sampleId).isConstantZero())
-			{
-				SIMD::UInt sampleCount = *Pointer<UInt>(descriptor + OFFSET(vk::StorageImageDescriptor, sampleCount));
-				oobMask |= As<SIMD::Int>(CmpNLT(As<SIMD::UInt>(n), sampleCount));
-			}
+			SIMD::UInt sampleCount = *Pointer<UInt>(descriptor + OFFSET(vk::StorageImageDescriptor, sampleCount));
+			oobMask |= As<SIMD::Int>(CmpNLT(As<SIMD::UInt>(sample), sampleCount));
 		}
 
 		constexpr int32_t OOB_OFFSET = 0x7FFFFFFF - 16;  // SIMD pointer offsets are signed 32-bit, so this is the largest offset (for 16-byte texels).
@@ -707,6 +698,12 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 
 		ptrOffset = (ptrOffset & ~oobMask) | (oobMask & SIMD::Int(OOB_OFFSET));  // oob ? OOB_OFFSET : ptrOffset  // TODO: IfThenElse()
 	}
+
+	Pointer<Byte> imageBase = *Pointer<Pointer<Byte>>(descriptor + (imageFormat.isStencil()
+	                                                                    ? OFFSET(vk::StorageImageDescriptor, stencilPtr)
+	                                                                    : OFFSET(vk::StorageImageDescriptor, ptr)));
+
+	Int imageSizeInBytes = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, sizeInBytes));
 
 	return SIMD::Pointer(imageBase, imageSizeInBytes, ptrOffset);
 }
@@ -718,42 +715,50 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 	auto &imageType = getType(image);
 
 	ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
-	auto dim = static_cast<spv::Dim>(imageType.definition.word(3));
+	auto dim = static_cast<spv::Dim>(instruction.dim);
 
 	auto coordinate = Operand(this, state, instruction.coordinateId);
 	const DescriptorDecorations &d = descriptorDecorations.at(instruction.imageId);
 
 	// For subpass data, format in the instruction is spv::ImageFormatUnknown. Get it from
 	// the renderpass data instead. In all other cases, we can use the format in the instruction.
-	auto vkFormat = (dim == spv::DimSubpassData)
-	                    ? inputAttachmentFormats[d.InputAttachmentIndex]
-	                    : SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(imageType.definition.word(8)));
+	vk::Format imageFormat = (dim == spv::DimSubpassData)
+	                             ? inputAttachmentFormats[d.InputAttachmentIndex]
+	                             : SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(instruction.imageFormat));
 
 	// Depth+Stencil image attachments select aspect based on the Sampled Type of the
 	// OpTypeImage. If float, then we want the depth aspect. If int, we want the stencil aspect.
-	auto useStencilAspect = (vkFormat == VK_FORMAT_D32_SFLOAT_S8_UINT &&
+	bool useStencilAspect = (imageFormat == VK_FORMAT_D32_SFLOAT_S8_UINT &&
 	                         getType(imageType.definition.word(2)).opcode() == spv::OpTypeInt);
 
 	if(useStencilAspect)
 	{
-		vkFormat = VK_FORMAT_S8_UINT;
+		imageFormat = VK_FORMAT_S8_UINT;
 	}
 
 	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).base;  // vk::StorageImageDescriptor*
-	Pointer<Byte> imageBase = *Pointer<Pointer<Byte>>(descriptor + (useStencilAspect
-	                                                                    ? OFFSET(vk::StorageImageDescriptor, stencilPtr)
-	                                                                    : OFFSET(vk::StorageImageDescriptor, ptr)));
-
-	Int imageSizeInBytes = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, sizeInBytes));
-
 	auto &dst = state->createIntermediate(instruction.resultId, resultType.componentCount);
 
 	// VK_EXT_image_robustness requires replacing out-of-bounds access with zero.
 	// TODO(b/162327166): Only perform bounds checks when VK_EXT_image_robustness is enabled.
 	auto robustness = OutOfBoundsBehavior::Nullify;
 
-	auto texelSize = vk::Format(vkFormat).bytes();
-	auto texelPtr = GetTexelAddress(state, imageBase, imageSizeInBytes, coordinate, imageType, descriptor, texelSize, instruction.sampleId, useStencilAspect, robustness);
+	SIMD::Int uvwa[4];
+	SIMD::Int sample;
+
+	for(uint32_t i = 0; i < instruction.coordinates; i++)
+	{
+		uvwa[i] = coordinate.Int(i);
+	}
+
+	if(instruction.sample)
+	{
+		sample = Operand(this, state, instruction.sampleId).Int(0);
+	}
+
+	auto texelPtr = GetTexelAddress(instruction, descriptor, uvwa, sample, imageFormat, robustness, state);
+
+	int texelSize = imageFormat.bytes();
 
 	// Gather packed texel data. Texels larger than 4 bytes occupy multiple SIMD::Int elements.
 	// TODO(b/160531165): Provide gather abstractions for various element sizes.
@@ -798,7 +803,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 	// Format support requirements here come from two sources:
 	// - Minimum required set of formats for loads from storage images
 	// - Any format supported as a color or depth/stencil attachment, for input attachments
-	switch(vkFormat)
+	switch(imageFormat)
 	{
 	case VK_FORMAT_R32G32B32A32_SFLOAT:
 	case VK_FORMAT_R32G32B32A32_SINT:
@@ -1115,7 +1120,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 		dst.move(3, SIMD::Float(1.0f));
 		break;
 	default:
-		UNSUPPORTED("VkFormat %d", int(vkFormat));
+		UNSUPPORTED("VkFormat %d", int(imageFormat));
 		break;
 	}
 
@@ -1139,14 +1144,12 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 	Int imageSizeInBytes = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, sizeInBytes));
 
 	SIMD::Int packed[4];
-	int texelSize = 0;
-	vk::Format format = SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(imageType.definition.word(8)));
-	switch(format)
+	vk::Format imageFormat = SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(instruction.imageFormat));
+	switch(imageFormat)
 	{
 	case VK_FORMAT_R32G32B32A32_SFLOAT:
 	case VK_FORMAT_R32G32B32A32_SINT:
 	case VK_FORMAT_R32G32B32A32_UINT:
-		texelSize = 16;
 		packed[0] = texel.Int(0);
 		packed[1] = texel.Int(1);
 		packed[2] = texel.Int(2);
@@ -1155,18 +1158,15 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 	case VK_FORMAT_R32_SFLOAT:
 	case VK_FORMAT_R32_SINT:
 	case VK_FORMAT_R32_UINT:
-		texelSize = 4;
 		packed[0] = texel.Int(0);
 		break;
 	case VK_FORMAT_R8G8B8A8_UNORM:
-		texelSize = 4;
 		packed[0] = (SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) |
 		            ((SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 8) |
 		            ((SIMD::UInt(Round(Min(Max(texel.Float(2), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 16) |
 		            ((SIMD::UInt(Round(Min(Max(texel.Float(3), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 24);
 		break;
 	case VK_FORMAT_R8G8B8A8_SNORM:
-		texelSize = 4;
 		packed[0] = (SIMD::Int(Round(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
 		             SIMD::Int(0xFF)) |
 		            ((SIMD::Int(Round(Min(Max(texel.Float(1), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
@@ -1181,131 +1181,108 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 		break;
 	case VK_FORMAT_R8G8B8A8_SINT:
 	case VK_FORMAT_R8G8B8A8_UINT:
-		texelSize = 4;
 		packed[0] = (SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xff))) |
 		            (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xff)) << 8) |
 		            (SIMD::UInt(texel.UInt(2) & SIMD::UInt(0xff)) << 16) |
 		            (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0xff)) << 24);
 		break;
 	case VK_FORMAT_R16G16B16A16_SFLOAT:
-		texelSize = 8;
 		packed[0] = floatToHalfBits(texel.UInt(0), false) | floatToHalfBits(texel.UInt(1), true);
 		packed[1] = floatToHalfBits(texel.UInt(2), false) | floatToHalfBits(texel.UInt(3), true);
 		break;
 	case VK_FORMAT_R16G16B16A16_SINT:
 	case VK_FORMAT_R16G16B16A16_UINT:
-		texelSize = 8;
 		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFFFF)) | (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xFFFF)) << 16);
 		packed[1] = SIMD::UInt(texel.UInt(2) & SIMD::UInt(0xFFFF)) | (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0xFFFF)) << 16);
 		break;
 	case VK_FORMAT_R32G32_SFLOAT:
 	case VK_FORMAT_R32G32_SINT:
 	case VK_FORMAT_R32G32_UINT:
-		texelSize = 8;
 		packed[0] = texel.Int(0);
 		packed[1] = texel.Int(1);
 		break;
 	case VK_FORMAT_R16G16_SFLOAT:
-		texelSize = 4;
 		packed[0] = floatToHalfBits(texel.UInt(0), false) | floatToHalfBits(texel.UInt(1), true);
 		break;
 	case VK_FORMAT_R16G16_SINT:
 	case VK_FORMAT_R16G16_UINT:
-		texelSize = 4;
 		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFFFF)) | (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xFFFF)) << 16);
 		break;
 	case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-		texelSize = 4;
 		// Truncates instead of rounding. See b/147900455
 		packed[0] = ((floatToHalfBits(As<SIMD::UInt>(Max(texel.Float(0), SIMD::Float(0.0f))), false) & SIMD::UInt(0x7FF0)) >> 4) |
 		            ((floatToHalfBits(As<SIMD::UInt>(Max(texel.Float(1), SIMD::Float(0.0f))), false) & SIMD::UInt(0x7FF0)) << 7) |
 		            ((floatToHalfBits(As<SIMD::UInt>(Max(texel.Float(2), SIMD::Float(0.0f))), false) & SIMD::UInt(0x7FE0)) << 17);
 		break;
 	case VK_FORMAT_R16_SFLOAT:
-		texelSize = 2;
 		packed[0] = floatToHalfBits(texel.UInt(0), false);
 		break;
 	case VK_FORMAT_R16G16B16A16_UNORM:
-		texelSize = 8;
 		packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) |
 		            (SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) << 16);
 		packed[1] = SIMD::UInt(Round(Min(Max(texel.Float(2), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) |
 		            (SIMD::UInt(Round(Min(Max(texel.Float(3), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) << 16);
 		break;
 	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
-		texelSize = 4;
 		packed[0] = (SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x3FF)))) |
 		            ((SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x3FF)))) << 10) |
 		            ((SIMD::UInt(Round(Min(Max(texel.Float(2), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x3FF)))) << 20) |
 		            ((SIMD::UInt(Round(Min(Max(texel.Float(3), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x3)))) << 30);
 		break;
 	case VK_FORMAT_R16G16_UNORM:
-		texelSize = 4;
 		packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) |
 		            (SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) << 16);
 		break;
 	case VK_FORMAT_R8G8_UNORM:
-		texelSize = 2;
 		packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFF))) |
 		            (SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFF))) << 8);
 		break;
 	case VK_FORMAT_R16_UNORM:
-		texelSize = 2;
 		packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF)));
 		break;
 	case VK_FORMAT_R8_UNORM:
-		texelSize = 1;
 		packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFF)));
 		break;
 	case VK_FORMAT_R16G16B16A16_SNORM:
-		texelSize = 8;
 		packed[0] = (SIMD::Int(Round(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) & SIMD::Int(0xFFFF)) |
 		            (SIMD::Int(Round(Min(Max(texel.Float(1), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) << 16);
 		packed[1] = (SIMD::Int(Round(Min(Max(texel.Float(2), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) & SIMD::Int(0xFFFF)) |
 		            (SIMD::Int(Round(Min(Max(texel.Float(3), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) << 16);
 		break;
 	case VK_FORMAT_R16G16_SNORM:
-		texelSize = 4;
 		packed[0] = (SIMD::Int(Round(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) & SIMD::Int(0xFFFF)) |
 		            (SIMD::Int(Round(Min(Max(texel.Float(1), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) << 16);
 		break;
 	case VK_FORMAT_R8G8_SNORM:
-		texelSize = 2;
 		packed[0] = (SIMD::Int(Round(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7F))) & SIMD::Int(0xFF)) |
 		            (SIMD::Int(Round(Min(Max(texel.Float(1), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7F))) << 8);
 		break;
 	case VK_FORMAT_R16_SNORM:
-		texelSize = 2;
 		packed[0] = SIMD::Int(Round(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF)));
 		break;
 	case VK_FORMAT_R8_SNORM:
-		texelSize = 1;
 		packed[0] = SIMD::Int(Round(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7F)));
 		break;
 	case VK_FORMAT_R8G8_SINT:
 	case VK_FORMAT_R8G8_UINT:
-		texelSize = 2;
 		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFF)) | (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xFF)) << 8);
 		break;
 	case VK_FORMAT_R16_SINT:
 	case VK_FORMAT_R16_UINT:
-		texelSize = 2;
 		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFFFF));
 		break;
 	case VK_FORMAT_R8_SINT:
 	case VK_FORMAT_R8_UINT:
-		texelSize = 1;
 		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFF));
 		break;
 	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
-		texelSize = 4;
 		packed[0] = (SIMD::UInt(texel.UInt(0) & SIMD::UInt(0x3FF))) |
 		            (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0x3FF)) << 10) |
 		            (SIMD::UInt(texel.UInt(2) & SIMD::UInt(0x3FF)) << 20) |
 		            (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0x3)) << 30);
 		break;
 	default:
-		UNSUPPORTED("VkFormat %d", int(format));
+		UNSUPPORTED("VkFormat %d", int(imageFormat));
 		break;
 	}
 
@@ -1314,7 +1291,22 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 	// - https://www.khronos.org/registry/vulkan/specs/1.2/html/chap16.html#textures-output-coordinate-validation
 	auto robustness = OutOfBoundsBehavior::Nullify;
 
-	auto texelPtr = GetTexelAddress(state, imageBase, imageSizeInBytes, coordinate, imageType, descriptor, texelSize, instruction.sampleId, false, robustness);
+	SIMD::Int uvwa[4];
+	SIMD::Int sample;
+
+	for(uint32_t i = 0; i < instruction.coordinates; i++)
+	{
+		uvwa[i] = coordinate.Int(i);
+	}
+
+	if(instruction.sample)
+	{
+		sample = Operand(this, state, instruction.sampleId).Int(0);
+	}
+
+	auto texelPtr = GetTexelAddress(instruction, descriptor, uvwa, sample, imageFormat, robustness, state);
+
+	int texelSize = imageFormat.bytes();
 
 	// Scatter packed texel data.
 	// TODO(b/160531165): Provide scatter abstractions for various element sizes.
@@ -1360,29 +1352,26 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 
 SpirvShader::EmitResult SpirvShader::EmitImageTexelPointer(const ImageInstruction &instruction, EmitState *state) const
 {
-	auto &resultType = getType(instruction.resultTypeId);
-	auto &image = getObject(instruction.imageId);
-	// Note: OpImageTexelPointer is unusual in that the image is passed by pointer.
-	// Look through to get the actual image type.
-	auto &imageType = getType(getType(image).element);
-
-	ASSERT(imageType.opcode() == spv::OpTypeImage);
-	ASSERT(resultType.storageClass == spv::StorageClassImage);
-
-	ASSERT(SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(instruction.imageFormat)).bytes() == 4);
-	const int texelSize = sizeof(uint32_t);
+	vk::Format imageFormat = SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(instruction.imageFormat));
 
 	auto coordinate = Operand(this, state, instruction.coordinateId);
 
 	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).base;  // vk::StorageImageDescriptor*
-	Pointer<Byte> imageBase = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::StorageImageDescriptor, ptr));
-	auto imageSizeInBytes = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, sizeInBytes));
 
 	// VK_EXT_image_robustness requires checking for out-of-bounds accesses.
 	// TODO(b/162327166): Only perform bounds checks when VK_EXT_image_robustness is enabled.
 	auto robustness = OutOfBoundsBehavior::Nullify;
 
-	auto ptr = GetTexelAddress(state, imageBase, imageSizeInBytes, coordinate, imageType, descriptor, texelSize, instruction.sampleId, false, robustness);
+	SIMD::Int uvwa[4];
+
+	for(uint32_t i = 0; i < instruction.coordinates; i++)
+	{
+		uvwa[i] = coordinate.Int(i);
+	}
+
+	SIMD::Int sample = Operand(this, state, instruction.sampleId).Int(0);
+
+	auto ptr = GetTexelAddress(instruction, descriptor, uvwa, sample, imageFormat, robustness, state);
 
 	state->createPointer(instruction.resultId, ptr);
 
