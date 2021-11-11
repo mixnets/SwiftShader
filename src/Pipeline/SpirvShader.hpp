@@ -557,6 +557,8 @@ public:
 				Variant variant : BITS(VARIANT_LAST);
 				SamplerMethod samplerMethod : BITS(SAMPLER_METHOD_LAST);
 				uint32_t gatherComponent : 2;
+				uint32_t dim : 3;  // spv::Dim
+				uint32_t arrayed : 1;
 
 				// Parameters are passed to the sampling routine in this order:
 				uint32_t coordinates : 3;       // 1-4 (does not contain projection component)
@@ -1313,7 +1315,7 @@ private:
 	void callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD::Float> &out, Pointer<Byte> imageDescriptor, const ImageInstruction &instruction, EmitState *state) const;
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
-	SIMD::Pointer GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const;
+	static SIMD::Pointer GetTexelAddress(ImageInstructionState instruction, EmitState const *state, SIMD::Int coordinate[], SIMD::Int sample, Pointer<Byte> descriptor, int texelSize, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior);
 	uint32_t GetConstScalarInt(Object::ID id) const;
 	void EvalSpecConstantOp(InsnIterator insn);
 	void EvalSpecConstantUnaryOp(InsnIterator insn);
