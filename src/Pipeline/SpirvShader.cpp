@@ -2564,16 +2564,16 @@ SpirvShader::Operand::Operand(const Intermediate &value)
 {
 }
 
-bool SpirvShader::Operand::isConstantZero() const
+bool SpirvShader::Object::isConstantZero() const
 {
-	if(!constant)
+	if(kind != Kind::Constant)
 	{
 		return false;
 	}
 
-	for(uint32_t i = 0; i < componentCount; i++)
+	for(int i = 0; i < constantValue.size(); i++)
 	{
-		if(constant[i] != 0)
+		if(constantValue[i] != 0)
 		{
 			return false;
 		}
