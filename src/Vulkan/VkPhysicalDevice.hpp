@@ -37,8 +37,13 @@ public:
 	const VkPhysicalDeviceFeatures &getFeatures() const;
 	void getFeatures2(VkPhysicalDeviceFeatures2 *features) const;
 	bool hasFeatures(const VkPhysicalDeviceFeatures &requestedFeatures) const;
-	template<typename T>
-	bool hasExtendedFeatures(const T *requestedFeature) const;
+
+	bool hasExtendedFeatures(const VkPhysicalDeviceLineRasterizationFeaturesEXT *features) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceProvokingVertexFeaturesEXT *features) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceVulkan11Features *features) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceVulkan12Features *features) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceDepthClipEnableFeaturesEXT *features) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *features) const;
 
 	const VkPhysicalDeviceProperties &getProperties() const;
 	void getProperties(VkPhysicalDeviceIDProperties *properties) const;
