@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b0446b9_0996f108",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-11T07:38:10Z",
+      "side": 1,
+      "message": "I fell into my own trap of having a second Regres instance produce a testlist update only to see it get overwritten by the first instance. Can someone approve and land this one?",
+      "revId": "ac9ad9b4c52c464feabb10f9dd044fc250162c41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1582ff8_2e5093a1",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 133172,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-11T07:38:10Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/59115",
+      "range": {
+        "startLine": 133172,
+        "startChar": 43,
+        "endLine": 133172,
+        "endChar": 77
+      },
+      "revId": "ac9ad9b4c52c464feabb10f9dd044fc250162c41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
