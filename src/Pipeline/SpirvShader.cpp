@@ -2566,24 +2566,6 @@ SpirvShader::Operand::Operand(const Intermediate &value)
 {
 }
 
-bool SpirvShader::Operand::isConstantZero() const
-{
-	if(!constant)
-	{
-		return false;
-	}
-
-	for(uint32_t i = 0; i < componentCount; i++)
-	{
-		if(constant[i] != 0)
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
 SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout)
     : pipelineLayout(pipelineLayout)
 {
