@@ -22,6 +22,30 @@
       },
       "revId": "05963ef69b4936f82c1a1296d97df9abfef822ba",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f17d4ff7_b6e2f3dc",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1122,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-11T17:49:23Z",
+      "side": 0,
+      "message": "There\u0027s still the problem that we don\u0027t know anything about how the structure is internally padded. And while C++11 (I believe it was 11) and beyond generally requires padding to be 0 initialized, since we\u0027re dealing with user defined data, it\u0027s not something we\u0027re guaranteed. So we could still be reading junk data.\n\nI believe I was wrong to ever use a templated function for this.",
+      "parentUuid": "57f3f95c_effa887f",
+      "range": {
+        "startLine": 1122,
+        "startChar": 22,
+        "endLine": 1122,
+        "endChar": 74
+      },
+      "revId": "05963ef69b4936f82c1a1296d97df9abfef822ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
