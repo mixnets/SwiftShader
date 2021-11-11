@@ -1107,42 +1107,148 @@ bool PhysicalDevice::hasFeatures(const VkPhysicalDeviceFeatures &requestedFeatur
 	return true;
 }
 
-template<typename T>
-bool PhysicalDevice::hasExtendedFeatures(const T *requestedFeature) const
+// CheckFeature returns false if requested is asking for a feature that is not supported
+#define CheckFeature(feature, requested, supported) (requested->feature == VK_FALSE || supported.feature == VK_TRUE)
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceLineRasterizationFeaturesEXT *r) const
 {
 	VkPhysicalDeviceFeatures2 features;
 	features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-	T supportedFeature;
-	supportedFeature.sType = requestedFeature->sType;
-	supportedFeature.pNext = nullptr;
-	features.pNext = &supportedFeature;
-
+	VkPhysicalDeviceLineRasterizationFeaturesEXT s;
+	s.sType = r->sType;
+	s.pNext = nullptr;
+	features.pNext = &s;
 	getFeatures2(&features);
-	size_t offsetToFirstBool32 = sizeof(VkBaseOutStructure);
-	size_t numFeatures = (sizeof(T) - offsetToFirstBool32) / sizeof(VkBool32);
-	const VkBool32 *requestedFeatureBools = reinterpret_cast<const VkBool32 *>(
-	    reinterpret_cast<const uint8_t *>(requestedFeature) + offsetToFirstBool32);
-	const VkBool32 *supportedFeatureBools = reinterpret_cast<const VkBool32 *>(
-	    reinterpret_cast<const uint8_t *>(&supportedFeature) + offsetToFirstBool32);
 
-	for(size_t i = 0; i < numFeatures; i++)
-	{
-		if((requestedFeatureBools[i] != VK_FALSE) && (supportedFeatureBools[i] == VK_FALSE))
-		{
-			return false;
-		}
-	}
-	return true;
+	return CheckFeature(rectangularLines, r, s) &&
+	       CheckFeature(bresenhamLines, r, s) &&
+	       CheckFeature(smoothLines, r, s) &&
+	       CheckFeature(stippledRectangularLines, r, s) &&
+	       CheckFeature(stippledBresenhamLines, r, s) &&
+	       CheckFeature(stippledSmoothLines, r, s);
 }
 
-#define InstantiateHasExtendedFeatures(Type) template bool PhysicalDevice::hasExtendedFeatures<Type>(const Type *requestedFeature) const
-InstantiateHasExtendedFeatures(VkPhysicalDeviceLineRasterizationFeaturesEXT);
-InstantiateHasExtendedFeatures(VkPhysicalDeviceProvokingVertexFeaturesEXT);
-InstantiateHasExtendedFeatures(VkPhysicalDeviceVulkan11Features);
-InstantiateHasExtendedFeatures(VkPhysicalDeviceVulkan12Features);
-InstantiateHasExtendedFeatures(VkPhysicalDeviceDepthClipEnableFeaturesEXT);
-InstantiateHasExtendedFeatures(VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT);
-#undef InstantiateHasExtendedFeatures
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceProvokingVertexFeaturesEXT *r) const
+{
+	VkPhysicalDeviceFeatures2 features;
+	features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+	VkPhysicalDeviceProvokingVertexFeaturesEXT s;
+	s.sType = r->sType;
+	s.pNext = nullptr;
+	features.pNext = &s;
+	getFeatures2(&features);
+
+	return CheckFeature(provokingVertexLast, r, s) &&
+	       CheckFeature(transformFeedbackPreservesProvokingVertex, r, s);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceVulkan11Features *r) const
+{
+	VkPhysicalDeviceFeatures2 features;
+	features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+	VkPhysicalDeviceVulkan11Features s;
+	s.sType = r->sType;
+	s.pNext = nullptr;
+	features.pNext = &s;
+	getFeatures2(&features);
+
+	return CheckFeature(storageBuffer16BitAccess, r, s) &&
+	       CheckFeature(uniformAndStorageBuffer16BitAccess, r, s) &&
+	       CheckFeature(storagePushConstant16, r, s) &&
+	       CheckFeature(storageInputOutput16, r, s) &&
+	       CheckFeature(multiview, r, s) &&
+	       CheckFeature(multiviewGeometryShader, r, s) &&
+	       CheckFeature(multiviewTessellationShader, r, s) &&
+	       CheckFeature(variablePointersStorageBuffer, r, s) &&
+	       CheckFeature(variablePointers, r, s) &&
+	       CheckFeature(protectedMemory, r, s) &&
+	       CheckFeature(samplerYcbcrConversion, r, s) &&
+	       CheckFeature(shaderDrawParameters, r, s);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceVulkan12Features *r) const
+{
+	VkPhysicalDeviceFeatures2 features;
+	features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+	VkPhysicalDeviceVulkan12Features s;
+	s.sType = r->sType;
+	s.pNext = nullptr;
+	features.pNext = &s;
+	getFeatures2(&features);
+
+	return CheckFeature(samplerMirrorClampToEdge, r, s) &&
+	       CheckFeature(drawIndirectCount, r, s) &&
+	       CheckFeature(storageBuffer8BitAccess, r, s) &&
+	       CheckFeature(uniformAndStorageBuffer8BitAccess, r, s) &&
+	       CheckFeature(storagePushConstant8, r, s) &&
+	       CheckFeature(shaderBufferInt64Atomics, r, s) &&
+	       CheckFeature(shaderSharedInt64Atomics, r, s) &&
+	       CheckFeature(shaderFloat16, r, s) &&
+	       CheckFeature(shaderInt8, r, s) &&
+	       CheckFeature(descriptorIndexing, r, s) &&
+	       CheckFeature(shaderInputAttachmentArrayDynamicIndexing, r, s) &&
+	       CheckFeature(shaderUniformTexelBufferArrayDynamicIndexing, r, s) &&
+	       CheckFeature(shaderStorageTexelBufferArrayDynamicIndexing, r, s) &&
+	       CheckFeature(shaderUniformBufferArrayNonUniformIndexing, r, s) &&
+	       CheckFeature(shaderSampledImageArrayNonUniformIndexing, r, s) &&
+	       CheckFeature(shaderStorageBufferArrayNonUniformIndexing, r, s) &&
+	       CheckFeature(shaderStorageImageArrayNonUniformIndexing, r, s) &&
+	       CheckFeature(shaderInputAttachmentArrayNonUniformIndexing, r, s) &&
+	       CheckFeature(shaderUniformTexelBufferArrayNonUniformIndexing, r, s) &&
+	       CheckFeature(shaderStorageTexelBufferArrayNonUniformIndexing, r, s) &&
+	       CheckFeature(descriptorBindingUniformBufferUpdateAfterBind, r, s) &&
+	       CheckFeature(descriptorBindingSampledImageUpdateAfterBind, r, s) &&
+	       CheckFeature(descriptorBindingStorageImageUpdateAfterBind, r, s) &&
+	       CheckFeature(descriptorBindingStorageBufferUpdateAfterBind, r, s) &&
+	       CheckFeature(descriptorBindingUniformTexelBufferUpdateAfterBind, r, s) &&
+	       CheckFeature(descriptorBindingStorageTexelBufferUpdateAfterBind, r, s) &&
+	       CheckFeature(descriptorBindingUpdateUnusedWhilePending, r, s) &&
+	       CheckFeature(descriptorBindingPartiallyBound, r, s) &&
+	       CheckFeature(descriptorBindingVariableDescriptorCount, r, s) &&
+	       CheckFeature(samplerFilterMinmax, r, s) &&
+	       CheckFeature(scalarBlockLayout, r, s) &&
+	       CheckFeature(imagelessFramebuffer, r, s) &&
+	       CheckFeature(uniformBufferStandardLayout, r, s) &&
+	       CheckFeature(shaderSubgroupExtendedTypes, r, s) &&
+	       CheckFeature(separateDepthStencilLayouts, r, s) &&
+	       CheckFeature(hostQueryReset, r, s) &&
+	       CheckFeature(timelineSemaphore, r, s) &&
+	       CheckFeature(bufferDeviceAddressCaptureReplay, r, s) &&
+	       CheckFeature(bufferDeviceAddressMultiDevice, r, s) &&
+	       CheckFeature(vulkanMemoryModel, r, s) &&
+	       CheckFeature(vulkanMemoryModelDeviceScope, r, s) &&
+	       CheckFeature(vulkanMemoryModelAvailabilityVisibilityChains, r, s) &&
+	       CheckFeature(shaderOutputViewportIndex, r, s) &&
+	       CheckFeature(shaderOutputLayer, r, s) &&
+	       CheckFeature(subgroupBroadcastDynamicId, r, s);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceDepthClipEnableFeaturesEXT *r) const
+{
+	VkPhysicalDeviceFeatures2 features;
+	features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+	VkPhysicalDeviceDepthClipEnableFeaturesEXT s;
+	s.sType = r->sType;
+	s.pNext = nullptr;
+	features.pNext = &s;
+	getFeatures2(&features);
+
+	return CheckFeature(depthClipEnable, r, s);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *r) const
+{
+	VkPhysicalDeviceFeatures2 features;
+	features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+	VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT s;
+	s.sType = r->sType;
+	s.pNext = nullptr;
+	features.pNext = &s;
+	getFeatures2(&features);
+
+	return CheckFeature(advancedBlendCoherentOperations, r, s);
+}
+#undef CheckFeature
 
 void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFormatProperties)
 {
