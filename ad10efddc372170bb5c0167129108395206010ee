@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89e7d5b1_c859ef53",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-11T14:08:56Z",
+      "side": 1,
+      "message": "Doesn\u0027t this result in calling the function twice?",
+      "range": {
+        "startLine": 277,
+        "startChar": 2,
+        "endLine": 277,
+        "endChar": 92
+      },
+      "revId": "ad10efddc372170bb5c0167129108395206010ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
