@@ -4,4 +4,4 @@
     "patches": [
         "tests/regres/deqp-patches/deqp-x11.patch"
     ]
-}
+}{"remote":"https://github.com/KhronosGroup/VK-GL-CTS.git","branch":"","sha":"0000000000000000000000000000000000000000","patches":["tests/regres/deqp-patches/deqp-x11.patch"]}
