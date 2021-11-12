@@ -784,11 +784,10 @@ func (r *regres) updateLocalDeqpFiles(test *test) ([]string, error) {
 	if !util.IsFile(p) {
 		return nil, fmt.Errorf("Failed to locate %s while trying to update the dEQP SHA", deqpConfigRelPath)
 	}
-	file, err := os.OpenFile(path.Join(test.checkoutDir, deqpConfigRelPath), os.O_RDWR, 0666)
+	file, err := os.OpenFile(p, os.O_RDWR, 0666)
 	if err != nil {
 		return nil, cause.Wrap(err, "Couldn't open dEQP config file")
 	}
-	defer file.Close()
 
 	cfg := struct {
 		Remote  string   `json:"remote"`
@@ -799,14 +798,25 @@ func (r *regres) updateLocalDeqpFiles(test *test) ([]string, error) {
 	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
 		return nil, cause.Wrap(err, "Couldn't parse %s", deqpConfigRelPath)
 	}
+	file.Close()
 
-	hash, err := git.FetchRefHash("refs/head/master", cfg.Remote)
+	hash, err := git.FetchRefHash("HEAD", cfg.Remote)
 	if err != nil {
 		return nil, cause.Wrap(err, "Failed to fetch dEQP ref")
 	}
-
 	cfg.SHA = hash.String()
-	if err := json.NewEncoder(file).Encode(&cfg); err != nil {
+	log.Println("New dEQP revision: %s", cfg.SHA)
+
+	file, err = os.OpenFile(p, os.O_RDWR|os.O_TRUNC, 0666)
+	if err != nil {
+		return nil, cause.Wrap(err, "Failed to open %s for encoding", deqpConfigRelPath)
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	// Make the encoder create a new-line and space-based indents for each field
+	encoder.SetIndent("", "    ")
+	if err := encoder.Encode(&cfg); err != nil {
 		return nil, cause.Wrap(err, "Failed to re-encode %s", deqpConfigRelPath)
 	}
 	out = append(out, p)
