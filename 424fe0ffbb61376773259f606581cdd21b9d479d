@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd8cefc5_9c58313b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-12T21:42:33Z",
+      "side": 1,
+      "message": "Thanks Peng! Did you experience uploading this CL yourself?",
+      "revId": "424fe0ffbb61376773259f606581cdd21b9d479d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9375a1e8_7d36aac1",
+        "filename": "src/WSI/XcbSurfaceKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-12T21:42:33Z",
+      "side": 1,
+      "message": "nit: Extra curly brackets make this stand out more as a control-flow altering statement.",
+      "revId": "424fe0ffbb61376773259f606581cdd21b9d479d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
