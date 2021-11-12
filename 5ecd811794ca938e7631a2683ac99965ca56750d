@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1f9c58c_65996712",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-12T13:57:35Z",
+      "side": 1,
+      "message": "General nit:\nI think it would be clearer to use \"requested\" and \"supported\" for variable names, rather than \"r\" and \"s\". To make it look better, you could reorder the macro\u0027s arguments, so that it\u0027s:\n#define CheckFeature(requested, supported, feature)\n\nThat way, successive calls to CheckFeature() on multiple lines will be more readable.",
+      "revId": "5ecd811794ca938e7631a2683ac99965ca56750d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
