@@ -87,6 +87,30 @@
       },
       "revId": "7c66cc3db5a37e738427418f73dca35fa16c2afa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea6e0b69_49b60deb",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1120,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-12T20:46:48Z",
+      "side": 1,
+      "message": "Woops, you\u0027re right. I thought I had compiled and tested it against \ndEQP-VK.api.device_init.create_device_unsupported_features, but I was mistaken.",
+      "parentUuid": "4fc48ff9_90ed64b2",
+      "range": {
+        "startLine": 1115,
+        "startChar": 0,
+        "endLine": 1120,
+        "endChar": 29
+      },
+      "revId": "7c66cc3db5a37e738427418f73dca35fa16c2afa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
