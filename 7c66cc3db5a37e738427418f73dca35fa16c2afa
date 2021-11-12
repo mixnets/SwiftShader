@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "78504cad_3dd7a828",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-12T19:39:05Z",
+      "side": 1,
+      "message": "CL should be ready to land, PTAL",
+      "revId": "7c66cc3db5a37e738427418f73dca35fa16c2afa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
