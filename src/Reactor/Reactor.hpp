@@ -2478,10 +2478,10 @@ public:
 	RValue<Pointer<T>> operator=(std::nullptr_t);
 
 	Reference<T> operator*();
-	Reference<T> operator[](int index);
-	Reference<T> operator[](unsigned int index);
-	Reference<T> operator[](RValue<Int> index);
-	Reference<T> operator[](RValue<UInt> index);
+	Reference<T> operator[](int index) const;
+	Reference<T> operator[](unsigned int index) const;
+	Reference<T> operator[](RValue<Int> index) const;
+	Reference<T> operator[](RValue<UInt> index) const;
 
 	static Type *type();
 
@@ -3040,7 +3040,7 @@ Reference<T> Pointer<T>::operator*()
 }
 
 template<class T>
-Reference<T> Pointer<T>::operator[](int index)
+Reference<T> Pointer<T>::operator[](int index) const
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *element = Nucleus::createGEP(this->loadValue(), T::type(), Nucleus::createConstantInt(index), false);
@@ -3049,7 +3049,7 @@ Reference<T> Pointer<T>::operator[](int index)
 }
 
 template<class T>
-Reference<T> Pointer<T>::operator[](unsigned int index)
+Reference<T> Pointer<T>::operator[](unsigned int index) const
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *element = Nucleus::createGEP(this->loadValue(), T::type(), Nucleus::createConstantInt(index), true);
@@ -3058,7 +3058,7 @@ Reference<T> Pointer<T>::operator[](unsigned int index)
 }
 
 template<class T>
-Reference<T> Pointer<T>::operator[](RValue<Int> index)
+Reference<T> Pointer<T>::operator[](RValue<Int> index) const
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *element = Nucleus::createGEP(this->loadValue(), T::type(), index.value(), false);
@@ -3067,7 +3067,7 @@ Reference<T> Pointer<T>::operator[](RValue<Int> index)
 }
 
 template<class T>
-Reference<T> Pointer<T>::operator[](RValue<UInt> index)
+Reference<T> Pointer<T>::operator[](RValue<UInt> index) const
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *element = Nucleus::createGEP(this->loadValue(), T::type(), index.value(), true);
