@@ -333,6 +333,124 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, const Im
 	callSamplerFunction(samplerFunction, out, imageDescriptor, instruction, state);
 }
 
+void SpirvShader::EmitImageWriteUnconditional(const ImageInstruction &instruction, EmitState *state) const
+{
+	Pointer<Byte> imageDescriptor = state->getPointer(instruction.imageId /* imageId ******/).base;  // vk::StorageImageDescriptor*
+	//////////////////////Pointer<Byte> imageDescriptor = state->getPointer(instruction.sampledImageId).base;  // vk::SampledImageDescriptor*
+	//////////////auto &image = getObject(imageId);
+
+	/////////////Pointer<Byte> texture = imageDescriptor;  ///////////////// +OFFSET(vk::StorageImageDescriptor, ptr);  // sw::Texture*
+
+	auto coordinate = Operand(this, state, instruction.coordinateId);
+
+	Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
+
+	uint32_t coordinates = coordinate.componentCount - instruction.isProj();
+
+	uint32_t i = 0;
+	for(; i < coordinates; i++)
+	{
+		//if(instruction.isProj())
+		//{
+		//	in[i] = coordinate.Float(i) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+		//}
+		//else
+		{
+			in[i] = coordinate.Float(i);
+		}
+	}
+
+	//if(instruction.isDref())
+	//{
+	//	auto drefValue = Operand(this, state, insn.word(5));
+
+	//	if(instruction.isProj())
+	//	{
+	//		in[i] = drefValue.Float(0) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+	//	}
+	//	else
+	//	{
+	//		in[i] = drefValue.Float(0);
+	//	}
+
+	//	i++;
+	//}
+
+	//if(lodOrBias)
+	//{
+	//	auto lodValue = Operand(this, state, lodOrBiasId);
+	//	in[i] = lodValue.Float(0);
+	//	i++;
+	//}
+	//else if(grad)
+	//{
+	//	auto dxValue = Operand(this, state, gradDxId);
+	//	auto dyValue = Operand(this, state, gradDyId);
+	//	ASSERT(dxValue.componentCount == dxValue.componentCount);
+
+	//	instruction.grad = dxValue.componentCount;
+
+	//	for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
+	//	{
+	//		in[i] = dxValue.Float(j);
+	//	}
+
+	//	for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
+	//	{
+	//		in[i] = dyValue.Float(j);
+	//	}
+	//}
+	//else if(instruction.samplerMethod == Fetch)
+	//{
+	//	// The instruction didn't provide a lod operand, but the sampler's Fetch
+	//	// function requires one to be present. If no lod is supplied, the default
+	//	// is zero.
+	//	in[i] = As<SIMD::Float>(SIMD::Int(0));
+	//	i++;
+	//}
+
+	//if(constOffset)
+	//{
+	//	auto offsetValue = Operand(this, state, offsetId);
+	//	instruction.offset = offsetValue.componentCount;
+
+	//	for(uint32_t j = 0; j < offsetValue.componentCount; j++, i++)
+	//	{
+	//		in[i] = As<SIMD::Float>(offsetValue.Int(j));  // Integer values, but transfered as float.
+	//	}
+	//}
+
+	if(instruction.sample)
+	{
+		auto sampleValue = Operand(this, state, instruction.sampleId);
+		in[i] = As<SIMD::Float>(sampleValue.Int(0));
+	}
+
+	auto &cache = state->routine->samplerCache.at(instruction.position);
+	Bool cacheHit = (cache.imageDescriptor == imageDescriptor);
+
+	If(!cacheHit)
+	{
+		rr::Int imageViewId = *Pointer<rr::Int>(imageDescriptor + OFFSET(vk::StorageImageDescriptor, imageViewId));
+		/////////////Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::StorageImageDescriptor, device));
+		cache.function = Call(getImageSampler, state->routine->constants, instruction.signature, 0, imageViewId);
+		cache.imageDescriptor = imageDescriptor;
+		cache.samplerId = 0;  ////////////////////////////////////////////////////////////////////////////////////////////////////
+	}
+
+	//Pointer<Byte> texture;      ///////////////////////////////////////////////////
+	Array<SIMD::Int> out(5);  ///////////////////////////////////////////////////
+
+	auto texel = Operand(this, state, instruction.texelId);
+	out[0] = texel.Int(0);
+	out[1] = texel.Int(1);
+	out[2] = texel.Int(2);
+	out[3] = texel.Int(3);
+	out[4] = state->activeStoresAndAtomicsMask();
+
+	Call<ImageSampler>(cache.function, imageDescriptor, &in[0], &out[0], state->routine->constants);
+}
+
 Pointer<Byte> SpirvShader::lookupSamplerFunction(Pointer<Byte> imageDescriptor, const ImageInstruction &instruction, EmitState *state) const
 {
 	// If the instruction uses a separate sampler descriptor, look up its pointer.
@@ -1135,6 +1253,21 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 	auto &imageType = getType(image);
 
 	ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
+	ASSERT(static_cast<spv::Dim>(instruction.dim) != spv::DimSubpassData);  // "Its Dim operand must not be SubpassData."
+
+	if(true)
+	{
+		// TODO(b/153380916): When we're in a code path that is always executed,
+		// i.e. post-dominators of the entry block, we don't have to dynamically
+		// check whether any lanes are active, and can elide the jump.
+		////////////////////////////////////////////////////////////////////////////////////////If(AnyTrue(state->activeLaneMask()))
+		{
+
+			EmitImageWriteUnconditional(instruction, state);
+		}
+
+		return EmitResult::Continue;
+	}
 
 	auto coordinate = Operand(this, state, instruction.coordinateId);
 	auto texel = Operand(this, state, instruction.texelId);
