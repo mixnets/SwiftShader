@@ -16,6 +16,29 @@
       "message": "CL should be ready to land, PTAL",
       "revId": "7c66cc3db5a37e738427418f73dca35fa16c2afa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92862b04_ff9e993c",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1120,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-12T19:53:24Z",
+      "side": 1,
+      "message": "Isn\u0027t this part the same in every function and templatable?\nSomething like:\n\n  template\u003ctypename T\u003e\n  T GetSupportedFeatures(const T* requested)\n  {\n    VkPhysicalDeviceFeatures2 features;\n    features.sType \u003d VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;\n    T supported;\n    supported.sType \u003d requested-\u003esType;\n    supported.pNext \u003d nullptr;\n    features.pNext \u003d \u0026supported;\n    getFeatures2(\u0026features);\n    return supported;\n  }",
+      "range": {
+        "startLine": 1115,
+        "startChar": 0,
+        "endLine": 1120,
+        "endChar": 29
+      },
+      "revId": "7c66cc3db5a37e738427418f73dca35fa16c2afa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
