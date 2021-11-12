@@ -108,6 +108,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "28c4450f_555a9d65",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1658,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-12T04:39:50Z",
+      "side": 1,
+      "message": "Similar to my other comment, I think these parameters will soon become used as we attempt to avoid a stop-the-world synchronization approach.\n\nWe\u0027re not in a hurry to implement VK_KHR_synchronization2, so let\u0027s fist gain a better understanding of what we need to do to better support the legacy synchronization primitives. Also note that even if we don\u0027t intend to use certain parameters long-term, they\u0027re useful to help understand or validate the application\u0027s intent.",
+      "parentUuid": "61053f7d_7e301f5d",
+      "range": {
+        "startLine": 1658,
+        "startChar": 4,
+        "endLine": 1658,
+        "endChar": 9
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "615fb09c_4a8cbc03",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 4

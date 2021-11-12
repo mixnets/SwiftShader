@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "181db770_cfa00ded",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-12T04:39:50Z",
+      "side": 0,
+      "message": "Does it implicitly sync to VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT? In that case we can set that as the stageMask. Alternatively we could set it to 0 to indicate that it wasn\u0027t provided.\n\nI feel like this info will become relevant in to us in the not too distant future. Remember that VK_KHR_synchronization2 is meant to provide an alternative, simpler API for app developers, not to completely supersede the legacy synchronization primitives. Drivers still have to deal with both the old and new approach.",
+      "parentUuid": "2c9303bf_9b035d8f",
+      "range": {
+        "startLine": 926,
+        "startChar": 1,
+        "endLine": 926,
+        "endChar": 130
+      },
+      "revId": "3627e0465c151b1d221900b1b8886d36e7db83b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cf1ccaae_f70956d4",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 4
