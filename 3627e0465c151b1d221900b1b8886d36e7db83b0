@@ -72,6 +72,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e2ff319a_b2c0e1e1",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-12T06:14:59Z",
+      "side": 0,
+      "message": "Ok, here\u0027s a new version which saves as much synchronization information as possible. PTAL.",
+      "parentUuid": "181db770_cfa00ded",
+      "range": {
+        "startLine": 926,
+        "startChar": 1,
+        "endLine": 926,
+        "endChar": 130
+      },
+      "revId": "3627e0465c151b1d221900b1b8886d36e7db83b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cf1ccaae_f70956d4",

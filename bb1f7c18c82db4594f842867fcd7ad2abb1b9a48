@@ -130,6 +130,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ccea081_3f3daa7d",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1658,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-12T06:14:59Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "28c4450f_555a9d65",
+      "range": {
+        "startLine": 1658,
+        "startChar": 4,
+        "endLine": 1658,
+        "endChar": 9
+      },
+      "revId": "bb1f7c18c82db4594f842867fcd7ad2abb1b9a48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "615fb09c_4a8cbc03",
