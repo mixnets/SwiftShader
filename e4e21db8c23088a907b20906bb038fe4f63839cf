@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ebb60d6_8c53b3bb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-12T14:17:46Z",
+      "side": 1,
+      "message": "I\u0027m going to try to land this with just one review. I\u0027m not sure if the no-TBR changes affect .txt update CLs.",
+      "revId": "e4e21db8c23088a907b20906bb038fe4f63839cf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6db8c3ac_0b62e5df",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 1254,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-12T14:17:46Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/58648",
+      "range": {
+        "startLine": 1254,
+        "startChar": 26,
+        "endLine": 1254,
+        "endChar": 40
+      },
+      "revId": "e4e21db8c23088a907b20906bb038fe4f63839cf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4492886_a7b8bfaa",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 137924,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-12T14:17:46Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/59115",
+      "range": {
+        "startLine": 137924,
+        "startChar": 43,
+        "endLine": 137924,
+        "endChar": 77
+      },
+      "revId": "e4e21db8c23088a907b20906bb038fe4f63839cf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
