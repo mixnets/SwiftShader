@@ -16,6 +16,23 @@
       "message": "General nit:\nI think it would be clearer to use \"requested\" and \"supported\" for variable names, rather than \"r\" and \"s\". To make it look better, you could reorder the macro\u0027s arguments, so that it\u0027s:\n#define CheckFeature(requested, supported, feature)\n\nThat way, successive calls to CheckFeature() on multiple lines will be more readable.",
       "revId": "5ecd811794ca938e7631a2683ac99965ca56750d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "86fafb5c_7a687c5a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-12T16:53:01Z",
+      "side": 1,
+      "message": "Jason, could you check that this fixes the issue on Cuttlefish? Is there another bug ID this should reference? Thanks!",
+      "revId": "5ecd811794ca938e7631a2683ac99965ca56750d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
