@@ -63,6 +63,30 @@
       },
       "revId": "7c66cc3db5a37e738427418f73dca35fa16c2afa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4fc48ff9_90ed64b2",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1120,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-12T20:22:16Z",
+      "side": 1,
+      "message": "This probably doesn\u0027t compile as is, getFeatures2() is a member function, you have to adapt it a little.",
+      "parentUuid": "0c180c3c_66992113",
+      "range": {
+        "startLine": 1115,
+        "startChar": 0,
+        "endLine": 1120,
+        "endChar": 29
+      },
+      "revId": "7c66cc3db5a37e738427418f73dca35fa16c2afa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
