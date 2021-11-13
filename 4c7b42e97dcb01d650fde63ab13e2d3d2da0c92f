@@ -33,6 +33,24 @@
       "message": "What\u0027s the reason for the SPIR-V Tools/Headers update?",
       "revId": "4c7b42e97dcb01d650fde63ab13e2d3d2da0c92f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "55bb6dfe_45cd1d2d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 50879
+      },
+      "writtenOn": "2021-11-13T12:25:12Z",
+      "side": 1,
+      "message": "This backwards-incompatible change in SPIRV-Headers was blocking its import into google3, since SwiftShader directly uses the old enum name. I added a temporary alias for this enum in google3 to unblock the import, but I\u0027d like to remove it ASAP, hence this SwiftShader update.",
+      "parentUuid": "ee3fd5b5_d0b55fbe",
+      "revId": "4c7b42e97dcb01d650fde63ab13e2d3d2da0c92f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
