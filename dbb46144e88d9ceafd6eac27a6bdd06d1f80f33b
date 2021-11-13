@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18e8c4a4_c907832a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 50879
+      },
+      "writtenOn": "2021-11-13T12:44:06Z",
+      "side": 1,
+      "message": "Ugh, I rebased the patch series to fix the merge conflict, but that appears to have removed the merge commits.\n\nIs that OK, or do I need to start again? I\u0027ve never used subtrees before, so maybe I\u0027m doing something wrong.",
+      "revId": "dbb46144e88d9ceafd6eac27a6bdd06d1f80f33b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
