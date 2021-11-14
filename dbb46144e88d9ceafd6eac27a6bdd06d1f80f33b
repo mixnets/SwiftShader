@@ -16,6 +16,24 @@
       "message": "Ugh, I rebased the patch series to fix the merge conflict, but that appears to have removed the merge commits.\n\nIs that OK, or do I need to start again? I\u0027ve never used subtrees before, so maybe I\u0027m doing something wrong.",
       "revId": "dbb46144e88d9ceafd6eac27a6bdd06d1f80f33b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42e5781b_7e933f2d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-14T11:34:01Z",
+      "side": 1,
+      "message": "This needs to come after, or be part of, the subtree merge commit: https://swiftshader-review.googlesource.com/c/SwiftShader/+/59517. It\u0027s perfectly acceptable to break the build for one commit, so keeping this change separate is easier.\n\nNote that Gerrit may incorrectly labels things as Merge Conflicts: b/141099969\nAlso the Chromium bots get it wrong: http://crbug.com/1106657\nKokoro also has issues: b/141364745\n\nFortunately it can all be landed just fine with the use of Gerrit\u0027s \u0027Submit Including Parents\u0027 from the three dots menu. So just move this behind https://swiftshader-review.googlesource.com/c/SwiftShader/+/59517 and it should be okay. Thanks!",
+      "parentUuid": "18e8c4a4_c907832a",
+      "revId": "dbb46144e88d9ceafd6eac27a6bdd06d1f80f33b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
