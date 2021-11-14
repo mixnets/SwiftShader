@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6be04ef_cc9005b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-14T11:41:05Z",
+      "side": 1,
+      "message": "Use https://swiftshader-review.googlesource.com/c/SwiftShader/+/59515 instead. The git-subtree labels in this commit message could make future subtree updates go wrong.",
+      "revId": "cd55f3dd9c9e39291b53bbec3086b645f4626512",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
