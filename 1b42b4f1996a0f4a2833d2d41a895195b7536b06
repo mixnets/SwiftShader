@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64e7ed2c_3c2ae1b2",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 1655,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-14T12:11:59Z",
+      "side": 1,
+      "message": "Only adds this enum. The rest is reordered according to their definition order.",
+      "range": {
+        "startLine": 1655,
+        "startChar": 12,
+        "endLine": 1655,
+        "endChar": 24
+      },
+      "revId": "1b42b4f1996a0f4a2833d2d41a895195b7536b06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
