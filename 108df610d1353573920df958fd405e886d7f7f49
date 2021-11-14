@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "84fb5f96_6a5ca1ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-14T11:38:45Z",
+      "side": 1,
+      "message": "Actually, looks like https://swiftshader-review.googlesource.com/c/SwiftShader/+/59516 can be reused. This looks like a subtree update was combined with a subtree merge?",
+      "revId": "108df610d1353573920df958fd405e886d7f7f49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
