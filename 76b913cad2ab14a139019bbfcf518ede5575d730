@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "745f61ef_6827a117",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-14T12:08:15Z",
+      "side": 1,
+      "message": "note: This is enabled by https://swiftshader-review.googlesource.com/c/SwiftShader/+/59568. Could be a separate change but doesn\u0027t quite seem worth it.",
+      "range": {
+        "startLine": 445,
+        "startChar": 46,
+        "endLine": 445,
+        "endChar": 55
+      },
+      "revId": "76b913cad2ab14a139019bbfcf518ede5575d730",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
