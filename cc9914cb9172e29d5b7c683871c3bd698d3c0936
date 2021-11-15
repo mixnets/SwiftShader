@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "44bcb6dc_ac82e8b8",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 787,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-15T21:36:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4892e9a1_7d233240",
+      "range": {
+        "startLine": 787,
+        "startChar": 14,
+        "endLine": 787,
+        "endChar": 45
+      },
+      "revId": "cc9914cb9172e29d5b7c683871c3bd698d3c0936",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "7edc59eb_f61908f7",
         "filename": "tests/regres/cmd/regres/main.go",
         "patchSetId": 1
@@ -60,6 +84,30 @@
       "writtenOn": "2021-11-15T19:27:20Z",
       "side": 1,
       "message": "Create()",
+      "range": {
+        "startLine": 810,
+        "startChar": 16,
+        "endLine": 810,
+        "endChar": 55
+      },
+      "revId": "cc9914cb9172e29d5b7c683871c3bd698d3c0936",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a9368c54_98206cde",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 810,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-15T21:36:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c319a2c7_5b06eb65",
       "range": {
         "startLine": 810,
         "startChar": 16,
