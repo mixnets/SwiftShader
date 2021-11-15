@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fcc476ba_e58ad283",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 791,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-11-15T19:27:20Z",
+      "side": 0,
+      "message": "By removing this defer, you\u0027ll leave the file open on decoder error.",
+      "range": {
+        "startLine": 791,
+        "startChar": 1,
+        "endLine": 791,
+        "endChar": 19
+      },
+      "revId": "b83b36d65ff4cca883d2e853220d5b660fe9c090",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
