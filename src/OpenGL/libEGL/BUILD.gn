@@ -69,7 +69,7 @@ swiftshader_shared_library("swiftshader_libEGL") {
       "libEGL.rc",
     ]
   }
-  
+
   defines = []
 
   if (is_mac) {
