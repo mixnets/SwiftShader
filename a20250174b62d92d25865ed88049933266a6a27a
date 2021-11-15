@@ -22,6 +22,30 @@
       },
       "revId": "a20250174b62d92d25865ed88049933266a6a27a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41a1d2cb_5e261c18",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 760,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-15T16:54:58Z",
+      "side": 1,
+      "message": "Right, this is currently done in three separate places. However, note that https://swiftshader-review.googlesource.com/c/SwiftShader/+/59571 makes one of them no longer able to be performed in a member method. And if/when we implement read-without-format support, only one remains that could theoretically still be part of a member method so it\u0027s a bit pointless.\n\nNevertheless, I\u0027ve filed b/206432458 to look into whether we can essentially move this Reactor variable copying code into the Operand class. Other utility classes or functions could make this more implicit in the static code as well (ultimately a Reactor representation of a struct would be useful, but without C++ introspection that would currently involve a lot of template ugliness). In any case, I think that should be done in follow-up changes.",
+      "parentUuid": "d8fa6e62_10e858d5",
+      "range": {
+        "startLine": 747,
+        "startChar": 0,
+        "endLine": 760,
+        "endChar": 104
+      },
+      "revId": "a20250174b62d92d25865ed88049933266a6a27a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
