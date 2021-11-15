@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec63632f_d51df5d9",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-15T13:43:31Z",
+      "side": 0,
+      "message": "Why are we doing this part unconditionally, if it\u0027s just going to be overwritten on line 349 below?",
+      "range": {
+        "startLine": 340,
+        "startChar": 1,
+        "endLine": 342,
+        "endChar": 126
+      },
+      "revId": "451f183dedd2579272b6497cc0badfe4d72e2a25",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
