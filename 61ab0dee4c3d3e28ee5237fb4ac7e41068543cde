@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26fad716_86e41130",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-16T21:16:02Z",
+      "side": 1,
+      "message": "Note that the Kokoro style check fails due to clang-format not supporting the Unicode infinity symbol in the previous code. This change will fix that going forward.",
+      "revId": "61ab0dee4c3d3e28ee5237fb4ac7e41068543cde",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
