@@ -16,6 +16,29 @@
       "message": "Note that the Kokoro style check fails due to clang-format not supporting the Unicode infinity symbol in the previous code. This change will fix that going forward.",
       "revId": "61ab0dee4c3d3e28ee5237fb4ac7e41068543cde",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7314a46a_7bf84e00",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1443,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-16T21:17:36Z",
+      "side": 1,
+      "message": "These are the only two new cases. The rest was shuffled to correct which core spec version or feature they belong to.",
+      "range": {
+        "startLine": 1442,
+        "startChar": 0,
+        "endLine": 1443,
+        "endChar": 30
+      },
+      "revId": "61ab0dee4c3d3e28ee5237fb4ac7e41068543cde",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
