@@ -17,6 +17,7 @@
 #include "VkDevice.hpp"
 #include "VkImageView.hpp"
 #include "VkPipelineLayout.hpp"
+#include "System/Math.hpp"
 
 namespace vk {
 
@@ -86,6 +87,51 @@ void DescriptorSet::ContentsChanged(const Array &descriptorSets, const PipelineL
 void DescriptorSet::PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout, Device *device)
 {
 	ParseDescriptors(descriptorSets, layout, device, PREPARE_FOR_SAMPLING);
+}
+
+size_t DescriptorSet::ensureSize(BufferDescriptor *bufferDescriptor, size_t requestedSize)
+{
+	ASSERT(requestedSize <= MAX_INLINE_UNIFORM_BLOCK_SIZE);
+	size_t newSize = sw::min(requestedSize, MAX_INLINE_UNIFORM_BLOCK_SIZE);
+	size_t curSize = bufferDescriptor->sizeInBytes;
+	if(newSize > curSize)
+	{
+		auto itEnd = header.dynamicAllocations.end();
+		auto it = std::find(header.dynamicAllocations.begin(), itEnd, bufferDescriptor->ptr);
+		if(it != itEnd)
+		{
+			void* newPtr = vk::allocateDeviceMemory(newSize, vk::REQUIRED_MEMORY_ALIGNMENT);
+			if(curSize != 0)
+			{
+				// Keep the old data when increasing the size
+				memcpy(newPtr, bufferDescriptor->ptr, curSize);
+			}
+			// Replace the old pointer for the new one in the vector
+			vk::freeDeviceMemory(bufferDescriptor->ptr);
+			*it = bufferDescriptor->ptr = newPtr;
+		}
+		else
+		{
+			bufferDescriptor->ptr = vk::allocateDeviceMemory(newSize, vk::REQUIRED_MEMORY_ALIGNMENT);
+			// Add the new pointer in the vector
+			header.dynamicAllocations.push_back(bufferDescriptor->ptr);
+		}
+
+		bufferDescriptor->sizeInBytes = newSize;
+		bufferDescriptor->robustnessSize = newSize;
+	}
+
+	// Return the size that can be copied, based on requested size
+	return newSize;
+}
+
+void DescriptorSet::clear()
+{
+	for(auto ptr : header.dynamicAllocations)
+	{
+		vk::freeDeviceMemory(ptr);
+	}
+	header.dynamicAllocations.clear();
 }
 
 }  // namespace vk
