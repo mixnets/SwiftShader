@@ -52,6 +52,19 @@ size_t DescriptorPool::ComputeRequiredAllocationSize(const VkDescriptorPoolCreat
 		        sw::align(DescriptorSetLayout::GetDescriptorSize(pCreateInfo->pPoolSizes[i].type), 16);
 	}
 
+	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	while(extInfo)
+	{
+		if(extInfo->sType == VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT)
+		{
+			const VkDescriptorPoolInlineUniformBlockCreateInfoEXT *info = reinterpret_cast<const VkDescriptorPoolInlineUniformBlockCreateInfoEXT *>(extInfo);
+			size += info->maxInlineUniformBlockBindings *
+			        sw::align(DescriptorSetLayout::GetDescriptorSize(VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT), 16);
+		}
+
+		extInfo = extInfo->pNext;
+	}
+
 	return size;
 }
 

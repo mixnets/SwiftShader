@@ -394,9 +394,12 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, Int arrayIndex, EmitS
 			Int descriptorOffset = bindingOffset + descriptorSize * arrayIndex;
 
 			auto set = state->getPointer(id);
-			Pointer<Byte> descriptor = set.base + descriptorOffset;                                        // BufferDescriptor*
-			Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr));  // void*
-			Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
+			Pointer<Byte> descriptor = set.base + descriptorOffset;  // BufferDescriptor* or InlineUniformBlockDescriptor*
+
+			auto descriptorType = routine->pipelineLayout->getDescriptorType(d.DescriptorSet, d.Binding);
+			bool isInlineUniformBlock = (descriptorType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT);
+			Pointer<Byte> data = isInlineUniformBlock ? Pointer<Byte>(descriptor + OFFSET(vk::InlineUniformBlockDescriptor, data[0])) : *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr));
+			Int size = *Pointer<Int>(descriptor + (isInlineUniformBlock ? OFFSET(vk::InlineUniformBlockDescriptor, sizeInBytes) : OFFSET(vk::BufferDescriptor, sizeInBytes)));
 
 			if(routine->pipelineLayout->isDescriptorDynamic(d.DescriptorSet, d.Binding))
 			{
