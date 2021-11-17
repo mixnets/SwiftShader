@@ -392,8 +392,8 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, Int arrayIndex, EmitS
 			uint32_t bindingOffset = routine->pipelineLayout->getBindingOffset(d.DescriptorSet, d.Binding);
 			uint32_t descriptorSize = routine->pipelineLayout->getDescriptorSize(d.DescriptorSet, d.Binding);
 			Int descriptorOffset = bindingOffset + descriptorSize * arrayIndex;
-
 			auto set = state->getPointer(id);
+			Assert(set.base == Pointer<Byte>(nullptr));
 			Pointer<Byte> descriptor = set.base + descriptorOffset;                                        // BufferDescriptor*
 			Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr));  // void*
 			Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));

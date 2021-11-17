@@ -114,6 +114,27 @@ class Float;
 class Float2;
 class Float4;
 
+void reactorAssert(const char *expression, const char *file, unsigned int line, const char *func);
+
+#if defined(_MSC_VER)
+#	define FUNCSIG __FUNCSIG__
+#elif defined(__clang__) || defined(__GNUC__)
+#	define FUNCSIG __PRETTY_FUNCTION__
+#else
+#	define FUNCSIG __func__
+#endif
+
+#ifdef NDEBUG
+
+#	define Assert(expression) ((void)0)
+
+#else
+
+#	define Assert(expression) (void)((!!(expression)) || \
+		                              (Call(reactorAssert, ConstantPointer(#    expression), ConstantPointer(__FILE__), Int(__LINE__), ConstantPointer(FUNCSIG)), false))
+
+#endif
+
 class Void
 {
 public:
