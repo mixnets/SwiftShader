@@ -82,7 +82,7 @@ DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo *
 	for(uint32_t i = 0; i < bindingsArraySize; i++)
 	{
 		bindings[i].offset = offset;
-		offset += bindings[i].descriptorCount * GetDescriptorSize(bindings[i].descriptorType);
+		offset += bindings[i].descriptorCount * GetDescriptorSize(bindings[i].descriptorType, true);
 	}
 
 	ASSERT_MSG(offset == getDescriptorSetDataSize(), "offset: %d, size: %d", int(offset), int(getDescriptorSetDataSize()));
@@ -111,7 +111,7 @@ size_t DescriptorSetLayout::ComputeRequiredAllocationSize(const VkDescriptorSetL
 	       immutableSamplerCount * sizeof(VkSampler);
 }
 
-uint32_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
+uint32_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type, bool forDescriptorUpdate)
 {
 	switch(type)
 	{
@@ -129,6 +129,8 @@ uint32_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
 		return static_cast<uint32_t>(sizeof(BufferDescriptor));
+	case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT:
+		return forDescriptorUpdate ? 1 : static_cast<uint32_t>(sizeof(InlineUniformBlockDescriptor));
 	default:
 		UNSUPPORTED("Unsupported Descriptor Type: %d", int(type));
 		return 0;
@@ -152,7 +154,7 @@ size_t DescriptorSetLayout::getDescriptorSetDataSize() const
 	size_t size = 0;
 	for(uint32_t i = 0; i < bindingsArraySize; i++)
 	{
-		size += bindings[i].descriptorCount * GetDescriptorSize(bindings[i].descriptorType);
+		size += bindings[i].descriptorCount * GetDescriptorSize(bindings[i].descriptorType, true);
 	}
 
 	return size;
@@ -209,6 +211,7 @@ void DescriptorSetLayout::initialize(DescriptorSet *descriptorSet)
 			case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
 			case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
 			case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
+			case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT:
 				mem += bindings[i].descriptorCount * descriptorSize;
 				break;
 			default:
@@ -270,7 +273,7 @@ VkDescriptorType DescriptorSetLayout::getDescriptorType(uint32_t bindingNumber) 
 uint8_t *DescriptorSetLayout::getDescriptorPointer(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement, uint32_t count, size_t *typeSize) const
 {
 	ASSERT(bindingNumber < bindingsArraySize);
-	*typeSize = GetDescriptorSize(bindings[bindingNumber].descriptorType);
+	*typeSize = GetDescriptorSize(bindings[bindingNumber].descriptorType, true);
 	size_t byteOffset = bindings[bindingNumber].offset + (*typeSize * arrayElement);
 	ASSERT(((*typeSize * count) + byteOffset) <= getDescriptorSetDataSize());  // Make sure the operation will not go out of bounds
 
@@ -519,6 +522,15 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			bufferDescriptor[i].robustnessSize = static_cast<int>(buffer->getSize() - update->offset);
 		}
 	}
+	else if(entry.descriptorType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT)
+	{
+		auto *inlineUniformBlockDescriptor = reinterpret_cast<InlineUniformBlockDescriptor *>(memToWrite);
+		auto update = reinterpret_cast<const VkWriteDescriptorSetInlineUniformBlockEXT *>(src);
+		ASSERT(update->dataSize <= MAX_INLINE_UNIFORM_BLOCK_SIZE);
+		uint32_t size = sw::min(update->dataSize, MAX_INLINE_UNIFORM_BLOCK_SIZE);
+		memcpy(&(inlineUniformBlockDescriptor->data[0]), static_cast<const uint8_t *>(update->pData) + entry.offset, size);
+		inlineUniformBlockDescriptor->sizeInBytes = size;
+	}
 }
 
 void DescriptorSetLayout::WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax)
@@ -593,6 +605,32 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, const VkWriteDescri
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
 		ptr = writeDescriptorSet.pBufferInfo;
 		e.stride = sizeof(VkDescriptorBufferInfo);
+		break;
+
+	case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT:
+		{
+			auto extInfo = reinterpret_cast<VkBaseInStructure const *>(writeDescriptorSet.pNext);
+			while(extInfo)
+			{
+				if(extInfo->sType == VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT)
+				{
+					// "The descriptorCount of VkDescriptorSetLayoutBinding thus provides the total
+					//  number of bytes a particular binding with an inline uniform block descriptor
+					//  type can hold, while the srcArrayElement, dstArrayElement, and descriptorCount
+					//  members of VkWriteDescriptorSet, VkCopyDescriptorSet, and
+					//  VkDescriptorUpdateTemplateEntry (where applicable) specify the byte offset and
+					//  number of bytes to write/copy to the binding’s backing store. Additionally,
+					//  the stride member of VkDescriptorUpdateTemplateEntry is ignored for inline
+					//  uniform blocks and a default value of one is used, meaning that the data to
+					//  update inline uniform block bindings with must be contiguous in memory."
+					ptr = extInfo;
+					e.descriptorCount = 1;
+					e.stride = 1;
+					break;
+				}
+				extInfo = extInfo->pNext;
+			}
+		}
 		break;
 
 	default:

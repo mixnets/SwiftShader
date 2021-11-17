@@ -81,6 +81,14 @@ struct alignas(16) BufferDescriptor
 	int robustnessSize;  // total accessible size from static offset -- does not move with dynamic offset
 };
 
+struct alignas(16) InlineUniformBlockDescriptor
+{
+	~InlineUniformBlockDescriptor() = delete;
+
+	uint8_t data[MAX_INLINE_UNIFORM_BLOCK_SIZE];
+	int sizeInBytes;
+};
+
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
 {
 	struct Binding
@@ -98,7 +106,7 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkDescriptorSetLayoutCreateInfo *pCreateInfo);
 
-	static uint32_t GetDescriptorSize(VkDescriptorType type);
+	static uint32_t GetDescriptorSize(VkDescriptorType type, bool forDescriptorUpdate = false);
 	static bool IsDescriptorDynamic(VkDescriptorType type);
 
 	static void WriteDescriptorSet(Device *device, const VkWriteDescriptorSet &descriptorWrites);

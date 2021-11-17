@@ -44,6 +44,7 @@ public:
 	bool hasExtendedFeatures(const VkPhysicalDeviceVulkan12Features *features) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceDepthClipEnableFeaturesEXT *features) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *features) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceInlineUniformBlockFeaturesEXT *features) const;
 
 	const VkPhysicalDeviceProperties &getProperties() const;
 	void getProperties(VkPhysicalDeviceIDProperties *properties) const;
@@ -74,6 +75,7 @@ public:
 	void getProperties(VkPhysicalDeviceDepthStencilResolveProperties *properties) const;
 	void getProperties(VkPhysicalDeviceCustomBorderColorPropertiesEXT *properties) const;
 	void getProperties(VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT *properties) const;
+	void getProperties(VkPhysicalDeviceInlineUniformBlockPropertiesEXT *properties) const;
 	void getProperties(VkPhysicalDeviceVulkan11Properties *properties) const;
 
 	static void GetFormatProperties(Format format, VkFormatProperties *pFormatProperties);
