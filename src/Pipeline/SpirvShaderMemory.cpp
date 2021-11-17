@@ -21,6 +21,8 @@
 
 #include <spirv/unified1/spirv.hpp>
 
+#include <thread>
+
 namespace sw {
 
 SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *state) const
@@ -115,6 +117,36 @@ void SpirvShader::Store(Object::ID pointerId, const Operand &value, bool atomic,
 		if(interleavedByLane) { p = InterleaveByLane(p); }
 		p.Store(value.Float(el.index), robustness, mask, atomic, memoryOrder);
 	});
+}
+
+static int randomThreadDelay()
+{
+	static int x = 0;
+	x++;
+
+#if defined(_MSC_VER)
+	if(x % 7 == 0)
+	{
+		Sleep(0);
+	}
+
+	if(x % 17 == 0)
+	{
+		//	Sleep(1);
+	}
+
+	if(x % 3)
+	{
+		YieldProcessor();
+	}
+#else
+	if(x % 7 == 0)
+	{
+		std::this_thread::yield();
+	}
+#endif
+
+	return x;
 }
 
 SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *state) const
@@ -221,6 +253,11 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		case spv::StorageClassFunction:
 		case spv::StorageClassWorkgroup:
 			{
+				if(objectTy.storageClass == spv::StorageClassWorkgroup)
+				{
+					Call(randomThreadDelay);
+				}
+
 				bool interleavedByLane = IsStorageInterleavedByLane(objectTy.storageClass);
 				auto ptr = GetPointerToData(resultId, 0, state);
 				Operand initialValue(this, state, initializerId);
