@@ -128,6 +128,7 @@ uint32_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
+	case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT:
 		return static_cast<uint32_t>(sizeof(BufferDescriptor));
 	default:
 		UNSUPPORTED("Unsupported Descriptor Type: %d", int(type));
@@ -211,6 +212,15 @@ void DescriptorSetLayout::initialize(DescriptorSet *descriptorSet)
 			case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
 				mem += bindings[i].descriptorCount * descriptorSize;
 				break;
+			case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT:
+				{
+					BufferDescriptor *bufferDescriptor = reinterpret_cast<BufferDescriptor *>(mem);
+					bufferDescriptor->ptr = nullptr;
+					bufferDescriptor->sizeInBytes = 0;
+					bufferDescriptor->robustnessSize = 0;
+					mem += bindings[i].descriptorCount * descriptorSize;
+				}
+				break;
 			default:
 				UNSUPPORTED("Unsupported Descriptor Type: %d", int(bindings[i].descriptorType));
 			}
@@ -270,8 +280,10 @@ VkDescriptorType DescriptorSetLayout::getDescriptorType(uint32_t bindingNumber) 
 uint8_t *DescriptorSetLayout::getDescriptorPointer(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement, uint32_t count, size_t *typeSize) const
 {
 	ASSERT(bindingNumber < bindingsArraySize);
-	*typeSize = GetDescriptorSize(bindings[bindingNumber].descriptorType);
-	size_t byteOffset = bindings[bindingNumber].offset + (*typeSize * arrayElement);
+	VkDescriptorType type = bindings[bindingNumber].descriptorType;
+	*typeSize = GetDescriptorSize(type);
+	size_t byteOffset = bindings[bindingNumber].offset +
+	                    ((type != VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT) ? (*typeSize * arrayElement) : 0);
 	ASSERT(((*typeSize * count) + byteOffset) <= getDescriptorSetDataSize());  // Make sure the operation will not go out of bounds
 
 	return &descriptorSet->data[byteOffset];
@@ -519,6 +531,13 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			bufferDescriptor[i].robustnessSize = static_cast<int>(buffer->getSize() - update->offset);
 		}
 	}
+	else if(entry.descriptorType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT)
+	{
+		auto *bufferDescriptor = reinterpret_cast<BufferDescriptor *>(memToWrite);
+		auto update = reinterpret_cast<const VkWriteDescriptorSetInlineUniformBlockEXT *>(src);
+		size_t size = dstSet->ensureSize(bufferDescriptor, update->dataSize);
+		memcpy(bufferDescriptor->ptr, static_cast<const uint8_t *>(update->pData), size);
+	}
 }
 
 void DescriptorSetLayout::WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax)
@@ -595,6 +614,32 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, const VkWriteDescri
 		e.stride = sizeof(VkDescriptorBufferInfo);
 		break;
 
+	case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT:
+		{
+			auto extInfo = reinterpret_cast<VkBaseInStructure const *>(writeDescriptorSet.pNext);
+			while(extInfo)
+			{
+				if(extInfo->sType == VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT)
+				{
+					// "The descriptorCount of VkDescriptorSetLayoutBinding thus provides the total
+					//  number of bytes a particular binding with an inline uniform block descriptor
+					//  type can hold, while the srcArrayElement, dstArrayElement, and descriptorCount
+					//  members of VkWriteDescriptorSet, VkCopyDescriptorSet, and
+					//  VkDescriptorUpdateTemplateEntry (where applicable) specify the byte offset and
+					//  number of bytes to write/copy to the binding’s backing store. Additionally,
+					//  the stride member of VkDescriptorUpdateTemplateEntry is ignored for inline
+					//  uniform blocks and a default value of one is used, meaning that the data to
+					//  update inline uniform block bindings with must be contiguous in memory."
+					ptr = extInfo;
+					e.descriptorCount = 1;
+					e.stride = 1;
+					break;
+				}
+				extInfo = extInfo->pNext;
+			}
+		}
+		break;
+
 	default:
 		UNSUPPORTED("descriptor type %u", writeDescriptorSet.descriptorType);
 	}
@@ -614,12 +659,43 @@ void DescriptorSetLayout::CopyDescriptorSet(const VkCopyDescriptorSet &descripto
 
 	size_t srcTypeSize = 0;
 	uint8_t *memToRead = srcLayout->getDescriptorPointer(srcSet, descriptorCopies.srcBinding, descriptorCopies.srcArrayElement, descriptorCopies.descriptorCount, &srcTypeSize);
+	VkDescriptorType srcType = srcLayout->bindings[descriptorCopies.srcBinding].descriptorType;
 
 	size_t dstTypeSize = 0;
 	uint8_t *memToWrite = dstLayout->getDescriptorPointer(dstSet, descriptorCopies.dstBinding, descriptorCopies.dstArrayElement, descriptorCopies.descriptorCount, &dstTypeSize);
 
-	ASSERT(srcTypeSize == dstTypeSize);
-	size_t writeSize = dstTypeSize * descriptorCopies.descriptorCount;
+	size_t writeSize = descriptorCopies.descriptorCount;
+	// "If the descriptor binding identified by srcSet and srcBinding has a descriptor type of
+	//  VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK then descriptorCount specifies the number of bytes
+	//  to copy and the remaining array elements in the source or destination binding refer to the
+	//  remaining number of bytes in those."
+	if(srcType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT)
+	{
+		auto *srcBufferDescriptor = reinterpret_cast<BufferDescriptor *>(memToRead);
+		auto *dstBufferDescriptor = reinterpret_cast<BufferDescriptor *>(memToWrite);
+
+		// "If the descriptor binding identified by srcSet and srcBinding has a descriptor type of
+		//  VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK then srcArrayElement specifies the starting byte
+		//  offset within the binding to copy from."
+		size_t srcOffset = descriptorCopies.srcArrayElement;
+
+		// "If the descriptor binding identified by dstSet and dstBinding has a descriptor type of
+		//  VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK then dstArrayElement specifies the starting byte
+		//  offset within the binding to copy to."
+		size_t dstOffset = descriptorCopies.dstArrayElement;
+
+		size_t dstRequiredSize = writeSize + dstOffset;
+		dstSet->ensureSize(dstBufferDescriptor, dstRequiredSize);
+		memToWrite = static_cast<uint8_t*>(dstBufferDescriptor->ptr) + dstOffset;
+
+		ASSERT((writeSize + srcOffset) <= static_cast<size_t>(srcBufferDescriptor->sizeInBytes));
+		memToRead = static_cast<uint8_t*>(srcBufferDescriptor->ptr) + srcOffset;
+	}
+	else
+	{
+		ASSERT(srcTypeSize == dstTypeSize);
+		writeSize *= descriptorCopies.descriptorCount;
+	}
 	memcpy(memToWrite, memToRead, writeSize);
 }
 
