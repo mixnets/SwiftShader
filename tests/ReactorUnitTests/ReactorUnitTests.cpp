@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Assert.hpp"
 #include "Coroutine.hpp"
 #include "Print.hpp"
 #include "Reactor.hpp"
@@ -673,6 +674,51 @@ TEST(ReactorUnitTests, StoreBeforeIndirectStore)
 
 	int result = routine(true);
 	EXPECT_EQ(result, 4);
+}
+
+TEST(ReactorUnitTests, AssertTrue)
+{
+	FunctionT<int()> function;
+	{
+		Int a = 3;
+		Int b = 5;
+
+		Assert(a < b);
+
+		Return(a + b);
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine();
+	EXPECT_EQ(result, 8);
+}
+
+TEST(ReactorUnitTests, AssertFalse)
+{
+	FunctionT<int()> function;
+	{
+		Int a = 3;
+		Int b = 5;
+
+		Assert(a == b);
+
+		Return(a + b);
+	}
+
+	auto routine = function(testName().c_str());
+
+#ifndef NDEBUG
+	EXPECT_DEATH(
+	    {
+		    int result = routine();
+		    EXPECT_NE(result, result);  // We should never reach this
+	    },
+	    "AssertFalse");  // stderr should contain the assert's expression, file:line, and function
+#else
+	int result = routine();
+	EXPECT_EQ(result, 8);
+#endif
 }
 
 TEST(ReactorUnitTests, SubVectorLoadStore)
