@@ -46,10 +46,32 @@ size_t DescriptorPool::ComputeRequiredAllocationSize(const VkDescriptorPoolCreat
 {
 	size_t size = pCreateInfo->maxSets * sw::align(sizeof(DescriptorSetHeader), 16);
 
+	int maxInlineUniformBlockBindings = 1;
+	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	while(extInfo)
+	{
+		if(extInfo->sType == VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO)
+		{
+			const VkDescriptorPoolInlineUniformBlockCreateInfo *inlineUniformBlockCreateInfo = reinterpret_cast<const VkDescriptorPoolInlineUniformBlockCreateInfo *>(extInfo);
+			maxInlineUniformBlockBindings = inlineUniformBlockCreateInfo->maxInlineUniformBlockBindings;
+		}
+
+		extInfo = extInfo->pNext;
+	}
+
 	for(uint32_t i = 0; i < pCreateInfo->poolSizeCount; i++)
 	{
-		size += pCreateInfo->pPoolSizes[i].descriptorCount *
-		        sw::align(DescriptorSetLayout::GetDescriptorSize(pCreateInfo->pPoolSizes[i].type), 16);
+		uint32_t descriptorSize = DescriptorSetLayout::GetDescriptorSize(pCreateInfo->pPoolSizes[i].type);
+		if(pCreateInfo->pPoolSizes[i].type == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK)
+		{
+			// If type is VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK then descriptorCount
+			// is the number of bytes to allocate for descriptors of this type.
+			size += maxInlineUniformBlockBindings * sw::align(descriptorSize + pCreateInfo->pPoolSizes[i].descriptorCount, 16);
+		}
+		else
+		{
+			size += pCreateInfo->pPoolSizes[i].descriptorCount * sw::align(descriptorSize, 16);
+		}
 	}
 
 	return size;
