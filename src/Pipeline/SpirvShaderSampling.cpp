@@ -50,6 +50,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(const vk::Device *device
 		samplerState.textureType = type;
 		ASSERT(instruction.coordinates >= samplerState.dimensionality());  // "It may be a vector larger than needed, but all unused components appear after all used components."
 		samplerState.textureFormat = imageViewState.format;
+		ValidateImageFormat(static_cast<spv::ImageFormat>(instruction.imageFormat), imageViewState.format);
 
 		samplerState.addressingModeU = convertAddressingMode(0, vkSamplerState, type);
 		samplerState.addressingModeV = convertAddressingMode(1, vkSamplerState, type);

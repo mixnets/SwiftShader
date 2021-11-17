@@ -1318,6 +1318,9 @@ private:
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 	static SIMD::Pointer GetTexelAddress(ImageInstructionSignature instruction, Pointer<Byte> descriptor, SIMD::Int coordinate[], SIMD::Int sample, vk::Format imageFormat, OutOfBoundsBehavior outOfBoundsBehavior, const EmitState *state);
 	static void WriteImage(ImageInstructionSignature instruction, Pointer<Byte> descriptor, const Pointer<SIMD::Int> &coord, const Pointer<SIMD::Int> &texelAndMask, vk::Format imageFormat);
+	static vk::Format SpirvFormatToVulkanFormat(spv::ImageFormat format);
+	static void ValidateImageFormat(spv::ImageFormat spirvFormat, vk::Format vulkanFormat);
+	void ValidateInlineInstructionSamplerImageView(Pointer<Byte> imageDescriptor, const ImageInstruction &instruction, EmitState *state) const;
 	uint32_t GetConstScalarInt(Object::ID id) const;
 	void EvalSpecConstantOp(InsnIterator insn);
 	void EvalSpecConstantUnaryOp(InsnIterator insn);

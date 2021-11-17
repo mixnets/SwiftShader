@@ -21,71 +21,6 @@
 
 #include <spirv/unified1/spirv.hpp>
 
-namespace {
-
-vk::Format SpirvFormatToVulkanFormat(spv::ImageFormat format)
-{
-	switch(format)
-	{
-	case spv::ImageFormatUnknown: return VK_FORMAT_UNDEFINED;
-	case spv::ImageFormatRgba32f: return VK_FORMAT_R32G32B32A32_SFLOAT;
-	case spv::ImageFormatRgba16f: return VK_FORMAT_R16G16B16A16_SFLOAT;
-	case spv::ImageFormatR32f: return VK_FORMAT_R32_SFLOAT;
-	case spv::ImageFormatRgba8: return VK_FORMAT_R8G8B8A8_UNORM;
-	case spv::ImageFormatRgba8Snorm: return VK_FORMAT_R8G8B8A8_SNORM;
-	case spv::ImageFormatRg32f: return VK_FORMAT_R32G32_SFLOAT;
-	case spv::ImageFormatRg16f: return VK_FORMAT_R16G16_SFLOAT;
-	case spv::ImageFormatR11fG11fB10f: return VK_FORMAT_B10G11R11_UFLOAT_PACK32;
-	case spv::ImageFormatR16f: return VK_FORMAT_R16_SFLOAT;
-	case spv::ImageFormatRgba16: return VK_FORMAT_R16G16B16A16_UNORM;
-	case spv::ImageFormatRgb10A2: return VK_FORMAT_A2B10G10R10_UNORM_PACK32;
-	case spv::ImageFormatRg16: return VK_FORMAT_R16G16_UNORM;
-	case spv::ImageFormatRg8: return VK_FORMAT_R8G8_UNORM;
-	case spv::ImageFormatR16: return VK_FORMAT_R16_UNORM;
-	case spv::ImageFormatR8: return VK_FORMAT_R8_UNORM;
-	case spv::ImageFormatRgba16Snorm: return VK_FORMAT_R16G16B16A16_SNORM;
-	case spv::ImageFormatRg16Snorm: return VK_FORMAT_R16G16_SNORM;
-	case spv::ImageFormatRg8Snorm: return VK_FORMAT_R8G8_SNORM;
-	case spv::ImageFormatR16Snorm: return VK_FORMAT_R16_SNORM;
-	case spv::ImageFormatR8Snorm: return VK_FORMAT_R8_SNORM;
-	case spv::ImageFormatRgba32i: return VK_FORMAT_R32G32B32A32_SINT;
-	case spv::ImageFormatRgba16i: return VK_FORMAT_R16G16B16A16_SINT;
-	case spv::ImageFormatRgba8i: return VK_FORMAT_R8G8B8A8_SINT;
-	case spv::ImageFormatR32i: return VK_FORMAT_R32_SINT;
-	case spv::ImageFormatRg32i: return VK_FORMAT_R32G32_SINT;
-	case spv::ImageFormatRg16i: return VK_FORMAT_R16G16_SINT;
-	case spv::ImageFormatRg8i: return VK_FORMAT_R8G8_SINT;
-	case spv::ImageFormatR16i: return VK_FORMAT_R16_SINT;
-	case spv::ImageFormatR8i: return VK_FORMAT_R8_SINT;
-	case spv::ImageFormatRgba32ui: return VK_FORMAT_R32G32B32A32_UINT;
-	case spv::ImageFormatRgba16ui: return VK_FORMAT_R16G16B16A16_UINT;
-	case spv::ImageFormatRgba8ui: return VK_FORMAT_R8G8B8A8_UINT;
-	case spv::ImageFormatR32ui: return VK_FORMAT_R32_UINT;
-	case spv::ImageFormatRgb10a2ui: return VK_FORMAT_A2B10G10R10_UINT_PACK32;
-	case spv::ImageFormatRg32ui: return VK_FORMAT_R32G32_UINT;
-	case spv::ImageFormatRg16ui: return VK_FORMAT_R16G16_UINT;
-	case spv::ImageFormatRg8ui: return VK_FORMAT_R8G8_UINT;
-	case spv::ImageFormatR16ui: return VK_FORMAT_R16_UINT;
-	case spv::ImageFormatR8ui: return VK_FORMAT_R8_UINT;
-
-	default:
-		UNSUPPORTED("SPIR-V ImageFormat %u", format);
-		return VK_FORMAT_UNDEFINED;
-	}
-}
-
-sw::SIMD::Float sRGBtoLinear(sw::SIMD::Float c)
-{
-	sw::SIMD::Float lc = c * sw::SIMD::Float(1.0f / 12.92f);
-	sw::SIMD::Float ec = sw::power((c + sw::SIMD::Float(0.055f)) * sw::SIMD::Float(1.0f / 1.055f), sw::SIMD::Float(2.4f));
-
-	sw::SIMD::Int linear = CmpLT(c, sw::SIMD::Float(0.04045f));
-
-	return rr::As<sw::SIMD::Float>((linear & rr::As<sw::SIMD::Int>(lc)) | (~linear & rr::As<sw::SIMD::Int>(ec)));  // TODO: IfThenElse()
-}
-
-}  // anonymous namespace
-
 namespace sw {
 
 SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvShader &spirv)
@@ -304,6 +239,66 @@ uint32_t SpirvShader::ImageInstruction::getImageOperandsMask(InsnIterator insn)
 {
 	uint32_t operandsIndex = getImageOperandsIndex(insn);
 	return (operandsIndex != 0) ? insn.word(operandsIndex) : 0;
+}
+
+vk::Format SpirvShader::SpirvFormatToVulkanFormat(spv::ImageFormat format)
+{
+	switch(format)
+	{
+	case spv::ImageFormatUnknown: return VK_FORMAT_UNDEFINED;
+	case spv::ImageFormatRgba32f: return VK_FORMAT_R32G32B32A32_SFLOAT;
+	case spv::ImageFormatRgba16f: return VK_FORMAT_R16G16B16A16_SFLOAT;
+	case spv::ImageFormatR32f: return VK_FORMAT_R32_SFLOAT;
+	case spv::ImageFormatRgba8: return VK_FORMAT_R8G8B8A8_UNORM;
+	case spv::ImageFormatRgba8Snorm: return VK_FORMAT_R8G8B8A8_SNORM;
+	case spv::ImageFormatRg32f: return VK_FORMAT_R32G32_SFLOAT;
+	case spv::ImageFormatRg16f: return VK_FORMAT_R16G16_SFLOAT;
+	case spv::ImageFormatR11fG11fB10f: return VK_FORMAT_B10G11R11_UFLOAT_PACK32;
+	case spv::ImageFormatR16f: return VK_FORMAT_R16_SFLOAT;
+	case spv::ImageFormatRgba16: return VK_FORMAT_R16G16B16A16_UNORM;
+	case spv::ImageFormatRgb10A2: return VK_FORMAT_A2B10G10R10_UNORM_PACK32;
+	case spv::ImageFormatRg16: return VK_FORMAT_R16G16_UNORM;
+	case spv::ImageFormatRg8: return VK_FORMAT_R8G8_UNORM;
+	case spv::ImageFormatR16: return VK_FORMAT_R16_UNORM;
+	case spv::ImageFormatR8: return VK_FORMAT_R8_UNORM;
+	case spv::ImageFormatRgba16Snorm: return VK_FORMAT_R16G16B16A16_SNORM;
+	case spv::ImageFormatRg16Snorm: return VK_FORMAT_R16G16_SNORM;
+	case spv::ImageFormatRg8Snorm: return VK_FORMAT_R8G8_SNORM;
+	case spv::ImageFormatR16Snorm: return VK_FORMAT_R16_SNORM;
+	case spv::ImageFormatR8Snorm: return VK_FORMAT_R8_SNORM;
+	case spv::ImageFormatRgba32i: return VK_FORMAT_R32G32B32A32_SINT;
+	case spv::ImageFormatRgba16i: return VK_FORMAT_R16G16B16A16_SINT;
+	case spv::ImageFormatRgba8i: return VK_FORMAT_R8G8B8A8_SINT;
+	case spv::ImageFormatR32i: return VK_FORMAT_R32_SINT;
+	case spv::ImageFormatRg32i: return VK_FORMAT_R32G32_SINT;
+	case spv::ImageFormatRg16i: return VK_FORMAT_R16G16_SINT;
+	case spv::ImageFormatRg8i: return VK_FORMAT_R8G8_SINT;
+	case spv::ImageFormatR16i: return VK_FORMAT_R16_SINT;
+	case spv::ImageFormatR8i: return VK_FORMAT_R8_SINT;
+	case spv::ImageFormatRgba32ui: return VK_FORMAT_R32G32B32A32_UINT;
+	case spv::ImageFormatRgba16ui: return VK_FORMAT_R16G16B16A16_UINT;
+	case spv::ImageFormatRgba8ui: return VK_FORMAT_R8G8B8A8_UINT;
+	case spv::ImageFormatR32ui: return VK_FORMAT_R32_UINT;
+	case spv::ImageFormatRgb10a2ui: return VK_FORMAT_A2B10G10R10_UINT_PACK32;
+	case spv::ImageFormatRg32ui: return VK_FORMAT_R32G32_UINT;
+	case spv::ImageFormatRg16ui: return VK_FORMAT_R16G16_UINT;
+	case spv::ImageFormatRg8ui: return VK_FORMAT_R8G8_UINT;
+	case spv::ImageFormatR16ui: return VK_FORMAT_R16_UINT;
+	case spv::ImageFormatR8ui: return VK_FORMAT_R8_UINT;
+
+	default:
+		UNSUPPORTED("SPIR-V ImageFormat %u", format);
+		return VK_FORMAT_UNDEFINED;
+	}
+}
+
+void SpirvShader::ValidateImageFormat(spv::ImageFormat spirvFormat, vk::Format vulkanFormat)
+{
+	// "There are a number of cases where a SPIR-V instruction can mismatch with the sampler, the image view, or both, and a number of
+	//  further cases where the sampler can mismatch with the image view. In such cases the value of the texel returned is undefined.
+	//  These cases include:
+	//  * The SPIR-V Image Format is not compatible with the image view’s format."
+	ASSERT(spirvFormat == spv::ImageFormatUnknown || vulkanFormat == SpirvFormatToVulkanFormat(spirvFormat));
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageSample(const ImageInstruction &instruction, EmitState *state) const
@@ -705,6 +700,16 @@ SIMD::Pointer SpirvShader::GetTexelAddress(ImageInstructionSignature instruction
 	return SIMD::Pointer(imageBase, imageSizeInBytes, ptrOffset);
 }
 
+static sw::SIMD::Float sRGBtoLinear(sw::SIMD::Float c)
+{
+	sw::SIMD::Float lc = c * sw::SIMD::Float(1.0f / 12.92f);
+	sw::SIMD::Float ec = sw::power((c + sw::SIMD::Float(0.055f)) * sw::SIMD::Float(1.0f / 1.055f), sw::SIMD::Float(2.4f));
+
+	sw::SIMD::Int linear = CmpLT(c, sw::SIMD::Float(0.04045f));
+
+	return rr::As<sw::SIMD::Float>((linear & rr::As<sw::SIMD::Int>(lc)) | (~linear & rr::As<sw::SIMD::Int>(ec)));  // TODO: IfThenElse()
+}
+
 SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instruction, EmitState *state) const
 {
 	auto &resultType = getObjectType(instruction.resultId);
@@ -879,9 +884,9 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 		break;
 	case VK_FORMAT_R8G8B8A8_SRGB:
 	case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
-		dst.move(0, ::sRGBtoLinear(SIMD::Float(packed[0] & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(1, ::sRGBtoLinear(SIMD::Float((packed[0] >> 8) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(2, ::sRGBtoLinear(SIMD::Float((packed[0] >> 16) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		dst.move(0, sRGBtoLinear(SIMD::Float(packed[0] & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		dst.move(1, sRGBtoLinear(SIMD::Float((packed[0] >> 8) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		dst.move(2, sRGBtoLinear(SIMD::Float((packed[0] >> 16) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
 		dst.move(3, SIMD::Float((packed[0] >> 24) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
 		break;
 	case VK_FORMAT_B8G8R8A8_UNORM:
@@ -891,9 +896,9 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 		dst.move(3, SIMD::Float((packed[0] >> 24) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
 		break;
 	case VK_FORMAT_B8G8R8A8_SRGB:
-		dst.move(0, ::sRGBtoLinear(SIMD::Float((packed[0] >> 16) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(1, ::sRGBtoLinear(SIMD::Float((packed[0] >> 8) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(2, ::sRGBtoLinear(SIMD::Float(packed[0] & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		dst.move(0, sRGBtoLinear(SIMD::Float((packed[0] >> 16) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		dst.move(1, sRGBtoLinear(SIMD::Float((packed[0] >> 8) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		dst.move(2, sRGBtoLinear(SIMD::Float(packed[0] & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
 		dst.move(3, SIMD::Float((packed[0] >> 24) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
 		break;
 	case VK_FORMAT_R8G8B8A8_UINT:
@@ -1169,10 +1174,22 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 	}
 	else
 	{
+		ValidateInlineInstructionSamplerImageView(descriptor, instruction, state);
+
 		WriteImage(instruction, descriptor, &coord, &texelAndMask, imageFormat);
 	}
 
 	return EmitResult::Continue;
+}
+
+// Performs the "Instruction/Sampler/Image View Validation" for instructions that get inlined, in Debug builds
+void SpirvShader::ValidateInlineInstructionSamplerImageView(Pointer<Byte> imageDescriptor, const ImageInstruction &instruction, EmitState *state) const
+{
+#ifndef NDEBUG
+	// lookupSamplerFunction() performs the validation for non-inlined (trampolined) image instructions,
+	// so just call that without using the resulting function pointer.
+	(void)lookupSamplerFunction(imageDescriptor, instruction, state);
+#endif
 }
 
 void SpirvShader::WriteImage(ImageInstructionSignature instruction, Pointer<Byte> descriptor, const Pointer<SIMD::Int> &coord, const Pointer<SIMD::Int> &texelAndMask, vk::Format imageFormat)
