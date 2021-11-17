@@ -184,6 +184,10 @@ void DescriptorPool::freeSets(uint32_t descriptorSetCount, const VkDescriptorSet
 
 void DescriptorPool::freeSet(const VkDescriptorSet descriptorSet)
 {
+	if(descriptorSet != VK_NULL_HANDLE)
+	{
+		vk::Cast(descriptorSet)->clear();
+	}
 	const auto itEnd = nodes.end();
 	auto it = std::find(nodes.begin(), itEnd, asMemory(descriptorSet));
 	if(it != itEnd)

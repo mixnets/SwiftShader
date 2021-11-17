@@ -21,17 +21,20 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <vector>
 
 namespace vk {
 
 class DescriptorSetLayout;
 class Device;
 class PipelineLayout;
+struct BufferDescriptor;
 
 struct alignas(16) DescriptorSetHeader
 {
 	DescriptorSetLayout *layout;
 	marl::mutex mutex;
+	std::vector<void*> dynamicAllocations;
 };
 
 class alignas(16) DescriptorSet : public Object<DescriptorSet, VkDescriptorSet>
@@ -43,6 +46,9 @@ public:
 
 	static void ContentsChanged(const Array &descriptorSets, const PipelineLayout *layout, Device *device);
 	static void PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout, Device *device);
+
+	size_t ensureSize(BufferDescriptor *bufferDescriptor, size_t requestedSize);
+	void clear();
 
 	DescriptorSetHeader header;
 	alignas(16) uint8_t data[1];
