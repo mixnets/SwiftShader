@@ -21,6 +21,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include <mutex>
+
 #if defined(_WIN32)
 #	ifndef WIN32_LEAN_AND_MEAN
 #		define WIN32_LEAN_AND_MEAN
@@ -35,6 +37,27 @@
 #endif
 
 namespace rr {
+
+void reactorAssert(const char *expression, const char *file, unsigned int line, const char *func)
+{
+	static std::mutex mtx;
+	mtx.lock();
+
+	char string[1024];
+	snprintf(string, sizeof(string),
+	         "Assertion failed: '%s'\n"
+	         "At '%s:%d'\n"
+	         "In '%s'\n\n",
+	         expression, file, line, func);
+
+	fprintf(stderr, "%s", string);
+
+	#if defined(_WIN32)
+	OutputDebugStringA(string);
+	#endif
+
+	::abort();
+}
 
 Config Config::Edit::apply(const Config &cfg) const
 {
