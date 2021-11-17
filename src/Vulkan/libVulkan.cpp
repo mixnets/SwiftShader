@@ -424,6 +424,7 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	// Other extensions
 	{ { VK_EXT_PIPELINE_CREATION_CACHE_CONTROL_EXTENSION_NAME, VK_EXT_PIPELINE_CREATION_CACHE_CONTROL_SPEC_VERSION } },
 	{ { VK_EXT_PIPELINE_CREATION_FEEDBACK_EXTENSION_NAME, VK_EXT_PIPELINE_CREATION_FEEDBACK_SPEC_VERSION } },
+	{ { VK_EXT_TOOLING_INFO_EXTENSION_NAME, VK_EXT_TOOLING_INFO_SPEC_VERSION } },
 	{ { VK_KHR_COPY_COMMANDS_2_EXTENSION_NAME, VK_KHR_COPY_COMMANDS_2_SPEC_VERSION } },
 	{ { VK_KHR_SWAPCHAIN_MUTABLE_FORMAT_EXTENSION_NAME, VK_KHR_SWAPCHAIN_MUTABLE_FORMAT_SPEC_VERSION } },
 	{ { VK_KHR_FORMAT_FEATURE_FLAGS_2_EXTENSION_NAME, VK_KHR_FORMAT_FEATURE_FLAGS_2_SPEC_VERSION } },
@@ -3679,6 +3680,20 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceSparseImageFormatProperties2(VkPhy
 
 	// We do not support sparse images.
 	*pPropertyCount = 0;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceToolPropertiesEXT(VkPhysicalDevice physicalDevice, uint32_t *pToolCount, VkPhysicalDeviceToolPropertiesEXT *pToolProperties)
+{
+	TRACE("(VkPhysicalDevice physicalDevice = %p, uint32_t* pToolCount = %p, VkPhysicalDeviceToolPropertiesEXT* pToolProperties = %p)",
+	      physicalDevice, pToolCount, pToolProperties);
+
+	if(!pToolProperties)
+	{
+		*pToolCount = 0;
+		return VK_SUCCESS;
+	}
+
+	return VK_SUCCESS;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkTrimCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags)
