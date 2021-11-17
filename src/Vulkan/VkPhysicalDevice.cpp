@@ -343,6 +343,12 @@ static void getPhysicalDeviceBlendOperationAdvancedFeaturesExt(VkPhysicalDeviceB
 	features->advancedBlendCoherentOperations = VK_FALSE;
 }
 
+static void getPhysicalDeviceInlineUniformBlockFeatures(VkPhysicalDeviceInlineUniformBlockFeatures *features)
+{
+	features->inlineUniformBlock = VK_TRUE;
+	features->descriptorBindingInlineUniformBlockUpdateAfterBind = VK_TRUE;
+}
+
 static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsFeaturesEXT *features)
 {
 	features->formatA4R4G4B4 = VK_TRUE;
@@ -450,6 +456,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT:
 			getPhysicalDeviceBlendOperationAdvancedFeaturesExt(reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES:
+			getPhysicalDeviceInlineUniformBlockFeatures(reinterpret_cast<VkPhysicalDeviceInlineUniformBlockFeatures *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT:
 			getPhysicalDevice4444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
@@ -1062,6 +1071,15 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceBlendOperationAdvancedPropert
 	properties->advancedBlendAllOperations = VK_FALSE;
 }
 
+void PhysicalDevice::getProperties(VkPhysicalDeviceInlineUniformBlockProperties *properties) const
+{
+	properties->maxInlineUniformBlockSize = MAX_INLINE_UNIFORM_BLOCK_SIZE;
+	properties->maxPerStageDescriptorInlineUniformBlocks = 4;
+	properties->maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks = 4;
+	properties->maxDescriptorSetInlineUniformBlocks = 4;
+	properties->maxDescriptorSetUpdateAfterBindInlineUniformBlocks = 4;
+}
+
 template<typename T>
 static void getSamplerFilterMinmaxProperties(T *properties)
 {
@@ -1234,6 +1252,14 @@ bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceBlendOperationAdv
 	auto supported = getSupportedFeatures(requested);
 
 	return CheckFeature(requested, supported, advancedBlendCoherentOperations);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceInlineUniformBlockFeatures *requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, inlineUniformBlock) &&
+	       CheckFeature(requested, supported, descriptorBindingInlineUniformBlockUpdateAfterBind);
 }
 #undef CheckFeature
 
