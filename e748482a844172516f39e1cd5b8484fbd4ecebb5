@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "433fb237_96ee8af2",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1043,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-17T13:57:53Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/49409",
+      "range": {
+        "startLine": 1043,
+        "startChar": 55,
+        "endLine": 1043,
+        "endChar": 63
+      },
+      "revId": "e748482a844172516f39e1cd5b8484fbd4ecebb5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
