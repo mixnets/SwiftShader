@@ -81,6 +81,13 @@ struct alignas(16) BufferDescriptor
 	int robustnessSize;  // total accessible size from static offset -- does not move with dynamic offset
 };
 
+struct alignas(16) InlineUniformBlockDescriptor
+{
+	~InlineUniformBlockDescriptor() = delete;
+
+	uint8_t data[1];
+};
+
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
 {
 	struct Binding
