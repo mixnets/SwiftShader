@@ -15,6 +15,7 @@
 #include "Coroutine.hpp"
 #include "Print.hpp"
 #include "Reactor.hpp"
+#include "Assert.hpp"
 
 #include "gtest/gtest.h"
 
@@ -673,6 +674,45 @@ TEST(ReactorUnitTests, StoreBeforeIndirectStore)
 
 	int result = routine(true);
 	EXPECT_EQ(result, 4);
+}
+
+TEST(ReactorUnitTests, AssertTrue)
+{
+	FunctionT<int()> function;
+	{
+		Int a = 3;
+		Int b = 5;
+
+		Assert(a < b);
+
+		Return(a + b);
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine();
+	EXPECT_EQ(result, result);  // Anything is fine, just don't crash
+}
+
+TEST(ReactorUnitTests, AssertFalse)
+{
+	FunctionT<int()> function;
+	{
+		Int a = 3;
+		Int b = 5; 
+
+		Assert(a == b);
+
+		Return( a + b);
+	}
+	 
+	auto routine = function(testName().c_str());
+
+	EXPECT_DEATH(
+		    {
+			    int  result = routine() ;
+		    },
+		    "Assert");
 }
 
 TEST(ReactorUnitTests, SubVectorLoadStore)
