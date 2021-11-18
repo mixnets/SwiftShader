@@ -277,12 +277,13 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	data->descriptorSets = inputs.getDescriptorSets();
 	data->descriptorDynamicOffsets = inputs.getDescriptorDynamicOffsets();
 
+	bool dynamicVertexStride = pipeline->hasDynamicState(VK_DYNAMIC_STATE_VERTEX_INPUT_BINDING_STRIDE);
 	for(int i = 0; i < MAX_INTERFACE_COMPONENTS / 4; i++)
 	{
 		const sw::Stream &stream = inputs.getStream(i);
 		data->input[i] = stream.buffer;
 		data->robustnessSize[i] = stream.robustnessSize;
-		data->stride[i] = stream.vertexStride;
+		data->stride[i] = inputs.getVertexStride(i, dynamicVertexStride);
 	}
 
 	data->indices = indexBuffer;

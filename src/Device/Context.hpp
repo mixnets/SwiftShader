@@ -35,6 +35,8 @@ struct VertexInputBinding
 {
 	Buffer *buffer;
 	VkDeviceSize offset;
+	VkDeviceSize size;
+	VkDeviceSize stride;
 };
 
 struct IndexBuffer
@@ -75,6 +77,7 @@ struct Inputs
 	void bindVertexInputs(int firstInstance);
 	void setVertexInputBinding(const VertexInputBinding vertexInputBindings[]);
 	void advanceInstanceAttributes();
+	VkDeviceSize getVertexStride(uint32_t i, bool dynamicVertexStride) const;
 
 private:
 	VertexInputBinding vertexInputBindings[MAX_VERTEX_INPUT_BINDINGS] = {};
@@ -127,9 +130,22 @@ struct DynamicState
 	float minDepthBounds = 0.0f;
 	float maxDepthBounds = 0.0f;
 
-	uint32_t compareMask[2] = { 0 };
-	uint32_t writeMask[2] = { 0 };
-	uint32_t reference[2] = { 0 };
+	// Provided by VK_EXT_extended_dynamic_state
+	VkCullModeFlags cullMode = VK_CULL_MODE_NONE;
+	VkBool32 depthBoundsTestEnable = VK_FALSE;
+	VkCompareOp depthCompareOp = VK_COMPARE_OP_NEVER;
+	VkBool32 depthTestEnable = VK_FALSE;
+	VkBool32 depthWriteEnable = VK_FALSE;
+	VkFrontFace frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+	VkPrimitiveTopology primitiveTopology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+	uint32_t scissorCount = 0;
+	VkRect2D scissors[vk::MAX_VIEWPORTS];
+	VkStencilFaceFlags faceMask = (VkStencilFaceFlags)0;
+	VkStencilOpState frontStencil = {};
+	VkStencilOpState backStencil = {};
+	VkBool32 stencilTestEnable = VK_FALSE;
+	uint32_t viewportCount = 0;
+	VkRect2D viewports[vk::MAX_VIEWPORTS];
 };
 
 struct GraphicsState
@@ -179,6 +195,8 @@ struct GraphicsState
 	inline const VkViewport &getViewport() const { return viewport; }
 	inline const sw::float4 &getBlendConstants() const { return blendConstants; }
 
+	bool hasDynamicState(VkDynamicState dynamicState) const;
+
 	bool isDrawPoint(bool polygonModeAware) const;
 	bool isDrawLine(bool polygonModeAware) const;
 	bool isDrawTriangle(bool polygonModeAware) const;
@@ -192,7 +210,7 @@ struct GraphicsState
 	bool depthBoundsTestActive(const Attachments &attachments) const;
 
 private:
-	inline bool hasDynamicState(VkDynamicState dynamicState) const { return (dynamicStateFlags & (1 << dynamicState)) != 0; }
+	static uint32_t getDynamicStateIndex(VkDynamicState dynamicState);
 
 	VkBlendFactor blendFactor(VkBlendOp blendOperation, VkBlendFactor blendFactor) const;
 	VkBlendOp blendOperation(VkBlendOp blendOperation, VkBlendFactor sourceBlendFactor, VkBlendFactor destBlendFactor, vk::Format format) const;

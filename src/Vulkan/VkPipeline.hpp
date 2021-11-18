@@ -96,8 +96,9 @@ public:
 	VkResult compileShaders(const VkAllocationCallbacks *pAllocator, const VkGraphicsPipelineCreateInfo *pCreateInfo, PipelineCache *pipelineCache);
 
 	const GraphicsState getState(const DynamicState &ds) const { return state.combineStates(ds); }
+	bool hasDynamicState(VkDynamicState dynamicState) const { return state.hasDynamicState(dynamicState); }
 
-	void getIndexBuffers(uint32_t count, uint32_t first, bool indexed, std::vector<std::pair<uint32_t, void *>> *indexBuffers) const;
+	void getIndexBuffers(const vk::DynamicState &dynamicState, uint32_t count, uint32_t first, bool indexed, std::vector<std::pair<uint32_t, void *>> *indexBuffers) const;
 
 	IndexBuffer &getIndexBuffer() { return indexBuffer; }
 	const IndexBuffer &getIndexBuffer() const { return indexBuffer; }
