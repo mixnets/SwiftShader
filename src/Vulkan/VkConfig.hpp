@@ -74,6 +74,8 @@ constexpr int SUBPIXEL_PRECISION_BITS = 4;
 constexpr float SUBPIXEL_PRECISION_FACTOR = static_cast<float>(1 << SUBPIXEL_PRECISION_BITS);
 constexpr int SUBPIXEL_PRECISION_MASK = 0xFFFFFFFF >> (32 - SUBPIXEL_PRECISION_BITS);
 
+constexpr int MAX_VIEWPORTS = 16;
+
 // TODO: The heap size should be configured based on available RAM.
 // FIXME(angleproject:6444): Remove the 15 bytes of padding.
 constexpr VkDeviceSize PHYSICAL_DEVICE_HEAP_SIZE = 0x80000000ull + 15;  // 0x80000000 = 2 GiB

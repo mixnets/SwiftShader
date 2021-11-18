@@ -468,6 +468,218 @@ private:
 	const uint32_t reference;
 };
 
+class CmdSetCullMode : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetCullMode(VkCullModeFlags cullMode)
+	    : cullMode(cullMode)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetCullModeEXT()"; }
+
+private:
+	const VkCullModeFlags cullMode;
+};
+
+class CmdSetDepthBoundsTestEnable : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetDepthBoundsTestEnable(VkBool32 depthBoundsTestEnable)
+	    : depthBoundsTestEnable(depthBoundsTestEnable)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetDepthBoundsTestEnableEXT()"; }
+
+private:
+	const VkBool32 depthBoundsTestEnable;
+};
+
+class CmdSetDepthCompareOp : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetDepthCompareOp(VkCompareOp depthCompareOp)
+	    : depthCompareOp(depthCompareOp)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetDepthCompareOpEXT()"; }
+
+private:
+	const VkCompareOp depthCompareOp;
+};
+
+class CmdSetDepthTestEnable : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetDepthTestEnable(VkBool32 depthTestEnable)
+	    : depthTestEnable(depthTestEnable)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetDepthTestEnableEXT()"; }
+
+private:
+	const VkBool32 depthTestEnable;
+};
+
+class CmdSetDepthWriteEnable : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetDepthWriteEnable(VkBool32 depthWriteEnable)
+	    : depthWriteEnable(depthWriteEnable)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetDepthWriteEnableEXT()"; }
+
+private:
+	const VkBool32 depthWriteEnable;
+};
+
+class CmdSetFrontFace : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetFrontFace(VkFrontFace frontFace)
+	    : frontFace(frontFace)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetFrontFaceEXT()"; }
+
+private:
+	const VkFrontFace frontFace;
+};
+
+class CmdSetPrimitiveTopology : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetPrimitiveTopology(VkPrimitiveTopology primitiveTopology)
+	    : primitiveTopology(primitiveTopology)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetPrimitiveTopologyEXT()"; }
+
+private:
+	const VkPrimitiveTopology primitiveTopology;
+};
+
+class CmdSetScissorWithCount : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetScissorWithCount(uint32_t scissorCount, const VkRect2D *pScissors)
+	    : scissorCount(scissorCount)
+	{
+		memcpy(&(scissors[0]), pScissors, scissorCount * sizeof(VkRect2D));
+	}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetScissorWithCountEXT()"; }
+
+private:
+	const uint32_t scissorCount;
+	VkRect2D scissors[vk::MAX_VIEWPORTS];
+};
+
+class CmdSetStencilOp : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetStencilOp(VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp)
+	    : faceMask(faceMask)
+	    , failOp(failOp)
+	    , passOp(passOp)
+	    , depthFailOp(depthFailOp)
+	    , compareOp(compareOp)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetStencilOpEXT()"; }
+
+private:
+	const VkStencilFaceFlags faceMask;
+	const VkStencilOp failOp;
+	const VkStencilOp passOp;
+	const VkStencilOp depthFailOp;
+	const VkCompareOp compareOp;
+};
+
+class CmdSetStencilTestEnable : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetStencilTestEnable(VkBool32 stencilTestEnable)
+	    : stencilTestEnable(stencilTestEnable)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetStencilTestEnableEXT()"; }
+
+private:
+	const VkBool32 stencilTestEnable;
+};
+
+class CmdSetViewportWithCount : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetViewportWithCount(uint32_t viewportCount, const VkViewport *pViewports)
+	    : viewportCount(viewportCount)
+	{
+		memcpy(&(viewports[0]), pViewports, viewportCount * sizeof(VkRect2D));
+	}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		// TODO(b/204502118): Add VK_EXT_extended_dynamic_state support
+	}
+
+	std::string description() override { return "vkCmdSetViewportWithCountEXT()"; }
+
+private:
+	const uint32_t viewportCount;
+	VkRect2D viewports[vk::MAX_VIEWPORTS];
+};
+
 class CmdDrawBase : public vk::CommandBuffer::Command
 {
 public:
@@ -1378,8 +1590,17 @@ void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline
 }
 
 void CommandBuffer::bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCount,
-                                      const VkBuffer *pBuffers, const VkDeviceSize *pOffsets)
+                                      const VkBuffer *pBuffers, const VkDeviceSize *pOffsets,
+                                      const VkDeviceSize *pSizes, const VkDeviceSize *pStrides)
 {
+	// pSizes and pStrides are provided by VK_EXT_extended_dynamic_state and
+	// only need to be supported if we advertise:
+	// VkPhysicalDeviceExtendedDynamicStateFeaturesEXT::extendedDynamicState == VK_TRUE
+	if((pSizes != nullptr) || (pStrides != nullptr))
+	{
+		UNSUPPORTED("Dynamic vertex buffer sizes and/or strides");
+	}
+
 	for(uint32_t i = 0; i < bindingCount; ++i)
 	{
 		addCommand<::CmdVertexBufferBind>(i + firstBinding, vk::Cast(pBuffers[i]), pOffsets[i]);
@@ -1487,6 +1708,93 @@ void CommandBuffer::setStencilReference(VkStencilFaceFlags faceMask, uint32_t re
 	ASSERT(faceMask != 0);
 
 	addCommand<::CmdSetStencilReference>(faceMask, reference);
+}
+
+void CommandBuffer::setCullMode(VkCullModeFlags cullMode)
+{
+	UNSUPPORTED("Dynamic cullMode");
+
+	addCommand<::CmdSetCullMode>(cullMode);
+}
+
+void CommandBuffer::setDepthBoundsTestEnable(VkBool32 depthBoundsTestEnable)
+{
+	UNSUPPORTED("Dynamic depthBoundsTestEnable");
+
+	addCommand<::CmdSetDepthBoundsTestEnable>(depthBoundsTestEnable);
+}
+
+void CommandBuffer::setDepthCompareOp(VkCompareOp depthCompareOp)
+{
+	UNSUPPORTED("Dynamic depthCompareOp");
+
+	addCommand<::CmdSetDepthCompareOp>(depthCompareOp);
+}
+
+void CommandBuffer::setDepthTestEnable(VkBool32 depthTestEnable)
+{
+	UNSUPPORTED("Dynamic depthTestEnable");
+
+	addCommand<::CmdSetDepthTestEnable>(depthTestEnable);
+}
+
+void CommandBuffer::setDepthWriteEnable(VkBool32 depthWriteEnable)
+{
+	UNSUPPORTED("Dynamic depthWriteEnable");
+
+	addCommand<::CmdSetDepthWriteEnable>(depthWriteEnable);
+}
+
+void CommandBuffer::setFrontFace(VkFrontFace frontFace)
+{
+	UNSUPPORTED("Dynamic frontFace");
+
+	addCommand<::CmdSetFrontFace>(frontFace);
+}
+
+void CommandBuffer::setPrimitiveTopology(VkPrimitiveTopology primitiveTopology)
+{
+	UNSUPPORTED("Dynamic primitiveTopology");
+
+	addCommand<::CmdSetPrimitiveTopology>(primitiveTopology);
+}
+
+void CommandBuffer::setScissorWithCount(uint32_t scissorCount, const VkRect2D *pScissors)
+{
+	ASSERT(scissorCount <= MAX_VIEWPORTS);
+
+	if(scissorCount > 0)
+	{
+		UNSUPPORTED("Scissor count: %d", scissorCount);
+	}
+
+	addCommand<::CmdSetScissorWithCount>(scissorCount, pScissors);
+}
+
+void CommandBuffer::setStencilOp(VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp)
+{
+	UNSUPPORTED("Dynamic stencilOp");
+
+	addCommand<::CmdSetStencilOp>(faceMask, failOp, passOp, depthFailOp, compareOp);
+}
+
+void CommandBuffer::setStencilTestEnable(VkBool32 stencilTestEnable)
+{
+	UNSUPPORTED("Dynamic stencilTestEnable");
+
+	addCommand<::CmdSetStencilTestEnable>(stencilTestEnable);
+}
+
+void CommandBuffer::setViewportWithCount(uint32_t viewportCount, const VkViewport *pViewports)
+{
+	ASSERT(viewportCount <= MAX_VIEWPORTS);
+
+	if(viewportCount > 0)
+	{
+		UNSUPPORTED("Viewport count: %d", viewportCount);
+	}
+
+	addCommand<::CmdSetViewportWithCount>(viewportCount, pViewports);
 }
 
 void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, const PipelineLayout *pipelineLayout,
