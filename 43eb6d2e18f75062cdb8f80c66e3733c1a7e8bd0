@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0058227_bb8a9ec7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-18T19:30:49Z",
+      "side": 1,
+      "message": "I\u0027d like to go ahead and land this to have a second Regres instance provide the test result update. I\u0027m not sure if the empty branch field is correct, but stuff goes wrong we can easily abort or revert.",
+      "revId": "43eb6d2e18f75062cdb8f80c66e3733c1a7e8bd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d90eb752_fbd506c4",
+        "filename": "tests/regres/deqp.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-18T19:30:49Z",
+      "side": 1,
+      "message": "I\u0027m not sure if this is as intended.",
+      "range": {
+        "startLine": 3,
+        "startChar": 4,
+        "endLine": 3,
+        "endChar": 17
+      },
+      "revId": "43eb6d2e18f75062cdb8f80c66e3733c1a7e8bd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
