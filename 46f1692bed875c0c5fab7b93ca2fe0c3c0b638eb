@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4aa0f1b8_cfddfd02",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1073,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-18T13:39:11Z",
+      "side": 1,
+      "message": "Note: Commonly used values, taken from https://vulkan.gpuinfo.org/listpropertiesextensions.php",
+      "range": {
+        "startLine": 1069,
+        "startChar": 0,
+        "endLine": 1073,
+        "endChar": 69
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
