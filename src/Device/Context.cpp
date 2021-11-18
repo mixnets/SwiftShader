@@ -332,6 +332,24 @@ uint32_t GraphicsState::GetDynamicStateFlags(const VkPipelineDynamicStateCreateI
 	return dynamicStateFlags;
 }
 
+VkDeviceSize Inputs::getVertexStride(uint32_t i, bool dynamicVertexStride) const
+{
+	auto &attrib = stream[i];
+	if(attrib.format != VK_FORMAT_UNDEFINED)
+	{
+		if (dynamicVertexStride)
+		{
+			return vertexInputBindings[attrib.binding].stride;
+		}
+		else
+		{
+			return attrib.vertexStride;
+		}
+	}
+
+	return 0;
+}
+
 GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreateInfo *pCreateInfo,
                              const PipelineLayout *layout, bool robustBufferAccess)
     : pipelineLayout(layout)
@@ -469,8 +487,8 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 			UNSUPPORTED("pCreateInfo->pViewportState->flags %d", int(pCreateInfo->pViewportState->flags));
 		}
 
-		if((viewportState->viewportCount != 1) ||
-		   (viewportState->scissorCount != 1))
+		if((viewportState->viewportCount > 1) ||
+		   (viewportState->scissorCount > 1))
 		{
 			UNSUPPORTED("VkPhysicalDeviceFeatures::multiViewport");
 		}
@@ -706,6 +724,31 @@ const GraphicsState GraphicsState::combineStates(const DynamicState &dynamicStat
 	GraphicsState combinedState = *this;
 
 	// Apply either pipeline state or dynamic state
+	if(dynamicStateFlags & DYNAMIC_DEPTH_TEST_ENABLE)
+	{
+		combinedState.depthTestEnable = dynamicState.depthTestEnable;
+	}
+
+	if(dynamicStateFlags & DYNAMIC_DEPTH_WRITE_ENABLE)
+	{
+		combinedState.depthWriteEnable = dynamicState.depthWriteEnable;
+	}
+
+	if(dynamicStateFlags & DYNAMIC_DEPTH_COMPARE_OP)
+	{
+		combinedState.depthCompareMode = dynamicState.depthCompareOp;
+	}
+
+	if(dynamicStateFlags & DYNAMIC_DEPTH_BOUNDS_TEST_ENABLE)
+	{
+		combinedState.depthBoundsTestEnable = dynamicState.depthBoundsTestEnable;
+	}
+
+	if(dynamicStateFlags & DYNAMIC_STENCIL_TEST_ENABLE)
+	{
+		combinedState.stencilEnable = dynamicState.stencilTestEnable;
+	}
+
 	if(dynamicStateFlags & DYNAMIC_SCISSOR)
 	{
 		combinedState.scissor = dynamicState.scissor;
@@ -728,28 +771,75 @@ const GraphicsState GraphicsState::combineStates(const DynamicState &dynamicStat
 		combinedState.depthBiasClamp = dynamicState.depthBiasClamp;
 	}
 
-	if((dynamicStateFlags & DYNAMIC_DEPTH_BOUNDS) && depthBoundsTestEnable)
+	if((dynamicStateFlags & DYNAMIC_DEPTH_BOUNDS) && combinedState.depthBoundsTestEnable)
 	{
 		combinedState.minDepthBounds = dynamicState.minDepthBounds;
 		combinedState.maxDepthBounds = dynamicState.maxDepthBounds;
 	}
 
-	if((dynamicStateFlags & DYNAMIC_STENCIL_COMPARE_MASK) && stencilEnable)
+	if((dynamicStateFlags & DYNAMIC_STENCIL_COMPARE_MASK) && combinedState.stencilEnable)
 	{
-		combinedState.frontStencil.compareMask = dynamicState.compareMask[0];
-		combinedState.backStencil.compareMask = dynamicState.compareMask[1];
+		combinedState.frontStencil.compareMask = dynamicState.frontStencil.compareMask;
+		combinedState.backStencil.compareMask = dynamicState.backStencil.compareMask;
 	}
 
-	if((dynamicStateFlags & DYNAMIC_STENCIL_WRITE_MASK) && stencilEnable)
+	if((dynamicStateFlags & DYNAMIC_STENCIL_WRITE_MASK) && combinedState.stencilEnable)
 	{
-		combinedState.frontStencil.writeMask = dynamicState.writeMask[0];
-		combinedState.backStencil.writeMask = dynamicState.writeMask[1];
+		combinedState.frontStencil.writeMask = dynamicState.frontStencil.writeMask;
+		combinedState.backStencil.writeMask = dynamicState.backStencil.writeMask;
 	}
 
-	if((dynamicStateFlags & DYNAMIC_STENCIL_REFERENCE) && stencilEnable)
+	if((dynamicStateFlags & DYNAMIC_STENCIL_REFERENCE) && combinedState.stencilEnable)
 	{
-		combinedState.frontStencil.reference = dynamicState.reference[0];
-		combinedState.backStencil.reference = dynamicState.reference[1];
+		combinedState.frontStencil.reference = dynamicState.frontStencil.reference;
+		combinedState.backStencil.reference = dynamicState.backStencil.reference;
+	}
+
+	if((dynamicStateFlags & DYNAMIC_STENCIL_OP) && combinedState.stencilEnable)
+	{
+		if(dynamicState.faceMask & VK_STENCIL_FACE_FRONT_BIT)
+		{
+			combinedState.frontStencil.compareOp = dynamicState.frontStencil.compareOp;
+			combinedState.frontStencil.depthFailOp = dynamicState.frontStencil.depthFailOp;
+			combinedState.frontStencil.failOp = dynamicState.frontStencil.failOp;
+			combinedState.frontStencil.passOp = dynamicState.frontStencil.passOp;
+		}
+
+		if(dynamicState.faceMask & VK_STENCIL_FACE_BACK_BIT)
+		{
+			combinedState.backStencil.compareOp = dynamicState.backStencil.compareOp;
+			combinedState.backStencil.depthFailOp = dynamicState.backStencil.depthFailOp;
+			combinedState.backStencil.failOp = dynamicState.backStencil.failOp;
+			combinedState.backStencil.passOp = dynamicState.backStencil.passOp;
+		}
+	}
+
+	if(dynamicStateFlags & DYNAMIC_CULL_MODE)
+	{
+		combinedState.cullMode = dynamicState.cullMode;
+	}
+
+	if(dynamicStateFlags & DYNAMIC_FRONT_FACE)
+	{
+		combinedState.frontFace = dynamicState.frontFace;
+	}
+
+	if(dynamicStateFlags & DYNAMIC_PRIMITIVE_TOPOLOGY)
+	{
+		combinedState.topology = dynamicState.primitiveTopology;
+	}
+
+	if((dynamicStateFlags & DYNAMIC_VIEWPORT_WITH_COUNT) && (dynamicState.viewportCount > 0))
+	{
+		combinedState.viewport.width = static_cast<float>(dynamicState.viewports[0].extent.width);
+		combinedState.viewport.height = static_cast<float>(dynamicState.viewports[0].extent.height);
+		combinedState.viewport.x = static_cast<float>(dynamicState.viewports[0].offset.x);
+		combinedState.viewport.y = static_cast<float>(dynamicState.viewports[0].offset.y);
+	}
+
+	if((dynamicStateFlags & DYNAMIC_SCISSOR_WITH_COUNT) && (dynamicState.scissorCount > 0))
+	{
+		combinedState.scissor = dynamicState.scissors[0];
 	}
 
 	return combinedState;

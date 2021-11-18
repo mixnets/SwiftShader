@@ -343,6 +343,11 @@ static void getPhysicalDeviceBlendOperationAdvancedFeaturesExt(VkPhysicalDeviceB
 	features->advancedBlendCoherentOperations = VK_FALSE;
 }
 
+static void getPhysicalDeviceExtendedDynamicStateFeaturesExt(VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *features)
+{
+	features->extendedDynamicState = VK_TRUE;
+}
+
 static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsFeaturesEXT *features)
 {
 	features->formatA4R4G4B4 = VK_TRUE;
@@ -451,6 +456,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT:
 			getPhysicalDeviceBlendOperationAdvancedFeaturesExt(reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *>(curExtension));
 			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT:
+			getPhysicalDeviceExtendedDynamicStateFeaturesExt(reinterpret_cast<VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *>(curExtension));
+			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT:
 			getPhysicalDevice4444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
 			break;
@@ -546,7 +554,7 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits()
 		UINT32_MAX,                                  // maxDrawIndirectCount
 		vk::MAX_SAMPLER_LOD_BIAS,                    // maxSamplerLodBias
 		16,                                          // maxSamplerAnisotropy
-		16,                                          // maxViewports
+		MAX_VIEWPORTS,                               // maxViewports
 		{ sw::MAX_VIEWPORT_DIM,
 		  sw::MAX_VIEWPORT_DIM },  // maxViewportDimensions[2]
 		{ -2 * sw::MAX_VIEWPORT_DIM,
@@ -1234,6 +1242,13 @@ bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceBlendOperationAdv
 	auto supported = getSupportedFeatures(requested);
 
 	return CheckFeature(requested, supported, advancedBlendCoherentOperations);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, extendedDynamicState);
 }
 #undef CheckFeature
 
