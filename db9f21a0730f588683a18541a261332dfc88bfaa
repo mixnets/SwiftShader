@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bab69b91_cf46409e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T02:26:56Z",
+      "side": 1,
+      "message": "This path is used in the ICD \"manifest\" JSON file.\n\nYou might also be interested in http://go/direct-icd-loading-extension once it becomes available.",
+      "range": {
+        "startLine": 10,
+        "startChar": 17,
+        "endLine": 10,
+        "endChar": 25
+      },
+      "revId": "db9f21a0730f588683a18541a261332dfc88bfaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
