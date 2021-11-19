@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "002f858f_23875454",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T06:04:20Z",
+      "side": 1,
+      "message": "It looks like the testlist updates were not correct. This just changed the line endings (probably because Regres wrote the original files back). I suggest we fix forward by manually updating them: https://swiftshader-review.googlesource.com/c/SwiftShader/+/59848. That should make any automated updated by Regres smaller too.",
+      "revId": "f5cf2d08ff9c05779fbd48de0e6b7088965f2955",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
