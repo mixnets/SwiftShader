@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9019ac53_5ecdc2e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-19T05:33:11Z",
+      "side": 1,
+      "message": "I suggest we land this change, but keep the issue open to do a real fix later, as I think advertising 8 bits of precision isn\u0027t less accurate than advertising 4 bits, given we use a variable number of precision bits.",
+      "revId": "d5265fcc7e02c40b4970efd7dfcc923cf91bd4b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
