@@ -256,6 +256,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4df498e8_45fe505a",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-19T13:53:05Z",
+      "side": 1,
+      "message": "That information arrives too late, we don\u0027t know that at descriptor pool creation time. We get that information when we write to the descriptor (write or update operation). At that point, the descriptor pool memory is already allocated, so all this would allow us to do is use a smaller portion of the memory we allocated, but we already allocated the full memory size in the memory pool, so what\u0027s the point?",
+      "parentUuid": "628bea7e_1578aa8a",
+      "range": {
+        "startLine": 88,
+        "startChar": 13,
+        "endLine": 88,
+        "endChar": 44
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7c108eca_6b83ba7d",
         "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
         "patchSetId": 2
@@ -315,6 +339,30 @@
       "side": 1,
       "message": "The data buffer can be kept inline. VkDescriptorSetLayoutBinding::descriptorCount provides the requested size in bytes.",
       "parentUuid": "c6ccd70d_03bfb394",
+      "range": {
+        "startLine": 89,
+        "startChar": 1,
+        "endLine": 89,
+        "endChar": 17
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c89805a_8e7949a6",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-19T13:53:05Z",
+      "side": 1,
+      "message": "VkDescriptorSetLayoutBinding::descriptorCount is not available when we allocate the descriptor pool.",
+      "parentUuid": "1f0da204_90b98caa",
       "range": {
         "startLine": 89,
         "startChar": 1,
