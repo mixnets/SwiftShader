@@ -70,6 +70,30 @@
       },
       "revId": "993898326510367520f84f983f66daf506f19fc7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7f6f498_14b46d9f",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T03:23:46Z",
+      "side": 1,
+      "message": "I don\u0027t think this is correct without adding a control barrier. It\u0027s odd that the tests pass when we treat this the same was a Private variable initialization. I\u0027ve filed https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3326 to have that looked at.",
+      "parentUuid": "9cb3a401_93aed85b",
+      "range": {
+        "startLine": 222,
+        "startChar": 0,
+        "endLine": 222,
+        "endChar": 34
+      },
+      "revId": "993898326510367520f84f983f66daf506f19fc7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
