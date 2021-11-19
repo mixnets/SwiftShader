@@ -52,6 +52,24 @@
       "parentUuid": "fa8ebd34_a598c12c",
       "revId": "d5265fcc7e02c40b4970efd7dfcc923cf91bd4b7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "783e46eb_dc2ad107",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-19T19:32:30Z",
+      "side": 1,
+      "message": "Sorry, ignore that, I gave the branch the wrong conformance version. New branch is here: https://swiftshader.googlesource.com/SwiftShader/+/refs/heads/conformance-1.2.6.2",
+      "parentUuid": "eae12783_421545fe",
+      "revId": "d5265fcc7e02c40b4970efd7dfcc923cf91bd4b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
