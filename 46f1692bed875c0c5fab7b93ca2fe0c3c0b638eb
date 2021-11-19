@@ -208,6 +208,54 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "628bea7e_1578aa8a",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T07:26:23Z",
+      "side": 1,
+      "message": "Actually, the spec states that \"the array size specified for an inline uniform block descriptor binding specifies the binding’s capacity in bytes.\"",
+      "parentUuid": "ea6700cd_ebdc3cd5",
+      "range": {
+        "startLine": 88,
+        "startChar": 13,
+        "endLine": 88,
+        "endChar": 44
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d018340_09c1db41",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T07:26:23Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "17812e86_dfa2f41d",
+      "range": {
+        "startLine": 88,
+        "startChar": 9,
+        "endLine": 88,
+        "endChar": 13
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7c108eca_6b83ba7d",
         "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
         "patchSetId": 2
@@ -243,6 +291,30 @@
       "side": 1,
       "message": "We can, but then we lose one of the goals of this extension, which is to remove one level of indirection when  accessing uniform data. We\u0027d also trade removing the new descriptor structure for more memory management, which I think we should only do if the size of VkPhysicalDeviceInlineUniformBlockPropertiesEXT::maxInlineUniformBlockSize becomes fairly large. At at most 4 * 256 bytes, that\u0027s a maximum of 1kB of memory, maybe not worth writing memory management code for.",
       "parentUuid": "7c108eca_6b83ba7d",
+      "range": {
+        "startLine": 89,
+        "startChar": 1,
+        "endLine": 89,
+        "endChar": 17
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f0da204_90b98caa",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T07:26:23Z",
+      "side": 1,
+      "message": "The data buffer can be kept inline. VkDescriptorSetLayoutBinding::descriptorCount provides the requested size in bytes.",
+      "parentUuid": "c6ccd70d_03bfb394",
       "range": {
         "startLine": 89,
         "startChar": 1,
