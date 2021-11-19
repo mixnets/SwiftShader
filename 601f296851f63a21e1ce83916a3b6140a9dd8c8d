@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c41b9213_96480be6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T17:14:01Z",
+      "side": 1,
+      "message": "It\u0027s kind of annoying that the line endings keep flip-flopping. Sean can you investigate why that happens?\n\nI\u0027ll go ahead and land this since it seems to correctly update our dEQP results at the last revision, and includes some good test fixes. Perhaps we can aim for Vulkan 1.2 conformance with a more recent release than dEQP 1.2.6.2.",
+      "revId": "601f296851f63a21e1ce83916a3b6140a9dd8c8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
