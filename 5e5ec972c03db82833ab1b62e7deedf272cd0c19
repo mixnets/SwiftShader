@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bfe6d32a_a5a382eb",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3807,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T06:00:48Z",
+      "side": 1,
+      "message": "A spec quote would further help explain this:\n\n\"If stippledLineEnable is VK_FALSE, the values of lineStippleFactor and lineStipplePattern are ignored.\"",
+      "revId": "5e5ec972c03db82833ab1b62e7deedf272cd0c19",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
