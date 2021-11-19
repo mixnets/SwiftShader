@@ -16,6 +16,24 @@
       "message": "I suggest we land this change, but keep the issue open to do a real fix later, as I think advertising 8 bits of precision isn\u0027t less accurate than advertising 4 bits, given we use a variable number of precision bits.",
       "revId": "d5265fcc7e02c40b4970efd7dfcc923cf91bd4b7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa8ebd34_a598c12c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T18:06:53Z",
+      "side": 1,
+      "message": "Actually our number of subtexel bits currently varies between 15 and 2, depending on the image dimensions. So claiming 8 bits of precision is much less accurate than claiming 4.\n\nSo it\u0027s definitely a hack, and I\u0027m only okay with it being part of a conformance submission because it affects tests which don\u0027t even specifically test for subtexel precision, and all this really affects is a bit of aliasing of huge textures which are zoomed in close, which anyone is unlikely to notice. However, claiming higher precision may affect some Chrome or Android tests and we don\u0027t want to have to deal with rebaselines unless it\u0027s for the proper fix, so this should be landed on a branch.",
+      "parentUuid": "9019ac53_5ecdc2e4",
+      "revId": "d5265fcc7e02c40b4970efd7dfcc923cf91bd4b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
