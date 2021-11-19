@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac96d8fe_d5d3be08",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-19T03:55:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "46ad38cf_f28d2bb4",
+      "range": {
+        "startLine": 399,
+        "startChar": 3,
+        "endLine": 400,
+        "endChar": 95
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "68f0f6cd_09944006",
@@ -54,6 +78,30 @@
       "writtenOn": "2021-11-18T17:09:10Z",
       "side": 1,
       "message": "InlineUniformBlockDescriptor does not need this because the size is constant? Shouldn\u0027t it be the size of the requested inline block though, instead of the maximum?\n\nIt seem to me that the maximum size is likely to have to change in the not too distant future too. Enabling robustness already has a cost, so I don\u0027t think it makes much of a difference to read this size from the descriptor instead of having a literal in the code.",
+      "range": {
+        "startLine": 81,
+        "startChar": 5,
+        "endLine": 81,
+        "endChar": 19
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bab237ff_56be04c1",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-19T03:55:45Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "68f0f6cd_09944006",
       "range": {
         "startLine": 81,
         "startChar": 5,
@@ -112,6 +160,54 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ea6700cd_ebdc3cd5",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-19T03:55:45Z",
+      "side": 1,
+      "message": "I don\u0027t understand how this would work. The descriptor pool needs to allocate this memory inside the pool. If the last member is \"uint8_t data[1]\", it won\u0027t have the proper size when it\u0027s getting allocated in the descriptor pool. The information the descriptor pool receives is only VkDescriptorPoolInlineUniformBlockCreateInfoEXT::maxInlineUniformBlockBindings, meaning we only know the number of inlineUniformBlock bindings, and not their individual size, when allocating the descriptor pool. Even if we manually fudged the numbers during descriptor pool allocation, we wouldn\u0027t actually be saving any memory.",
+      "parentUuid": "0716ad4d_e720d547",
+      "range": {
+        "startLine": 88,
+        "startChar": 13,
+        "endLine": 88,
+        "endChar": 44
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17812e86_dfa2f41d",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-19T03:55:45Z",
+      "side": 1,
+      "message": "It\u0027s already called \"data\" in \"VkWriteDescriptorSetInlineUniformBlockEXT::data\", so I thought I wouldn\u0027t change the name to make it clearer that they\u0027re the same, but I can change it if you still want me to.",
+      "parentUuid": "ed858074_dc94213d",
+      "range": {
+        "startLine": 88,
+        "startChar": 9,
+        "endLine": 88,
+        "endChar": 13
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7c108eca_6b83ba7d",
         "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
         "patchSetId": 2
@@ -123,6 +219,30 @@
       "writtenOn": "2021-11-18T17:09:10Z",
       "side": 1,
       "message": "I wonder if we could just reuse BufferDescriptor, by putting ptr at the end and making it a union together with block[].\n\nThis way even less code needs to change, and we can dynamically size the block as needed.",
+      "range": {
+        "startLine": 89,
+        "startChar": 1,
+        "endLine": 89,
+        "endChar": 17
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6ccd70d_03bfb394",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-19T03:55:45Z",
+      "side": 1,
+      "message": "We can, but then we lose one of the goals of this extension, which is to remove one level of indirection when  accessing uniform data. We\u0027d also trade removing the new descriptor structure for more memory management, which I think we should only do if the size of VkPhysicalDeviceInlineUniformBlockPropertiesEXT::maxInlineUniformBlockSize becomes fairly large. At at most 4 * 256 bytes, that\u0027s a maximum of 1kB of memory, maybe not worth writing memory management code for.",
+      "parentUuid": "7c108eca_6b83ba7d",
       "range": {
         "startLine": 89,
         "startChar": 1,
@@ -170,6 +290,30 @@
       "side": 1,
       "message": "It looks like Intel only supports 4, which actually has the majority desktop market share, so if SwiftShader supports more then that can lead to not properly testing compatibility with common GPUs.\n\nThese numbers are trivial to increase if/when the need arises. Of course ideally these numbers become run-time configurable, but that\u0027s for future ecosystem tooling. For now let\u0027s just be conservative.",
       "parentUuid": "4aa0f1b8_cfddfd02",
+      "range": {
+        "startLine": 1069,
+        "startChar": 0,
+        "endLine": 1073,
+        "endChar": 69
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a473d9a1_2c88be7e",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1073,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-19T03:55:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c709e9fb_cd66f45c",
       "range": {
         "startLine": 1069,
         "startChar": 0,
