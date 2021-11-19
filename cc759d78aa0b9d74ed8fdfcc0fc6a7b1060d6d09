@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27638df7_65fd500a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-19T21:12:16Z",
+      "side": 1,
+      "message": "The fix should happen upstream in SPIRV-Tools and then be pulled into the master branch. For passing Vulkan 1.2 conformance we can land this local patch in a branch: https://swiftshader-review.googlesource.com/c/SwiftShader/+/59888",
+      "revId": "cc759d78aa0b9d74ed8fdfcc0fc6a7b1060d6d09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
