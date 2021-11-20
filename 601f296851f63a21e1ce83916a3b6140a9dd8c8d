@@ -16,6 +16,24 @@
       "message": "It\u0027s kind of annoying that the line endings keep flip-flopping. Sean can you investigate why that happens?\n\nI\u0027ll go ahead and land this since it seems to correctly update our dEQP results at the last revision, and includes some good test fixes. Perhaps we can aim for Vulkan 1.2 conformance with a more recent release than dEQP 1.2.6.2.",
       "revId": "601f296851f63a21e1ce83916a3b6140a9dd8c8d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7bdfe64_638fcab3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-20T00:12:53Z",
+      "side": 1,
+      "message": "I\u0027m not sure why the line endings keep changing. These files use Unix style line endings, while https://swiftshader-review.googlesource.com/c/SwiftShader/+/59848 uses CRLF line endings. The dEQP repository uses Unix style, so it shouldn\u0027t be possible to introduce different line endings since the updated files are coming from there.\n\nWhere did 59848 copy the files from?",
+      "parentUuid": "c41b9213_96480be6",
+      "revId": "601f296851f63a21e1ce83916a3b6140a9dd8c8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
