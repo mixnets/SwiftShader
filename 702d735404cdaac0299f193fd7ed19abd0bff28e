@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b81e07b4_4484ce32",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-21T16:14:42Z",
+      "side": 1,
+      "message": "The results update appears to be correct, but I believe the dEQP-VK revision update should be accompanied with testlist updates (same issue as https://swiftshader-review.googlesource.com/c/SwiftShader/+/59748 which had to be resolved by https://swiftshader-review.googlesource.com/c/SwiftShader/+/59848).\n\nSean do you expect to have a fix for that soon or should I run an older version of Regres?",
+      "revId": "702d735404cdaac0299f193fd7ed19abd0bff28e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d36d2c3a_09bea63e",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 76625,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-21T16:14:42Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/59828",
+      "range": {
+        "startLine": 76625,
+        "startChar": 54,
+        "endLine": 76625,
+        "endChar": 70
+      },
+      "revId": "702d735404cdaac0299f193fd7ed19abd0bff28e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
