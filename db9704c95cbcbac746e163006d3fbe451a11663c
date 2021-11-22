@@ -22,6 +22,30 @@
       },
       "revId": "db9704c95cbcbac746e163006d3fbe451a11663c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1adc7a8b_ca8cc62c",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-22T18:30:17Z",
+      "side": 1,
+      "message": "It is reached from:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Vulkan/VkImageView.cpp;l\u003d87\nwhere `subresource.aspectMask` is one of:\n\tVK_IMAGE_ASPECT_PLANE_0_BIT\n\tVK_IMAGE_ASPECT_PLANE_1_BIT\n\tVK_IMAGE_ASPECT_PLANE_2_BIT\n\nand `pCreateInfo-\u003eformat` is one of the cases added in this CL.",
+      "parentUuid": "3f4b596f_e55c50cb",
+      "range": {
+        "startLine": 219,
+        "startChar": 2,
+        "endLine": 222,
+        "endChar": 17
+      },
+      "revId": "db9704c95cbcbac746e163006d3fbe451a11663c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
