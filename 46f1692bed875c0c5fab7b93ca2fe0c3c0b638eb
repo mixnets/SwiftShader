@@ -373,6 +373,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "54912c7e_8799e1ec",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-22T15:47:52Z",
+      "side": 1,
+      "message": "Lets discuss the design issues in the Bug: b/204502117#comment2",
+      "parentUuid": "5c89805a_8e7949a6",
+      "range": {
+        "startLine": 89,
+        "startChar": 1,
+        "endLine": 89,
+        "endChar": 17
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "4aa0f1b8_cfddfd02",
