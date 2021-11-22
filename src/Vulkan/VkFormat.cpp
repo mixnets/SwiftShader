@@ -216,6 +216,10 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 			return VK_FORMAT_R8_UNORM;
+		// Image view compatible formats
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+			return format;
 		default:
 			UNSUPPORTED("format %d", int(format));
 			break;
@@ -233,6 +237,16 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 			return VK_FORMAT_R8G8_UNORM;
 		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
 			return VK_FORMAT_R4G4B4A4_UNORM_PACK16;
+		// Image view compatible formats for 3 planes
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+		// Image view compatible formats for 2 planes
+		case VK_FORMAT_R8G8_UINT:
+		case VK_FORMAT_R8G8_SINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SINT:
+			return format;
 		default:
 			UNSUPPORTED("format %d", int(format));
 			break;
@@ -245,6 +259,10 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 		case VK_FORMAT_R8_UNORM:
 		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 			return VK_FORMAT_R8_UNORM;
+		// Image view compatible formats
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+			return format;
 		default:
 			UNSUPPORTED("format %d", int(format));
 			break;
