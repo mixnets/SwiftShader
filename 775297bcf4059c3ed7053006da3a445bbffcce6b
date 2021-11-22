@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "336e0b78_56c27f98",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-22T16:22:08Z",
+      "side": 1,
+      "message": "Thanks Ari! Alexis can you provide approval vote?\n\nThe Kokoro failure is benign and has recently been addressed. A rebase should make it pass, but doesn\u0027t seem necessary here.",
+      "revId": "775297bcf4059c3ed7053006da3a445bbffcce6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
