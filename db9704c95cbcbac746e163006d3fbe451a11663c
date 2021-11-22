@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f4b596f_e55c50cb",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-22T17:30:14Z",
+      "side": 1,
+      "message": "How is this code reached? I\u0027d expect these formats to only be used with VK_IMAGE_ASPECT_COLOR_BIT. It might indicate another issue somewhere (possibly benign, but I\u0027d still prefer this function to \"make sense\" for selecting aspects from multi-aspect formats, so we can catch genuine bugs).",
+      "range": {
+        "startLine": 219,
+        "startChar": 2,
+        "endLine": 222,
+        "endChar": 17
+      },
+      "revId": "db9704c95cbcbac746e163006d3fbe451a11663c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
