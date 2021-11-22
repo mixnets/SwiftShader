@@ -1646,13 +1646,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBuffer(VkDevice device, const VkBufferCre
 	TRACE("(VkDevice device = %p, const VkBufferCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkBuffer* pBuffer = %p)",
 	      device, pCreateInfo, pAllocator, pBuffer);
 
+#ifdef VK_KHR_VIDEO_QUEUE_EXTENSION_NAME
+	#error "VK_KHR_VIDEO_QUEUE_EXTENSION_NAME is no longer in beta, you can delete this ifdef"
+#else
+	static constexpr VkStructureType VK_STRUCTURE_TYPE_VIDEO_PROFILES_KHR = static_cast<VkStructureType>(1000023013);
+	#define VK_KHR_VIDEO_QUEUE_EXTENSION_NAME "VK_KHR_video_queue"
+#endif
+
 	auto *nextInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
 	while(nextInfo)
 	{
-		switch(nextInfo->sType)
+		switch((long)(nextInfo->sType))
 		{
 		case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO:
 			// Do nothing. Should be handled by vk::Buffer::Create().
+			break;
+		case VK_STRUCTURE_TYPE_VIDEO_PROFILES_KHR:
+			ASSERT(!vk::Cast(device)->hasExtension(VK_KHR_VIDEO_QUEUE_EXTENSION_NAME));
 			break;
 		case VK_STRUCTURE_TYPE_MAX_ENUM:
 			// dEQP tests that this value is ignored.
