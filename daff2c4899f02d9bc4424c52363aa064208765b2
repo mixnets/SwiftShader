@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0bf85e7_5dbb101e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-11-23T20:45:08Z",
+      "side": 1,
+      "message": "Accidentally misclicked and added CQ+2. It\u0027s been reset, my bad.",
+      "revId": "daff2c4899f02d9bc4424c52363aa064208765b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
