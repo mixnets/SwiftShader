@@ -84,10 +84,10 @@ Identifier::Identifier(const VkImageViewCreateInfo *pCreateInfo)
 	const Image *image = vk::Cast(pCreateInfo->image);
 
 	VkImageSubresourceRange subresource = ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image);
-	vk::Format viewFormat = GetImageViewFormat(pCreateInfo).getAspectFormat(subresource.aspectMask);
+	vk::Format viewFormat = GetImageViewFormat(pCreateInfo);  //.getAspectFormat(subresource.aspectMask);
 	const Image *sampledImage = image->getSampledImage(viewFormat);
 
-	vk::Format samplingFormat = (image == sampledImage) ? viewFormat : sampledImage->getFormat().getAspectFormat(subresource.aspectMask);
+	vk::Format samplingFormat = (image == sampledImage) ? viewFormat : sampledImage->getFormat();  //.getAspectFormat(subresource.aspectMask);
 	pack({ pCreateInfo->viewType, samplingFormat, ResolveComponentMapping(pCreateInfo->components, viewFormat), subresource.levelCount <= 1u });
 }
 
