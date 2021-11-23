@@ -817,7 +817,7 @@ VkExtent3D Image::getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLe
 	return mipLevelExtent;
 }
 
-int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
+size_t Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 {
 	if(deviceMemory && deviceMemory->hasExternalImageProperties())
 	{
@@ -839,7 +839,7 @@ int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 	return usedFormat.pitchB(mipLevelExtent.width, borderSize());
 }
 
-int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
+size_t Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 {
 	// Depth and Stencil slice should be computed separately
 	ASSERT((aspect & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) !=
