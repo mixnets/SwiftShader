@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03d39df4_a0e8ad2d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-23T15:28:11Z",
+      "side": 1,
+      "message": "I\u0027ve removed the dEQP roll since it was missing testlist updates, so this should be able to land. Feel free to approve and submit.",
+      "revId": "881835043bffc2d94ea1d9aa9817faab41cb7b59",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c62ff9c_3ff6d85a",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 76626,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-23T15:28:11Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/59828",
+      "range": {
+        "startLine": 76626,
+        "startChar": 54,
+        "endLine": 76626,
+        "endChar": 70
+      },
+      "revId": "881835043bffc2d94ea1d9aa9817faab41cb7b59",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
