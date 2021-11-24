@@ -16,6 +16,24 @@
       "message": "Accidentally misclicked and added CQ+2. It\u0027s been reset, my bad.",
       "revId": "daff2c4899f02d9bc4424c52363aa064208765b2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b55b6e8_3e7024cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-24T01:36:19Z",
+      "side": 1,
+      "message": "No worries, wouldn\u0027t have been a problem to land this change. It\u0027s ready but I\u0027m trying to follow up with a change to actually address b/203541908. By the way I think the CQ would have halted due to missing a Verified+1 on the latest Patchset.",
+      "parentUuid": "f0bf85e7_5dbb101e",
+      "revId": "daff2c4899f02d9bc4424c52363aa064208765b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
