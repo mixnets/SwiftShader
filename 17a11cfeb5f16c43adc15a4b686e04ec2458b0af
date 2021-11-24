@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a4939de_53bbb155",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 940,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-24T20:06:50Z",
+      "side": 0,
+      "message": "This was the workaround applied for crbug.com/1248567, but is no longer necessary now that slicePitchBytes() returns size_t (note that VkDeviceSize is uint64_t).",
+      "range": {
+        "startLine": 940,
+        "startChar": 8,
+        "endLine": 940,
+        "endChar": 34
+      },
+      "revId": "17a11cfeb5f16c43adc15a4b686e04ec2458b0af",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
