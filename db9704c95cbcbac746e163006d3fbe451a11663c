@@ -46,6 +46,30 @@
       },
       "revId": "db9704c95cbcbac746e163006d3fbe451a11663c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "626b3fe5_b1986c2b",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-24T04:51:26Z",
+      "side": 1,
+      "message": "Design discussion: https://issuetracker.google.com/202873887#comment3\n\nI\u0027m inclined to only approve this CL mostly as-is, if there\u0027s an immediate follow-up with untangles these multiple uses of getAspectFormat(). Ideally I think we can do the refactorings first, and then this becomes trivial / less confusing / perhaps unnecessary even.",
+      "parentUuid": "1adc7a8b_ca8cc62c",
+      "range": {
+        "startLine": 219,
+        "startChar": 2,
+        "endLine": 222,
+        "endChar": 17
+      },
+      "revId": "db9704c95cbcbac746e163006d3fbe451a11663c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
