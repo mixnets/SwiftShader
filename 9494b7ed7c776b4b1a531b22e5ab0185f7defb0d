@@ -58,6 +58,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a83f482_fb52626a",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-24T08:45:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b057e158_4bc550da",
+      "range": {
+        "startLine": 145,
+        "startChar": 1,
+        "endLine": 145,
+        "endChar": 21
+      },
+      "revId": "9494b7ed7c776b4b1a531b22e5ab0185f7defb0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "46670351_28e8fb46",
@@ -71,6 +95,30 @@
       "writtenOn": "2021-11-23T13:39:11Z",
       "side": 1,
       "message": "Suggestion: if you set \"componentIndex\" to -1 by default, you don\u0027t need \"componentIndexOverride\". You can just test using:\n  (componentIndex \u003c 0) ? component : componentIndex\n  \nAnd you can set \"componentIndex\" to 0 at line 166 below.",
+      "range": {
+        "startLine": 146,
+        "startChar": 0,
+        "endLine": 147,
+        "endChar": 24
+      },
+      "revId": "9494b7ed7c776b4b1a531b22e5ab0185f7defb0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0767a63e_d33f987a",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-24T08:45:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "46670351_28e8fb46",
       "range": {
         "startLine": 146,
         "startChar": 0,
@@ -104,6 +152,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "72288d0a_d12914da",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-24T08:45:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c63b396d_25b03a91",
+      "range": {
+        "startLine": 150,
+        "startChar": 1,
+        "endLine": 168,
+        "endChar": 2
+      },
+      "revId": "9494b7ed7c776b4b1a531b22e5ab0185f7defb0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dfdf6455_9be01a66",
@@ -117,6 +189,30 @@
       "writtenOn": "2021-11-23T13:39:11Z",
       "side": 1,
       "message": "Nit: should still be const",
+      "range": {
+        "startLine": 2082,
+        "startChar": 1,
+        "endLine": 2082,
+        "endChar": 22
+      },
+      "revId": "9494b7ed7c776b4b1a531b22e5ab0185f7defb0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd4c250d_3958c9ea",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2082,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-24T08:45:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dfdf6455_9be01a66",
       "range": {
         "startLine": 2082,
         "startChar": 1,
