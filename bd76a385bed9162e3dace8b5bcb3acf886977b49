@@ -1,0 +1,222 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4351e63_6970bfe1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "nit: Is there a \"Tests: dEQP-VK.xyz*\" line we can add here? Even if a relevant test hasn\u0027t been submitted yet, it can be useful to have it as context here in case we need to test it in isolation later.",
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09b45b1c_1d2a0c93",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "Thanks Ari, always great to see issues fixed while the number of lines of code reduces! :)\n\nAs far as I\u0027m concerned this can land as-is. I just added several comments for things that might have further room for improvement. Feel free to address them (or not) in a follow-up change. Alexis, can you provide a +2 vote if you don\u0027t see any issues that need fixing?",
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "880d8c0d_82cd96af",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "nit: It\u0027s not very self-explanatory what this argument does. I suggest removing it, and below dealing with the non-scaled case more explicitly.",
+      "range": {
+        "startLine": 145,
+        "startChar": 48,
+        "endLine": 145,
+        "endChar": 52
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "682b1beb_60ab9bcf",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "nit: I think this is a bit confusing because it doesn\u0027t clarify that this produces the index of the texel component a gather operation reads. `int gatherComponent \u003d getGatherComponent()` would be clearer.",
+      "range": {
+        "startLine": 146,
+        "startChar": 1,
+        "endLine": 146,
+        "endChar": 50
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcb6962f_17efa7da",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "nit: It would improve readability to just use `function.method !\u003d Gather` here.",
+      "range": {
+        "startLine": 147,
+        "startChar": 22,
+        "endLine": 147,
+        "endChar": 40
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5ea3b89_63a47710",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "nit: Same, `function.method !\u003d Gather`",
+      "range": {
+        "startLine": 157,
+        "startChar": 45,
+        "endLine": 157,
+        "endChar": 63
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f42590dc_231e7143",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "nit: We tend to add {} brackets even around single-line conditional blocks, to make flow control stand out more and avoid common mistakes like adding a second statement without adding brackets.",
+      "range": {
+        "startLine": 168,
+        "startChar": 3,
+        "endLine": 168,
+        "endChar": 4
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7648e9d_f374c1fa",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2066,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "nit: This can be `scaled ? getComponentScale() : float4(1)`.",
+      "range": {
+        "startLine": 2066,
+        "startChar": 30,
+        "endLine": 2066,
+        "endChar": 55
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2485651_9b8e728f",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2613,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "nit: Let\u0027s make sure invalid/unknown values result in an ASSERT() (or UNREACHABLE() in case it\u0027s supposed to have been fully validated before and \"impossible\" even with invalid application behavior).\n\nIf I\u0027m not mistaken I believe VK_COMPONENT_SWIZZLE_ZERO and ONE are possible here when the sampler\u0027s swizzle is set to ZERO or ONE for the component we\u0027re gathering. So we should make sure a well-defined index value gets returned (returning -1 happens to work with the current code but that feels a bit too accidental - returning 0 seems cleaner).",
+      "range": {
+        "startLine": 2612,
+        "startChar": 2,
+        "endLine": 2613,
+        "endChar": 9
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76ac8664_7b409051",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2617,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-25T18:53:02Z",
+      "side": 1,
+      "message": "nit: It seems a bit bug prone to use an undocumented sentinel value for when we have no gather component to return. Future refactorings could lead to using this as e.g. an array index and we may not easily catch such a buffer overflow. If instead 0 is returned then the worst outcome is reduced to using the wrong component. With `function.method !\u003d Gather` used outside of method we\u0027d avoid requiring a sentinel value and improve separation of concerns.",
+      "range": {
+        "startLine": 2617,
+        "startChar": 8,
+        "endLine": 2617,
+        "endChar": 10
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
