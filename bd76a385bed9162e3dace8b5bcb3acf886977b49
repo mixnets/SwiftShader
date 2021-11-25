@@ -35,6 +35,23 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4bcfefbc_c462a8c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-11-25T20:38:33Z",
+      "side": 1,
+      "message": "I\u0027m good with the change. Please address Nicolas\u0027 nit before landing.",
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "880d8c0d_82cd96af",
