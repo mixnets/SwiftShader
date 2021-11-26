@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "bc46cd66_5caa5a31",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-26T08:45:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c4351e63_6970bfe1",
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "09b45b1c_1d2a0c93",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 5
@@ -75,6 +93,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c68e9764_0e92aa88",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-26T08:45:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "880d8c0d_82cd96af",
+      "range": {
+        "startLine": 145,
+        "startChar": 48,
+        "endLine": 145,
+        "endChar": 52
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "682b1beb_60ab9bcf",
@@ -88,6 +130,30 @@
       "writtenOn": "2021-11-25T18:53:02Z",
       "side": 1,
       "message": "nit: I think this is a bit confusing because it doesn\u0027t clarify that this produces the index of the texel component a gather operation reads. `int gatherComponent \u003d getGatherComponent()` would be clearer.",
+      "range": {
+        "startLine": 146,
+        "startChar": 1,
+        "endLine": 146,
+        "endChar": 50
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa8b89c4_d5da2f3e",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-26T08:45:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "682b1beb_60ab9bcf",
       "range": {
         "startLine": 146,
         "startChar": 1,
@@ -121,6 +187,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d240893_1e00ae27",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-26T08:45:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bcb6962f_17efa7da",
+      "range": {
+        "startLine": 147,
+        "startChar": 22,
+        "endLine": 147,
+        "endChar": 40
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d5ea3b89_63a47710",
@@ -134,6 +224,30 @@
       "writtenOn": "2021-11-25T18:53:02Z",
       "side": 1,
       "message": "nit: Same, `function.method !\u003d Gather`",
+      "range": {
+        "startLine": 157,
+        "startChar": 45,
+        "endLine": 157,
+        "endChar": 63
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14fbdf42_18b2bf32",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-26T08:45:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5ea3b89_63a47710",
       "range": {
         "startLine": 157,
         "startChar": 45,
@@ -167,6 +281,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9907fa66_6eb6c50c",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-26T08:45:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f42590dc_231e7143",
+      "range": {
+        "startLine": 168,
+        "startChar": 3,
+        "endLine": 168,
+        "endChar": 4
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e7648e9d_f374c1fa",
@@ -180,6 +318,30 @@
       "writtenOn": "2021-11-25T18:53:02Z",
       "side": 1,
       "message": "nit: This can be `scaled ? getComponentScale() : float4(1)`.",
+      "range": {
+        "startLine": 2066,
+        "startChar": 30,
+        "endLine": 2066,
+        "endChar": 55
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a270ae21_de006a0e",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2066,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-26T08:45:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e7648e9d_f374c1fa",
       "range": {
         "startLine": 2066,
         "startChar": 30,
@@ -213,6 +375,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "edcfae72_973339ee",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2613,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-26T08:45:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2485651_9b8e728f",
+      "range": {
+        "startLine": 2612,
+        "startChar": 2,
+        "endLine": 2613,
+        "endChar": 9
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "76ac8664_7b409051",
@@ -226,6 +412,30 @@
       "writtenOn": "2021-11-25T18:53:02Z",
       "side": 1,
       "message": "nit: It seems a bit bug prone to use an undocumented sentinel value for when we have no gather component to return. Future refactorings could lead to using this as e.g. an array index and we may not easily catch such a buffer overflow. If instead 0 is returned then the worst outcome is reduced to using the wrong component. With `function.method !\u003d Gather` used outside of method we\u0027d avoid requiring a sentinel value and improve separation of concerns.",
+      "range": {
+        "startLine": 2617,
+        "startChar": 8,
+        "endLine": 2617,
+        "endChar": 10
+      },
+      "revId": "bd76a385bed9162e3dace8b5bcb3acf886977b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e087cf3_8f8e0201",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2617,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2021-11-26T08:45:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76ac8664_7b409051",
       "range": {
         "startLine": 2617,
         "startChar": 8,
