@@ -756,6 +756,7 @@ endif()
 # SwiftShader Targets
 ###########################################################
 
+set(REACTOR_BACKEND "LLVM")
 add_subdirectory(src/Reactor) # Add ReactorSubzero and ReactorLLVM targets
 
 if(${REACTOR_BACKEND} STREQUAL "LLVM")
