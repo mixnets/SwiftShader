@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0203b4af_76c58582",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-30T01:28:56Z",
+      "side": 1,
+      "message": "This looks similar to b/207139112 which is likely a dEQP test bug. Please report it to Khronos if this is another such case.",
+      "revId": "e32039bebaa7a77b7796319ef20a0af8df672efb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
