@@ -93,15 +93,26 @@ sw::SpirvBinary optimizeSpirv(const vk::PipelineCache::SpirvBinaryKey &key)
 	opt.Run(code.data(), code.size(), &optimized, optimizerOptions);
 	ASSERT(optimized.size() > 0);
 
-	if(false)
+	if(true)
 	{
 		spvtools::SpirvTools core(vk::SPIRV_VERSION);
+
 		std::string preOpt;
 		core.Disassemble(code, &preOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
+
 		std::string postOpt;
 		core.Disassemble(optimized, &postOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
-		std::cout << "PRE-OPT: " << preOpt << std::endl
-		          << "POST-OPT: " << postOpt << std::endl;
+
+		std::cout << "PRE-OPT: " << std::endl
+		          << std::endl
+		          << preOpt << std::endl
+		          << std::endl
+		          << "POST-OPT: " << std::endl
+		          << std::endl
+		          << postOpt << std::endl
+		          << std::endl
+		          << "-----------------------------------------------------" << std::endl
+		          << std::endl;
 	}
 
 	return optimized;

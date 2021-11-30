@@ -24,10 +24,11 @@ static void RunBenchmark(benchmark::State &state, T &tester)
 {
 	tester.initialize();
 
-	if(false) tester.show();  // Enable for visual verification.
+	if(true) tester.show();  // Enable for visual verification.
 
 	// Warmup
-	tester.renderFrame();
+	while(true)
+		tester.renderFrame();
 
 	for(auto _ : state)
 	{
@@ -77,7 +78,8 @@ static void TriangleSolidColor(benchmark::State &state, Multisample multisample)
 
 			void main()
 			{
-				outColor = vec4(1.0, 1.0, 1.0, 1.0);
+				float x = clamp(0.5, 0.5, (gl_FragCoord.x < 0.0) ? -1.0 : (gl_FragCoord.x >= 0.0 ? (mix(1.0, 0.5, (gl_FragCoord.x >= 0.0))) : 1.0, 0.5));
+				outColor = vec4(x, 0.5, 0.0, 1.0);
 			})";
 
 		return tester.createShaderModule(fragmentShader, EShLanguage::EShLangFragment);
@@ -282,8 +284,8 @@ static void TriangleSampleTexture(benchmark::State &state, Multisample multisamp
 }
 
 BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture_Multisample, Multisample::True)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+// BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+// BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+// BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+// BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+// BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture_Multisample, Multisample::True)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
