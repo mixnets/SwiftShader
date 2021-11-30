@@ -26,7 +26,7 @@ namespace fs = std::filesystem;
 #endif
 
 #ifndef LOAD_SWIFTSHADER_DIRECTLY
-#	define LOAD_SWIFTSHADER_DIRECTLY 0
+#	define LOAD_SWIFTSHADER_DIRECTLY 1
 #endif
 
 #if LOAD_NATIVE_DRIVER && LOAD_SWIFTSHADER_DIRECTLY
@@ -35,7 +35,7 @@ namespace fs = std::filesystem;
 
 // By default, enable validation layers in DEBUG builds
 #if !defined(ENABLE_VALIDATION_LAYERS) && !defined(NDEBUG)
-#	define ENABLE_VALIDATION_LAYERS 1
+#	define ENABLE_VALIDATION_LAYERS 0
 #endif
 
 #if defined(_WIN32)
@@ -168,11 +168,13 @@ std::vector<const char *> getDriverPaths()
 #		if defined(_WIN64)
 	return { "./build/Release_x64/vk_swiftshader.dll",
 		     "./build/Release/vk_swiftshader.dll",
+		     "./Release/vk_swiftshader.dll",
 		     "./build/RelWithDebInfo/vk_swiftshader.dll",
 		     "./vk_swiftshader.dll" };
 #		else
 	return { "./build/Release_Win32/vk_swiftshader.dll",
 		     "./build/Release/vk_swiftshader.dll",
+		     "./Release/vk_swiftshader.dll",
 		     "./build/RelWithDebInfo/vk_swiftshader.dll",
 		     "./vk_swiftshader.dll" };
 #		endif
@@ -180,19 +182,23 @@ std::vector<const char *> getDriverPaths()
 #		if defined(_WIN64)
 	return { "./build/Debug_x64/vk_swiftshader.dll",
 		     "./build/Debug/vk_swiftshader.dll",
+		     "./Debug/vk_swiftshader.dll",
 		     "./vk_swiftshader.dll" };
 #		else
 	return { "./build/Debug_Win32/vk_swiftshader.dll",
 		     "./build/Debug/vk_swiftshader.dll",
+		     "./Debug/vk_swiftshader.dll",
 		     "./vk_swiftshader.dll" };
 #		endif
 #	endif
 #elif OS_MAC
 	return { "./build/Darwin/libvk_swiftshader.dylib",
+		     "./Darwin/libvk_swiftshader.dylib",
 		     "swiftshader/libvk_swiftshader.dylib",
 		     "libvk_swiftshader.dylib" };
 #elif OS_LINUX
 	return { "./build/Linux/libvk_swiftshader.so",
+		     "./Linux/libvk_swiftshader.so",
 		     "swiftshader/libvk_swiftshader.so",
 		     "./libvk_swiftshader.so",
 		     "libvk_swiftshader.so" };
