@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9852e31f_e77ce480",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-30T14:14:54Z",
+      "side": 1,
+      "message": "Note that kokoro can\u0027t build this subtree update.",
+      "revId": "cd2102f043c304886cae4c2194379989bdd37dbc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
