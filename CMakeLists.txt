@@ -12,7 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD   (25ca40 Don't handle vendor-specific SPIR-V instructions)
 cmake_minimum_required(VERSION 3.13)
+=======
+#
+# The SPIR-V headers from the SPIR-V Registry
+# https://www.khronos.org/registry/spir-v/
+#
+cmake_minimum_required(VERSION 3.0)
+project(SPIRV-Headers VERSION 1.5.5)
+>>>>>>> BRANCH (cd2102 Squashed 'third_party/SPIRV-Headers/' changes from 29817199b)
 
 project(SwiftShader C CXX ASM)
 
