@@ -22,6 +22,30 @@
       },
       "revId": "b298c220840fe9ccd540490d1b265287626bb677",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "445c7501_6afce266",
+        "filename": "src/Pipeline/SpirvShaderInstructions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-11-30T15:59:29Z",
+      "side": 1,
+      "message": "spirv-opt eliminates them, but in theory they could eat some clock cycles (they perform no-operation, but they\u0027re still instructions). I preserved the old behavior.",
+      "parentUuid": "429bb782_e32da6d0",
+      "range": {
+        "startLine": 46,
+        "startChar": 11,
+        "endLine": 46,
+        "endChar": 16
+      },
+      "revId": "b298c220840fe9ccd540490d1b265287626bb677",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
