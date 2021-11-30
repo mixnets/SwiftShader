@@ -349,6 +349,11 @@ static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsF
 	features->formatA4B4G4R4 = VK_TRUE;
 }
 
+static void getPhysicalDeviceRGBA10X6FormatsFeaturesEXT(VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT *features)
+{
+	features->formatRgba10x6WithoutYCbCrSampler = VK_FALSE;
+}
+
 void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 {
 	features->features = getFeatures();
@@ -449,6 +454,10 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT:
 			getPhysicalDevice4444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT:
+			getPhysicalDeviceRGBA10X6FormatsFeaturesEXT(reinterpret_cast<VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT *>(curExtension));
+			break;
 		// Unsupported extensions, but used by dEQP
 		// TODO(b/176893525): This may not be legal.
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT:
