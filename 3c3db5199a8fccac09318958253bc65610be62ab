@@ -16,6 +16,29 @@
       "message": "Cool! I\u0027ll apply this locally to the Regres bot and see it starts processing our cherry-picked changes.",
       "revId": "3c3db5199a8fccac09318958253bc65610be62ab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83307b18_e33f07f0",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 1064,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-12-02T16:10:58Z",
+      "side": 1,
+      "message": "Give this struct a name, and you don\u0027t have to declare it twice.\n\n\tstruct ChangeInfo {\n\t\tproject string\n\t\tbranch  string\n\t};\n\t\nNote: you don\u0027t really need the \u0027found\u0027 field, as you can just query whether the map contains the item (see L1079 - good, L1087 - bad):\n\n   _, found :\u003d changes[id]",
+      "range": {
+        "startLine": 1064,
+        "startChar": 19,
+        "endLine": 1064,
+        "endChar": 27
+      },
+      "revId": "3c3db5199a8fccac09318958253bc65610be62ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
