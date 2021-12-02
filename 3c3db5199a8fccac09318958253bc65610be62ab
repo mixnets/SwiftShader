@@ -39,6 +39,30 @@
       },
       "revId": "3c3db5199a8fccac09318958253bc65610be62ab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46f391ea_4b31d0a9",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 1064,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-12-02T16:11:55Z",
+      "side": 1,
+      "message": "erm, been writing in too many different languages recently. The struct should be:\n\n\ttype ChangeInfo struct {\n\t\tproject string\n\t\tbranch  string\n\t};\n\t\nor call it ProjectAndBranch or something.",
+      "parentUuid": "83307b18_e33f07f0",
+      "range": {
+        "startLine": 1064,
+        "startChar": 19,
+        "endLine": 1064,
+        "endChar": 27
+      },
+      "revId": "3c3db5199a8fccac09318958253bc65610be62ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
