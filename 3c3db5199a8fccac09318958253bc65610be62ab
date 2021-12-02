@@ -63,6 +63,30 @@
       },
       "revId": "3c3db5199a8fccac09318958253bc65610be62ab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a38a980a_168581e8",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 1064,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-12-02T16:38:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "46f391ea_4b31d0a9",
+      "range": {
+        "startLine": 1064,
+        "startChar": 19,
+        "endLine": 1064,
+        "endChar": 27
+      },
+      "revId": "3c3db5199a8fccac09318958253bc65610be62ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
