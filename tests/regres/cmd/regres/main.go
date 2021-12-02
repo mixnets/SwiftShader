@@ -1042,12 +1042,18 @@ type changeInfo struct {
 	latest        git.Hash  // Git hash of the latest patchset in the change.
 	parent        git.Hash  // Git hash of the changelist this change is based on.
 	lastUpdated   time.Time // Time the change was last fetched.
+	branch        string    // The gerrit branch the change is on
+	project       string    // The gerrit project the change is on
 	commitMessage string
 }
 
 // queryChanges updates the changes map by querying gerrit for the latest open
 // changes.
 func queryChanges(client *gerrit.Client, changes map[string]*changeInfo) error {
+	type ChangeLocation struct {
+		project string
+		branch  string
+	}
 	log.Println("Checking for latest changes")
 	results, _, err := client.Changes.QueryChanges(&gerrit.QueryChangeOptions{
 		QueryOptions: gerrit.QueryOptions{
@@ -1059,22 +1065,22 @@ func queryChanges(client *gerrit.Client, changes map[string]*changeInfo) error {
 		return cause.Wrap(err, "Failed to get list of changes")
 	}
 
-	ids := map[string]bool{}
+	ids := map[string]ChangeLocation{}
 	for _, r := range *results {
-		ids[r.ChangeID] = true
+		ids[r.ChangeID] = ChangeLocation{r.Project, r.Branch}
 	}
 
 	// Add new changes
-	for id := range ids {
+	for id, value := range ids {
 		if _, found := changes[id]; !found {
 			log.Printf("Tracking new change '%v'\n", id)
-			changes[id] = &changeInfo{id: id}
+			changes[id] = &changeInfo{id: id, project: value.project, branch: value.branch}
 		}
 	}
 
 	// Remove old changes
 	for id := range changes {
-		if found := ids[id]; !found {
+		if _, found := ids[id]; !found {
 			log.Printf("Untracking change '%v'\n", id)
 			delete(changes, id)
 		}
@@ -1085,11 +1091,11 @@ func queryChanges(client *gerrit.Client, changes map[string]*changeInfo) error {
 
 // update queries gerrit for information about the given change.
 func (c *changeInfo) update(client *gerrit.Client) error {
-	change, _, err := client.Changes.GetChange(c.id, &gerrit.ChangeOptions{
+	change, _, err := client.Changes.GetChange(fmt.Sprintf("%s~%s~%s", c.project, c.branch, c.id), &gerrit.ChangeOptions{
 		AdditionalFields: []string{"CURRENT_REVISION", "CURRENT_COMMIT", "MESSAGES", "LABELS", "DETAILED_ACCOUNTS"},
 	})
 	if err != nil {
-		return cause.Wrap(err, "Getting info for change '%s'", c.id)
+		return cause.Wrap(err, "Getting info for change '%s~%s~%s'", c.project, c.branch, c.id)
 	}
 
 	current, ok := change.Revisions[change.CurrentRevision]
