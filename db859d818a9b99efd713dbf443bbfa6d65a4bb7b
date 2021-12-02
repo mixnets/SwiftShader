@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d13df7fc_4a5a9e60",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-02T18:59:09Z",
+      "side": 1,
+      "message": "Patch set 6 immediately fails with error like the one below, on each CL:\n\n2021/12/02 13:58:07 Couldn\u0027t update info for change \u0027I8014e40e149d6c24b1d041a5cfee30b1164264cd\u0027. Cause: Getting info for change \u0027%!d(string\u003d%d56208)\u0027. Cause: parse \"changes/%!d(string\u003d%d56208)\": invalid URL escape \"%!d\"",
+      "revId": "db859d818a9b99efd713dbf443bbfa6d65a4bb7b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
