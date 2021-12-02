@@ -2586,15 +2586,14 @@ sw::float4 SamplerCore::getComponentScale() const
 		break;
 	};
 
-	const sw::float4 scale = state.textureFormat.getScale();
 	const sw::int4 bits = state.textureFormat.bitsPerComponent();
 	const sw::int4 shift = sw::int4(std::max(16 - bits.x, 0), std::max(16 - bits.y, 0), std::max(16 - bits.z, 0),
 	                                std::max(16 - bits.w, 0));
 
-	return sw::float4(static_cast<uint16_t>(scale.x) << shift.x,
-	                  static_cast<uint16_t>(scale.y) << shift.y,
-	                  static_cast<uint16_t>(scale.z) << shift.z,
-	                  static_cast<uint16_t>(scale.w) << shift.w);
+	return sw::float4(static_cast<uint16_t>(0xFFFF << shift.x),
+	                  static_cast<uint16_t>(0xFFFF << shift.y),
+	                  static_cast<uint16_t>(0xFFFF << shift.z),
+	                  static_cast<uint16_t>(0xFFFF << shift.w));
 }
 
 int SamplerCore::getGatherComponent() const
