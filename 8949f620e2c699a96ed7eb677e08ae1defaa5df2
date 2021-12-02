@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1285c7bb_4a6f7746",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-02T15:18:49Z",
+      "side": 1,
+      "message": "This can land with the change to deqp.json removed. Sean can you take care of that and follow up on the testslists not getting updated? Please start with describing the current status in a Buganizer issue somewhere.",
+      "revId": "8949f620e2c699a96ed7eb677e08ae1defaa5df2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d831ad99_d7169050",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 103376,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-02T15:18:49Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/60188",
+      "range": {
+        "startLine": 103376,
+        "startChar": 14,
+        "endLine": 103376,
+        "endChar": 31
+      },
+      "revId": "8949f620e2c699a96ed7eb677e08ae1defaa5df2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
