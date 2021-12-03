@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "90bc5379_88ac9a6f",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 90433,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-03T14:48:10Z",
+      "side": 1,
+      "message": "b/195422130#comment7",
+      "range": {
+        "startLine": 90433,
+        "startChar": 8,
+        "endLine": 90433,
+        "endChar": 20
+      },
+      "revId": "db004aee9993851e18d0ed0b37fe909b750ce6ea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
