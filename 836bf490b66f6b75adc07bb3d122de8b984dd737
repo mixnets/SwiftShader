@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "84df30b8_0b8f4440",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-03T14:31:03Z",
+      "side": 1,
+      "message": "Thanks Ben! Feel free to manually set Verified+1 and Submit.",
+      "revId": "836bf490b66f6b75adc07bb3d122de8b984dd737",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
