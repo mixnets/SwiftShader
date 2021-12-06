@@ -29,6 +29,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(LINUX TRUE)
+    set(X11 FALSE)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
     set(ANDROID TRUE)
     set(CMAKE_CXX_FLAGS "-DANDROID_NDK_BUILD")
@@ -111,7 +112,8 @@ if(LINUX)
     check_symbol_exists(mallinfo2 malloc.h HAVE_MALLINFO2)
 endif()
 
-find_library(XCB xcb)
+# find_library(XCB xcb)
+set(XCB FALSE)
 if(SWIFTSHADER_BUILD_WSI_WAYLAND)
     find_library(WAYLAND wayland-client)
 endif(SWIFTSHADER_BUILD_WSI_WAYLAND)
@@ -148,7 +150,7 @@ endfunction()
 option_if_not_defined(SWIFTSHADER_BUILD_WSI_WAYLAND "Build the Wayland WSI support" FALSE)
 option_if_not_defined(SWIFTSHADER_BUILD_WSI_DIRECTFB "Build the DirectFB WSI support" FALSE)
 option_if_not_defined(SWIFTSHADER_BUILD_WSI_D2D "Build the Direct-to-Display WSI support" FALSE)
-option_if_not_defined(SWIFTSHADER_BUILD_PVR "Build the PowerVR examples" TRUE)
+option_if_not_defined(SWIFTSHADER_BUILD_PVR "Build the PowerVR examples" FALSE)
 option_if_not_defined(SWIFTSHADER_GET_PVR "Check out the PowerVR submodule" FALSE)
 
 option_if_not_defined(SWIFTSHADER_USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Studio" TRUE)
@@ -812,123 +814,123 @@ endif()
 # Sample programs and tests
 ###########################################################
 
-# TODO(b/161976310): Add support for building PowerVR on MacOS
-if(APPLE AND HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
-    message(WARNING "Building PowerVR examples for SwiftShader is not yet supported on Apple platforms.")
-    set(SWIFTSHADER_BUILD_PVR FALSE)
-endif()
+# # TODO(b/161976310): Add support for building PowerVR on MacOS
+# if(APPLE AND HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
+#     message(WARNING "Building PowerVR examples for SwiftShader is not yet supported on Apple platforms.")
+#     set(SWIFTSHADER_BUILD_PVR FALSE)
+# endif()
 
-if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
-    if(UNIX AND NOT APPLE)
-        set(PVR_WINDOW_SYSTEM XCB)
+# if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
+#     if(UNIX AND NOT APPLE)
+#         set(PVR_WINDOW_SYSTEM XCB)
 
-        # Set the RPATH of the next defined build targets to $ORIGIN,
-        # allowing them to load shared libraries from the execution directory.
-        set(CMAKE_BUILD_RPATH "$ORIGIN")
-    endif()
+#         # Set the RPATH of the next defined build targets to $ORIGIN,
+#         # allowing them to load shared libraries from the execution directory.
+#         set(CMAKE_BUILD_RPATH "$ORIGIN")
+#     endif()
 
-    set(PVR_BUILD_EXAMPLES TRUE CACHE BOOL "Build the PowerVR SDK Examples" FORCE)
-    set(PVR_BUILD_OPENGLES_EXAMPLES FALSE CACHE BOOL "Build the OpenGLES PowerVR SDK Examples" FORCE)
-    set(PVR_BUILD_VULKAN_EXAMPLES TRUE CACHE BOOL "Build the Vulkan PowerVR SDK Examples" FORCE)
-    set(PVR_BUILD_OPENCL_EXAMPLES FALSE CACHE BOOL "Build the OpenCL PowerVR SDK Examples" FORCE)
-    set(PVR_BUILD_OPENGLES2_EXAMPLES FALSE CACHE BOOL "Only build OpenGL ES 2.0 examples" FORCE)
-    add_subdirectory(${THIRD_PARTY_DIR}/PowerVR_Examples)
+#     set(PVR_BUILD_EXAMPLES TRUE CACHE BOOL "Build the PowerVR SDK Examples" FORCE)
+#     set(PVR_BUILD_OPENGLES_EXAMPLES FALSE CACHE BOOL "Build the OpenGLES PowerVR SDK Examples" FORCE)
+#     set(PVR_BUILD_VULKAN_EXAMPLES TRUE CACHE BOOL "Build the Vulkan PowerVR SDK Examples" FORCE)
+#     set(PVR_BUILD_OPENCL_EXAMPLES FALSE CACHE BOOL "Build the OpenCL PowerVR SDK Examples" FORCE)
+#     set(PVR_BUILD_OPENGLES2_EXAMPLES FALSE CACHE BOOL "Only build OpenGL ES 2.0 examples" FORCE)
+#     add_subdirectory(${THIRD_PARTY_DIR}/PowerVR_Examples)
 
-    # Samples known to work well
-    set(PVR_VULKAN_TARGET_GOOD
-        VulkanBumpmap
-        VulkanExampleUI
-        VulkanGaussianBlur
-        VulkanGlass
-        VulkanGnomeHorde
-        VulkanHelloAPI
-        VulkanImageBasedLighting
-        VulkanIntroducingPVRUtils
-        VulkanMultiSampling
-        VulkanNavigation2D
-        VulkanParticleSystem
-        VulkanSkinning
-    )
+#     # Samples known to work well
+#     set(PVR_VULKAN_TARGET_GOOD
+#         VulkanBumpmap
+#         VulkanExampleUI
+#         VulkanGaussianBlur
+#         VulkanGlass
+#         VulkanGnomeHorde
+#         VulkanHelloAPI
+#         VulkanImageBasedLighting
+#         VulkanIntroducingPVRUtils
+#         VulkanMultiSampling
+#         VulkanNavigation2D
+#         VulkanParticleSystem
+#         VulkanSkinning
+#     )
 
-    set(PVR_VULKAN_TARGET_OTHER
-        VulkanDeferredShading
-        VulkanDeferredShadingPFX
-        VulkanGameOfLife
-        VulkanIBLMapsGenerator
-        VulkanIMGTextureFilterCubic
-        VulkanIntroducingPVRShell
-        VulkanIntroducingPVRVk
-        VulkanIntroducingUIRenderer
-        VulkanMultithreading
-        VulkanNavigation3D
-        VulkanPostProcessing
-        VulkanPVRScopeExample
-        VulkanPVRScopeRemote
-    )
+#     set(PVR_VULKAN_TARGET_OTHER
+#         VulkanDeferredShading
+#         VulkanDeferredShadingPFX
+#         VulkanGameOfLife
+#         VulkanIBLMapsGenerator
+#         VulkanIMGTextureFilterCubic
+#         VulkanIntroducingPVRShell
+#         VulkanIntroducingPVRVk
+#         VulkanIntroducingUIRenderer
+#         VulkanMultithreading
+#         VulkanNavigation3D
+#         VulkanPostProcessing
+#         VulkanPVRScopeExample
+#         VulkanPVRScopeRemote
+#     )
 
-    set(PVR_TARGET_OTHER
-        glslang
-        glslangValidator
-        glslang-default-resource-limits
-        OSDependent
-        pugixml
-        PVRAssets
-        PVRCamera
-        PVRCore
-        PVRPfx
-        PVRShell
-        PVRUtilsVk
-        PVRVk
-        SPIRV
-        spirv-remap
-        SPVRemapper
-        uninstall
-    )
+#     set(PVR_TARGET_OTHER
+#         glslang
+#         glslangValidator
+#         glslang-default-resource-limits
+#         OSDependent
+#         pugixml
+#         PVRAssets
+#         PVRCamera
+#         PVRCore
+#         PVRPfx
+#         PVRShell
+#         PVRUtilsVk
+#         PVRVk
+#         SPIRV
+#         spirv-remap
+#         SPVRemapper
+#         uninstall
+#     )
 
-    set(PVR_VULKAN_TARGET
-        ${PVR_VULKAN_TARGET_GOOD}
-        ${PVR_VULKAN_TARGET_OTHER}
-    )
+#     set(PVR_VULKAN_TARGET
+#         ${PVR_VULKAN_TARGET_GOOD}
+#         ${PVR_VULKAN_TARGET_OTHER}
+#     )
 
-    foreach(pvr_target ${PVR_VULKAN_TARGET})
-        add_dependencies(${pvr_target} vk_swiftshader)
-    endforeach()
+#     foreach(pvr_target ${PVR_VULKAN_TARGET})
+#         add_dependencies(${pvr_target} vk_swiftshader)
+#     endforeach()
 
-    foreach(pvr_target ${PVR_VULKAN_TARGET_GOOD})
-        set_target_properties(${pvr_target} PROPERTIES FOLDER Samples)
-    endforeach()
+#     foreach(pvr_target ${PVR_VULKAN_TARGET_GOOD})
+#         set_target_properties(${pvr_target} PROPERTIES FOLDER Samples)
+#     endforeach()
 
-    foreach(pvr_target ${PVR_TARGET_OTHER} ${PVR_VULKAN_TARGET_OTHER})
-        set_target_properties(${pvr_target} PROPERTIES FOLDER Samples/PowerVR-Build)
-    endforeach()
-endif()
+#     foreach(pvr_target ${PVR_TARGET_OTHER} ${PVR_VULKAN_TARGET_OTHER})
+#         set_target_properties(${pvr_target} PROPERTIES FOLDER Samples/PowerVR-Build)
+#     endforeach()
+# endif()
 
-if(BUILD_VULKAN_WRAPPER)
-    if (NOT TARGET glslang)
-        add_subdirectory(${THIRD_PARTY_DIR}/glslang)
-    endif()
-    add_subdirectory(${TESTS_DIR}/VulkanWrapper) # Add VulkanWrapper target
-endif()
+# if(BUILD_VULKAN_WRAPPER)
+#     if (NOT TARGET glslang)
+#         add_subdirectory(${THIRD_PARTY_DIR}/glslang)
+#     endif()
+#     add_subdirectory(${TESTS_DIR}/VulkanWrapper) # Add VulkanWrapper target
+# endif()
 
-if(SWIFTSHADER_BUILD_TESTS)
-    add_subdirectory(${TESTS_DIR}/ReactorUnitTests) # Add ReactorUnitTests target
-    add_subdirectory(${TESTS_DIR}/MathUnitTests) # Add math-unittests target
-    add_subdirectory(${TESTS_DIR}/SystemUnitTests) # Add system-unittests target
-endif()
+# if(SWIFTSHADER_BUILD_TESTS)
+#     add_subdirectory(${TESTS_DIR}/ReactorUnitTests) # Add ReactorUnitTests target
+#     add_subdirectory(${TESTS_DIR}/MathUnitTests) # Add math-unittests target
+#     add_subdirectory(${TESTS_DIR}/SystemUnitTests) # Add system-unittests target
+# endif()
 
-if(SWIFTSHADER_BUILD_BENCHMARKS)
-    if (NOT TARGET benchmark::benchmark)
-        set(BENCHMARK_ENABLE_TESTING FALSE CACHE BOOL FALSE FORCE)
-        add_subdirectory(${THIRD_PARTY_DIR}/benchmark)
-        set_target_properties(benchmark PROPERTIES FOLDER "third_party")
-        set_target_properties(benchmark_main PROPERTIES FOLDER "third_party")
-    endif()
+# if(SWIFTSHADER_BUILD_BENCHMARKS)
+#     if (NOT TARGET benchmark::benchmark)
+#         set(BENCHMARK_ENABLE_TESTING FALSE CACHE BOOL FALSE FORCE)
+#         add_subdirectory(${THIRD_PARTY_DIR}/benchmark)
+#         set_target_properties(benchmark PROPERTIES FOLDER "third_party")
+#         set_target_properties(benchmark_main PROPERTIES FOLDER "third_party")
+#     endif()
 
-    add_subdirectory(${TESTS_DIR}/ReactorBenchmarks) # Add ReactorBenchmarks target
-    add_subdirectory(${TESTS_DIR}/SystemBenchmarks) # Add system-benchmarks target
-    add_subdirectory(${TESTS_DIR}/VulkanBenchmarks) # Add VulkanBenchmarks target
-endif()
+#     add_subdirectory(${TESTS_DIR}/ReactorBenchmarks) # Add ReactorBenchmarks target
+#     add_subdirectory(${TESTS_DIR}/SystemBenchmarks) # Add system-benchmarks target
+#     add_subdirectory(${TESTS_DIR}/VulkanBenchmarks) # Add VulkanBenchmarks target
+# endif()
 
-if(SWIFTSHADER_BUILD_TESTS)
-    add_subdirectory(${TESTS_DIR}/VulkanUnitTests) # Add VulkanUnitTests target
-endif()
+# if(SWIFTSHADER_BUILD_TESTS)
+#     add_subdirectory(${TESTS_DIR}/VulkanUnitTests) # Add VulkanUnitTests target
+# endif()
