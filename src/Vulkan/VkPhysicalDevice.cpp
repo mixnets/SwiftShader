@@ -211,7 +211,7 @@ static void getPhysicalDeviceVulkan11Features(T *features)
 template<typename T>
 static void getPhysicalDeviceImagelessFramebufferFeatures(T *features)
 {
-	features->imagelessFramebuffer = VK_TRUE;
+	features->imagelessFramebuffer = VK_FALSE;
 }
 
 template<typename T>
