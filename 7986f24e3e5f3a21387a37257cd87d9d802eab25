@@ -16,6 +16,23 @@
       "message": "PTAL!",
       "revId": "7986f24e3e5f3a21387a37257cd87d9d802eab25",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06e20174_d8bdb513",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-07T15:09:16Z",
+      "side": 1,
+      "message": "Looks good!\n\nAccording to https://vulkan.gpuinfo.org, 99% of implementations can do 65536 or up (and that other 1% includes older SwiftShader reports). Technically SwiftShader can do up to 1 GiB at the moment but it\u0027s good to detect cases where we\u0027d break compatibility with other implementations.",
+      "revId": "7986f24e3e5f3a21387a37257cd87d9d802eab25",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
