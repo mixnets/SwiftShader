@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "494dd852_46c75968",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101231
+      },
+      "writtenOn": "2021-12-08T02:26:34Z",
+      "side": 1,
+      "message": "I can\u0027t open a revert for this but it appears to have regressed some WebGL tests starting here:\nhttps://ci.chromium.org/ui/p/chromium/builders/ci/win-swangle-chromium-x86/10222/overview",
+      "revId": "556563cae4c7b814a2321b7338247196c2109c2d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
