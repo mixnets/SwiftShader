@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a982e3b_1de91266",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2533,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-12-08T20:32:43Z",
+      "side": 1,
+      "message": "This will cause recompilation when state.blendState[index].blendOperationAlpha changes to any of these values, while producing the exact same output. We should try to avoid having multiple possible states producing the same output.",
+      "range": {
+        "startLine": 2520,
+        "startChar": 0,
+        "endLine": 2533,
+        "endChar": 37
+      },
+      "revId": "ecd2fd9e1ee95ee4caffb45d917728dd575ec210",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
