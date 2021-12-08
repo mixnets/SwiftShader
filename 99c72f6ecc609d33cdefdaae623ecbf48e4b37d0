@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cd52f35_a2959629",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-12-08T19:16:50Z",
+      "side": 1,
+      "message": "yes please, I can\u0027t wait for finally not getting double ANGLE results in code search.",
+      "revId": "99c72f6ecc609d33cdefdaae623ecbf48e4b37d0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
