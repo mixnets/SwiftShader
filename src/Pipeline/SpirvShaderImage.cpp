@@ -248,6 +248,7 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
 
 	if(imageOperands & spv::ImageOperandsVolatileTexelMask)
 	{
+		assert(false);
 		imageOperands &= ~spv::ImageOperandsVolatileTexelMask;
 	}
 
