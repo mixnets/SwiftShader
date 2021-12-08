@@ -34,6 +34,24 @@
       "parentUuid": "494dd852_46c75968",
       "revId": "556563cae4c7b814a2321b7338247196c2109c2d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37dc2cc4_25dc6334",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-08T03:02:13Z",
+      "side": 1,
+      "message": "Thanks for the heads-up! Please avoid reverting changes unless there\u0027s a good indication that there\u0027s a bug in our Vulkan implementation. FWIW this passed dEQP-VK, and has already rolled into Android and Google3. If this test failure affects Chromium developer productivity, I suggest suppressing it downstream.",
+      "parentUuid": "3094a19e_ec33079b",
+      "revId": "556563cae4c7b814a2321b7338247196c2109c2d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
