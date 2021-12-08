@@ -96,6 +96,8 @@ void XcbSurfaceKHR::detachImage(PresentImage *image)
 
 VkResult XcbSurfaceKHR::present(PresentImage *image)
 {
+	VkResult result = VK_SUCCESS;
+
 	auto it = graphicsContexts.find(image);
 	if(it != graphicsContexts.end())
 	{
@@ -110,7 +112,7 @@ VkResult XcbSurfaceKHR::present(PresentImage *image)
 
 		if(windowExtent.width != extent.width || windowExtent.height != extent.height)
 		{
-			return VK_ERROR_OUT_OF_DATE_KHR;
+			result = VK_ERROR_OUT_OF_DATE_KHR;
 		}
 
 		// TODO: Convert image if not RGB888.
@@ -134,7 +136,7 @@ VkResult XcbSurfaceKHR::present(PresentImage *image)
 		libXCB->xcb_flush(connection);
 	}
 
-	return VK_SUCCESS;
+	return result;
 }
 
 }  // namespace vk

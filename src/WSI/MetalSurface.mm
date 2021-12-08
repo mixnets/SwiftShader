@@ -161,6 +161,8 @@ VkResult MetalSurface::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurface
 
 VkResult MetalSurface::present(PresentImage* image) API_AVAILABLE(macosx(10.11))
 {
+    VkResult result = VK_SUCCESS;
+
     @autoreleasepool
     {
         auto drawable = metalLayer->getNextDrawable();
@@ -171,7 +173,7 @@ VkResult MetalSurface::present(PresentImage* image) API_AVAILABLE(macosx(10.11))
 
             if(drawableExtent.width != extent.width || drawableExtent.height != extent.height)
             {
-                return VK_ERROR_OUT_OF_DATE_KHR;
+                result = VK_ERROR_OUT_OF_DATE_KHR;
             }
 
             [drawable.texture replaceRegion:MTLRegionMake2D(0, 0, extent.width, extent.height)
@@ -182,7 +184,7 @@ VkResult MetalSurface::present(PresentImage* image) API_AVAILABLE(macosx(10.11))
 
         }
     }
-    return VK_SUCCESS;
+    return result;
 }
 
 #ifdef VK_USE_PLATFORM_METAL_EXT

@@ -91,6 +91,8 @@ void XlibSurfaceKHR::detachImage(PresentImage *image)
 
 VkResult XlibSurfaceKHR::present(PresentImage *image)
 {
+	VkResult result = VK_SUCCESS;
+
 	auto it = imageMap.find(image);
 	if(it != imageMap.end())
 	{
@@ -105,14 +107,14 @@ VkResult XlibSurfaceKHR::present(PresentImage *image)
 
 			if(windowExtent.width != extent.width || windowExtent.height != extent.height)
 			{
-				return VK_ERROR_OUT_OF_DATE_KHR;
+				result = VK_ERROR_OUT_OF_DATE_KHR;
 			}
 
 			libX11->XPutImage(pDisplay, window, gc, xImage, 0, 0, 0, 0, extent.width, extent.height);
 		}
 	}
 
-	return VK_SUCCESS;
+	return result;
 }
 
 }  // namespace vk

@@ -102,14 +102,14 @@ VkResult Win32SurfaceKHR::present(PresentImage *image)
 
 	if(windowExtent.width != extent.width || windowExtent.height != extent.height)
 	{
-		return VK_ERROR_OUT_OF_DATE_KHR;
+		result = VK_ERROR_OUT_OF_DATE_KHR;
 	}
 
 	image->getImage()->copyTo(reinterpret_cast<uint8_t *>(framebuffer), bitmapRowPitch);
 
 	StretchBlt(windowContext, 0, 0, extent.width, extent.height, bitmapContext, 0, 0, extent.width, extent.height, SRCCOPY);
 
-	return VK_SUCCESS;
+	return result;
 }
 
 VkResult Win32SurfaceKHR::lazyCreateFrameBuffer()
