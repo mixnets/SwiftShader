@@ -22,6 +22,30 @@
       },
       "revId": "ecd2fd9e1ee95ee4caffb45d917728dd575ec210",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69a6cff4_6a84399a",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2533,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-08T20:48:53Z",
+      "side": 1,
+      "message": "Thanks for pointing that out. Fortunately Vulkan requires the color and alpha blend mode to match, so there\u0027s no increase in state combinations:\n\nVUID-VkPipelineColorBlendAttachmentState-colorBlendOp-01406\nIf either of colorBlendOp or alphaBlendOp is an advanced blend operation, then colorBlendOp must equal alphaBlendOp",
+      "parentUuid": "8a982e3b_1de91266",
+      "range": {
+        "startLine": 2520,
+        "startChar": 0,
+        "endLine": 2533,
+        "endChar": 37
+      },
+      "revId": "ecd2fd9e1ee95ee4caffb45d917728dd575ec210",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
