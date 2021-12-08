@@ -52,6 +52,24 @@
       "parentUuid": "3094a19e_ec33079b",
       "revId": "556563cae4c7b814a2321b7338247196c2109c2d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4efa6de_68262f0c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101231
+      },
+      "writtenOn": "2021-12-08T07:41:43Z",
+      "side": 1,
+      "message": "The issue is a gpu process crash but we aren\u0027t capturing a crash stack for some reason. I strongly suspected the raised limit was exposing a crash inside swiftshader somehow, since these tests are apparently fine on non-swiftshader Vulkan implementations that already have higher values for this limit.\n\nUnfortunately as wrangler I don\u0027t really have time budget to debug the crash stack problem or learn how to try reproducing this crash. Yet since this is a WebGL test and I don\u0027t know what the crash is, I can only assume it could be a security risk. I guess I can revert the swiftshader rolls and stop the roller until someone can figure out what it is?",
+      "parentUuid": "37dc2cc4_25dc6334",
+      "revId": "556563cae4c7b814a2321b7338247196c2109c2d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
