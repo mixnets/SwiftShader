@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57cdf4fd_bc4a272d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-08T13:44:22Z",
+      "side": 1,
+      "message": "Still blocked on https://bugs.chromium.org/p/angleproject/issues/detail?id\u003d6444",
+      "revId": "51ed63ee4973bf35f761e072f2f91bfafc6b3fa9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
