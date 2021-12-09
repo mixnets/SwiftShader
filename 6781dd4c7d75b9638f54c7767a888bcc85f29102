@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74034e2d_236b5418",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-12-09T17:59:34Z",
+      "side": 1,
+      "message": "Kokoro failure is on MacOS, so unrelated to this CL.",
+      "revId": "6781dd4c7d75b9638f54c7767a888bcc85f29102",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
