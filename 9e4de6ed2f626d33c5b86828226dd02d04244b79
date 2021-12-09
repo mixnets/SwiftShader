@@ -46,6 +46,30 @@
       },
       "revId": "9e4de6ed2f626d33c5b86828226dd02d04244b79",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8864ad55_421bebef",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-12-09T21:12:48Z",
+      "side": 1,
+      "message": "OK, I think the \"[[maybe_unused]] spv::Scope scope\" variable above may not be the most elegant solution, but good enough.",
+      "parentUuid": "266d2146_c32bdda8",
+      "range": {
+        "startLine": 232,
+        "startChar": 2,
+        "endLine": 232,
+        "endChar": 60
+      },
+      "revId": "9e4de6ed2f626d33c5b86828226dd02d04244b79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
