@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "38fcfbd8_ad5efa9e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-12-09T10:26:56Z",
+      "side": 1,
+      "message": "Hej Nicolas,\n\nwould you mind to have a look at this patch?\n\nBUILD.gn already enables Arms control flow integrity check, but on a rather coarse level (nothing or all). This patch gives the ability to enable them in a more fine grained fashion.\n\nThanks.\n\nBest Regards,\nAndré",
+      "revId": "f213a765689f7f8b6c7d11fcde6f5e917c340422",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
