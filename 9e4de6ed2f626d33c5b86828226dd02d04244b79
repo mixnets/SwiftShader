@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0749f6bb_f23d7fc6",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-12-09T19:54:50Z",
+      "side": 1,
+      "message": "While not simply add a comment rather than read the unused variable?",
+      "range": {
+        "startLine": 232,
+        "startChar": 2,
+        "endLine": 232,
+        "endChar": 60
+      },
+      "revId": "9e4de6ed2f626d33c5b86828226dd02d04244b79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
