@@ -16,6 +16,23 @@
       "message": "Hej Nicolas,\n\nwould you mind to have a look at this patch?\n\nBUILD.gn already enables Arms control flow integrity check, but on a rather coarse level (nothing or all). This patch gives the ability to enable them in a more fine grained fashion.\n\nThanks.\n\nBest Regards,\nAndré",
       "revId": "f213a765689f7f8b6c7d11fcde6f5e917c340422",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36e83ccf_848a7e27",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-12-09T11:08:37Z",
+      "side": 1,
+      "message": "Hi Nicolas,\n\nI just saw the failure of kokoro. However, I can\u0027t access the logs. They seem to be Google internal only. Can you please give me a hint what the problem is?\n\nThanks + Best Regards,\nAndre ",
+      "revId": "f213a765689f7f8b6c7d11fcde6f5e917c340422",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
