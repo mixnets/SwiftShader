@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fdc11b38_d54239c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-09T14:59:03Z",
+      "side": 1,
+      "message": "I forgot that regular assert() gets removed because we use a Release build to run dEQP, but ASSERT() remains enabled for test builds...",
+      "revId": "4077bb5639fda0fb41ada72fa807dde52759647b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
