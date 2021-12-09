@@ -142,21 +142,11 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 	bool use32BitFiltering = hasFloatTexture() || hasUnnormalizedIntegerTexture() || force32BitFiltering ||
 	                         state.isCube() || state.unnormalizedCoordinates || state.compareEnable ||
 	                         borderModeActive() || (function == Gather) || (function == Fetch);
-	const sw::float4 compScale = getComponentScale();
-	int gatherComponent = (function == Gather) ? getGatherComponent() : 0;
 	int numComponents = (function == Gather) ? 4 : textureComponentCount();
 
 	if(use32BitFiltering)
 	{
 		c = sampleFloatFilter(texture, u, v, w, a, dRef, offset, sample, lod, anisotropy, uDelta, vDelta, function);
-
-		if(!hasFloatTexture() && !hasUnnormalizedIntegerTexture() && !state.compareEnable)
-		{
-			for(int component = 0; component < numComponents; component++)
-			{
-				c[component] *= Float4(1.0f / compScale[(function == Gather) ? gatherComponent : component]);
-			}
-		}
 	}
 	else  // 16-bit filtering.
 	{
@@ -172,8 +162,17 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 			{
 				c[component] = Float4(cs[component]);
 			}
+		}
+	}
 
-			c[component] *= Float4(1.0f / compScale[(function == Gather) ? gatherComponent : component]);
+	if(!hasFloatTexture() && !has32bitIntegerTextureComponents())
+	{
+		sw::float4 scale = getComponentScale();
+
+		for(int component = 0; component < numComponents; component++)
+		{
+			int texelComponent = (function == Gather) ? getGatherComponent() : component;
+			c[component] *= Float4(1.0f / scale[texelComponent]);
 		}
 	}
 
