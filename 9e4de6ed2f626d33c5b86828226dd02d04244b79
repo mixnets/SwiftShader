@@ -22,6 +22,30 @@
       },
       "revId": "9e4de6ed2f626d33c5b86828226dd02d04244b79",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "266d2146_c32bdda8",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-09T20:29:15Z",
+      "side": 1,
+      "message": "The code makes this self-explanatory and allows us to do things like check that we\u0027re parsing the operands correctly during debugging. Note also that the word() method checks against the instruction length. I don\u0027t think there\u0027s any harm in leaving it unused.",
+      "parentUuid": "0749f6bb_f23d7fc6",
+      "range": {
+        "startLine": 232,
+        "startChar": 2,
+        "endLine": 232,
+        "endChar": 60
+      },
+      "revId": "9e4de6ed2f626d33c5b86828226dd02d04244b79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
