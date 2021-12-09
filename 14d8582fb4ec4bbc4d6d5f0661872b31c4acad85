@@ -16,6 +16,23 @@
       "message": "Thanks Andre! I fixed the bug link so the next Kokoro test run should come back green. Alexis can you provide second Googler approval?",
       "revId": "14d8582fb4ec4bbc4d6d5f0661872b31c4acad85",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc616d76_ae6dd520",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-12-09T15:47:59Z",
+      "side": 1,
+      "message": "Hej Alexis and Nicolas,\n\nthanks for the review. \n\nI mistakenly clicked the \"Verified +1\" button. Hopefully that didn\u0027t break anything.\n\nFrom the current point, can anything submit to CQ, please? I do not have sufficient rights to do so.\n\nThanks + Best Regards,\nAndré\n",
+      "revId": "14d8582fb4ec4bbc4d6d5f0661872b31c4acad85",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
