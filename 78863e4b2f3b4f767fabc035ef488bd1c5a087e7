@@ -51,6 +51,24 @@
       "parentUuid": "cf41c943_c9518ed2",
       "revId": "78863e4b2f3b4f767fabc035ef488bd1c5a087e7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5745781e_d9c27b06",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-10T16:36:07Z",
+      "side": 1,
+      "message": "The version used by Subzero is ancient and only a subset of the features is actually used (even the current fork is a cut down set). Also, Subzero is different enough from LLVM that we won\u0027t get any value out of trying to update these headers. Instead we just modernize them where useful and \"make them our own\": b/155971541. Anyway, nothing that should concern you here. :-)",
+      "parentUuid": "13377329_e8c99e39",
+      "revId": "78863e4b2f3b4f767fabc035ef488bd1c5a087e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
