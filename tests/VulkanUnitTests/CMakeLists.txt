@@ -71,7 +71,6 @@ target_link_options(vk-unittests
 target_link_libraries(vk-unittests
     PRIVATE
         gtest
-        gmock
         SPIRV-Tools
         VulkanWrapper
         ${ROOT_PROJECT_LINK_LIBRARIES}

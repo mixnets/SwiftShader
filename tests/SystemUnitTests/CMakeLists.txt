@@ -52,6 +52,5 @@ target_link_libraries(system-unittests
     PRIVATE
         vk_system
         gtest
-        gmock
         ${ROOT_PROJECT_LINK_LIBRARIES}
 )

@@ -14,7 +14,6 @@
 
 #include "System/Synchronization.hpp"
 
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <thread>
