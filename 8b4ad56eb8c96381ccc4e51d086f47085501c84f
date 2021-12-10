@@ -16,6 +16,46 @@
       "message": "Produced https://swiftshader-review.googlesource.com/c/SwiftShader/+/60570, which looks good to me!",
       "revId": "8b4ad56eb8c96381ccc4e51d086f47085501c84f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a7b0869_0fb07713",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-12-10T16:45:10Z",
+      "side": 1,
+      "message": "+2 with a suggestion for avoiding this sort of bug in the future.",
+      "revId": "8b4ad56eb8c96381ccc4e51d086f47085501c84f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4750a59f_23c57584",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 786,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-12-10T16:45:10Z",
+      "side": 1,
+      "message": "So the problem is that getOrBuildDEQP() is reading from path.Join(test.checkoutDir, deqpConfigRelPath), which this function writes to.\n\nI now see that the anonymous structure is duplicated here and in that function. Not great for future refactoring robustness.\n\nI know this isn\u0027t really anything to do with this change, but some suggestions to reduce this sort of bug in the future:\n\n(a) Promote the cfg anonymous structure up to file-scoped type declaration:\n\n // DeqpConfig holds the JSON payload of the deqp.json file\n type DeqpConfig struct {\n\tRemote  string   `json:\"remote\"`\n\tBranch  string   `json:\"branch\"`\n\tSHA     string   `json:\"sha\"`\n\tPatches []string `json:\"patches\"`\n }\n \nSo this can be shared between the functions.\n\n(b) Change getOrBuildDEQP() so that it just parses the DeqpConfig and then calls into a new method (getOrBuildDEQPFromConfig() ?) which is the remainder of the existing getOrBuildDEQP() method. getOrBuildDEQP() and updateLocalDeqpFiles() can both call getOrBuildDEQPFromConfig(), passing the DeqpConfig.\n\nIf you did this, then there would be no on-disk data dependency, and this sort of thing would be near impossible to repeat again in the future.",
+      "range": {
+        "startLine": 786,
+        "startChar": 21,
+        "endLine": 786,
+        "endChar": 35
+      },
+      "revId": "8b4ad56eb8c96381ccc4e51d086f47085501c84f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
