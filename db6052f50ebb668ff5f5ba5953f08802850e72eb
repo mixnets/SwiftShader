@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09a35e82_e98abff1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-10T16:26:08Z",
+      "side": 1,
+      "message": "This was produced by https://swiftshader-review.googlesource.com/c/SwiftShader/+/60768. Looks great to me!",
+      "revId": "db6052f50ebb668ff5f5ba5953f08802850e72eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6491cac2_3bff20b0",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 37194,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-10T16:26:08Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/60608",
+      "range": {
+        "startLine": 37194,
+        "startChar": 12,
+        "endLine": 37194,
+        "endChar": 33
+      },
+      "revId": "db6052f50ebb668ff5f5ba5953f08802850e72eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e0fa7ac_af29a353",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 103161,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-10T16:26:08Z",
+      "side": 1,
+      "message": "Also https://swiftshader-review.googlesource.com/c/SwiftShader/+/60608",
+      "range": {
+        "startLine": 103161,
+        "startChar": 8,
+        "endLine": 103161,
+        "endChar": 34
+      },
+      "revId": "db6052f50ebb668ff5f5ba5953f08802850e72eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b786a5c_93169189",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 107200,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-10T16:26:08Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/56209",
+      "range": {
+        "startLine": 107200,
+        "startChar": 8,
+        "endLine": 107200,
+        "endChar": 20
+      },
+      "revId": "db6052f50ebb668ff5f5ba5953f08802850e72eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7f80c02_e16e5bb6",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 209415,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-10T16:26:08Z",
+      "side": 1,
+      "message": "https://github.com/KhronosGroup/VK-GL-CTS/issues/203",
+      "range": {
+        "startLine": 209415,
+        "startChar": 43,
+        "endLine": 209415,
+        "endChar": 75
+      },
+      "revId": "db6052f50ebb668ff5f5ba5953f08802850e72eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
