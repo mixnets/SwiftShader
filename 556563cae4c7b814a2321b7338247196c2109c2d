@@ -70,6 +70,24 @@
       "parentUuid": "37dc2cc4_25dc6334",
       "revId": "556563cae4c7b814a2321b7338247196c2109c2d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17dd99e3_2ab80737",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-10T02:42:55Z",
+      "side": 1,
+      "message": "These tests were suppressed at https://chromium-review.googlesource.com/c/chromium/src/+/2945596. I don\u0027t know why they still run on the win-swangle-chromium-x86 bot.",
+      "parentUuid": "f4efa6de_68262f0c",
+      "revId": "556563cae4c7b814a2321b7338247196c2109c2d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
