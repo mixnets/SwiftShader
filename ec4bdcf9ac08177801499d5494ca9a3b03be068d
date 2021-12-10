@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "df4e6115_34c87bb5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5316
+      },
+      "writtenOn": "2021-12-10T17:56:42Z",
+      "side": 1,
+      "message": "This CL seems to have introduced a UBSAN failure in ANGLE with many tests, for example:\n\nhttps://ci.chromium.org/ui/p/angle/builders/ci/linux-ubsan-test/188/overview\n\n[ RUN      ] BlitFramebufferTest.BlitMultisampleStencilToDefault/ES3_Vulkan_SwiftShader\n../../third_party/SwiftShader/src/Pipeline/SamplerCore.cpp:2593:49: runtime error: shift exponent -16 is negative\nLLVMSymbolizer: error reading file: No such file or directory\n    #0 0x7f0f41faeefd in sw::SamplerCore::getComponentScale() const third_party/SwiftShader/src/Pipeline/SamplerCore.cpp:2593:49\n    #1 0x7f0f41fab739 in sw::SamplerCore::sampleTexture(rr::Pointer\u003crr::Byte\u003e\u0026, rr::Float4*, rr::Float4\u0026, rr::Float\u0026\u0026, rr::Float4\u0026, rr::Float4\u0026, sw::Vector4i\u0026, rr::Int4\u0026, sw::SamplerFunction) third_party/SwiftShader/src/Pipeline/SamplerCore.cpp:145:31\n    #2 0x7f0f42041d6c in sw::SpirvShader::emitSamplerRoutine(sw::SpirvShader::ImageInstructionSignature, sw::Sampler const\u0026) third_party/SwiftShader/src/Pipeline/SpirvShaderSampling.cpp:228:25\n    #3 0x7f0f42040ebd in operator() third_party/SwiftShader/src/Pipeline/SpirvShaderSampling.cpp:119:10\n    #4 0x7f0f42040ebd in getOrCreate\u003c(lambda at ../../third_party/SwiftShader/src/Pipeline/SpirvShaderSampling.cpp:41:31) \u0026\u003e third_party/SwiftShader/src/Vulkan/VkDevice.hpp:118:46\n    #5 0x7f0f42040ebd in sw::SpirvShader::getImageSampler(vk::Device const*, unsigned int, unsigned int, unsigned int) third_party/SwiftShader/src/Pipeline/SpirvShaderSampling.cpp:123:24\n    #6 0x7f0f46507c6c  (/memfd:swiftshader_jit (deleted)+0xc6c)",
+      "revId": "ec4bdcf9ac08177801499d5494ca9a3b03be068d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
