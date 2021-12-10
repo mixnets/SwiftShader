@@ -17,7 +17,6 @@
 #	include "System/Linux/MemFd.hpp"
 #endif
 
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <cstdlib>

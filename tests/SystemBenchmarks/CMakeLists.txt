@@ -51,6 +51,5 @@ target_link_libraries(system-benchmarks
         benchmark::benchmark
         vk_system
         gtest
-        gmock
         ${ROOT_PROJECT_LINK_LIBRARIES}
 )

@@ -18,7 +18,6 @@ test("swiftshader_system_unittests") {
   deps = [
     "//base",
     "//base/test:test_support",
-    "//testing/gmock",
     "//testing/gtest",
     "../../src/System",
     "../../third_party/marl:Marl",

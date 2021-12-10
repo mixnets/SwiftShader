@@ -15,7 +15,6 @@
 // OpenGL ES unit tests that provide coverage for functionality not tested by
 // the dEQP test suite. Also used as a smoke test.
 
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 #include <EGL/egl.h>
