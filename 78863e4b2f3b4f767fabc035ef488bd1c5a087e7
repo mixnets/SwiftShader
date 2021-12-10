@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf41c943_c9518ed2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-10T16:12:14Z",
+      "side": 1,
+      "message": "LGTM to just suppress it, but since the LLVM headers used by Subzero are a complete fork we could also go ahead and properly fix it (possibly even remove the offending code).",
+      "revId": "78863e4b2f3b4f767fabc035ef488bd1c5a087e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
