@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da2af947_452621ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-10T16:28:12Z",
+      "side": 1,
+      "message": "Produced https://swiftshader-review.googlesource.com/c/SwiftShader/+/60570, which looks good to me!",
+      "revId": "8b4ad56eb8c96381ccc4e51d086f47085501c84f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
