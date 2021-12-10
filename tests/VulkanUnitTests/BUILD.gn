@@ -18,7 +18,6 @@ test("swiftshader_vulkan_unittests") {
   deps = [
     "//base",
     "//base/test:test_support",
-    "//testing/gmock",
     "//testing/gtest",
     "//third_party/SPIRV-Tools/src:SPIRV-Tools",
     "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",

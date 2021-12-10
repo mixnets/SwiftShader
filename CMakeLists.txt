@@ -687,17 +687,17 @@ if(SWIFTSHADER_ENABLE_ASTC)
 endif()
 
 ###########################################################
-# gtest and gmock
+# gtest
 ###########################################################
 if(SWIFTSHADER_BUILD_TESTS)
     # For Win32, force gtest to match our CRT (shared)
     set(gtest_force_shared_crt TRUE CACHE BOOL "" FORCE)
+    set(BUILD_GMOCK FALSE CACHE BOOL "" FORCE)
+    set(INSTALL_GTEST FALSE CACHE BOOL "" FORCE)
     add_subdirectory(${THIRD_PARTY_DIR}/googletest EXCLUDE_FROM_ALL)
     # gtest finds python, which picks python 2 first, if present.
     # We need to undo this so that SPIR-V can later find python3.
     unset(PYTHON_EXECUTABLE CACHE)
-    set_target_properties(gmock PROPERTIES FOLDER "third_party")
-    set_target_properties(gmock_main PROPERTIES FOLDER "third_party")
     set_target_properties(gtest PROPERTIES FOLDER "third_party")
     set_target_properties(gtest_main PROPERTIES FOLDER "third_party")
 endif()

@@ -14,7 +14,6 @@
 
 #include "DrawTester.hpp"
 
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 class DrawTest : public testing::Test

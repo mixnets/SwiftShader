@@ -15,7 +15,6 @@
 #include "Device.hpp"
 #include "Driver.hpp"
 
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 #include "spirv-tools/libspirv.hpp"

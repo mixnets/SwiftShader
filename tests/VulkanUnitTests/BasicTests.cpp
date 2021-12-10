@@ -18,7 +18,6 @@
 #include "Device.hpp"
 #include "Driver.hpp"
 
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 class BasicTest : public testing::Test
