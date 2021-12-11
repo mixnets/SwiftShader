@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a01a2e9f_a272e9a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-11T06:14:00Z",
+      "side": 1,
+      "message": "I think this became superseded by https://swiftshader-review.googlesource.com/c/SwiftShader/+/59168",
+      "revId": "dd5d9e577ac99297fd91ae955bd077ef44ff98f0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
