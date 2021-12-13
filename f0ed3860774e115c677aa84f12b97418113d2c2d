@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28de57bd_17661237",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-13T17:26:01Z",
+      "side": 1,
+      "message": "b/210468952",
+      "revId": "f0ed3860774e115c677aa84f12b97418113d2c2d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
