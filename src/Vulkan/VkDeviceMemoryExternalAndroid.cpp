@@ -23,6 +23,18 @@
 
 namespace {
 
+bool IsAHBFormatYuv(uint32_t ahbFormat)
+{
+	switch(ahbFormat)
+	{
+	case AHARDWAREBUFFER_FORMAT_Y8Cb8Cr8_420:
+	case AHARDWAREBUFFER_FORMAT_YV12:
+		return true;
+	default:
+		return false;
+	}
+}
+
 uint32_t GetAHBFormatFromVkFormat(VkFormat format)
 {
 	switch(format)
@@ -158,6 +170,11 @@ VkFormatFeatureFlags GetVkFormatFeaturesFromAHBFormat(uint32_t ahbFormat)
 	features |= formatProperties.linearTilingFeatures |
 	            formatProperties.optimalTilingFeatures |
 	            formatProperties.bufferFeatures;
+
+	if(IsAHBFormatYuv(ahbFormat))
+	{
+		features |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT;
+	}
 
 	return features;
 }
