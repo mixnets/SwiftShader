@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a032adc9_759ec8ac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-13T16:51:39Z",
+      "side": 1,
+      "message": "This change illustrates that https://swiftshader-review.googlesource.com/c/SwiftShader/+/60768 still has room for improvement. Patchset 1 (and 2) are the updates to the results after https://swiftshader-review.googlesource.com/c/SwiftShader/+/60570. While that change also included changes to the results, they appear to only be due to the dEQP revision update, not the testlist update.\n\nPatchsets 4 - 6 have a new dEQP version update included. So I suggest I manually split this so we land these separately, then run the daily again for the latest results update.",
+      "revId": "af5d924c40adb079b86158b486841b9cb189e1c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
