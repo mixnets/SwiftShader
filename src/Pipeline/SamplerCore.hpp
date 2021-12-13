@@ -65,12 +65,20 @@ struct LOD
 	void computeLodCube(const Pointer<Byte> &texture, const Float4 &u, const Float4 &v, const Float4 &w, const Float4 &dsx, const Float4 &dsy, const Float4 &M);
 	void computeLod3D(const Pointer<Byte> &texture, const Float4 &u, const Float4 &v, const Float4 &w, const Float4 &dsx, const Float4 &dsy);
 
+	LOD operator()(int increment) const
+	{
+		LOD secondLOD = *this;
+		secondLOD.offset = increment;
+
+		return secondLOD;
+	}
+
 	const Sampler &state;
 	const SamplerFunction function;
 
 	Float lod;
 	Int level;
-	bool secondLevel;
+	int offset;
 
 	Float anisotropy;
 	Float4 uDelta;

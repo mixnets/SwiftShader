@@ -382,7 +382,7 @@ Short4 SamplerCore::offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOff
 
 Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
-	Vector4s c = sampleAniso(texture, u, v, w, a, offset, sample, lod);  // fakse
+	Vector4s c = sampleAniso(texture, u, v, w, a, offset, sample, lod(0));
 
 	if(function == Fetch)
 	{
@@ -391,7 +391,7 @@ Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 
 	if(state.mipmapFilter == MIPMAP_LINEAR)
 	{
-		Vector4s cc = sampleAniso(texture, u, v, w, a, offset, sample, lod);  //true
+		Vector4s cc = sampleAniso(texture, u, v, w, a, offset, sample, lod(1));
 
 		UShort4 utri = UShort4(Float4(lod.lod * Float(1 << 16)));  // FIXME: Optimize
 		Short4 stri = utri >> 1;                                   // FIXME: Optimize
@@ -895,7 +895,7 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 
 Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, const LOD &lod)
 {
-	Vector4f c = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod);  //false
+	Vector4f c = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod(0));
 
 	if(function == Fetch)
 	{
@@ -904,7 +904,7 @@ Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float
 
 	if(state.mipmapFilter == MIPMAP_LINEAR)
 	{
-		Vector4f cc = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod);  //true
+		Vector4f cc = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod(1));
 
 		Float4 lod4 = Float4(Frac(lod.lod));
 
@@ -2237,7 +2237,7 @@ Pointer<Byte> SamplerCore::selectMipmap(const Pointer<Byte> &texture, const LOD 
 		level = Int(lod.lod);
 	}
 
-	return mipmap0 + level * sizeof(Mipmap) + lod.secondLevel * sizeof(Mipmap);
+	return mipmap0 + level * sizeof(Mipmap) + lod.offset * sizeof(Mipmap);
 }
 
 Int4 SamplerCore::computeFilterOffset(const Float &lod)
