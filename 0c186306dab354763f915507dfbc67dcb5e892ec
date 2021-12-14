@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f190455_25cf3097",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-14T19:44:54Z",
+      "side": 1,
+      "message": "Could you try setting this feature bit for all format.isYcbcrFormat() at PhysicalDevice::GetFormatProperties? And add the line \"Tests: dEQP-VK.*ycbcr*\" to the commit message. That will quickly tell us what tests fail when we claim support for this (or show that it\u0027s already supported).",
+      "range": {
+        "startLine": 176,
+        "startChar": 14,
+        "endLine": 176,
+        "endChar": 97
+      },
+      "revId": "0c186306dab354763f915507dfbc67dcb5e892ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
