@@ -22,6 +22,30 @@
       },
       "revId": "0c186306dab354763f915507dfbc67dcb5e892ec",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "88b517ac_91b57afe",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2021-12-16T18:15:36Z",
+      "side": 1,
+      "message": "Looks like it would introduce some failures. Talked with timvp@ and I think we don\u0027t need this and everything can be handled on the ANGLE side.",
+      "parentUuid": "6f190455_25cf3097",
+      "range": {
+        "startLine": 176,
+        "startChar": 14,
+        "endLine": 176,
+        "endChar": 97
+      },
+      "revId": "0c186306dab354763f915507dfbc67dcb5e892ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
