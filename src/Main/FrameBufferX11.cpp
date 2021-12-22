@@ -50,19 +50,17 @@ namespace sw
 			assert(x_display);
 		}
 
-		int screen = DefaultScreen(x_display);
-		x_gc = libX11->XDefaultGC(x_display, screen);
-		int depth = libX11->XDefaultDepth(x_display, screen);
+	    XWindowAttributes attribs;
+	    Status status = libX11->XGetWindowAttributes(display, window, &attribs);
+	    assert(status == 0);
+	    int depth = attribs.depth;
+	    Visual *visual = attribs.visual;
 
-		XVisualInfo x_visual;
-		Status status = libX11->XMatchVisualInfo(x_display, screen, 32, TrueColor, &x_visual);
-		bool match = (status != 0 && x_visual.blue_mask == 0xFF);   // Prefer X8R8G8B8
-		Visual *visual = match ? x_visual.visual : libX11->XDefaultVisual(x_display, screen);
+	    x_gc = libX11->XCreateGC(x_display, window, 0, nullptr);
 
-		mit_shm = (libX11->XShmQueryExtension && libX11->XShmQueryExtension(x_display) == True);
-
-		if(mit_shm)
-		{
+	    mit_shm = (libX11->XShmQueryExtension && libX11->XShmQueryExtension(x_display) == True);
+	    if(mit_shm)
+	    {
 			x_image = libX11->XShmCreateImage(x_display, visual, depth, ZPixmap, 0, &shminfo, width, height);
 
 			shminfo.shmid = shmget(IPC_PRIVATE, x_image->bytes_per_line * x_image->height, IPC_CREAT | SHM_R | SHM_W);
@@ -105,7 +103,12 @@ namespace sw
 
 	FrameBufferX11::~FrameBufferX11()
 	{
-		if(!mit_shm)
+	    if(!x_gc)
+	    {
+		    libX11->XFreeGC(x_display, x_gc);
+	    }
+
+	    if(!mit_shm)
 		{
 			XDestroyImage(x_image);
 		}
@@ -146,13 +149,13 @@ namespace sw
 		if(!mit_shm)
 		{
 			libX11->XPutImage(x_display, x_window, x_gc, x_image, 0, 0, 0, 0, width, height);
-		}
-		else
+	    }
+	    else
 		{
 			libX11->XShmPutImage(x_display, x_window, x_gc, x_image, 0, 0, 0, 0, width, height, False);
-		}
+	    }
 
-		libX11->XSync(x_display, False);
+	    libX11->XSync(x_display, False);
 
 		if(false)   // Draw the framerate on screen
 		{
