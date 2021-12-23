@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "907604b5_7e015aed",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 21844
+      },
+      "writtenOn": "2021-12-23T17:20:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd0295b4_e0c3d6fb",
+      "range": {
+        "startLine": 12,
+        "startChar": 5,
+        "endLine": 12,
+        "endChar": 16
+      },
+      "revId": "00c4fc343aa2b307ecef10fe8d8a788e56933dd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "39a66271_fb0892d4",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 10
@@ -54,6 +78,30 @@
       "writtenOn": "2021-12-23T14:47:03Z",
       "side": 1,
       "message": "style nit: Please run clang-format to make the formatting consistent.",
+      "range": {
+        "startLine": 54,
+        "startChar": 6,
+        "endLine": 54,
+        "endChar": 8
+      },
+      "revId": "00c4fc343aa2b307ecef10fe8d8a788e56933dd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be631a5a_24370a62",
+        "filename": "src/WSI/libXCB.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 21844
+      },
+      "writtenOn": "2021-12-23T17:20:19Z",
+      "side": 1,
+      "message": "I tried `git cl format`, however it convert all tabs to spaces. Seems tabs are used in swiftshader by default, right?\n\nDone",
+      "parentUuid": "ec398353_a457bb39",
       "range": {
         "startLine": 54,
         "startChar": 6,
