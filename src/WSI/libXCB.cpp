@@ -27,6 +27,13 @@ LibXcbExports::LibXcbExports(void *lib)
 	getFuncAddress(lib, "xcb_get_geometry", &xcb_get_geometry);
 	getFuncAddress(lib, "xcb_get_geometry_reply", &xcb_get_geometry_reply);
 	getFuncAddress(lib, "xcb_put_image", &xcb_put_image);
+	getFuncAddress(lib, "xcb_copy_area", &xcb_copy_area);
+	getFuncAddress(lib, "xcb_shm_query_version", &xcb_shm_query_version);
+	getFuncAddress(lib, "xcb_shm_query_version_reply", &xcb_shm_query_version_reply);
+	getFuncAddress(lib, "xcb_shm_attach", &xcb_shm_attach);
+	getFuncAddress(lib, "xcb_shm_detach", &xcb_shm_detach);
+	getFuncAddress(lib, "xcb_shm_create_pixmap", &xcb_shm_create_pixmap);
+	getFuncAddress(lib, "xcb_free_pixmap", &xcb_free_pixmap);
 }
 
 LibXcbExports *LibXCB::operator->()
