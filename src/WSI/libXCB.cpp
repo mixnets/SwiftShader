@@ -18,7 +18,7 @@
 
 #include <memory>
 
-LibXcbExports::LibXcbExports(void *libxcb, void *libshm)
+LibXcbExports::LibXcbExports(void *libxcb, void *libshm, void *libx11xcb)
 {
 	getFuncAddress(libxcb, "xcb_create_gc", &xcb_create_gc);
 	getFuncAddress(libxcb, "xcb_flush", &xcb_flush);
@@ -35,6 +35,8 @@ LibXcbExports::LibXcbExports(void *libxcb, void *libshm)
 	getFuncAddress(libshm, "xcb_shm_attach", &xcb_shm_attach);
 	getFuncAddress(libshm, "xcb_shm_detach", &xcb_shm_detach);
 	getFuncAddress(libshm, "xcb_shm_create_pixmap", &xcb_shm_create_pixmap);
+
+	getFuncAddress(libx11xcb, "XGetXCBConnection", &XGetXCBConnection);
 }
 
 LibXcbExports *LibXCB::operator->()
@@ -47,12 +49,14 @@ LibXcbExports *LibXCB::loadExports()
 	static LibXcbExports exports = [] {
 		void *libxcb = nullptr;
 		void *libshm = nullptr;
+		void *libx11xcb = nullptr;
+
 		if(getProcAddress(RTLD_DEFAULT, "xcb_create_gc"))  // Search the global scope for pre-loaded XCB library.
 		{
 			libxcb = RTLD_DEFAULT;
 		}
 		else
-                {
+		{
 			libxcb = loadLibrary("libxcb.so.1");
 		}
 
@@ -61,11 +65,20 @@ LibXcbExports *LibXCB::loadExports()
 			libshm = RTLD_DEFAULT;
 		}
 		else
-                {
+		{
 			libshm = loadLibrary("libxcb-shm.so.0");
 		}
 
-		return LibXcbExports(libxcb, libshm);
+		if(getProcAddress(RTLD_DEFAULT, "XGetXCBConnection"))  // Search the global scope for pre-loaded XCB library.
+		{
+			libx11xcb = RTLD_DEFAULT;
+		}
+		else
+		{
+			libx11xcb = loadLibrary("libX11-xcb.so.1");
+		}
+
+		return LibXcbExports(libxcb, libshm, libx11xcb);
 	}();
 
 	return exports.xcb_create_gc ? &exports : nullptr;

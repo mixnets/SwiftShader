@@ -44,9 +44,14 @@ bool XcbSurfaceKHR::isSupported()
 	return libXCB.isPresent();
 }
 
-XcbSurfaceKHR::XcbSurfaceKHR(const VkXcbSurfaceCreateInfoKHR *pCreateInfo, void *mem)
-	: connection(pCreateInfo->connection)
-	, window(pCreateInfo->window)
+bool XcbSurfaceKHR::isX11Supported()
+{
+	return libXCB.isX11Present();
+}
+
+XcbSurfaceKHR::XcbSurfaceKHR(xcb_connection_t *connection, xcb_window_t window , void *mem)
+	: connection(connection)
+	, window(window)
 {
 	ASSERT(isSupported());
 
@@ -60,12 +65,25 @@ XcbSurfaceKHR::XcbSurfaceKHR(const VkXcbSurfaceCreateInfoKHR *pCreateInfo, void 
 	libXCB->xcb_create_gc(connection, gc, window, XCB_GC_FOREGROUND | XCB_GC_BACKGROUND, values);
 }
 
+XcbSurfaceKHR::XcbSurfaceKHR(const VkXcbSurfaceCreateInfoKHR *pCreateInfo, void *mem)
+	: XcbSurfaceKHR(pCreateInfo->connection, pCreateInfo->window, mem)
+{}
+
+XcbSurfaceKHR::XcbSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, void *mem)
+	: XcbSurfaceKHR(libXCB->XGetXCBConnection(pCreateInfo->dpy), pCreateInfo->window, mem)
+{}
+
 void XcbSurfaceKHR::destroySurface(const VkAllocationCallbacks *pAllocator)
 {
 	libXCB->xcb_free_gc(connection, gc);
 }
 
 size_t XcbSurfaceKHR::ComputeRequiredAllocationSize(const VkXcbSurfaceCreateInfoKHR *pCreateInfo)
+{
+	return 0;
+}
+
+size_t XcbSurfaceKHR::ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR *pCreateInfo)
 {
 	return 0;
 }
