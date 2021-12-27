@@ -30,11 +30,15 @@ class XcbSurfaceKHR : public SurfaceKHR, public ObjectBase<XcbSurfaceKHR, VkSurf
 {
 public:
 	static bool isSupported();
+	static bool isX11Supported();
+	XcbSurfaceKHR(xcb_connection_t *connection, xcb_window_t window , void *mem);
 	XcbSurfaceKHR(const VkXcbSurfaceCreateInfoKHR *pCreateInfo, void *mem);
+	XcbSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, void *mem);
 
 	void destroySurface(const VkAllocationCallbacks *pAllocator) override;
 
 	static size_t ComputeRequiredAllocationSize(const VkXcbSurfaceCreateInfoKHR *pCreateInfo);
+	static size_t ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR *pCreateInfo);
 
 	VkResult getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const override;
 

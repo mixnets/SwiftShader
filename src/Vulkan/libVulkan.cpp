@@ -55,12 +55,8 @@
 #	include "WSI/MetalSurface.hpp"
 #endif
 
-#ifdef VK_USE_PLATFORM_XCB_KHR
+#if defined(VK_USE_PLATFORM_XCB_KHR) || defined(VK_USE_PLATFORM_XLIB_KHR)
 #	include "WSI/XcbSurfaceKHR.hpp"
-#endif
-
-#ifdef VK_USE_PLATFORM_XLIB_KHR
-#	include "WSI/XlibSurfaceKHR.hpp"
 #endif
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
@@ -316,7 +312,7 @@ static const ExtensionProperties instanceExtensionProperties[] = {
 	{ { VK_KHR_XCB_SURFACE_EXTENSION_NAME, VK_KHR_XCB_SURFACE_SPEC_VERSION }, [] { return vk::XcbSurfaceKHR::isSupported(); } },
 #endif
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-	{ { VK_KHR_XLIB_SURFACE_EXTENSION_NAME, VK_KHR_XLIB_SURFACE_SPEC_VERSION }, [] { return vk::XlibSurfaceKHR::isSupported(); } },
+	{ { VK_KHR_XLIB_SURFACE_EXTENSION_NAME, VK_KHR_XLIB_SURFACE_SPEC_VERSION }, [] { return vk::XcbSurfaceKHR::isX11Supported(); } },
 #endif
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
 	{ { VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME, VK_KHR_WAYLAND_SURFACE_SPEC_VERSION } },
@@ -3952,7 +3948,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateXlibSurfaceKHR(VkInstance instance, const
 	// VUID-VkXlibSurfaceCreateInfoKHR-dpy-01313: dpy must point to a valid Xlib Display
 	ASSERT(pCreateInfo->dpy);
 
-	return vk::XlibSurfaceKHR::Create(pAllocator, pCreateInfo, pSurface);
+	return vk::XcbSurfaceKHR::Create(pAllocator, pCreateInfo, pSurface);
 }
 
 VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceXlibPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, Display *dpy, VisualID visualID)

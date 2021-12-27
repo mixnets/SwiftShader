@@ -15,13 +15,14 @@
 #ifndef libXCB_hpp
 #define libXCB_hpp
 
+#include <X11/Xlib.h>
 #include <xcb/shm.h>
 #include <xcb/xcb.h>
 
 struct LibXcbExports
 {
 	LibXcbExports() {}
-	LibXcbExports(void *libxcb, void *libshm);
+	LibXcbExports(void *libxcb, void *libshm, void *libx11xcb);
 
 	xcb_void_cookie_t (*xcb_create_gc)(xcb_connection_t *c, xcb_gcontext_t cid, xcb_drawable_t drawable, uint32_t value_mask, const void *value_list) = nullptr;
 	int (*xcb_flush)(xcb_connection_t *c) = nullptr;
@@ -38,6 +39,8 @@ struct LibXcbExports
 	xcb_void_cookie_t (*xcb_shm_attach)(xcb_connection_t *c, xcb_shm_seg_t shmseg, uint32_t shmid, uint8_t read_only);
 	xcb_void_cookie_t (*xcb_shm_detach)(xcb_connection_t * 	c, xcb_shm_seg_t shmseg);
 	xcb_void_cookie_t (*xcb_shm_create_pixmap)(xcb_connection_t *c, xcb_pixmap_t pid, xcb_drawable_t drawable, uint16_t width, uint16_t height, uint8_t depth, xcb_shm_seg_t shmseg, uint32_t offset);
+
+	xcb_connection_t *(*XGetXCBConnection)(Display *dpy);
 };
 
 class LibXCB
@@ -46,6 +49,11 @@ public:
 	bool isPresent()
 	{
 		return loadExports() != nullptr;
+	}
+
+	bool isX11Present()
+	{
+		return loadExports() != nullptr && loadExports()->XGetXCBConnection != nullptr;
 	}
 
 	LibXcbExports *operator->();
