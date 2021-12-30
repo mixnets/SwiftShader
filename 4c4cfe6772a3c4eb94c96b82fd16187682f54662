@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9adfea9d_a596ddec",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 208866,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-12-30T05:06:22Z",
+      "side": 1,
+      "message": "This result is produced by https://swiftshader-review.googlesource.com/c/SwiftShader/+/40291. It appears that Debug builds of dEQP behave differently from Release builds. This could be an indication of an uninitialized variable, UB, or an optimization bug.",
+      "range": {
+        "startLine": 208863,
+        "startChar": 0,
+        "endLine": 208866,
+        "endChar": 86
+      },
+      "revId": "4c4cfe6772a3c4eb94c96b82fd16187682f54662",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
