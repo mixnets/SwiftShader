@@ -22,6 +22,30 @@
       },
       "revId": "4c4cfe6772a3c4eb94c96b82fd16187682f54662",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6603ab26_00b2ecfb",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 208866,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-03T07:10:01Z",
+      "side": 1,
+      "message": "https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3426",
+      "parentUuid": "9adfea9d_a596ddec",
+      "range": {
+        "startLine": 208863,
+        "startChar": 0,
+        "endLine": 208866,
+        "endChar": 86
+      },
+      "revId": "4c4cfe6772a3c4eb94c96b82fd16187682f54662",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
