@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "44ad3658_a9bd54ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-01-04T14:08:24Z",
+      "side": 1,
+      "message": "Manually applying the Kokoro label, as this doesn\u0027t change anything that Kokoro tests, and it\u0027s taking all day.",
+      "revId": "e3fbb4c22889d24ec1e5e56cd6d45d2a27d7011b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
