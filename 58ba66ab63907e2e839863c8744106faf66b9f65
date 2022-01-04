@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "342bca76_a376055d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-01-04T09:07:59Z",
+      "side": 1,
+      "message": "Rebased on to tip-of-master, so Kokoro can pass.",
+      "revId": "58ba66ab63907e2e839863c8744106faf66b9f65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
