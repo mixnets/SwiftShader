@@ -1681,18 +1681,6 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties3KHR *
 	{
 		pFormatProperties->linearTilingFeatures |= VK_FORMAT_FEATURE_TRANSFER_SRC_BIT |
 		                                           VK_FORMAT_FEATURE_TRANSFER_DST_BIT;
-
-		if(!format.isCompressed())
-		{
-			if(pFormatProperties->optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT)
-			{
-				pFormatProperties->linearTilingFeatures |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
-			}
-			if(pFormatProperties->optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT)
-			{
-				pFormatProperties->linearTilingFeatures |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
-			}
-		}
 	}
 }
 
