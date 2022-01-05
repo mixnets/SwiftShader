@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69a2a757_a6d8d416",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2345,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-05T18:09:17Z",
+      "side": 1,
+      "message": "Is this still correct? Just double checking.",
+      "range": {
+        "startLine": 2342,
+        "startChar": 0,
+        "endLine": 2345,
+        "endChar": 56
+      },
+      "revId": "456b6ed69fed330b1eb3394a39edea3dfc63de73",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
