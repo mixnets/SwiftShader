@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a09bf22f_a874c4ae",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-05T16:02:41Z",
+      "side": 1,
+      "message": "Setting the exactAtPow2 parameter of reciprocal() doesn\u0027t suffice. We need U * reciprocal(W) * 0.5 + 0.5 \u003e\u003d 0 at all time where -W \u003c\u003d U \u003c\u003d W which means we need X * reciprocal(X) \u003c\u003d 1.0 for any X.\n\nThis is not even true when reciprocal() uses full precision 1.0 / x. Thus U can be negative even for non-Inf/NaN input, and an unsigned integer min() would map it to 1.0) instead of 0.0.",
+      "range": {
+        "startLine": 18,
+        "startChar": 22,
+        "endLine": 18,
+        "endChar": 49
+      },
+      "revId": "8c9617cba7127ffdf4435928605179b4f684c897",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
