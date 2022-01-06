@@ -1687,6 +1687,7 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties3KHR *
 		{
 			VkFormatFeatureFlagBits2KHR transferrableFeatureBits = VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT |
 			                                                       VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT |
+			                                                       VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT |
 			                                                       VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT |
 			                                                       VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT_KHR;
 
