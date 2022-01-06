@@ -1536,8 +1536,6 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties3KHR *
 	case VK_FORMAT_D16_UNORM:
 	case VK_FORMAT_D32_SFLOAT:          // Note: either VK_FORMAT_D32_SFLOAT or VK_FORMAT_X8_D24_UNORM_PACK32 must be supported
 	case VK_FORMAT_D32_SFLOAT_S8_UINT:  // Note: either VK_FORMAT_D24_UNORM_S8_UINT or VK_FORMAT_D32_SFLOAT_S8_UINT must be supported
-		pFormatProperties->linearTilingFeatures |=
-		    VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT_KHR;
 		pFormatProperties->optimalTilingFeatures |=
 		    VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT_KHR;
 		break;
@@ -1679,19 +1677,19 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties3KHR *
 
 	if(pFormatProperties->optimalTilingFeatures)
 	{
+		// "Formats that are required to support VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT must also support
+		//  VK_FORMAT_FEATURE_TRANSFER_SRC_BIT and VK_FORMAT_FEATURE_TRANSFER_DST_BIT."
+
 		pFormatProperties->linearTilingFeatures |= VK_FORMAT_FEATURE_TRANSFER_SRC_BIT |
 		                                           VK_FORMAT_FEATURE_TRANSFER_DST_BIT;
 
 		if(!format.isCompressed())
 		{
-			if(pFormatProperties->optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT)
-			{
-				pFormatProperties->linearTilingFeatures |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
-			}
-			if(pFormatProperties->optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT)
-			{
-				pFormatProperties->linearTilingFeatures |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
-			}
+			VkFormatFeatureFlagBits2KHR transferrableFeatureBits = VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT |
+			                                                       VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT |
+			                                                       VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT_KHR;
+
+			pFormatProperties->linearTilingFeatures |= pFormatProperties->optimalTilingFeatures & transferrableFeatureBits;
 		}
 	}
 }
