@@ -2011,6 +2011,8 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties3 *pFo
 			                                                      VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT |
 			                                                      VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT |
 			                                                      VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT |
+			                                                      VK_FORMAT_FEATURE_BLIT_SRC_BIT |
+			                                                      VK_FORMAT_FEATURE_BLIT_DST_BIT |
 			                                                      VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT |
 			                                                      VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT_KHR;
 
