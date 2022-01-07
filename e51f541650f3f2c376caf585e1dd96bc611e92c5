@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "91d5c68b_23d5248d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-07T01:29:25Z",
+      "side": 1,
+      "message": "Note that there\u0027s a chance that this causes tiny rendering result differences. There\u0027s no rush to land this if this is an inconvenient time for Chrome rebaselines. It\u0027s ready for review though.",
+      "revId": "e51f541650f3f2c376caf585e1dd96bc611e92c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
