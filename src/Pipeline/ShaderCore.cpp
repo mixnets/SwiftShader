@@ -454,21 +454,6 @@ Float4 arctanh(RValue<Float4> x, bool pp)
 	return logarithm((Float4(1.0f) + x) / (Float4(1.0f) - x), pp) * Float4(0.5f);
 }
 
-Float4 dot2(const Vector4f &v0, const Vector4f &v1)
-{
-	return v0.x * v1.x + v0.y * v1.y;
-}
-
-Float4 dot3(const Vector4f &v0, const Vector4f &v1)
-{
-	return v0.x * v1.x + v0.y * v1.y + v0.z * v1.z;
-}
-
-Float4 dot4(const Vector4f &v0, const Vector4f &v1)
-{
-	return v0.x * v1.x + v0.y * v1.y + v0.z * v1.z + v0.w * v1.w;
-}
-
 void transpose4x4(Short4 &row0, Short4 &row1, Short4 &row2, Short4 &row3)
 {
 	Int2 tmp0 = UnpackHigh(row0, row1);
@@ -689,6 +674,7 @@ rr::RValue<sw::SIMD::Float> FMA(
     rr::RValue<sw::SIMD::Float> const &b,
     rr::RValue<sw::SIMD::Float> const &c)
 {
+	::abort();
 	return a * b + c;
 }
 
