@@ -16,6 +16,23 @@
       "message": "Patch set 9 runs without errors, but it doesn\u0027t seem to pick e.g. https://swiftshader-review.googlesource.com/c/SwiftShader/+/59889 for testing before going to sleep. It does list its Change-Id as being tracked.",
       "revId": "c6e49d6d9c276f75b651aeade31e1b3d9f1bb71e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dda41773_9cc3286f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-12T00:59:05Z",
+      "side": 1,
+      "message": "I tried this again and made sure to clear the cache directory. I got the following output:\n\n2022/01/11 19:54:02 Couldn\u0027t update info for change \u0027I15810068a3e53f3812e07fbc5b04701159289350\u0027. Cause: Getting info for change \u0027I15810068a3e53f3812e07fbc5b04701159289350\u0027. Cause: API call to https://swiftshader-review.googlesource.com/a/changes/I15810068a3e53f3812e07fbc5b04701159289350?o\u003dCURRENT_REVISION\u0026o\u003dCURRENT_COMMIT\u0026o\u003dMESSAGES\u0026o\u003dLABELS\u0026o\u003dDETAILED_ACCOUNTS failed: 404 Not Found\n2022/01/11 19:54:03 Nothing to do. Sleeping\n",
+      "revId": "c6e49d6d9c276f75b651aeade31e1b3d9f1bb71e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
