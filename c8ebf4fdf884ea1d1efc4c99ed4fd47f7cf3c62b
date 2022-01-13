@@ -16,6 +16,23 @@
       "message": "Feel free to manually set Verified+1",
       "revId": "c8ebf4fdf884ea1d1efc4c99ed4fd47f7cf3c62b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "048e6072_2aec5b7a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7125
+      },
+      "writtenOn": "2022-01-13T21:07:08Z",
+      "side": 1,
+      "message": "Nicolas, is there a way to retry Kokoro? AFAICT it failed due to unrelated flake on mac:\n\n[ 13%] Building CXX object src/OpenGL/compiler/CMakeFiles/GLCompiler.dir/preprocessor/Tokenizer.cpp.o\nclang: error: unable to execute command: Segmentation fault: 11\nclang: error: clang frontend command failed due to signal (use -v to see invocation)\nApple clang version 12.0.0 (clang-1200.0.32.2)\n\nSee https://fusion2.corp.google.com/invocations/4a3d484b-7690-41c4-b45a-2b5d8c6b8bcd/targets/swiftshader%2Fmacos_reactor_subzero%2Frelease%2Fpresubmit/log",
+      "revId": "c8ebf4fdf884ea1d1efc4c99ed4fd47f7cf3c62b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
