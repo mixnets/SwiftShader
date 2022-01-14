@@ -453,10 +453,9 @@ func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 	defer file.Close()
 
 	cfg := struct {
-		Remote  string   `json:"remote"`
-		Branch  string   `json:"branch"`
-		SHA     string   `json:"sha"`
-		Patches []string `json:"patches"`
+		Remote string `json:"remote"`
+		Branch string `json:"branch"`
+		SHA    string `json:"sha"`
 	}{}
 	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
 		return deqpBuild{}, cause.Wrap(err, "Couldn't parse %s", deqpConfigRelPath)
@@ -503,14 +502,6 @@ func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 		log.Println("Fetching deqp dependencies")
 		if err := shell.Shell(buildTimeout, r.python, cacheDir, "external/fetch_sources.py"); err != nil {
 			return deqpBuild{}, cause.Wrap(err, "Couldn't fetch deqp sources %v @ %v", cfg.Remote, cfg.SHA)
-		}
-
-		log.Println("Applying deqp patches")
-		for _, patch := range cfg.Patches {
-			fullPath := path.Join(checkoutDir, patch)
-			if err := git.Apply(cacheDir, fullPath); err != nil {
-				return deqpBuild{}, cause.Wrap(err, "Couldn't apply deqp patch %v for %v @ %v", patch, cfg.Remote, cfg.SHA)
-			}
 		}
 
 		log.Printf("Building deqp into %v\n", buildDir)
@@ -752,10 +743,9 @@ func (r *regres) updateLocalDeqpFiles(test *test) ([]string, error) {
 	defer file.Close()
 
 	cfg := struct {
-		Remote  string   `json:"remote"`
-		Branch  string   `json:"branch"`
-		SHA     string   `json:"sha"`
-		Patches []string `json:"patches"`
+		Remote string `json:"remote"`
+		Branch string `json:"branch"`
+		SHA    string `json:"sha"`
 	}{}
 	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
 		return nil, cause.Wrap(err, "Couldn't parse %s", deqpConfigRelPath)
