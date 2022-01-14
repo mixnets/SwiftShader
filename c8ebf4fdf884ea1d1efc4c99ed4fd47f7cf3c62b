@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7c595b2_fd91a941",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-14T15:10:51Z",
+      "side": 1,
+      "message": "This gets interpreted as a Buganizer ID by default. Use \"chromium:1225002\" instead.",
+      "range": {
+        "startLine": 13,
+        "startChar": 5,
+        "endLine": 13,
+        "endChar": 12
+      },
+      "revId": "c8ebf4fdf884ea1d1efc4c99ed4fd47f7cf3c62b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0f4fa365_6f8d0c9a",
