@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "abd89b60_a0074fd0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-14T15:36:22Z",
+      "side": 1,
+      "message": "We have to wait to submit this until https://chromium-review.googlesource.com/c/angle/angle/+/3387088 lands, but it\u0027s ready for review.",
+      "revId": "e7877fe68b7377a6cae0f389de733dc8f3fb93bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
