@@ -98,6 +98,24 @@
       "parentUuid": "048e6072_2aec5b7a",
       "revId": "c8ebf4fdf884ea1d1efc4c99ed4fd47f7cf3c62b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be5fd1f3_1e18cfb8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7125
+      },
+      "writtenOn": "2022-01-14T17:41:54Z",
+      "side": 1,
+      "message": "I assumed that Kokoro is supposed to set the Verified label, but it looks like I can update this myself :-)",
+      "parentUuid": "746c1378_e11007de",
+      "revId": "c8ebf4fdf884ea1d1efc4c99ed4fd47f7cf3c62b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
