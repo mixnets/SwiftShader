@@ -78,6 +78,8 @@ SetupProcessor::State SetupProcessor::update(const vk::GraphicsState &pipelineSt
 	                            !(pipelineState.isDrawLine(true) && (pipelineState.getLineRasterizationMode() == VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT));
 	state.rasterizerDiscard = pipelineState.hasRasterizerDiscard();
 
+	state.subpixelPrecisionBits = pipelineState.getSubpixelPrecisionBits();
+
 	state.numClipDistances = vertexShader->getNumOutputClipDistances();
 	state.numCullDistances = vertexShader->getNumOutputCullDistances();
 

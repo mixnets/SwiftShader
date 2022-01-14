@@ -161,6 +161,8 @@ struct DrawCall
 
 	bool depthClipEnable;
 
+	float subpixelPrecisionFactor;
+
 	VertexProcessor::RoutineType vertexRoutine;
 	SetupProcessor::RoutineType setupRoutine;
 	PixelProcessor::RoutineType pixelRoutine;

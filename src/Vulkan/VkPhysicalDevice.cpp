@@ -28,8 +28,17 @@
 
 namespace vk {
 
-PhysicalDevice::PhysicalDevice(const void *, void *mem)
+PhysicalDevice::PhysicalDevice(const VkInstanceCreateInfo *instanceCreateInfo, void *mem)
 {
+	properties.apiVersion = API_VERSION;
+	properties.driverVersion = DRIVER_VERSION;
+	properties.vendorID = VENDOR_ID;
+	properties.deviceID = DEVICE_ID;
+	properties.deviceType = VK_PHYSICAL_DEVICE_TYPE_CPU;
+	strcpy(properties.deviceName, "");
+	memcpy(properties.pipelineCacheUUID, SWIFTSHADER_UUID, VK_UUID_SIZE);
+	properties.limits = getLimits();
+	properties.sparseProperties = {};
 }
 
 const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
@@ -514,7 +523,7 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits()
 		{ 65535, 65535, 65535 },                     // maxComputeWorkGroupCount[3]
 		256,                                         // maxComputeWorkGroupInvocations
 		{ 256, 256, 64 },                            // maxComputeWorkGroupSize[3]
-		vk::SUBPIXEL_PRECISION_BITS,                 // subPixelPrecisionBits
+		4,                                           // subPixelPrecisionBits
 		4,                                           // subTexelPrecisionBits
 		4,                                           // mipmapPrecisionBits
 		UINT32_MAX,                                  // maxDrawIndexedIndexValue
@@ -574,27 +583,6 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits()
 
 const VkPhysicalDeviceProperties &PhysicalDevice::getProperties() const
 {
-	auto getProperties = [&]() -> VkPhysicalDeviceProperties {
-		VkPhysicalDeviceProperties properties = {
-			API_VERSION,
-			DRIVER_VERSION,
-			VENDOR_ID,
-			DEVICE_ID,
-			VK_PHYSICAL_DEVICE_TYPE_CPU,  // deviceType
-			"",                           // deviceName
-			SWIFTSHADER_UUID,             // pipelineCacheUUID
-			getLimits(),                  // limits
-			{}                            // sparseProperties
-		};
-
-		// Append Reactor JIT backend name and version
-		snprintf(properties.deviceName, VK_MAX_PHYSICAL_DEVICE_NAME_SIZE,
-		         "%s (%s)", SWIFTSHADER_DEVICE_NAME, rr::BackendName().c_str());
-
-		return properties;
-	};
-
-	static const VkPhysicalDeviceProperties properties = getProperties();
 	return properties;
 }
 
@@ -923,7 +911,7 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceDriverProperties *properties)
 
 void PhysicalDevice::getProperties(VkPhysicalDeviceLineRasterizationPropertiesEXT *properties) const
 {
-	properties->lineSubPixelPrecisionBits = vk::SUBPIXEL_PRECISION_BITS;
+	properties->lineSubPixelPrecisionBits = vk::DEFAULT_SUBPIXEL_PRECISION_BITS;
 }
 
 void PhysicalDevice::getProperties(VkPhysicalDeviceProvokingVertexPropertiesEXT *properties) const

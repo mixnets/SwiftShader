@@ -17,6 +17,7 @@
 #include "System/Debug.hpp"
 
 #include <vulkan/vk_google_filtering_precision.h>
+#include <vulkan/vk_google_subpixel_precision.h>
 #define VULKAN_HPP_NO_EXCEPTIONS
 #define VULKAN_HPP_NAMESPACE vkhpp
 #include <vulkan/vulkan.hpp>
@@ -40,6 +41,9 @@ std::string Stringify(VkStructureType value)
 		break;
 	case VK_STRUCTURE_TYPE_SAMPLER_FILTERING_PRECISION_GOOGLE:
 		ret = "SamplerFilteringPrecisionGOOGLE";
+		break;
+	case VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_SUBPIXEL_PRECISION_STATE_CREATE_INFO_GOOGLE:
+		ret = "PipelineRasterizationSubpixelPrecisionCreateInfoGOOGLE";
 		break;
 	default:
 		ret = vkhpp::to_string(static_cast<vkhpp::StructureType>(value));

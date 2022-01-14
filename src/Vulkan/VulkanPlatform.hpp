@@ -50,6 +50,7 @@ public:
 	template class VkNonDispatchableHandle<object##Ptr>;
 
 #include <vulkan/vk_google_filtering_precision.h>
+#include <vulkan/vk_google_subpixel_precision.h>
 #include <vulkan/vulkan_core.h>
 
 #endif  // VULKAN_PLATFORM

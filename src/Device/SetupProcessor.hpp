@@ -61,6 +61,7 @@ public:
 		bool rasterizerDiscard : 1;
 		unsigned int numClipDistances : 4;  // [0 - 8]
 		unsigned int numCullDistances : 4;  // [0 - 8]
+		unsigned int subpixelPrecisionBits : 4; // [0 - 8]
 
 		SpirvShader::InterfaceComponent gradient[MAX_INTERFACE_COMPONENTS];
 	};

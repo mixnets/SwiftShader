@@ -334,6 +334,7 @@ static const ExtensionProperties instanceExtensionProperties[] = {
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 	{ { VK_KHR_WIN32_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_SPEC_VERSION } },
 #endif
+	{ { VK_GOOGLE_SUBPIXEL_PRECISION_EXTENSION_NAME, VK_GOOGLE_SUBPIXEL_PRECISION_SPEC_VERSION } },
 };
 
 static const ExtensionProperties deviceExtensionProperties[] = {

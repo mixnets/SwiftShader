@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef VULKAN_GOOGLE_SAMPLER_FILTERING_PRECISION_H
+#define VULKAN_GOOGLE_SAMPLER_FILTERING_PRECISION_H
+
 #include "vulkan_core.h"
 
 // THIS FILE SHOULD BE DELETED IF VK_GOOGLE_sampler_filtering_precision IS EVER ADDED TO THE VULKAN HEADERS
@@ -39,3 +42,5 @@ typedef struct VkSamplerFilteringPrecisionGOOGLE {
     const void*                           pNext;
     VkSamplerFilteringPrecisionModeGOOGLE samplerFilteringPrecisionMode;
 } VkSamplerFilteringPrecisionGOOGLE;
+
+#endif  // VULKAN_GOOGLE_SAMPLER_FILTERING_PRECISION_H

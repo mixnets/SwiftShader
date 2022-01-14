@@ -89,9 +89,6 @@ struct Constants
 	float4 weight[16];
 
 	// Fragment offsets
-	int Xf[4];
-	int Yf[4];
-
 	float4 X[4];
 	float4 Y[4];
 
@@ -119,11 +116,6 @@ struct Constants
 		VkSampleLocations4[2][1] - 0.5f,
 		VkSampleLocations4[3][1] - 0.5f,
 	};
-
-	// Compute the yMin and yMax multisample offsets so that they are just
-	// large enough (+/- max range - epsilon) to include sample points
-	static constexpr int yMinMultiSampleOffset = sw::toFixedPoint(1, vk::SUBPIXEL_PRECISION_BITS) - sw::toFixedPoint(sw::max(SampleLocationsY[0], SampleLocationsY[1], SampleLocationsY[2], SampleLocationsY[3]), vk::SUBPIXEL_PRECISION_BITS) - 1;
-	static constexpr int yMaxMultiSampleOffset = sw::toFixedPoint(1, vk::SUBPIXEL_PRECISION_BITS) + sw::toFixedPoint(sw::max(SampleLocationsY[0], SampleLocationsY[1], SampleLocationsY[2], SampleLocationsY[3]), vk::SUBPIXEL_PRECISION_BITS) - 1;
 
 	dword maxX[16];
 	dword maxY[16];

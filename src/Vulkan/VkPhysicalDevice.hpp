@@ -29,7 +29,7 @@ class PhysicalDevice
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE; }
 
-	PhysicalDevice(const void *, void *mem);
+	PhysicalDevice(const VkInstanceCreateInfo *instanceCreateInfo, void *mem);
 	void destroy(const VkAllocationCallbacks *pAllocator) {}
 
 	static size_t ComputeRequiredAllocationSize(const void *) { return 0; }
@@ -82,11 +82,13 @@ public:
 	                              VkQueueFamilyProperties2 *pQueueFamilyProperties) const;
 	static const VkPhysicalDeviceMemoryProperties &GetMemoryProperties();
 
-	static const VkPhysicalDeviceLimits &getLimits();
+	static const VkPhysicalDeviceLimits &getLimits();  ///////default
 
 private:
 	static VkSampleCountFlags getSampleCounts();
 	VkQueueFamilyProperties getQueueFamilyProperties() const;
+
+	VkPhysicalDeviceProperties properties = {};
 };
 
 using DispatchablePhysicalDevice = DispatchableObject<PhysicalDevice, VkPhysicalDevice>;

@@ -157,14 +157,29 @@ void SetupRoutine::generate()
 		}
 		Until(i >= n);
 
-		constexpr int subPixB = vk::SUBPIXEL_PRECISION_BITS;
-		constexpr int subPixM = vk::SUBPIXEL_PRECISION_MASK;
-		constexpr float subPixF = vk::SUBPIXEL_PRECISION_FACTOR;
+		const int subPixB = state.subpixelPrecisionBits;
+		const int subPixM = 0xFFFFFFFF >> (32 - subPixB);
+		const float subPixF = static_cast<float>(1 << subPixB);
+
+		const Constants &consts = Constants::Get();
+
+		Array<Int> Xf(4);
+		Array<Int> Yf(4);
+		for(int index = 0; index < 4; ++index)
+		{
+			Xf[index] = toFixedPoint(consts.X[index][0], subPixB);
+			Yf[index] = toFixedPoint(consts.Y[index][0], subPixB);
+		}
+
+		// Compute the yMin and yMax multisample offsets so that they are just
+		// large enough (+/- max range - epsilon) to include sample points
+		const int yMinMultiSampleOffset = sw::toFixedPoint(1, subPixB) - sw::toFixedPoint(sw::max(consts.SampleLocationsY[0], consts.SampleLocationsY[1], consts.SampleLocationsY[2], consts.SampleLocationsY[3]), subPixB) - 1;
+		const int yMaxMultiSampleOffset = sw::toFixedPoint(1, subPixB) + sw::toFixedPoint(sw::max(consts.SampleLocationsY[0], consts.SampleLocationsY[1], consts.SampleLocationsY[2], consts.SampleLocationsY[3]), subPixB) - 1;
 
 		if(state.enableMultiSampling)
 		{
-			yMin = (yMin + Constants::yMinMultiSampleOffset) >> subPixB;
-			yMax = (yMax + Constants::yMaxMultiSampleOffset) >> subPixB;
+			yMin = (yMin + yMinMultiSampleOffset) >> subPixB;
+			yMax = (yMax + yMaxMultiSampleOffset) >> subPixB;
 		}
 		else
 		{
@@ -198,8 +213,8 @@ void SetupRoutine::generate()
 				if(state.enableMultiSampling)
 				{
 					// The subtraction here is because we're not moving the point, we're testing the edge against it
-					Xq[i] = Xq[i] - *Pointer<Int>(constants + OFFSET(Constants, Xf) + q * sizeof(int));
-					Yq[i] = Yq[i] - *Pointer<Int>(constants + OFFSET(Constants, Yf) + q * sizeof(int));
+					Xq[i] = Xq[i] - Xf[q];
+					Yq[i] = Yq[i] - Yf[q];
 				}
 
 				i++;
@@ -572,8 +587,8 @@ void SetupRoutine::edge(Pointer<Byte> &primitive, Pointer<Byte> &data, const Int
 		Int Y1 = IfThenElse(swap, Yb, Ya);
 		Int Y2 = IfThenElse(swap, Ya, Yb);
 
-		constexpr int subPixB = vk::SUBPIXEL_PRECISION_BITS;
-		constexpr int subPixM = vk::SUBPIXEL_PRECISION_MASK;
+		const int subPixB = state.subpixelPrecisionBits;
+		const int subPixM = 0xFFFFFFFF >> (32 - subPixB);
 
 		Int y1 = Max((Y1 + subPixM) >> subPixB, *Pointer<Int>(data + OFFSET(DrawData, scissorY0)));
 		Int y2 = Min((Y2 + subPixM) >> subPixB, *Pointer<Int>(data + OFFSET(DrawData, scissorY1)));
