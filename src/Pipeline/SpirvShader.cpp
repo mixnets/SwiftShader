@@ -156,11 +156,13 @@ SpirvShader::SpirvShader(
 			{
 				auto decoration = static_cast<spv::Decoration>(insn.word(2));
 
-				// Currently OpDecorateId only supports UniformId, which provides information for
-				// potential optimizations that we don't perform, and CounterBuffer, which is used
-				// by HLSL to build the graphics pipeline with shader reflection. At the driver level,
-				// the CounterBuffer decoration does nothing, so we can safely ignore both decorations.
-				ASSERT(decoration == spv::DecorationUniformId || decoration == spv::DecorationCounterBuffer);
+				// Currently OpDecorateId only supports UniformId, which provides information for potential
+				// optimizations that we don't perform, and CounterBuffer and UserSemantic, which are used
+				// by HLSL compilers to build the graphics pipeline with shader reflection. At the driver level these
+				// decoration do nothing, so we can safely ignore them.
+				ASSERT(decoration == spv::DecorationUniformId ||
+				       decoration == spv::DecorationCounterBuffer ||
+				       decoration == spv::DecorationUserSemantic);
 			}
 			break;
 
@@ -764,6 +766,7 @@ SpirvShader::SpirvShader(
 				if(!strcmp(ext, "SPV_KHR_float_controls")) break;
 				if(!strcmp(ext, "SPV_KHR_vulkan_memory_model")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_decorate_string")) break;
+				if(!strcmp(ext, "SPV_GOOGLE_hlsl_functionality1")) break;
 				UNSUPPORTED("SPIR-V Extension: %s", ext);
 			}
 			break;
