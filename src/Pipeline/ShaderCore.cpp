@@ -973,7 +973,7 @@ SIMD::Int Pointer::isInBounds(unsigned int accessSize, OutOfBoundsBehavior robus
 		    (staticOffsets[3] + accessSize - 1 < staticLimit) ? 0xffffffff : 0);
 	}
 
-	return CmpLT(offsets() + SIMD::Int(accessSize - 1), SIMD::Int(limit()));
+	return As<SIMD::Int>(CmpLT(As<SIMD::UInt>(offsets()), SIMD::UInt(limit())));
 }
 
 bool Pointer::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
