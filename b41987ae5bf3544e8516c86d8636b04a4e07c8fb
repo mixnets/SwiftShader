@@ -16,6 +16,24 @@
       "message": "Antonio, have you seen a failure like this before:\n\nninja: fatal: CreateProcess: Access is denied.",
       "revId": "b41987ae5bf3544e8516c86d8636b04a4e07c8fb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0947b4a5_37b7358b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2022-01-17T19:08:13Z",
+      "side": 1,
+      "message": "Yes, I know what\u0027s going on, and it\u0027s something I had to handle in my CL as well. You need to specify \"cl.exe\" as the C and C++ compiler explicitly otherwise CMake picks up Cygwin\u0027s gcc if it\u0027s in PATH (and it is for our Kokoro VMs).\n\nSee the diffs in: https://dawn-review.googlesource.com/c/tint/+/72540/8/kokoro/windows/build.bat\n\nAfter running vcvars64.bat so that the correct \"cl.exe\" is available, I then run:\n\ncmake %SRC_DIR% -G \"Ninja\" -DCMAKE_C_COMPILER\u003d\"cl.exe\" -DCMAKE_CXX_COMPILER\u003d\"cl.exe\" %COMMON_CMAKE_FLAGS% || goto :error\n\nAfter building, I also undo the vcvars64.bat with /clean_env.",
+      "parentUuid": "2eb9807d_9c210ac5",
+      "revId": "b41987ae5bf3544e8516c86d8636b04a4e07c8fb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
