@@ -18,15 +18,20 @@ REM uncomment the line below.
 REM choco upgrade cmake -y --limit-output --no-progress
 cmake --version
 
+rem To use ninja with CMake requires VC env vars
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+
+rem Note that we need to specify the C and C++ compiler only because Cygwin is in PATH and CMake finds GCC and picks that over MSVC
 cmake .. ^
     -G "%CMAKE_GENERATOR_TYPE%" ^
-    -Thost=x64 ^
     "-DREACTOR_BACKEND=%REACTOR_BACKEND%" ^
     "-DSWIFTSHADER_LLVM_VERSION=%LLVM_VERSION%" ^
     "-DREACTOR_VERIFY_LLVM_IR=1" ^
     "-DLESS_DEBUG_INFO=%LESS_DEBUG_INFO%" || goto :error
 
 cmake --build . --config %BUILD_TYPE%   || goto :error
+
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat" /clean_env
 
 REM Run the unit tests. Some must be run from project root
 cd %SRC% || goto :error
