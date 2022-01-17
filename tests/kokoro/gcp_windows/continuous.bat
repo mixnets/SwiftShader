@@ -20,7 +20,6 @@ cmake --version
 
 cmake .. ^
     -G "%CMAKE_GENERATOR_TYPE%" ^
-    -Thost=x64 ^
     "-DREACTOR_BACKEND=%REACTOR_BACKEND%" ^
     "-DSWIFTSHADER_LLVM_VERSION=%LLVM_VERSION%" ^
     "-DREACTOR_VERIFY_LLVM_IR=1" ^
