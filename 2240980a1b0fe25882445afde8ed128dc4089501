@@ -16,6 +16,24 @@
       "message": "Went back to initial fix. I don\u0027t think the single unsigned check works properly. I\u0027ll revert to the single unsigned check if we can prove that we can\u0027t cause any OOB access with it.",
       "revId": "2240980a1b0fe25882445afde8ed128dc4089501",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c99b545_b0ad570c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-18T17:01:30Z",
+      "side": 1,
+      "message": "Fair enough. We can keep the obvious fix and potential optimization separate.",
+      "parentUuid": "394e5f99_0e2cb5e3",
+      "revId": "2240980a1b0fe25882445afde8ed128dc4089501",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
