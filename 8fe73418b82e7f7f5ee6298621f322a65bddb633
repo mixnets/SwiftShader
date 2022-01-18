@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d22c01c_dd597448",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-18T16:23:37Z",
+      "side": 1,
+      "message": "This can be done with a single unsigned integer comparison. See https://swiftshader-review.googlesource.com/c/SwiftShader/+/45093",
+      "range": {
+        "startLine": 976,
+        "startChar": 8,
+        "endLine": 976,
+        "endChar": 13
+      },
+      "revId": "8fe73418b82e7f7f5ee6298621f322a65bddb633",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
