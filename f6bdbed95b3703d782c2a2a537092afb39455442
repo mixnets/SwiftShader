@@ -22,6 +22,30 @@
       },
       "revId": "f6bdbed95b3703d782c2a2a537092afb39455442",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a34b667_4c291a15",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-18T17:03:21Z",
+      "side": 0,
+      "message": "Ack. I\u0027m starting to think that\u0027s why I hadn\u0027t sent https://swiftshader-review.googlesource.com/c/SwiftShader/+/45093 for review yet. Need to look a bit deeper at the edge conditions...",
+      "parentUuid": "676e076f_8114280e",
+      "range": {
+        "startLine": 976,
+        "startChar": 23,
+        "endLine": 976,
+        "endChar": 51
+      },
+      "revId": "f6bdbed95b3703d782c2a2a537092afb39455442",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
