@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "676e076f_8114280e",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-18T16:37:01Z",
+      "side": 0,
+      "message": "Hey Nicolas, I took this from your CL as is, but it feels like we lost this part of the robustness check. I don\u0027t think we should remove this, which leads me to think that I don\u0027t think this can be done safely in a single comparison.",
+      "range": {
+        "startLine": 976,
+        "startChar": 23,
+        "endLine": 976,
+        "endChar": 51
+      },
+      "revId": "f6bdbed95b3703d782c2a2a537092afb39455442",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
