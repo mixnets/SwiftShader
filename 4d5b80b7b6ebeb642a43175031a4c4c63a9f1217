@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3773a25d_f3b833aa",
+        "filename": "tests/kokoro/gcp_windows/continuous.bat",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2022-01-18T14:08:30Z",
+      "side": 1,
+      "message": "After this call, echo will be off, so you may want to `@echo on` here to see the commands running below. Same for after the call to this same batch below for /clean_env.",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 100
+      },
+      "revId": "4d5b80b7b6ebeb642a43175031a4c4c63a9f1217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88d72786_2fff131b",
+        "filename": "tests/kokoro/gcp_windows/continuous.bat",
+        "patchSetId": 5
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2022-01-18T14:08:30Z",
+      "side": 1,
+      "message": "You\u0027ll need to remove this. Ninja builds are not multiconfiguration builds, so the output ends up in the build directory (like for Make-based builds).",
+      "range": {
+        "startLine": 41,
+        "startChar": 6,
+        "endLine": 41,
+        "endChar": 18
+      },
+      "revId": "4d5b80b7b6ebeb642a43175031a4c4c63a9f1217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
