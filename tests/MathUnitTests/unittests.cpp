@@ -180,14 +180,46 @@ using namespace sw;
 //	}
 //}
 
+TEST(MathTest, CosEvenExhaustive)
+{
+	const float pi = 3.1415926535f;
+
+	for(uint32_t i = 0x00000000; i <= 0x3F800000; i += 1)
+	{
+		float f = bit_cast<float>(i);
+		float y = f * bit_cast<float>(0x3e22f983);  // 1/2pi 0.15915494309  0x3e22f983
+
+		y = y - roundf(y);
+		float z = y;
+
+		const float A = powf(6.28318530718f, 6) * (4860 * sqrtf(3) - 8424) / (5 * powf(pi, 6));
+		const float B = powf(6.28318530718f, 4) * (612 - 351 * sqrtf(3)) / powf(pi, 4);
+		const float C = powf(6.28318530718f, 2) * (270 * sqrtf(3) - 517) / (10 * powf(pi, 2));
+		const float D = 1.0f;
+
+		float ref = cosf(f);
+		float z2 = z * z;
+		float val = ((A * z2 + B) * z2 + C) * z2 + D;
+
+		float diff = val - ref;
+		float err = abs(diff);
+		const float tolerance = powf(2.0f, -17.0f);
+
+		if(err <= tolerance)
+		{
+		}
+		else
+		{
+			EXPECT_TRUE(err <= tolerance);
+		}
+	}
+}
+
 TEST(MathTest, SinExhaustive)
 {
 	const float pi = 3.1415926535f;
 
-	// A = 1.0000f, B = 1.0000f, C = 1.0000f, D = 1.0000f, i = 0x3eb4c481 +
-	// A = 1.0000f, B = 1.0000f, C = 1.0000f, D = 0.9990f, i = 0x3f30e512 -
-	// A = 1.0000f, B = 1.0000f, C = 1.0000f, D = 0.9995f, i = 0x3f52458d -
-	// A = 1.0000f, B = 1.0000f, C = 1.0000f, D = 0.9998f, i = 0x3f704957 -
+	// A = 1.00000f, B = 1.00000f, C = 1.00000f, D = 0.99985f, i = 0x3e4cb6cf +
 
 	for(uint32_t i = 0x30000000; i <= 0x3F800000; i += 1)
 	{
@@ -197,17 +229,19 @@ TEST(MathTest, SinExhaustive)
 		y = y - roundf(y);
 		float z = y;
 
-		const float A = 1.0000f * powf(6.28318530718f, 4) * (-16 * pi + 128 * sqrt(2) - 128) / powf(pi, 4);
-		const float B = 1.0000f * powf(6.28318530718f, 3) * (20 * pi - 128 * sqrt(2) + 112) / powf(pi, 3);
-		const float C = 1.0000f * powf(6.28318530718f, 2) * (32 * sqrt(2) - 8 * pi - 20) / powf(pi, 2);
-		const float D = 0.9999f * powf(6.28318530718f, 1) * 1.0f;
+		const float A = 1.00000f * powf(6.28318530718f, 4) * (-16 * pi + 128 * sqrt(2) - 128) / powf(pi, 4);
+		const float B = 1.00000f * powf(6.28318530718f, 3) * (20 * pi - 128 * sqrt(2) + 112) / powf(pi, 3);
+		const float C = 1.00000f * powf(6.28318530718f, 2) * (32 * sqrt(2) - 8 * pi - 20) / powf(pi, 2);
+		const float D = 0.99983f * powf(6.28318530718f, 1) * 1.0f;
+
+		volatile float ff = bit_cast<float>(0.9999f);
 
 		float ref = sinf(f);
 		float val = (((A * z + B) * z + C) * z + D) * z;
 
 		float diff = val - ref;
 		float err = abs(diff);
-		const float tolerance = powf(2.0f, -11.0f);
+		const float tolerance = powf(2.0f, -11.5f);
 
 		//
 		//float x = f;
