@@ -40,19 +40,20 @@ Float4 SinOrCos(RValue<Float4> x, bool sin)
 	//  pp : 4 mul, 2 add, 2 abs
 
 	Float4 y2 = y * y;
+
 	Float4 c1 = y2 * (y2 * (y2 * Float4(-0.0204391631f) + Float4(0.2536086171f)) + Float4(-1.2336977925f)) + Float4(1.0f);
 	Float4 s1 = y * (y2 * (y2 * (y2 * Float4(-0.0046075748f) + Float4(0.0796819754f)) + Float4(-0.645963615f)) + Float4(1.5707963235f));
+
 	Float4 c2 = (c1 * c1) - (s1 * s1);
 	Float4 s2 = Float4(2.0f) * s1 * c1;
-	Float4 r = Reciprocal(s2 * s2 + c2 * c2);
 
 	if(sin)
 	{
-		return Float4(2.0f) * s2 * c2 * r;
+		return Float4(1.99999f) * s2 * c2;
 	}
 	else
 	{
-		return ((c2 * c2) - (s2 * s2)) * r;
+		return (c2 * c2) - (s2 * s2);
 	}
 }
 
