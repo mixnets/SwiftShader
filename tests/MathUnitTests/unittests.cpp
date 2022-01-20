@@ -180,30 +180,94 @@ using namespace sw;
 //	}
 //}
 
+TEST(MathTest, CosFromSinExhaustive)
+{
+	const float pi = 3.1415926535f;
+
+	for(float x = -pi; x <= pi; x = nextafterf(x, +INFINITY))
+	{
+		float x_2 = x * 0.5 / pi;
+		float z = pi / 2 - 2 * pi * abs(x_2 - round(x_2));
+
+		const float A = (1134 - 648 * sqrtf(3)) / (5 * powf(pi, 5));
+		const float B = (72 * sqrtf(3) - 135) / (2 * powf(pi, 3));
+		const float C = (47 - 9 * sqrtf(3)) / (10 * pi);
+
+		float ref = cosf(x);
+		float z2 = z * z;
+		float val = ((A * z2 + B) * z2 + C) * z;
+
+		float diff = val - ref;
+		float err = abs(diff);
+		const float tolerance = powf(2.0f, -12.0f);
+
+		if(err <= tolerance)
+		{
+		}
+		else
+		{
+			EXPECT_TRUE(err <= tolerance);
+		}
+	}
+}
+
+TEST(MathTest, SinOddExhaustive)
+{
+	const float pi = 3.1415926535f;
+
+	for(float x = -pi; x <= pi; x = nextafterf(x, +INFINITY))
+	{
+		float x_2 = 0.25 - x * 0.5 / pi;
+		float z = pi / 2 - 2 * pi * abs(x_2 - round(x_2));
+
+		const float A = (1134 - 648 * sqrtf(3)) / (5 * powf(pi, 5));
+		const float B = (72 * sqrtf(3) - 135) / (2 * powf(pi, 3));
+		const float C = (47 - 9 * sqrtf(3)) / (10 * pi);
+
+		float ref = sinf(x);
+		float z2 = z * z;
+		float val = ((A * z2 + B) * z2 + C) * z;
+
+		float diff = val - ref;
+		float err = abs(diff);
+		const float tolerance = powf(2.0f, -12.0f);
+
+		if(err <= tolerance)
+		{
+		}
+		else
+		{
+			EXPECT_TRUE(err <= tolerance);
+		}
+	}
+}
+
 TEST(MathTest, CosEvenExhaustive)
 {
 	const float pi = 3.1415926535f;
 
-	for(uint32_t i = 0x00000000; i <= 0x3F800000; i += 1)
+	for(uint32_t i = 0x30000000; i <= bit_cast<uint32_t>(pi); i += 1)
 	{
-		float f = bit_cast<float>(i);
-		float y = f * bit_cast<float>(0x3e22f983);  // 1/2pi 0.15915494309  0x3e22f983
+		float x = bit_cast<float>(i);
+		float x_2 = x * 0.5 / pi;
+		float m = 2 * abs(x_2 - round(x_2));
+		float f = m - round(m);
+		float z = pi * f;
 
-		y = y - roundf(y);
-		float z = y;
-
-		const float A = powf(6.28318530718f, 6) * (4860 * sqrtf(3) - 8424) / (5 * powf(pi, 6));
-		const float B = powf(6.28318530718f, 4) * (612 - 351 * sqrtf(3)) / powf(pi, 4);
-		const float C = powf(6.28318530718f, 2) * (270 * sqrtf(3) - 517) / (10 * powf(pi, 2));
+		const float A = (4860 * sqrtf(3) - 8424) / (5 * powf(pi, 6));
+		const float B = (612 - 351 * sqrtf(3)) / powf(pi, 4);
+		const float C = (270 * sqrtf(3) - 517) / (10 * powf(pi, 2));
 		const float D = 1.0f;
 
-		float ref = cosf(f);
+		float ref = cosf(x);
 		float z2 = z * z;
 		float val = ((A * z2 + B) * z2 + C) * z2 + D;
 
+		val = copysignf(val, z);
+
 		float diff = val - ref;
 		float err = abs(diff);
-		const float tolerance = powf(2.0f, -17.0f);
+		const float tolerance = powf(2.0f, -14.0f);
 
 		if(err <= tolerance)
 		{
