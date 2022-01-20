@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db17a821_ef513f69",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-20T15:38:14Z",
+      "side": 1,
+      "message": "Rubberstamped too soon. Please address the comment:",
+      "revId": "f58423f5ef84cfe13927ac23e30caa7a0e70e964",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9496a57_1dd546d9",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-20T15:38:14Z",
+      "side": 1,
+      "message": "I think removing the define should be is_chromeos specific.",
+      "range": {
+        "startLine": 21,
+        "startChar": 18,
+        "endLine": 21,
+        "endChar": 29
+      },
+      "revId": "f58423f5ef84cfe13927ac23e30caa7a0e70e964",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
