@@ -303,6 +303,8 @@ Thread::Thread(Affinity&& affinity, Func&& func) {
                   "Cannot create thread that uses multiple affinity groups");
       groupAffinity.Mask |= (1ULL << core.windows.index);
     }
+    groupAffinity.Group = 0x0;
+    groupAffinity.Mask = 0xFFFF;
     CHECK_WIN32(UpdateProcThreadAttribute(
         attributes, 0, PROC_THREAD_ATTRIBUTE_GROUP_AFFINITY, &groupAffinity,
         sizeof(groupAffinity), nullptr, nullptr));

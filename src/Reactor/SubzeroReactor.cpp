@@ -165,7 +165,7 @@ Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Ice::Type retT
 
 // Wrapper for calls on C functions with Ice types
 template<typename Return, typename... CArgs, typename... RArgs>
-Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(CArgs...), RArgs &&... args)
+Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(CArgs...), RArgs &&...args)
 {
 	static_assert(sizeof...(CArgs) == sizeof...(RArgs), "Expected number of args don't match");
 
@@ -4324,24 +4324,6 @@ RValue<Float> Log2(RValue<Float> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	return emulated::Log2(x);
-}
-
-RValue<Float4> Sin(RValue<Float4> x)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-	return optimal::Sin(x);
-}
-
-RValue<Float4> Cos(RValue<Float4> x)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-	return optimal::Cos(x);
-}
-
-RValue<Float4> Tan(RValue<Float4> x)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-	return optimal::Tan(x);
 }
 
 RValue<Float4> Asin(RValue<Float4> x, Precision p)

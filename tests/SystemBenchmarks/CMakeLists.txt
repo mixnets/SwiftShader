@@ -23,8 +23,8 @@ set(ROOT_PROJECT_LINK_LIBRARIES
 )
 
 set(SYSTEM_BENCHMARKS_SRC_FILES
-    main.cpp
-    LRUCacheBenchmarks.cpp
+    main.cpp 
+    LRUCacheBenchmarks.cpp 
 )
 
 add_executable(system-benchmarks
@@ -50,6 +50,8 @@ target_link_libraries(system-benchmarks
     PRIVATE
         benchmark::benchmark
         vk_system
+        vk_pipeline
+        ${Reactor}
         gtest
         gmock
         ${ROOT_PROJECT_LINK_LIBRARIES}

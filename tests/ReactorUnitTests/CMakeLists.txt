@@ -56,4 +56,5 @@ target_link_libraries(ReactorUnitTests
         ${Reactor}
         gtest
         ${ROOT_PROJECT_LINK_LIBRARIES}
+        vk_pipeline
 )

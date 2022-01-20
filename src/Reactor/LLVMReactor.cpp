@@ -18,6 +18,7 @@
 #include "Debug.hpp"
 #include "EmulatedIntrinsics.hpp"
 #include "LLVMReactorDebugInfo.hpp"
+#include "OptimalIntrinsics.hpp"
 #include "Print.hpp"
 #include "Reactor.hpp"
 #include "x86.hpp"
@@ -3391,26 +3392,6 @@ RValue<Float4> Ceil(RValue<Float4> x)
 	}
 }
 
-RValue<Float4> Sin(RValue<Float4> v)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::sin, { V(v.value())->getType() });
-	return RValue<Float4>(V(jit->builder->CreateCall(func, V(v.value()))));
-}
-
-RValue<Float4> Cos(RValue<Float4> v)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::cos, { V(v.value())->getType() });
-	return RValue<Float4>(V(jit->builder->CreateCall(func, V(v.value()))));
-}
-
-RValue<Float4> Tan(RValue<Float4> v)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-	return Sin(v) / Cos(v);
-}
-
 static RValue<Float4> TransformFloat4PerElement(RValue<Float4> v, const char *name)
 {
 	auto funcTy = llvm::FunctionType::get(T(Float::type()), llvm::ArrayRef<llvm::Type *>(T(Float::type())), false);
@@ -3496,11 +3477,26 @@ RValue<Float4> Atan2(RValue<Float4> x, RValue<Float4> y)
 	return RValue<Float4>(V(out));
 }
 
+float mypow(float x, float y)
+{
+	return powf(x, y);
+}
+
 RValue<Float4> Pow(RValue<Float4> x, RValue<Float4> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::pow, { T(Float4::type()) });
-	return RValue<Float4>(V(jit->builder->CreateCall(func, { V(x.value()), V(y.value()) })));
+	//auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::pow, { T(Float4::type()) });
+	//return RValue<Float4>(V(jit->builder->CreateCall(func, { V(x.value()), V(y.value()) })));
+
+	//return optimal::Pow(x, y);
+
+	Float4 out;
+	for(uint64_t i = 0; i < 4; i++)
+	{
+		Float el = Call(mypow, Extract(x, i), Extract(y, i));
+		out = Insert(out, el, i);
+	}
+	return out;
 }
 
 RValue<Float4> Exp(RValue<Float4> v)

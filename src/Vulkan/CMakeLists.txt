@@ -240,6 +240,7 @@ if(DEFINED ENV{SWIFTSHADER_VULKAN_API_LIBRARY_INSTALL_PATH})
         TARGET vk_swiftshader
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> $ENV{SWIFTSHADER_VULKAN_API_LIBRARY_INSTALL_PATH}${VULKAN_API_LIBRARY_NAME}
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> "C:/src/VK-GL-CTS/build/external/vulkancts/modules/vulkan/Debug/vulkan-1.dll"
     )
 endif()
 
