@@ -21,6 +21,252 @@
 
 using namespace sw;
 
+//TEST(MathTest, SinExhaustive)
+//{
+//	// original i =0x3c0031ce
+//	// D = 0.999f, i =0x3f30e5bc
+//
+//	for(uint32_t i = 0x00000000; i <= 0x3F700000; i += 1)
+//	{
+//		float f = bit_cast<float>(i);
+//		float z = f;
+//
+//		const float A = bit_cast<float>(0x3ce7989c);  // 0.0282710114332f; 0x3ce7989c
+//		const float B = bit_cast<float>(0xbe4c585c);  // -0.19955581819f;0xbe4c585c
+//		const float C = bit_cast<float>(0x3c4aadfd);  // 0.012370583689f; 0x3c4aadfd
+//		const float D = 0.9999f;                      //bit_cast<float>(0x3F700000);  // 1.0f; 0x3F700000
+//		const float E = 0.0f;
+//
+//		float ref = sinf(f);
+//		float val = (((A * z + B) * z + C) * z + D) * z + E;
+//
+//		float diff = val - ref;
+//		float err = abs(diff);
+//		const float tolerance = powf(2.0f, -11.0f);
+//
+//		if(err <= tolerance)
+//		{
+//		}
+//		else
+//		{
+//			EXPECT_TRUE(err <= tolerance);
+//		}
+//	}
+//}
+//
+//TEST(MathTest, SinExhaustive)
+//{
+//	// original i =0x3c0031ce
+//	// D = 0.9998f, i =0x3e52fbad ++
+//	// D = 0.9997f, i=0x3e610c3a ++
+//	// D = 0.9995f, i = 0x3e8383dc ++
+//	// D = 0.9991f, i = 0x3f210979 --
+//	// D = 0.9992f, i = 0x3f272510 --
+//	// D = 0.9993f, i = 0x3f2d7195 --
+//	// D = 0.9994f, i = 0x3e9273a9 ++
+//	// D = 0.99935f, i = 0x3e9e1283 ++
+//
+//	// D = 0.9993f, i = 0x3e19fd9d, d = 0.000488296151
+//	// D = 0.9992f, i = 0x3e1b697a, d = 0.000488296151
+//	// D = 0.9991f, i = 0x3e1cd47f, d = 0.000488296151
+//	// D = 0.9990f, i = 0x3e1e3fa1, d = 0.000488296151
+//	// D = 0.9989f, i = 0x3e1faa7e, d = 0.000488296151
+//	// D = 0.9985f, i = 0x3e254fd6, d = 0.000488296151
+//	// D = 0.9980f, i = 0x3e2c510e, d = 0.000488296151
+//	// D = 0.9950f, i = 0x3e547cf4, d = 0.000488296151
+//	// D = 0.9940f, i = 0x3e6110a0, d = 0.000488296151
+//	// D = 0.9935f, i = 0x3e6732fb, d = 0.000488296151
+//	// D = 0.9934f, i = 0x3e6869ca, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9934f, i = 0x3e6872f0, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9800f, i = 0x3e6885cb, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9750f, i = 0x3e688c83, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9740f, i = 0x3e688e04, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9740f, B = 1.0010f, i = 0x3e688eee, d = 0.000488296151
+//
+//	for(uint32_t i = 0x30000000; i <= 0x3F800000; i += 1)
+//	{
+//		float f = bit_cast<float>(i);
+//		float y = f * bit_cast<float>(0x3e22f983);  // 1/2pi 0.15915494309  0x3e22f983
+//
+//		y = y - roundf(y);
+//		float z = y;
+//
+//		const float A = bit_cast<float>(0x3e35e52b) * 0.9900f;  //6.28318530718f * bit_cast<float>(0x3ce7989c);  // 0.0282710114332f; 0x3ce7989c
+//		const float B = bit_cast<float>(0xbfa07e08) * 1.0011f;  //6.28318530718f * bit_cast<float>(0xbe4c585c);  // -0.19955581819f;0xbe4c585c
+//		const float C = bit_cast<float>(0x3d9f2f29) * 0.9740f;  //6.28318530718f * bit_cast<float>(0x3c4aadfd);  // 0.012370583689f; 0x3c4aadfd
+//		const float D = 6.28318530718f * 0.9934f;               //bit_cast<float>(0x3F700000);  // 1.0f; 0x3F700000
+//
+//		float ref = sinf(f);
+//		float val = (((A * z + B) * z + C) * z + D) * z;
+//
+//		float diff = val - ref;
+//		float err = abs(diff);
+//		const float tolerance = powf(2.0f, -11.0f);
+//
+//		//const float pi = 3.1415926535f;
+//		//float x = f;
+//		//float r = (-16 * pi + 128 * sqrt(2) - 128) / powf(pi, 4) * powf(x, 4) + (20 * pi - 128 * sqrt(2) + 112) / powf(pi, 3) * powf(x, 3) + (32 * sqrt(2) - 8 * pi - 20) / powf(pi, 2) * powf(x, 2) + x;
+//
+//		if(err <= tolerance)
+//		{
+//		}
+//		else
+//		{
+//			EXPECT_TRUE(err <= tolerance);
+//		}
+//	}
+//}
+//
+//TEST(MathTest, SinExhaustive)
+//{
+//	// original i =0x3c0031ce
+//	// D = 0.9998f, i =0x3e52fbad ++
+//	// D = 0.9997f, i=0x3e610c3a ++
+//	// D = 0.9995f, i = 0x3e8383dc ++
+//	// D = 0.9991f, i = 0x3f210979 --
+//	// D = 0.9992f, i = 0x3f272510 --
+//	// D = 0.9993f, i = 0x3f2d7195 --
+//	// D = 0.9994f, i = 0x3e9273a9 ++
+//	// D = 0.99935f, i = 0x3e9e1283 ++
+//
+//	// D = 0.9993f, i = 0x3e19fd9d, d = 0.000488296151
+//	// D = 0.9992f, i = 0x3e1b697a, d = 0.000488296151
+//	// D = 0.9991f, i = 0x3e1cd47f, d = 0.000488296151
+//	// D = 0.9990f, i = 0x3e1e3fa1, d = 0.000488296151
+//	// D = 0.9989f, i = 0x3e1faa7e, d = 0.000488296151
+//	// D = 0.9985f, i = 0x3e254fd6, d = 0.000488296151
+//	// D = 0.9980f, i = 0x3e2c510e, d = 0.000488296151
+//	// D = 0.9950f, i = 0x3e547cf4, d = 0.000488296151
+//	// D = 0.9940f, i = 0x3e6110a0, d = 0.000488296151
+//	// D = 0.9935f, i = 0x3e6732fb, d = 0.000488296151
+//	// D = 0.9934f, i = 0x3e6869ca, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9934f, i = 0x3e6872f0, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9800f, i = 0x3e6885cb, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9750f, i = 0x3e688c83, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9740f, i = 0x3e688e04, d = 0.000488296151
+//	// D = 0.9934f, C = 0.9740f, B = 1.0010f, i = 0x3e688eee, d = 0.000488296151
+//
+//	for(uint32_t i = 0x30000000; i <= 0x3F800000; i += 1)
+//	{
+//		float f = bit_cast<float>(i);
+//		float y = f * bit_cast<float>(0x3e22f983);  // 1/2pi 0.15915494309  0x3e22f983
+//
+//		y = y - roundf(y);
+//		float z = y;
+//
+//		const float A = bit_cast<float>(0x3e35e52b) * 0.9900f;  //6.28318530718f * bit_cast<float>(0x3ce7989c);  // 0.0282710114332f; 0x3ce7989c
+//		const float B = bit_cast<float>(0xbfa07e08) * 1.0011f;  //6.28318530718f * bit_cast<float>(0xbe4c585c);  // -0.19955581819f;0xbe4c585c
+//		const float C = bit_cast<float>(0x3d9f2f29) * 0.9740f;  //6.28318530718f * bit_cast<float>(0x3c4aadfd);  // 0.012370583689f; 0x3c4aadfd
+//		const float D = 6.28318530718f * 0.9934f;               //bit_cast<float>(0x3F700000);  // 1.0f; 0x3F700000
+//
+//		float ref = sinf(f);
+//		float val = (((A * z + B) * z + C) * z + D) * z;
+//
+//		float diff = val - ref;
+//		float err = abs(diff);
+//		const float tolerance = powf(2.0f, -11.0f);
+//
+//		//const float pi = 3.1415926535f;
+//		//float x = f;
+//		//float r = (-16 * pi + 128 * sqrt(2) - 128) / powf(pi, 4) * powf(x, 4) + (20 * pi - 128 * sqrt(2) + 112) / powf(pi, 3) * powf(x, 3) + (32 * sqrt(2) - 8 * pi - 20) / powf(pi, 2) * powf(x, 2) + x;
+//
+//		if(err <= tolerance)
+//		{
+//		}
+//		else
+//		{
+//			EXPECT_TRUE(err <= tolerance);
+//		}
+//	}
+//}
+
+TEST(MathTest, SinExhaustive)
+{
+	const float pi = 3.1415926535f;
+
+	// A = 1.0000f, B = 1.0000f, C = 1.0000f, D = 1.0000f, i = 0x3eb4c481 +
+	// A = 1.0000f, B = 1.0000f, C = 1.0000f, D = 0.9990f, i = 0x3f30e512 -
+	// A = 1.0000f, B = 1.0000f, C = 1.0000f, D = 0.9995f, i = 0x3f52458d -
+	// A = 1.0000f, B = 1.0000f, C = 1.0000f, D = 0.9998f, i = 0x3f704957 -
+
+	for(uint32_t i = 0x30000000; i <= 0x3F800000; i += 1)
+	{
+		float f = bit_cast<float>(i);
+		float y = f * bit_cast<float>(0x3e22f983);  // 1/2pi 0.15915494309  0x3e22f983
+
+		y = y - roundf(y);
+		float z = y;
+
+		const float A = 1.0000f * powf(6.28318530718f, 4) * (-16 * pi + 128 * sqrt(2) - 128) / powf(pi, 4);
+		const float B = 1.0000f * powf(6.28318530718f, 3) * (20 * pi - 128 * sqrt(2) + 112) / powf(pi, 3);
+		const float C = 1.0000f * powf(6.28318530718f, 2) * (32 * sqrt(2) - 8 * pi - 20) / powf(pi, 2);
+		const float D = 0.9999f * powf(6.28318530718f, 1) * 1.0f;
+
+		float ref = sinf(f);
+		float val = (((A * z + B) * z + C) * z + D) * z;
+
+		float diff = val - ref;
+		float err = abs(diff);
+		const float tolerance = powf(2.0f, -11.0f);
+
+		//
+		//float x = f;
+		//float r = (-16 * pi + 128 * sqrt(2) - 128) / powf(pi, 4) * powf(x, 4) +
+		//          (20 * pi - 128 * sqrt(2) + 112) / powf(pi, 3) * powf(x, 3) +
+		//          (32 * sqrt(2) - 8 * pi - 20) / powf(pi, 2) * powf(x, 2) +
+		//          x;
+
+		if(err <= tolerance)
+		{
+		}
+		else
+		{
+			EXPECT_TRUE(err <= tolerance);
+		}
+	}
+}
+
+TEST(MathTest, CosExhaustive)
+{
+	const float pi = 3.1415926535f;
+
+	for(uint32_t i = 0x00000000; i <= 0x3F800000; i += 1)
+	{
+		float f = bit_cast<float>(i);
+		float y = f * bit_cast<float>(0x3e22f983);  // 1/2pi 0.15915494309  0x3e22f983
+
+		y = y - roundf(y);
+		float z = y;
+
+		const float A = powf(6.28318530718f, 4) * (-16 * pi + 128 * sqrt(2) - 128) / powf(pi, 4);
+		const float B = powf(6.28318530718f, 3) * (12 * pi - 128 * sqrt(2) + 144) / powf(pi, 3);
+		const float C = powf(6.28318530718f, 2) * (-2 * pi + 32 * sqrt(2) - 44) / powf(pi, 2);
+		const float D = 0.0f;
+		const float E = 1.0f;
+
+		float ref = cosf(f);
+		float val = (((A * z + B) * z + C) * z + D) * z + E;
+
+		//float x = f;
+		//float r = (-16 * pi + 128 * sqrt(2) - 128) / powf(pi, 4) * powf(x, 4) +
+		//          (12 * pi - 128 * sqrt(2) + 144) / powf(pi, 3) * powf(x, 3) +
+		//          (-2 * pi + 32 * sqrt(2) - 44) / powf(pi, 2) * powf(x, 2) +
+		//          1;
+
+		float diff = val - ref;
+		float err = abs(diff);
+		const float tolerance = powf(2.0f, -11.0f);
+
+		if(err <= tolerance)
+		{
+		}
+		else
+		{
+			EXPECT_TRUE(err <= tolerance);
+		}
+	}
+}
+
 TEST(MathTest, UnsignedFloat11_10)
 {
 	// Test the largest value which causes underflow to 0, and the smallest value

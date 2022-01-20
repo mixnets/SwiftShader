@@ -595,6 +595,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto radians = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
+				//dst.move(i, sine(radians.Float(i), true));
 				dst.move(i, Sin(radians.Float(i)));
 			}
 		}

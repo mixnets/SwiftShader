@@ -18,6 +18,7 @@
 #include "Debug.hpp"
 #include "EmulatedIntrinsics.hpp"
 #include "LLVMReactorDebugInfo.hpp"
+#include "OptimalIntrinsics.hpp"
 #include "Print.hpp"
 #include "Reactor.hpp"
 #include "x86.hpp"
@@ -3391,18 +3392,87 @@ RValue<Float4> Ceil(RValue<Float4> x)
 	}
 }
 
-RValue<Float4> Sin(RValue<Float4> v)
+RValue<Float4> Sin(RValue<Float4> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::sin, { V(v.value())->getType() });
-	return RValue<Float4>(V(jit->builder->CreateCall(func, V(v.value()))));
+	//auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::sin, { V(x.value())->getType() });
+	//return RValue<Float4>(V(jit->builder->CreateCall(func, V(x.value()))));
+
+	{
+		// Reduce to [-0.5, 0.5] range
+		Float4 y = x * Float4(1.59154943e-1f);  // 1/2pi
+		y = y - Round(y);
+
+		//Float4 z = Abs(y / Float4(1.59154943e-1f));
+
+		Float4 z = x;
+
+		//const float A = 0.0282710114332;
+		//const float B = -0.19955581819;
+		//const float C = 0.012370583689;
+		//const float D = 1.0;
+		//const float E = 0;
+
+		const float A = 0.0282710114332f;
+		const float B = -0.19955581819f;
+		const float C = 0.012370583689f;
+		const float D = 0.9999f;
+		const float E = 0.0f;
+
+		auto sign = As<Float4>((As<Int4>(x) & Int4(0x80000000)) | Int4(0x3F800000));
+
+		return sign * (Float4(A) * z * z * z * z + Float4(B) * z * z * z + Float4(C) * z * z + Float4(D) * z + Float4(E));
+	}
+
+	if(true)
+	{
+		// Reduce to [-0.5, 0.5] range
+		Float4 y = x * Float4(1.59154943e-1f);  // 1/2pi
+		y = y - Round(y);
+
+		// From the paper: "A Fast, Vectorizable Algorithm for Producing Single-Precision Sine-Cosine Pairs"
+		// This implementation passes OpenGL ES 3.0 precision requirements, at the cost of more operations:
+		// !pp : 17 mul, 7 add, 1 sub, 1 reciprocal
+		//  pp : 4 mul, 2 add, 2 abs
+
+		Float4 y2 = y * y;
+		Float4 c1 = y2 * (y2 * (y2 * Float4(-0.0204391631f) + Float4(0.2536086171f)) + Float4(-1.2336977925f)) + Float4(1.0f);
+		Float4 s1 = y * (y2 * (y2 * (y2 * Float4(-0.0046075748f) + Float4(0.0796819754f)) + Float4(-0.645963615f)) + Float4(1.5707963235f));
+		Float4 c2 = (c1 * c1) - (s1 * s1);
+		Float4 s2 = Float4(2.0f) * s1 * c1;
+		return Float4(2.0f) * s2 * c2 * Rcp(s2 * s2 + c2 * c2);
+	}
+	else
+	{
+		// Reduce to [-0.5, 0.5] range
+		Float4 y = x * Float4(1.59154943e-1f);  // 1/2pi
+		y = y - Round(y);
+
+		const Float4 A = Float4(-16.0f);
+		const Float4 B = Float4(8.0f);
+		const Float4 C = Float4(7.75160950e-1f);
+		const Float4 D = Float4(2.24839049e-1f);
+
+		// Parabola approximating sine
+		Float4 sin = y * (Abs(y) * A + B);
+
+		// Improve precision from 0.06 to 0.001
+		if(true)
+		{
+			sin = sin * (Abs(sin) * D + C);
+		}
+
+		return sin;
+	}
 }
 
-RValue<Float4> Cos(RValue<Float4> v)
+RValue<Float4> Cos(RValue<Float4> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::cos, { V(v.value())->getType() });
-	return RValue<Float4>(V(jit->builder->CreateCall(func, V(v.value()))));
+	//auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::cos, { V(v.value())->getType() });
+	//return RValue<Float4>(V(jit->builder->CreateCall(func, V(v.value()))));
+
+	return optimal::Cos(x);
 }
 
 RValue<Float4> Tan(RValue<Float4> v)
@@ -3496,11 +3566,26 @@ RValue<Float4> Atan2(RValue<Float4> x, RValue<Float4> y)
 	return RValue<Float4>(V(out));
 }
 
+float mypow(float x, float y)
+{
+	return powf(x, y);
+}
+
 RValue<Float4> Pow(RValue<Float4> x, RValue<Float4> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::pow, { T(Float4::type()) });
-	return RValue<Float4>(V(jit->builder->CreateCall(func, { V(x.value()), V(y.value()) })));
+	//auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::pow, { T(Float4::type()) });
+	//return RValue<Float4>(V(jit->builder->CreateCall(func, { V(x.value()), V(y.value()) })));
+
+	//return optimal::Pow(x, y);
+
+	Float4 out;
+	for(uint64_t i = 0; i < 4; i++)
+	{
+		Float el = Call(mypow, Extract(x, i), Extract(y, i));
+		out = Insert(out, el, i);
+	}
+	return out;
 }
 
 RValue<Float4> Exp(RValue<Float4> v)
