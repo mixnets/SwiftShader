@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a875f799_5af2c429",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-20T17:59:52Z",
+      "side": 1,
+      "message": "The issue is we\u0027re still compiling src/WSI/XcbSurfaceKHR.cpp and libXCB.cpp.\n\nWe could conditionally remove them in GN for is_chromeos, or wrap those files with #ifdef VK_USE_PLATFORM_XCB_KHR. I prefer the former if it\u0027s no trouble.",
+      "revId": "05560d83c08d4b94557089ce47d8cba7c556f99b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
