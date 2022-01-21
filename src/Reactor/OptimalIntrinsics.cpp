@@ -15,81 +15,7 @@
 #include "OptimalIntrinsics.hpp"
 
 namespace rr {
-namespace {
-Float4 Reciprocal(RValue<Float4> x, bool pp = false, bool finite = false, bool exactAtPow2 = false)
-{
-	Float4 rcp = Rcp_pp(x, exactAtPow2);
-
-	if(!pp)
-	{
-		rcp = (rcp + rcp) - (x * rcp * rcp);
-	}
-
-	return rcp;
-}
-
-Float4 SinOrCos(RValue<Float4> x, bool sin)
-{
-	// Reduce to [-0.5, 0.5] range
-	Float4 y = x * Float4(1.59154943e-1f);  // 1/2pi
-	y = y - Round(y);
-
-	// From the paper: "A Fast, Vectorizable Algorithm for Producing Single-Precision Sine-Cosine Pairs"
-	// This implementation passes OpenGL ES 3.0 precision requirements, at the cost of more operations:
-	// !pp : 17 mul, 7 add, 1 sub, 1 reciprocal
-	//  pp : 4 mul, 2 add, 2 abs
-
-	Float4 y2 = y * y;
-
-	Float4 c1 = y2 * (y2 * (y2 * Float4(-0.0204391631f) + Float4(0.2536086171f)) + Float4(-1.2336977925f)) + Float4(1.0f);
-	Float4 s1 = y * (y2 * (y2 * (y2 * Float4(-0.0046075748f) + Float4(0.0796819754f)) + Float4(-0.645963615f)) + Float4(1.5707963235f));
-
-	Float4 c2 = (c1 * c1) - (s1 * s1);
-	Float4 s2 = Float4(2.0f) * s1 * c1;
-
-	if(sin)
-	{
-		return Float4(1.99999f) * s2 * c2;
-	}
-	else
-	{
-		return (c2 * c2) - (s2 * s2);
-	}
-}
-
-// Approximation of atan in [0..1]
-Float4 Atan_01(Float4 x)
-{
-	// From 4.4.49, page 81 of the Handbook of Mathematical Functions, by Milton Abramowitz and Irene Stegun
-	const Float4 a2(-0.3333314528f);
-	const Float4 a4(0.1999355085f);
-	const Float4 a6(-0.1420889944f);
-	const Float4 a8(0.1065626393f);
-	const Float4 a10(-0.0752896400f);
-	const Float4 a12(0.0429096138f);
-	const Float4 a14(-0.0161657367f);
-	const Float4 a16(0.0028662257f);
-	Float4 x2 = x * x;
-	return (x + x * (x2 * (a2 + x2 * (a4 + x2 * (a6 + x2 * (a8 + x2 * (a10 + x2 * (a12 + x2 * (a14 + x2 * a16)))))))));
-}
-}  // namespace
-
 namespace optimal {
-
-Float4 Sin(RValue<Float4> x)
-{
-	return SinOrCos(x, true);
-}
-
-Float4 Cos(RValue<Float4> x)
-{
-	return SinOrCos(x, false);
-}
-
-Float4 Tan(RValue<Float4> x)
-{
-	return SinOrCos(x, true) / SinOrCos(x, false);
-}
 
 Float4 Asin_4_terms(RValue<Float4> x)
 {
@@ -133,6 +59,22 @@ Float4 Acos_8_terms(RValue<Float4> x)
 {
 	// pi/2 - arcsin(x)
 	return Float4(1.57079632e+0f) - Asin_8_terms(x);
+}
+
+// Approximation of atan in [0..1]
+static Float4 Atan_01(Float4 x)
+{
+	// From 4.4.49, page 81 of the Handbook of Mathematical Functions, by Milton Abramowitz and Irene Stegun
+	const Float4 a2(-0.3333314528f);
+	const Float4 a4(0.1999355085f);
+	const Float4 a6(-0.1420889944f);
+	const Float4 a8(0.1065626393f);
+	const Float4 a10(-0.0752896400f);
+	const Float4 a12(0.0429096138f);
+	const Float4 a14(-0.0161657367f);
+	const Float4 a16(0.0028662257f);
+	Float4 x2 = x * x;
+	return (x + x * (x2 * (a2 + x2 * (a4 + x2 * (a6 + x2 * (a8 + x2 * (a10 + x2 * (a12 + x2 * (a14 + x2 * a16)))))))));
 }
 
 Float4 Atan(RValue<Float4> x)

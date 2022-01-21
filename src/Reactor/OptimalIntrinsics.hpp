@@ -21,9 +21,6 @@
 namespace rr {
 namespace optimal {
 
-Float4 Sin(RValue<Float4> x);
-Float4 Cos(RValue<Float4> x);
-Float4 Tan(RValue<Float4> x);
 Float4 Asin_4_terms(RValue<Float4> x);
 Float4 Asin_8_terms(RValue<Float4> x);
 Float4 Acos_4_terms(RValue<Float4> x);

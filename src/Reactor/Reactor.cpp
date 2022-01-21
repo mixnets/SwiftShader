@@ -4773,4 +4773,56 @@ RValue<Float> RcpSqrt(RValue<Float> x, Precision p)
 	return DoRcpSqrt(x, p);
 }
 
+// Polynomal approximation of order 5 for sin(x * pi/2) in the range [-1/4, 1/4]
+static Float4 Sin5(Float4 x)
+{
+	// A * x^5 + B * x^3 + C * x
+	// Exact at x = 0, 1/12, 1/6, 1/4, and their negatives, which correspond to x * 2 * pi = 0, pi/6, pi/3, pi/2
+	const Float4 A = (36288 - 20736 * sqrt(3)) / 5;
+	const Float4 B = 288 * sqrt(3) - 540;
+	const Float4 C = (47 - 9 * sqrt(3)) / 5;
+
+	Float4 x2 = x * x;
+
+	return ((A * x2 + B) * x2 + C) * x;
+}
+
+RValue<Float4> Sin(RValue<Float4> x)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+	//auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::sin, { V(x.value())->getType() });
+	//return RValue<Float4>(V(jit->builder->CreateCall(func, V(x.value()))));
+
+	const Float4 q = 0.25f;
+	const Float4 pi2 = 1 / (2 * 3.1415926535f);
+
+	// Range reduction and mirroring
+	Float4 x_2 = q - x * pi2;
+	Float4 z = q - Abs(x_2 - Round(x_2));
+
+	return Sin5(z);
+}
+
+RValue<Float4> Cos(RValue<Float4> x)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+	//auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::cos, { V(v.value())->getType() });
+	//return RValue<Float4>(V(jit->builder->CreateCall(func, V(v.value()))));
+
+	const Float4 q = 0.25f;
+	const Float4 pi2 = 1 / (2 * 3.1415926535f);
+
+	// Phase shift, range reduction, and mirroring
+	Float4 x_2 = x * pi2;
+	Float4 z = q - Abs(x_2 - Round(x_2));
+
+	return Sin5(z);
+}
+
+RValue<Float4> Tan(RValue<Float4> v)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+	return Sin(v) / Cos(v);
+}
+
 }  // namespace rr

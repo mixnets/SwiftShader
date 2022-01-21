@@ -21,26 +21,32 @@
 
 using namespace sw;
 
+// Polynomal approximation of order 5 for sin(x * 2 * pi) in the range [-1/4, 1/4]
+static float sin5(float x)
+{
+	// A * x^5 + B * x^3 + C * x
+	// Exact at x = 0, 1/12, 1/6, 1/4, and their negatives, which correspond to x * 2 * pi = 0, pi/6, pi/3, pi/2
+	const float A = (36288 - 20736 * sqrt(3)) / 5;
+	const float B = 288 * sqrt(3) - 540;
+	const float C = (47 - 9 * sqrt(3)) / 5;
+
+	float x2 = x * x;
+
+	return ((A * x2 + B) * x2 + C) * x;
+}
+
 TEST(MathTest, SinExhaustive)
 {
 	const float tolerance = powf(2.0f, -12.0f);  // Vulkan requires absolute error <= 2^−11 inside the range [−pi, pi]
 	const float pi = 3.1415926535f;
 
-	// A * x^5 + B * x^3 + C * x approximates sin(x) in the range [0, pi/2]
-	// Exact at 0, pi/6, pi/3, and pi/2.
-	const float A = (1134 - 648 * sqrt(3)) / (5 * pow(pi, 5));
-	const float B = (72 * sqrt(3) - 135) / (2 * pow(pi, 3));
-	const float C = (47 - 9 * sqrt(3)) / (10 * pi);
-
 	for(float x = -pi; x <= pi; x = nextafterf(x, +INFINITY))
 	{
 		// Range reduction and mirroring
 		float x_2 = 0.25f - x * (0.5f / pi);
-		float z = (pi / 2.0f) - (2.0f * pi) * fabs(x_2 - round(x_2));
+		float z = 0.25f - fabs(x_2 - round(x_2));
 
-		// Evaluate the polynomial
-		float z2 = z * z;
-		float val = ((A * z2 + B) * z2 + C) * z;
+		float val = sin5(z);
 
 		ASSERT_NEAR(val, sinf(x), tolerance);
 	}
@@ -51,21 +57,13 @@ TEST(MathTest, CosExhaustive)
 	const float tolerance = powf(2.0f, -12.0f);  // Vulkan requires absolute error <= 2^−11 inside the range [−pi, pi]
 	const float pi = 3.1415926535f;
 
-	// A * x^5 + B * x^3 + C * x approximates sin(x) in the range [0, pi/2]
-	// Exact at 0, pi/6, pi/3, and pi/2.
-	const float A = (1134 - 648 * sqrt(3)) / (5 * pow(pi, 5));
-	const float B = (72 * sqrt(3) - 135) / (2 * pow(pi, 3));
-	const float C = (47 - 9 * sqrt(3)) / (10 * pi);
-
 	for(float x = -pi; x <= pi; x = nextafterf(x, +INFINITY))
 	{
 		// Phase shift, range reduction, and mirroring
 		float x_2 = x * (0.5f / pi);
-		float z = (pi / 2.0f) - (2.0f * pi) * fabs(x_2 - roundf(x_2));
+		float z = 0.25f - fabs(x_2 - round(x_2));
 
-		// Evaluate the polynomial
-		float z2 = z * z;
-		float val = ((A * z2 + B) * z2 + C) * z;
+		float val = sin5(z);
 
 		ASSERT_NEAR(val, cosf(x), tolerance);
 	}
