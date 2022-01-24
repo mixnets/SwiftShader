@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f5a4639_f1a47f74",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-24T16:33:22Z",
+      "side": 1,
+      "message": "b/207382281 is still not resolved but we don\u0027t strictly have to block landing this.",
+      "revId": "733032371a30f7bfd0257f64e2db9e75e1ee7b1e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
