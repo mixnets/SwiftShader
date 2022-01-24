@@ -189,6 +189,7 @@ cc_defaults {
         "System/Memory.cpp",
         "System/Socket.cpp",
         "System/Timer.cpp",
+        "System/SwiftConfig.cpp",
         "Device/*.cpp",
         "Pipeline/*.cpp",
         "Vulkan/*.cpp",
