@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43dc9439_0b90c2c9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-01-24T21:05:31Z",
+      "side": 1,
+      "message": "Ignore the regres message, I tested something and didn\u0027t include --dry in the options",
+      "revId": "1b8e0e64050e6f467f61f585b866b710dbc99273",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
