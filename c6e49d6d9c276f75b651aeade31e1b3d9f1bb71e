@@ -33,6 +33,42 @@
       "message": "I tried this again and made sure to clear the cache directory. I got the following output:\n\n2022/01/11 19:54:02 Couldn\u0027t update info for change \u0027I15810068a3e53f3812e07fbc5b04701159289350\u0027. Cause: Getting info for change \u0027I15810068a3e53f3812e07fbc5b04701159289350\u0027. Cause: API call to https://swiftshader-review.googlesource.com/a/changes/I15810068a3e53f3812e07fbc5b04701159289350?o\u003dCURRENT_REVISION\u0026o\u003dCURRENT_COMMIT\u0026o\u003dMESSAGES\u0026o\u003dLABELS\u0026o\u003dDETAILED_ACCOUNTS failed: 404 Not Found\n2022/01/11 19:54:03 Nothing to do. Sleeping\n",
       "revId": "c6e49d6d9c276f75b651aeade31e1b3d9f1bb71e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2db74074_98e55fe2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-01-24T22:09:47Z",
+      "side": 1,
+      "message": "Hmm, I just tried this patch and it ran without issue: https://swiftshader-review.googlesource.com/c/SwiftShader/+/61288",
+      "parentUuid": "dda41773_9cc3286f",
+      "revId": "c6e49d6d9c276f75b651aeade31e1b3d9f1bb71e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "169c9714_b1dd37bb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-01-24T22:09:47Z",
+      "side": 1,
+      "message": "Hmm, I\u0027m not able to reproduce this error. I\u0027m not sure how it possibly uses a change ID instead of the change number at this point either.",
+      "parentUuid": "dda41773_9cc3286f",
+      "revId": "c6e49d6d9c276f75b651aeade31e1b3d9f1bb71e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
