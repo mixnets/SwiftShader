@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a4d7305_65940125",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101271
+      },
+      "writtenOn": "2022-01-24T22:07:01Z",
+      "side": 1,
+      "message": "Let me know if the test needs to be referenced somewhere in the Android build files, I don\u0027t think I\u0027ve seen them referenced.",
+      "revId": "d4c706a8a8837f60e099f6beb20d284961d6838f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
