@@ -74,6 +74,30 @@
       },
       "revId": "d4c706a8a8837f60e099f6beb20d284961d6838f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8e53a85_9ca85a34",
+        "filename": "src/System/Configurator.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 101271
+      },
+      "writtenOn": "2022-01-25T19:14:30Z",
+      "side": 1,
+      "message": "Thanks, fixed!",
+      "parentUuid": "05d10420_f143b290",
+      "range": {
+        "startLine": 145,
+        "startChar": 1,
+        "endLine": 145,
+        "endChar": 2
+      },
+      "revId": "d4c706a8a8837f60e099f6beb20d284961d6838f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
