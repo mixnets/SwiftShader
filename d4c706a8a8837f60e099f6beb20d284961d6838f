@@ -16,6 +16,64 @@
       "message": "Let me know if the test needs to be referenced somewhere in the Android build files, I don\u0027t think I\u0027ve seen them referenced.",
       "revId": "d4c706a8a8837f60e099f6beb20d284961d6838f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f61175f_8ef12df2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-25T19:08:41Z",
+      "side": 1,
+      "message": "No, this is fine, we don\u0027t run any unit tests on Android.",
+      "parentUuid": "5a4d7305_65940125",
+      "revId": "d4c706a8a8837f60e099f6beb20d284961d6838f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b55361b3_95131b75",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-25T19:08:41Z",
+      "side": 1,
+      "message": "Tanks for the cleanup, that code must have been 15 years old! 8-)",
+      "revId": "d4c706a8a8837f60e099f6beb20d284961d6838f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05d10420_f143b290",
+        "filename": "src/System/Configurator.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-25T19:08:41Z",
+      "side": 1,
+      "message": "sytle-nit: We tend to put braces around all conditional logic, to make flow control stand out more (especially when there are return statements) and avoid some common mistakes.",
+      "range": {
+        "startLine": 145,
+        "startChar": 1,
+        "endLine": 145,
+        "endChar": 2
+      },
+      "revId": "d4c706a8a8837f60e099f6beb20d284961d6838f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
