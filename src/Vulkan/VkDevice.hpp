@@ -47,7 +47,10 @@ class Server;
 class Device
 {
 public:
-	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_DEVICE; }
+	static constexpr VkSystemAllocationScope GetAllocationScope()
+	{
+		return VK_SYSTEM_ALLOCATION_SCOPE_DEVICE;
+	}
 
 	Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice *physicalDevice, const VkPhysicalDeviceFeatures *enabledFeatures, const std::shared_ptr<marl::Scheduler> &scheduler);
 	void destroy(const VkAllocationCallbacks *pAllocator);
@@ -61,12 +64,21 @@ public:
 	VkResult waitIdle();
 	void getDescriptorSetLayoutSupport(const VkDescriptorSetLayoutCreateInfo *pCreateInfo,
 	                                   VkDescriptorSetLayoutSupport *pSupport) const;
-	PhysicalDevice *getPhysicalDevice() const { return physicalDevice; }
+	PhysicalDevice *getPhysicalDevice() const
+	{
+		return physicalDevice;
+	}
 	void updateDescriptorSets(uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites,
 	                          uint32_t descriptorCopyCount, const VkCopyDescriptorSet *pDescriptorCopies);
 	void getRequirements(VkMemoryDedicatedRequirements *requirements) const;
-	const VkPhysicalDeviceFeatures &getEnabledFeatures() const { return enabledFeatures; }
-	sw::Blitter *getBlitter() const { return blitter.get(); }
+	const VkPhysicalDeviceFeatures &getEnabledFeatures() const
+	{
+		return enabledFeatures;
+	}
+	sw::Blitter *getBlitter() const
+	{
+		return blitter.get();
+	}
 
 	void registerImageView(ImageView *imageView);
 	void unregisterImageView(ImageView *imageView);
