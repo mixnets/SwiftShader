@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54e7ab71_89d3f740",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-25T18:44:44Z",
+      "side": 1,
+      "message": "Please add a \"Bug: b/158228522\" line.",
+      "revId": "89f04493ecdda20734f6a05bc67a5e326e2e0d06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83dc3789_47d46eca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-25T18:44:44Z",
+      "side": 1,
+      "message": "Thanks!",
+      "revId": "89f04493ecdda20734f6a05bc67a5e326e2e0d06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
