@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3363bb9_c3285b87",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-25T21:51:43Z",
+      "side": 1,
+      "message": "Great feature! Note that Gerrit and Chrome\u0027s Tryjobs have a couple of issues dealing with git subtrees, so you\u0027ll see some bizarre failures, but if Kokoro passes on this merge change you can go ahead and \u0027Submit with Children\u0027 in the kebap menu on the top right.",
+      "revId": "13f4a3b7df1b53a235273b312696059bc91b4f98",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
