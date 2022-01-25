@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb69eafe_773c7200",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-25T20:59:34Z",
+      "side": 1,
+      "message": "There is a list of extensions in the spec with differences between the original extension and Vulkan 1.3. VK_EXT_tooling_info isn\u0027t one of them. The list is:\n- VK_EXT_4444_formats\n- VK_EXT_extended_dynamic_state\n- VK_EXT_extended_dynamic_state2\n- VK_EXT_texel_buffer_alignment\n- VK_EXT_texture_compression_astc_hdr\n- VK_EXT_ycbcr_2plane_444_formats",
+      "parentUuid": "eae46719_d6df6081",
+      "revId": "474603dab97d5bb75b772ecd59b97c4732c770f2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d81746a9_1b48d617",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-01-25T20:43:08Z",
       "side": 1,
       "message": "nit: Could you create a section for Vulkan 1.3 promoted extensions? Note some of the ones below belong in a separate category (\"additional\" extension?)",
+      "range": {
+        "startLine": 424,
+        "startChar": 4,
+        "endLine": 424,
+        "endChar": 9
+      },
+      "revId": "474603dab97d5bb75b772ecd59b97c4732c770f2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "90ed2a8a_f5c59e8b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-25T20:59:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d81746a9_1b48d617",
       "range": {
         "startLine": 424,
         "startChar": 4,
