@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36e69b92_19bfbd90",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-25T18:58:53Z",
+      "side": 1,
+      "message": "Great, feel free to manually set Verified+1 when everything looks good, and then Submit. I gave you contributor privileges but let me know if you run into issues.",
+      "revId": "bed2a6da9d795365f5b1df2fb438b3c0d745b715",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
