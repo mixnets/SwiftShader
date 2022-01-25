@@ -187,6 +187,7 @@ cc_defaults {
         "System/Linux/MemFd.cpp",
         "System/Math.cpp",
         "System/Memory.cpp",
+        "System/Scheduler.cpp",
         "System/Socket.cpp",
         "System/SwiftConfig.cpp",
         "System/Timer.cpp",
