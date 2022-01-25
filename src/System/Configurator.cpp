@@ -18,7 +18,6 @@
 #include <algorithm>
 #include <fstream>
 #include <istream>
-#include <sstream>
 
 namespace {
 inline std::string trimSpaces(const std::string &str)

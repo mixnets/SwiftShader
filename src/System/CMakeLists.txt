@@ -33,6 +33,8 @@ set(SYSTEM_SRC_FILES
     Math.hpp
     Memory.cpp
     Memory.hpp
+    Scheduler.cpp
+    Scheduler.hpp
     SharedLibrary.hpp
     Socket.cpp
     Socket.hpp
