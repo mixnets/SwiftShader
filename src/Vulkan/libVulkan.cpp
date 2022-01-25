@@ -48,7 +48,7 @@
 #include "Reactor/Nucleus.hpp"
 #include "System/CPUID.hpp"
 #include "System/Debug.hpp"
-#include "System/SwiftConfig.hpp"
+#include "System/Scheduler.hpp"
 #include "WSI/HeadlessSurfaceKHR.hpp"
 #include "WSI/VkSwapchainKHR.hpp"
 
@@ -75,11 +75,6 @@
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 #	include "WSI/Win32SurfaceKHR.hpp"
 #endif
-
-#include "marl/mutex.h"
-#include "marl/scheduler.h"
-#include "marl/thread.h"
-#include "marl/tsa.h"
 
 #ifdef __ANDROID__
 #	include "commit.h"
@@ -125,36 +120,6 @@ void setReactorDefaultConfig()
 	               .add(rr::Optimization::Pass::InstructionCombining);
 
 	rr::Nucleus::adjustDefaultConfig(cfg);
-}
-
-std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
-{
-	struct Scheduler
-	{
-		marl::mutex mutex;
-		std::weak_ptr<marl::Scheduler> weakptr GUARDED_BY(mutex);
-	};
-
-	static Scheduler scheduler;  // TODO(b/208256248): Avoid exit-time destructor.
-
-	const sw::Configuration &config = sw::getConfiguration();
-	int threadCount = config.threadCount;
-
-	marl::lock lock(scheduler.mutex);
-	auto sptr = scheduler.weakptr.lock();
-	if(!sptr)
-	{
-		marl::Scheduler::Config cfg;
-		cfg.setWorkerThreadCount(threadCount == 0 ? std::min<size_t>(marl::Thread::numLogicalCPUs(), 16)
-		                                          : threadCount);
-		cfg.setWorkerThreadInitializer([](int) {
-			sw::CPUID::setFlushToZero(true);
-			sw::CPUID::setDenormalsAreZero(true);
-		});
-		sptr = std::make_shared<marl::Scheduler>(cfg);
-		scheduler.weakptr = sptr;
-	}
-	return sptr;
 }
 
 // initializeLibrary() is called by vkCreateInstance() to perform one-off global
@@ -987,8 +952,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 		(void)queueFamilyPropertyCount;  // Silence unused variable warning
 	}
 
-	auto scheduler = getOrCreateScheduler();
-	return vk::DispatchableDevice::Create(pAllocator, pCreateInfo, pDevice, vk::Cast(physicalDevice), enabledFeatures, scheduler);
+	static sw::Scheduler scheduler(sw::getConfiguration());  // TODO(b/208256248): Avoid exit-time destructor.
+	return vk::DispatchableDevice::Create(pAllocator, pCreateInfo, pDevice, vk::Cast(physicalDevice), enabledFeatures, scheduler.get());
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyDevice(VkDevice device, const VkAllocationCallbacks *pAllocator)
