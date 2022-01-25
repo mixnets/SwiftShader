@@ -14,13 +14,41 @@
 
 #include "SwiftConfig.hpp"
 #include "Configurator.hpp"
+#include "Debug.hpp"
+
+#include <algorithm>
 
 namespace sw {
+
+std::string toLowerStr(const std::string &str)
+{
+	std::string lower = str;
+	std::transform(lower.begin(), lower.end(), lower.begin(),
+	               [](unsigned char c) { return std::tolower(c); });
+	return lower;
+}
+
 Configuration readConfigurationFromFile()
 {
 	Configurator ini("SwiftShader.ini");
 	Configuration config{};
-	config.threadCount = ini.getInteger("Processor", "ThreadCount", 0);
+	config.threadCount = ini.getInteger<uint32_t>("Processor", "ThreadCount", 0);
+	config.affinityMask = ini.getInteger<uint64_t>("Processor", "AffinityMask", 0xffffffffffffffff);
+	if(config.affinityMask == 0)
+	{
+		warn("Affinity mask is empty, using all-cores affinity\n");
+		config.affinityMask = 0xffffffffffffffff;
+	}
+	std::string affinityPolicy = toLowerStr(ini.getValue("Processor", "AffinityPolicy", "any"));
+	if(affinityPolicy == "one")
+	{
+		config.affinityPolicy = Configuration::AffinityPolicy::OneOf;
+	}
+	else
+	{
+		// Default.
+		config.affinityPolicy = Configuration::AffinityPolicy::AnyOf;
+	}
 
 	return config;
 }
