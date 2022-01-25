@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eae46719_d6df6081",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-25T20:43:08Z",
+      "side": 1,
+      "message": "I assume this extension is used verbatim by Vulkan 1.3? Note we don\u0027t have tests yet for the latter in case there are non-trivial differences.",
+      "revId": "474603dab97d5bb75b772ecd59b97c4732c770f2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d81746a9_1b48d617",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-25T20:43:08Z",
+      "side": 1,
+      "message": "nit: Could you create a section for Vulkan 1.3 promoted extensions? Note some of the ones below belong in a separate category (\"additional\" extension?)",
+      "range": {
+        "startLine": 424,
+        "startChar": 4,
+        "endLine": 424,
+        "endChar": 9
+      },
+      "revId": "474603dab97d5bb75b772ecd59b97c4732c770f2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
