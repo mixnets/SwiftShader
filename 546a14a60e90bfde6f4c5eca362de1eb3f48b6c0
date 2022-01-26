@@ -115,6 +115,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3eb4b947_9083c8e8",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-26T22:51:54Z",
+      "side": 1,
+      "message": "Vulkan headers update:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/61908",
+      "parentUuid": "9e6efcd9_a16eba1a",
+      "range": {
+        "startLine": 430,
+        "startChar": 1,
+        "endLine": 430,
+        "endChar": 88
+      },
+      "revId": "546a14a60e90bfde6f4c5eca362de1eb3f48b6c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dca94cdb_f2344184",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 14
