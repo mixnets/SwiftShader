@@ -16,6 +16,52 @@
       "message": "Update to ToT. PTAL.",
       "revId": "546a14a60e90bfde6f4c5eca362de1eb3f48b6c0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93ccb1cf_04cfa8a9",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-26T16:51:55Z",
+      "side": 1,
+      "message": "I think we should omit declaring VK_KHR_synchronization2 support as an extension, and only implement the Core 1.3 functions. Few if any applications will look for this extension in isolation, and just use the Core functions if they target 1.3 as a minimum. Applications that support Vulkan 1.2 or less must be able to fall back to using the old synchronization primitives anyway.",
+      "range": {
+        "startLine": 430,
+        "startChar": 1,
+        "endLine": 430,
+        "endChar": 88
+      },
+      "revId": "546a14a60e90bfde6f4c5eca362de1eb3f48b6c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dca94cdb_f2344184",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 949,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-26T16:51:55Z",
+      "side": 1,
+      "message": "I assume there\u0027s a non-KHR version of this after updating the headers?",
+      "range": {
+        "startLine": 949,
+        "startChar": 67,
+        "endLine": 949,
+        "endChar": 71
+      },
+      "revId": "546a14a60e90bfde6f4c5eca362de1eb3f48b6c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
