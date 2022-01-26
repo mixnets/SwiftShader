@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3482a42_041556b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-26T02:28:30Z",
+      "side": 1,
+      "message": "I\u0027m not sure if the Commit Queue can land changes in branches. Anyway, I refreshed this to see if we\u0027ve still affected by b/207382281.",
+      "revId": "a57b82fce447a570801b9aa32ee3ef60fd63dec4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
