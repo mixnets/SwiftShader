@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a37a4012_8f04d581",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-26T16:14:20Z",
+      "side": 1,
+      "message": "Here\u0027s a new version with dynamically allocated memory.\nThe need for a memcpy() to keep the previous (smaller) data when dynamically increasing the size of the buffer seems to indicate that this is meant to be allocated full size to begin with, but this does work, so maybe you prefer this. Some dynamic allocation logic would be simplified by always allocating the buffer full size, but this code shows that we don\u0027t have to if we don\u0027t want to.\n\nPTAL.",
+      "revId": "d58076b6c894c2665a48c51ff57d395534e21a98",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
