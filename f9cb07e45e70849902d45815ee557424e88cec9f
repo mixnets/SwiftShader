@@ -16,6 +16,23 @@
       "message": "Fixed copy/paste error.",
       "revId": "f9cb07e45e70849902d45815ee557424e88cec9f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5e3bc75_6b11eebb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-26T22:52:32Z",
+      "side": 1,
+      "message": "Ready for review. PTAL.",
+      "revId": "f9cb07e45e70849902d45815ee557424e88cec9f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
