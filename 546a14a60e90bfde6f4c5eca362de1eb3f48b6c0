@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c8a36784_8755f47b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-26T21:15:18Z",
+      "side": 1,
+      "message": "Fair point about VkPromotedExtensions.cpp keeping the extension functions out of sight. I was mostly concerned about cluttering up this file and potentially others with extension-specific code we don\u0027t strictly need. But if the Core version is exactly the same as the extension, aside from the functions that go in VkPromotedExtensions.cpp, that seems fine.\n\nRegarding the test coverage I meant to wait a bit until the public dEQP-VK for 1.3 is released. That would prevent flip-flopping these KHR functions between this file and VkPromotedExtensions.cpp. Up to you if you prefer that though.",
+      "parentUuid": "89400848_62d70140",
+      "range": {
+        "startLine": 430,
+        "startChar": 1,
+        "endLine": 430,
+        "endChar": 88
+      },
+      "revId": "546a14a60e90bfde6f4c5eca362de1eb3f48b6c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dca94cdb_f2344184",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 14
@@ -102,6 +126,30 @@
       "side": 1,
       "message": "Yes, but:\n    VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR \u003d VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES,\n\nso it has the same value, so you can use either one of them.",
       "parentUuid": "dca94cdb_f2344184",
+      "range": {
+        "startLine": 949,
+        "startChar": 67,
+        "endLine": 949,
+        "endChar": 71
+      },
+      "revId": "546a14a60e90bfde6f4c5eca362de1eb3f48b6c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "64e968a0_26dc8ebd",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 949,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-26T21:15:18Z",
+      "side": 1,
+      "message": "That\u0027s my point, I think we should use the shorter version, both for readability and to make it clear what\u0027s core functionality and what\u0027s part of an extension. The headers have been released so this can be done now instead of requiring cleanup later.",
+      "parentUuid": "10ec8ca3_481e1d38",
       "range": {
         "startLine": 949,
         "startChar": 67,
