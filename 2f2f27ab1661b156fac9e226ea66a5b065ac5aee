@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68c8685f_7115501e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-27T15:58:25Z",
+      "side": 1,
+      "message": "Rebased CL on Vulkan 1.3 API CL.",
+      "revId": "2f2f27ab1661b156fac9e226ea66a5b065ac5aee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
