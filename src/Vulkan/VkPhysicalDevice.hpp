@@ -42,6 +42,7 @@ public:
 	bool hasExtendedFeatures(const VkPhysicalDeviceProvokingVertexFeaturesEXT *features) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceVulkan11Features *features) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceVulkan12Features *features) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceVulkan13Features *features) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceDepthClipEnableFeaturesEXT *features) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *features) const;
 
@@ -70,6 +71,7 @@ public:
 	void getProperties(VkPhysicalDeviceSamplerFilterMinmaxProperties *properties) const;
 	void getProperties(VkPhysicalDeviceTimelineSemaphoreProperties *properties) const;
 	void getProperties(VkPhysicalDeviceVulkan12Properties *properties) const;
+	void getProperties(VkPhysicalDeviceVulkan13Properties *properties) const;
 	void getProperties(VkPhysicalDeviceDescriptorIndexingProperties *properties) const;
 	void getProperties(VkPhysicalDeviceDepthStencilResolveProperties *properties) const;
 	void getProperties(VkPhysicalDeviceCustomBorderColorPropertiesEXT *properties) const;
