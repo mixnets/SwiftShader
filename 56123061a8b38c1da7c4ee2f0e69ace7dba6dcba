@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7a8cff9_ae8cbae0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-27T19:04:20Z",
+      "side": 1,
+      "message": "Removed a few more KHR and EXT suffixes from promoted enums and structs.",
+      "revId": "56123061a8b38c1da7c4ee2f0e69ace7dba6dcba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
