@@ -327,6 +327,26 @@ static void getPhysicalDeviceVulkan12Features(T *features)
 }
 
 template<typename T>
+static void getPhysicalDeviceVulkan13Features(T *features)
+{
+	getPhysicalDeviceImageRobustnessFeatures(features);
+	features->inlineUniformBlock = VK_FALSE;
+	features->descriptorBindingInlineUniformBlockUpdateAfterBind = VK_FALSE;
+	getPhysicalDevicePipelineCreationCacheControlFeatures(features);
+	features->privateData = VK_FALSE;
+	features->shaderDemoteToHelperInvocation = VK_FALSE;
+	features->shaderTerminateInvocation = VK_FALSE;
+	features->subgroupSizeControl = VK_FALSE;
+	features->computeFullSubgroups = VK_FALSE;
+	features->synchronization2 = VK_FALSE;
+	features->textureCompressionASTC_HDR = VK_FALSE;
+	features->shaderZeroInitializeWorkgroupMemory = VK_FALSE;
+	features->dynamicRendering = VK_FALSE;
+	features->shaderIntegerDotProduct = VK_FALSE;
+	features->maintenance4 = VK_FALSE;
+}
+
+template<typename T>
 static void getPhysicalDeviceDepthClipEnableFeaturesExt(T *features)
 {
 	features->depthClipEnable = VK_TRUE;
@@ -363,6 +383,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES:
 			getPhysicalDeviceVulkan12Features(reinterpret_cast<VkPhysicalDeviceVulkan12Features *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES:
+			getPhysicalDeviceVulkan13Features(reinterpret_cast<VkPhysicalDeviceVulkan13Features *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES:
 			getPhysicalDeviceMultiviewFeatures(reinterpret_cast<VkPhysicalDeviceMultiviewFeatures *>(curExtension));
@@ -1089,6 +1112,64 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceVulkan12Properties *propertie
 	properties->framebufferIntegerColorSampleCounts = VK_SAMPLE_COUNT_1_BIT;
 }
 
+void PhysicalDevice::getProperties(VkPhysicalDeviceVulkan13Properties *properties) const
+{
+	// VK_EXT_subgroup_size_control
+	VkPhysicalDeviceSubgroupProperties subgroupProperties = {};
+	getProperties(&subgroupProperties);
+	properties->minSubgroupSize = subgroupProperties.subgroupSize;
+	properties->maxSubgroupSize = subgroupProperties.subgroupSize;
+	properties->maxComputeWorkgroupSubgroups = subgroupProperties.subgroupSize;
+	properties->requiredSubgroupSizeStages = 0;
+
+	// VK_EXT_inline_uniform_block 
+	properties->maxInlineUniformBlockSize = 0;
+	properties->maxPerStageDescriptorInlineUniformBlocks = 0;
+	properties->maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks = 0;
+	properties->maxDescriptorSetInlineUniformBlocks = 0;
+	properties->maxDescriptorSetUpdateAfterBindInlineUniformBlocks = 0;
+	properties->maxInlineUniformTotalSize = 0;
+
+	// VK_KHR_shader_integer_dot_product
+	properties->integerDotProduct8BitUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProduct8BitSignedAccelerated = VK_FALSE;
+	properties->integerDotProduct8BitMixedSignednessAccelerated = VK_FALSE;
+	properties->integerDotProduct4x8BitPackedUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProduct4x8BitPackedSignedAccelerated = VK_FALSE;
+	properties->integerDotProduct4x8BitPackedMixedSignednessAccelerated = VK_FALSE;
+	properties->integerDotProduct16BitUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProduct16BitSignedAccelerated = VK_FALSE;
+	properties->integerDotProduct16BitMixedSignednessAccelerated = VK_FALSE;
+	properties->integerDotProduct32BitUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProduct32BitSignedAccelerated = VK_FALSE;
+	properties->integerDotProduct32BitMixedSignednessAccelerated = VK_FALSE;
+	properties->integerDotProduct64BitUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProduct64BitSignedAccelerated = VK_FALSE;
+	properties->integerDotProduct64BitMixedSignednessAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating8BitUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating8BitSignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating16BitUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating16BitSignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating32BitUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating32BitSignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating64BitUnsignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating64BitSignedAccelerated = VK_FALSE;
+	properties->integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated = VK_FALSE;
+
+	// Memory allocation
+	properties->storageTexelBufferOffsetAlignmentBytes = vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT;
+	properties->storageTexelBufferOffsetSingleTexelAlignment = VK_FALSE;
+	properties->uniformTexelBufferOffsetAlignmentBytes = vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT;
+	properties->uniformTexelBufferOffsetSingleTexelAlignment = VK_FALSE;
+	properties->maxBufferSize = vk::MAX_MEMORY_ALLOCATION_SIZE;
+}
+
 bool PhysicalDevice::hasFeatures(const VkPhysicalDeviceFeatures &requestedFeatures) const
 {
 	const VkPhysicalDeviceFeatures &supportedFeatures = getFeatures();
@@ -1212,6 +1293,27 @@ bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceVulkan12Features 
 	       CheckFeature(requested, supported, shaderOutputViewportIndex) &&
 	       CheckFeature(requested, supported, shaderOutputLayer) &&
 	       CheckFeature(requested, supported, subgroupBroadcastDynamicId);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceVulkan13Features *requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, robustImageAccess) &&
+	       CheckFeature(requested, supported, inlineUniformBlock) &&
+	       CheckFeature(requested, supported, descriptorBindingInlineUniformBlockUpdateAfterBind) &&
+	       CheckFeature(requested, supported, pipelineCreationCacheControl) &&
+	       CheckFeature(requested, supported, privateData) &&
+	       CheckFeature(requested, supported, shaderDemoteToHelperInvocation) &&
+	       CheckFeature(requested, supported, shaderTerminateInvocation) &&
+	       CheckFeature(requested, supported, subgroupSizeControl) &&
+	       CheckFeature(requested, supported, computeFullSubgroups) &&
+	       CheckFeature(requested, supported, synchronization2) &&
+	       CheckFeature(requested, supported, textureCompressionASTC_HDR) &&
+	       CheckFeature(requested, supported, shaderZeroInitializeWorkgroupMemory) &&
+	       CheckFeature(requested, supported, dynamicRendering) &&
+	       CheckFeature(requested, supported, shaderIntegerDotProduct) &&
+	       CheckFeature(requested, supported, maintenance4);
 }
 
 bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceDepthClipEnableFeaturesEXT *requested) const
