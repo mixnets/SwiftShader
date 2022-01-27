@@ -929,6 +929,16 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				}
 			}
 			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES:
+			{
+				const auto *vk13Features = reinterpret_cast<const VkPhysicalDeviceVulkan13Features *>(extensionCreateInfo);
+				bool hasFeatures = vk::Cast(physicalDevice)->hasExtendedFeatures(vk13Features);
+				if(!hasFeatures)
+				{
+					return VK_ERROR_FEATURE_NOT_PRESENT;
+				}
+			}
+			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT:
 			{
 				const auto *depthClipFeatures = reinterpret_cast<const VkPhysicalDeviceDepthClipEnableFeaturesEXT *>(extensionCreateInfo);
@@ -953,6 +963,52 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 			{
 				const auto *dynamicStateFeatures = reinterpret_cast<const VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *>(extensionCreateInfo);
 				bool hasFeatures = vk::Cast(physicalDevice)->hasExtendedFeatures(dynamicStateFeatures);
+				if(!hasFeatures)
+				{
+					return VK_ERROR_FEATURE_NOT_PRESENT;
+				}
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES:
+			{
+				const auto *privateDataFeatures = reinterpret_cast<const VkPhysicalDevicePrivateDataFeatures *>(extensionCreateInfo);
+				bool hasFeatures = vk::Cast(physicalDevice)->hasExtendedFeatures(privateDataFeatures);
+				if(!hasFeatures)
+				{
+					return VK_ERROR_FEATURE_NOT_PRESENT;
+				}
+			}
+			break;
+		case VK_STRUCTURE_TYPE_DEVICE_PRIVATE_DATA_CREATE_INFO:
+			{
+				const auto *privateDataCreateInfo = reinterpret_cast<const VkDevicePrivateDataCreateInfo *>(extensionCreateInfo);
+				(void)privateDataCreateInfo->privateDataSlotRequestCount;
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES:
+			{
+				const auto *textureCompressionASTCHDRFeatures = reinterpret_cast<const VkPhysicalDeviceTextureCompressionASTCHDRFeatures *>(extensionCreateInfo);
+				bool hasFeatures = vk::Cast(physicalDevice)->hasExtendedFeatures(textureCompressionASTCHDRFeatures);
+				if(!hasFeatures)
+				{
+					return VK_ERROR_FEATURE_NOT_PRESENT;
+				}
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES:
+			{
+				const auto *shaderDemoteToHelperInvocationFeatures = reinterpret_cast<const VkPhysicalDeviceShaderDemoteToHelperInvocationFeatures *>(extensionCreateInfo);
+				bool hasFeatures = vk::Cast(physicalDevice)->hasExtendedFeatures(shaderDemoteToHelperInvocationFeatures);
+				if(!hasFeatures)
+				{
+					return VK_ERROR_FEATURE_NOT_PRESENT;
+				}
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES:
+			{
+				const auto *shaderTerminateInvocationFeatures = reinterpret_cast<const VkPhysicalDeviceShaderTerminateInvocationFeatures *>(extensionCreateInfo);
+				bool hasFeatures = vk::Cast(physicalDevice)->hasExtendedFeatures(shaderTerminateInvocationFeatures);
 				if(!hasFeatures)
 				{
 					return VK_ERROR_FEATURE_NOT_PRESENT;
@@ -3538,6 +3594,12 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES:
 			{
 				auto properties = reinterpret_cast<VkPhysicalDeviceVulkan12Properties *>(extensionProperties);
+				vk::Cast(physicalDevice)->getProperties(properties);
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_PROPERTIES:
+			{
+				auto properties = reinterpret_cast<VkPhysicalDeviceVulkan13Properties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
