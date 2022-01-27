@@ -137,6 +137,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a4637ad_06f774cd",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-27T15:50:48Z",
+      "side": 1,
+      "message": "Rebased CL on Vulkan 1.3 API CL.",
+      "parentUuid": "3eb4b947_9083c8e8",
+      "range": {
+        "startLine": 430,
+        "startChar": 1,
+        "endLine": 430,
+        "endChar": 88
+      },
+      "revId": "546a14a60e90bfde6f4c5eca362de1eb3f48b6c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dca94cdb_f2344184",
