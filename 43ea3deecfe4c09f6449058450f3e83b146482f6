@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6c76b02_2f6ff7fc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-27T12:05:41Z",
+      "side": 1,
+      "message": "Please add the line \"Bug: swiftshader:169\" to relate it to the same issue that introduced Shm usage: https://swiftshader-review.googlesource.com/c/SwiftShader/+/60988",
+      "revId": "43ea3deecfe4c09f6449058450f3e83b146482f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e80e9405_2832de35",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-27T12:05:41Z",
+      "side": 1,
+      "message": "Thanks Thomas! Peng, can you do second Googler review?",
+      "revId": "43ea3deecfe4c09f6449058450f3e83b146482f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
