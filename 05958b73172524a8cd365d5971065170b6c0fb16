@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51ed5c72_971a6edc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-28T04:35:19Z",
+      "side": 1,
+      "message": "I think we should wait until we have the tests available [1] before moving ahead with this. While theoretically I think this could land, it\u0027s easier to check that nothing was overlooked when done in one change instead of this plus a second change to flip things on. It would also be confusing if we had to retrace the history of this or similar changes if we split things up like that.\n\n[1] https://github.com/KhronosGroup/VK-GL-CTS/issues/301",
+      "revId": "05958b73172524a8cd365d5971065170b6c0fb16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ab1d70f_81bb9b40",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-28T04:35:19Z",
+      "side": 1,
+      "message": "Don\u0027t these all have to be true?",
+      "range": {
+        "startLine": 333,
+        "startChar": 35,
+        "endLine": 333,
+        "endChar": 40
+      },
+      "revId": "05958b73172524a8cd365d5971065170b6c0fb16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
