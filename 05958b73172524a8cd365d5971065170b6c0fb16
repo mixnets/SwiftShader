@@ -123,6 +123,30 @@
       },
       "revId": "05958b73172524a8cd365d5971065170b6c0fb16",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "763ff27b_1fcb9ca3",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-28T16:51:57Z",
+      "side": 1,
+      "message": "Isn\u0027t that a little bit weird though?\n\"Here\u0027s a new Vulkan 1.3 specific structure with a set of booleans. BTW, you can\u0027t set any of them to false.\"",
+      "parentUuid": "7ef5cb2d_291b3c4b",
+      "range": {
+        "startLine": 333,
+        "startChar": 35,
+        "endLine": 333,
+        "endChar": 40
+      },
+      "revId": "05958b73172524a8cd365d5971065170b6c0fb16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
