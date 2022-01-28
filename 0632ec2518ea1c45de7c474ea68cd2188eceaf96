@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f09761f_e80514d4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-28T15:09:13Z",
+      "side": 1,
+      "message": "Thanks again Thomas! Feel free to manually set Verified+1 and Submit. Let me know if you run into any issues.",
+      "revId": "0632ec2518ea1c45de7c474ea68cd2188eceaf96",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "262b9d42_a8d48751",
@@ -14,6 +31,30 @@
       "writtenOn": "2022-01-28T13:17:35Z",
       "side": 1,
       "message": "nit, it is better to call this method before calling xcb_shm_query_version_reply(). So libxcb will pack two x requests (xcb_get_geometry \u0026 xcb_shm_query_version) in one system call.",
+      "range": {
+        "startLine": 68,
+        "startChar": 27,
+        "endLine": 68,
+        "endChar": 43
+      },
+      "revId": "0632ec2518ea1c45de7c474ea68cd2188eceaf96",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8de8356_0e7a844c",
+        "filename": "src/WSI/XcbSurfaceKHR.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-28T15:09:13Z",
+      "side": 1,
+      "message": "That sounds like an optimization which is best left for a follow-up change. I think it might negatively impact readability. Will one system call during app setup make a noticeable difference?",
+      "parentUuid": "262b9d42_a8d48751",
       "range": {
         "startLine": 68,
         "startChar": 27,
