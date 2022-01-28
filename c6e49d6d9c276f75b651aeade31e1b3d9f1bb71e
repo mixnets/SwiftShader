@@ -69,6 +69,23 @@
       "parentUuid": "dda41773_9cc3286f",
       "revId": "c6e49d6d9c276f75b651aeade31e1b3d9f1bb71e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3bd3673_5359388c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-28T19:20:26Z",
+      "side": 1,
+      "message": "As discussed at b/207382281 let\u0027s land this as-is. Seems like a definite step forward and the remaining issue can be addressed in a follow-up.",
+      "revId": "c6e49d6d9c276f75b651aeade31e1b3d9f1bb71e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
