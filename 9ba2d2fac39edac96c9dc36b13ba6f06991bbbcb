@@ -51,6 +51,24 @@
       "message": "Thanks for the prototype, but I think we have to hold off landing this until it\u0027s clearer what\u0027s strictly necessary, what an optimal implementation would look like, and how we can balance that against other requirements.",
       "revId": "9ba2d2fac39edac96c9dc36b13ba6f06991bbbcb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87914159_a157b468",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-28T05:45:47Z",
+      "side": 1,
+      "message": "So we\u0027ve now learned that we definitely need this functionality as part of Vulkan 1.3, and there are different design options: b/204502114#comment2. We must ensure it\u0027s thread safe, which the current CL doesn\u0027t seem to take into account, and it appears a sparse array per object would help performance.",
+      "parentUuid": "b275c7a4_1fbcf5b9",
+      "revId": "9ba2d2fac39edac96c9dc36b13ba6f06991bbbcb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
