@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f1e76f5b_9e2a8c33",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-28T15:29:08Z",
+      "side": 1,
+      "message": "We\u0027re still able to test the individual extensions. This change is part of 1.3 and we don\u0027t know for sure if it\u0027s conformant/complete until we have the tests. It\u0027s fine (good, even) to fail all the 1.3 tests when we flip it on for Regres CI using a build flag, so we can track which changes fix which tests, find coverage gaps, etc.\n\nShouldn\u0027t be a long wait.",
+      "parentUuid": "277e9478_c3a0c197",
+      "revId": "05958b73172524a8cd365d5971065170b6c0fb16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3ab1d70f_81bb9b40",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 2
@@ -73,6 +91,30 @@
       "side": 1,
       "message": "This CL reflects the current state of things in SwiftShader.\nThey\u0027ll become true when we implement the features.",
       "parentUuid": "3ab1d70f_81bb9b40",
+      "range": {
+        "startLine": 333,
+        "startChar": 35,
+        "endLine": 333,
+        "endChar": 40
+      },
+      "revId": "05958b73172524a8cd365d5971065170b6c0fb16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ef5cb2d_291b3c4b",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-28T15:29:08Z",
+      "side": 1,
+      "message": "Sure, but I don\u0027t see what purpose that serves when we already know we need all of these and it\u0027s invalid for anyone to call this function until we claim Vulkan 1.3 support in a release build. We\u0027ll know when we\u0027re done when the tests stop failing for features we \"prematurely\" claim support for.",
+      "parentUuid": "7a75576a_5758ba88",
       "range": {
         "startLine": 333,
         "startChar": 35,
