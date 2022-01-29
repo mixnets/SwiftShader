@@ -1,4 +1,4 @@
-// Copyright 2019 The SwiftShader Authors. All Rights Reserved.
+﻿// Copyright 2019 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,87 @@
 #include <cstdlib>
 
 using namespace sw;
+
+// 2^-4 precision
+float Exp2(float x)
+{
+	int flat = bit_cast<int>(x);
+	int i = (int)floor(x);
+	float f = x - (float)i;
+	float o = 1.0f + f;
+
+	int io = bit_cast<int>(o);
+	io += (i << 23);
+
+	return bit_cast<float>(io);
+}
+
+float Exp2x(float x)
+{
+	int flat = bit_cast<int>(x);
+	int i = (int)floor(x);
+	float f = x - (float)i;
+	float o = 1.0f + f;
+
+	int io = bit_cast<int>(o);
+	io += (i << 23);
+
+	return bit_cast<float>(io);
+}
+
+inline float exp2_0(float x)
+{
+	int i = (int)((1 << 23) * x) + (127 << 23);
+
+	return bit_cast<float>(i);
+}
+
+float exp2_3(float x)
+{
+	const float f = x - floor(x);
+
+	constexpr float A = 0.345f;
+	x -= A * f - A * f * f;
+
+	int i = (int)((1 << 23) * x + (127 << 23));
+
+	return bit_cast<float>(i);
+}
+
+TEST(MathTest, Exp2Exhaustive)
+{
+	const float tolerance = powf(2.0f, -7.0f);
+
+	for(float x = -1; x <= 1; x = nextafterf(x, +INFINITY))
+	{
+		// float val = exp2_0(x);
+		float val = exp2_3(x);
+
+		float ref = exp2f(x);
+		float diff = val - ref;
+		if(abs(diff) > tolerance)
+		{
+			ASSERT_NEAR(val, ref, tolerance);
+		}
+	}
+}
+
+TEST(MathTest, Exp2_Exhaustive)
+{
+	const float tolerance = powf(2.0f, -4.0f);
+
+	for(float x = -2; x <= 2; x = nextafterf(x, +INFINITY))
+	{
+		float val = Exp2x(x);
+
+		float ref = exp2f(x);
+		float diff = val - ref;
+		if(abs(diff) > tolerance)
+		{
+			ASSERT_NEAR(val, ref, tolerance);
+		}
+	}
+}
 
 TEST(MathTest, UnsignedFloat11_10)
 {
