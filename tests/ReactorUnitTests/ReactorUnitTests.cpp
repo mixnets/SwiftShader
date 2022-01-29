@@ -37,6 +37,33 @@ static std::string testName()
 	return std::string{ info->test_suite_name() } + "_" + info->name();
 }
 
+TEST(ReactorUnitTests, FAbs)
+{
+	Function<Void(Pointer<Float4>, Pointer<Float4>)> function;
+	{
+		Pointer<Float4> x = function.Arg<0>();
+		Pointer<Float4> y = function.Arg<1>();
+
+		*y = Abs(*x);
+	}
+
+	auto routine = function(testName().c_str());
+	auto callable = (void (*)(float4 *, float4 *))routine->getEntry();
+
+	float input[] = { 1.0f, -1.0f, -0.0f, 0.0f };
+
+	for(float x : input)
+	{
+		float4 v_in = { x, x, x, x };
+		float4 v_out;
+
+		callable(&v_in, &v_out);
+
+		float expected = fabs(x);
+		EXPECT_FLOAT_EQ(v_out[0], expected);
+	}
+}
+
 int reference(int *p, int y)
 {
 	int x = p[-1];
@@ -1184,33 +1211,6 @@ TEST(ReactorUnitTests, Branching)
 	int result = routine();
 
 	EXPECT_EQ(result, 1000402222);
-}
-
-TEST(ReactorUnitTests, FAbs)
-{
-	Function<Void(Pointer<Float4>, Pointer<Float4>)> function;
-	{
-		Pointer<Float4> x = function.Arg<0>();
-		Pointer<Float4> y = function.Arg<1>();
-
-		*y = Abs(*x);
-	}
-
-	auto routine = function(testName().c_str());
-	auto callable = (void (*)(float4 *, float4 *))routine->getEntry();
-
-	float input[] = { 1.0f, -1.0f, -0.0f, 0.0f };
-
-	for(float x : input)
-	{
-		float4 v_in = { x, x, x, x };
-		float4 v_out;
-
-		callable(&v_in, &v_out);
-
-		float expected = fabs(x);
-		EXPECT_FLOAT_EQ(v_out[0], expected);
-	}
 }
 
 TEST(ReactorUnitTests, Abs)

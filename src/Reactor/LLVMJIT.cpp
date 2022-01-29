@@ -95,7 +95,6 @@ static void *getTLSAddress(void *control)
 	auto tlsIndex = static_cast<MSanTLS>(reinterpret_cast<uintptr_t>(control));
 	switch(tlsIndex)
 	{
-
 	case MSanTLS::param: return reinterpret_cast<void *>(&__msan_param_tls);
 	case MSanTLS::retval: return reinterpret_cast<void *>(&__msan_retval_tls);
 	case MSanTLS::va_arg: return reinterpret_cast<void *>(&__msan_va_arg_tls);
@@ -211,6 +210,11 @@ llvm::orc::JITTargetMachineBuilder JITGlobals::getTargetMachineBuilder(rr::Optim
 {
 	llvm::orc::JITTargetMachineBuilder out = jitTargetMachineBuilder;
 	out.setCodeGenOptLevel(toLLVM(optLevel));
+	out.setCodeModel(llvm::CodeModel::Medium);
+	//  out.setCPU();
+	//  out.setFeatures();
+	//  out.setOptions();
+	out.setRelocationModel(llvm::Reloc::PIC_);
 
 	return out;
 }
@@ -824,8 +828,9 @@ JITBuilder::JITBuilder(const rr::Config &config)
     , module(new llvm::Module("", *context))
     , builder(new llvm::IRBuilder<>(*context))
 {
-	module->setTargetTriple(LLVM_DEFAULT_TARGET_TRIPLE);
+	module->setTargetTriple("x86_64-unknown-linux-gnu");
 	module->setDataLayout(JITGlobals::get()->getDataLayout());
+	module->setPICLevel(llvm::PICLevel::SmallPIC);
 
 	if(REACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION ||
 	   getPragmaState(MemorySanitizerInstrumentation))
