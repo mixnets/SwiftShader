@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "System/CPUID.hpp"
 #include "System/Half.hpp"
 
 #include <gmock/gmock.h>
@@ -20,6 +21,307 @@
 #include <cstdlib>
 
 using namespace sw;
+
+// Returns the whole-number ULP error of `a` relative to `x`.
+// Use the doouble-precision version below. This just illustrates the principle.
+[[deprecated]] float ULP_32(float x, float a)
+{
+	// Flip the last mantissa bit to compute the 'unit in the last place' error.
+	float x1 = bit_cast<float>(bit_cast<uint32_t>(x) ^ 0x00000001);
+	float ulp = abs(x1 - x);
+
+	return abs(a - x) / ulp;
+}
+
+double ULP_32(double x, double a)
+{
+	// binary64 has 52 mantissa bits, while binary32 has 23, so the ULP for the latter is 29 bits shifted.
+	double x1 = bit_cast<double>(bit_cast<uint64_t>(x) ^ 0x0000000020000000ll);
+	double ulp = abs(x1 - x);
+
+	return abs(a - x) / ulp;
+}
+
+float ULP_16(float x, float a)
+{
+	// binary32 has 23 mantissa bits, while binary16 has 10, so the ULP for the latter is 13 bits shifted.
+	double x1 = bit_cast<float>(bit_cast<uint32_t>(x) ^ 0x00002000);
+	float ulp = abs(x1 - x);
+
+	return abs(a - x) / ulp;
+}
+
+// 2^-4 precision
+float Exp2(float x)
+{
+	int flat = bit_cast<int>(x);
+	int i = (int)floor(x);
+	float f = x - (float)i;
+	float o = 1.0f + f;
+
+	int io = bit_cast<int>(o);
+	io += (i << 23);
+
+	return bit_cast<float>(io);
+}
+
+float Exp2x(float x)
+{
+	int flat = bit_cast<int>(x);
+	int i = (int)floor(x);
+	float f = x - (float)i;
+	float o = 1.0f + f;
+
+	int io = bit_cast<int>(o);
+	io += (i << 23);
+
+	return bit_cast<float>(io);
+}
+
+inline float exp2_0(float x)
+{
+	int i = (int)((1 << 23) * x) + (127 << 23);
+
+	return bit_cast<float>(i);
+}
+
+// ULP-16: 4.035
+float exp2_3(float x)
+{
+	const float f = x - floor(x);
+
+	// 1 + f − 2^f
+	constexpr float A = 0.345f;
+	x -= A * f - A * f * f;
+
+	int i = (int)((1 << 23) * x + (127 << 23));
+
+	return bit_cast<float>(i);
+}
+
+// ULP-32: 96
+float exp2_5(float x)
+{
+	const float f = x - floor(x);
+
+	// 1 + f − 2^f
+	constexpr float A = 0.3070204f;
+	constexpr float B = -0.241605f;
+	constexpr float C = -0.0517451f;
+	constexpr float D = -0.0136703f;
+
+	x -= f * (A + f * (B + f * (C + f * D)));
+
+	int i = (int)((1 << 23) * x + (127 << 23));
+
+	return bit_cast<float>(i);
+}
+
+// ULP-32: 37.9367828
+float exp2_6(float x)
+{
+	const float f = x - floor(x);
+
+	// 1 + f − 2^f
+	// constexpr float A = 0.30684479f;
+	// constexpr float B = -0.240136f;
+	// constexpr float C = -0.0558701f;
+	// constexpr float D = -0.00894548f;
+	// constexpr float E = -0.00189321f;
+
+	constexpr float A = 3.06845249656632845792e-01f;
+	constexpr float B = -2.40139721982230797126e-01f;
+	constexpr float C = -5.58662282412822480682e-02f;
+	constexpr float D = -8.94283890931273951763e-03f;
+	constexpr float E = -1.89646052380707734290e-03f;
+
+	x -= f * (A + f * (B + f * (C + f * (D + f * E))));
+
+	int i = (int)((1 << 23) * x + (127 << 23));
+
+	return bit_cast<float>(i);
+}
+
+// ULP-32: 37.8557243
+float exp2_6fma(float x)
+{
+	const float f = x - floor(x);
+
+	// 1 + f − 2^f
+	// constexpr float A = 0.30684479f;
+	// constexpr float B = -0.240136f;
+	// constexpr float C = -0.0558701f;
+	// constexpr float D = -0.00894548f;
+	// constexpr float E = -0.00189321f;
+
+	constexpr float A = -3.06845249656632845792e-01f;
+	constexpr float B = 2.40139721982230797126e-01f;
+	constexpr float C = 5.58662282412822480682e-02f;
+	constexpr float D = 8.94283890931273951763e-03f;
+	constexpr float E = 1.89646052380707734290e-03f;
+
+	// x -= f * (A + f * (B + f * (C + f * (D + f * E))));
+	x = fma(fma(fma(fma(fma(E, f, D), f, C), f, B), f, A), f, x);
+
+	int i = (int)((1 << 23) * x + (127 << 23));
+
+	return bit_cast<float>(i);
+}
+
+// ULP-32: 37.8557243
+float exp2_6fma2(float x)
+{
+	const float f = x - floor(x);
+
+	// 1 + f − 2^f
+	// constexpr float A = 0.30684479f;
+	// constexpr float B = -0.240136f;
+	// constexpr float C = -0.0558701f;
+	// constexpr float D = -0.00894548f;
+	// constexpr float E = -0.00189321f;
+
+	constexpr float A = -3.0684482709139982e-01f;
+	constexpr float B = 2.40136023292754e-01f;
+	constexpr float C = 5.58701110665769e-02f;
+	constexpr float D = 8.94547921720901e-03f;
+	constexpr float E = 1.89321351485994e-03f;
+
+	// x -= f * (A + f * (B + f * (C + f * (D + f * E))));
+	x = fma(fma(fma(fma(fma(E, f, D), f, C), f, B), f, A), f, x);
+
+	int i = (int)((1 << 23) * x + (127 << 23));
+
+	return bit_cast<float>(i);
+}
+
+// ULP-32: 2.29328680
+double exp2_6d(double x)
+{
+	const double f = x - floor(x);
+
+	// 1 + f − 2^f
+	// constexpr float A = 0.30684479f;
+	// constexpr float B = -0.240136f;
+	// constexpr float C = -0.0558701f;
+	// constexpr float D = -0.00894548f;
+	// constexpr float E = -0.00189321f;
+
+	constexpr double A = 3.06845249656632845792e-01;
+	constexpr double B = -2.40139721982230797126e-01;
+	constexpr double C = -5.58662282412822480682e-02;
+	constexpr double D = -8.94283890931273951763e-03;
+	constexpr double E = -1.89646052380707734290e-03;
+
+	x -= f * (A + f * (B + f * (C + f * (D + f * E))));
+
+	int64_t i = (int64_t)((1ll << 52) * x + (1023ll << 52));
+
+	return bit_cast<double>(i);
+}
+
+// ULP-32: 3.36676240, worst x: -0.0677830279
+float Exp2_old(float x)
+{
+	// This implementation is based on 2^(i + f) = 2^i * 2^f,
+	// where i is the integer part of x and f is the fraction.
+
+	// For 2^i we can put the integer part directly in the exponent of
+	// the IEEE-754 floating-point number. Clamp to prevent overflow
+	// past the representation of infinity.
+	float x0 = x;
+	// x0 = Min(x0, bit_cast<float>(int(0x43010000)));  // 129.00000e+0f
+	// x0 = Max(x0, bit_cast<float>(int(0xC2FDFFFF)));  // -126.99999e+0f
+
+	int i = (int)round(x0 - 0.5f);
+	float ii = bit_cast<float>((i + int(127)) << 23);  // Add single-precision bias, and shift into exponent.
+
+	// For the fractional part use a polynomial
+	// which approximates 2^f in the 0 to 1 range.
+	float f = x0 - float(i);
+	float ff = bit_cast<float>(int(0x3AF61905));     // 1.8775767e-3f
+	ff = ff * f + bit_cast<float>(int(0x3C134806));  // 8.9893397e-3f
+	ff = ff * f + bit_cast<float>(int(0x3D64AA23));  // 5.5826318e-2f
+	ff = ff * f + bit_cast<float>(int(0x3E75EAD4));  // 2.4015361e-1f
+	ff = ff * f + bit_cast<float>(int(0x3F31727B));  // 6.9315308e-1f
+	ff = ff * f + float(1.0f);
+
+	return ii * ff;
+}
+
+// Returns the next floating-point number which is not treated equal to the input.
+// Note that std::nextafter() does not skip representations flushed to zero.
+static inline float inc(float x)
+{
+	int x1 = bit_cast<int>(x);
+
+	while(bit_cast<float>(x1) == x)
+	{
+		// Since IEEE 754 uses ones' complement and integers are two's complement,
+		// we need to explicitly hop from negative zero to positive zero.
+		if(x1 == 0x80000000)  // -0.0f
+		{
+			// Note that while the comparison -0.0f == +0.0f returns true, this
+			// function returns the next value which can be treated differently.
+			return +0.0f;
+		}
+
+		// Negative ones' complement value are made less negative by subtracting 1
+		// in two's complement representation.
+		x1 += (x1 >= 0) ? 1 : -1;
+	}
+
+	return bit_cast<float>(x1);
+}
+
+TEST(MathTest, Exp2Exhaustive)
+{
+	sw::CPUID::setFlushToZero(true);
+
+	float worst_ulp = 0;
+	float worst_x = 0;
+	float worst_val = 0;
+	float worst_ref = 0;
+	float worst_margin = 0;
+
+	for(float x = -10; x <= 10; x = inc(x))
+	{
+		float val = (float)Exp2_old(x);
+
+		double ref = exp2((double)x);
+		float ulp = (float)ULP_32(ref, (double)val);
+
+		float tolerance = (3 + 2 * abs(x));
+		float margin = ulp / tolerance;
+
+		if(margin > worst_margin)
+		{
+			worst_margin = margin;
+			worst_ulp = ulp;
+			worst_x = x;
+			worst_val = val;
+			worst_ref = ref;
+		}
+	}
+
+	ASSERT_TRUE(worst_margin <= 1.0f);
+}
+
+TEST(MathTest, Exp2_Exhaustive)
+{
+	const float tolerance = powf(2.0f, -4.0f);
+
+	for(float x = -2; x <= 2; x = nextafterf(x, +INFINITY))
+	{
+		float val = Exp2x(x);
+
+		float ref = exp2(x);
+		float diff = val - ref;
+		if(abs(diff) > tolerance)
+		{
+			ASSERT_NEAR(val, ref, tolerance);
+		}
+	}
+}
 
 // Polynomal approximation of order 5 for sin(x * 2 * pi) in the range [-1/4, 1/4]
 static float sin5(float x)
