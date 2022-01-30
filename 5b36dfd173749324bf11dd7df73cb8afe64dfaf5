@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71740984_f949775d",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1072,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-30T07:23:15Z",
+      "side": 1,
+      "message": "This doesn\u0027t look correct. The left-hand side is a number of subgroups per workgroup, but the subgroup invocation count gets assigned here.",
+      "range": {
+        "startLine": 1072,
+        "startChar": 13,
+        "endLine": 1072,
+        "endChar": 75
+      },
+      "revId": "5b36dfd173749324bf11dd7df73cb8afe64dfaf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
