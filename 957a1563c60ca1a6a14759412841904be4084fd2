@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09a272b3_ac7ca8e1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-31T21:40:00Z",
+      "side": 1,
+      "message": "Is there a warning we could enable that would catch such issues with Visual Studio and older versions of Clang as well?",
+      "range": {
+        "startLine": 9,
+        "startChar": 11,
+        "endLine": 9,
+        "endChar": 21
+      },
+      "revId": "957a1563c60ca1a6a14759412841904be4084fd2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "babbd001_ec06a4a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-31T21:40:00Z",
+      "side": 1,
+      "message": "Thanks Kevin! Feel free to ignore the Kokoro failure, we\u0027re just failing to match \u0027-\u0027 in the \u0027oss-fuzz\u0027 Monorail project name: https://cs.opensource.google/swiftshader/SwiftShader/+/master:tests/presubmit.sh;drc\u003db5bf82693f85b53ce31846705d323764a582489b;l\u003d43",
+      "revId": "957a1563c60ca1a6a14759412841904be4084fd2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
