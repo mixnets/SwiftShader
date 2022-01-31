@@ -46,6 +46,30 @@
       },
       "revId": "5b36dfd173749324bf11dd7df73cb8afe64dfaf5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "18f92543_778da9f2",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1072,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-01-31T16:52:55Z",
+      "side": 1,
+      "message": "For Android over 80% has a limit of 16. Our maximum supportable would be maxComputeWorkGroupInvocations / minSubgroupSize.\n\nNote that maxComputeWorkGroupInvocations was increased for https://crbug.com/dawn/796. So we shouldn\u0027t go below maxComputeWorkGroupInvocations / maxSubgroupSize.",
+      "parentUuid": "962fc1ca_36ce90e6",
+      "range": {
+        "startLine": 1072,
+        "startChar": 13,
+        "endLine": 1072,
+        "endChar": 75
+      },
+      "revId": "5b36dfd173749324bf11dd7df73cb8afe64dfaf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
