@@ -1186,6 +1186,80 @@ TEST(ReactorUnitTests, Branching)
 	EXPECT_EQ(result, 1000402222);
 }
 
+TEST(ReactorUnitTests, FMulAdd)
+{
+	Function<Void(Pointer<Float4>, Pointer<Float4>, Pointer<Float4>, Pointer<Float4>)> function;
+	{
+		Pointer<Float4> r = function.Arg<0>();
+		Pointer<Float4> x = function.Arg<1>();
+		Pointer<Float4> y = function.Arg<2>();
+		Pointer<Float4> z = function.Arg<3>();
+
+		*r = MulAdd(*x, *y, *z);
+	}
+
+	auto routine = function(testName().c_str());
+	auto callable = (void (*)(float4 *, float4 *, float4 *, float4 *))routine->getEntry();
+
+	float x[] = { 0.0f, 2.0f, 4.0f, 1.00000011920929f };
+	float y[] = { 0.0f, 3.0f, 0.0f, 53400708.0f };
+	float z[] = { 0.0f, 0.0f, 7.0f, -53400708.0f };
+
+	for(size_t i = 0; i < std::size(x); i++)
+	{
+		float4 x_in = { x[i], x[i], x[i], x[i] };
+		float4 y_in = { y[i], y[i], y[i], y[i] };
+		float4 z_in = { z[i], z[i], z[i], z[i] };
+		float4 r_out;
+
+		callable(&r_out, &x_in, &y_in, &z_in);
+
+		if(rr::Caps::fmaIsFast())
+		{
+			float expected = fmaf(x[i], y[i], z[i]);
+			EXPECT_FLOAT_EQ(r_out[0], expected);
+		}
+		else
+		{
+			float expected = x[i] * y[i] + z[i];
+			EXPECT_FLOAT_EQ(r_out[0], expected);
+		}
+	}
+}
+
+TEST(ReactorUnitTests, FMA)
+{
+	Function<Void(Pointer<Float4>, Pointer<Float4>, Pointer<Float4>, Pointer<Float4>)> function;
+	{
+		Pointer<Float4> r = function.Arg<0>();
+		Pointer<Float4> x = function.Arg<1>();
+		Pointer<Float4> y = function.Arg<2>();
+		Pointer<Float4> z = function.Arg<3>();
+
+		*r = FMA(*x, *y, *z);
+	}
+
+	auto routine = function(testName().c_str());
+	auto callable = (void (*)(float4 *, float4 *, float4 *, float4 *))routine->getEntry();
+
+	float x[] = { 0.0f, 2.0f, 4.0f, 1.00000011920929f };
+	float y[] = { 0.0f, 3.0f, 0.0f, 53400708.0f };
+	float z[] = { 0.0f, 0.0f, 7.0f, -53400708.0f };
+
+	for(int i = 0; i < std::size(x); i++)
+	{
+		float4 x_in = { x[i], x[i], x[i], x[i] };
+		float4 y_in = { y[i], y[i], y[i], y[i] };
+		float4 z_in = { z[i], z[i], z[i], z[i] };
+		float4 r_out;
+
+		callable(&r_out, &x_in, &y_in, &z_in);
+
+		float expected = fmaf(x[i], y[i], z[i]);
+		EXPECT_FLOAT_EQ(r_out[0], expected);
+	}
+}
+
 TEST(ReactorUnitTests, FAbs)
 {
 	Function<Void(Pointer<Float4>, Pointer<Float4>)> function;
@@ -2547,7 +2621,7 @@ TEST(ReactorUnitTests, Fibonacci)
 
 TEST(ReactorUnitTests, Coroutines_Fibonacci)
 {
-	if(!rr::Caps.CoroutinesSupported)
+	if(!rr::Caps::coroutinesSupported())
 	{
 		SUCCEED() << "Coroutines not supported";
 		return;
@@ -2581,7 +2655,7 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 
 TEST(ReactorUnitTests, Coroutines_Parameters)
 {
-	if(!rr::Caps.CoroutinesSupported)
+	if(!rr::Caps::coroutinesSupported())
 	{
 		SUCCEED() << "Coroutines not supported";
 		return;
@@ -2623,7 +2697,7 @@ TEST(ReactorUnitTests, Coroutines_Parameters)
 // with coroutines.
 TEST(ReactorUnitTests, Coroutines_Vectors)
 {
-	if(!rr::Caps.CoroutinesSupported)
+	if(!rr::Caps::coroutinesSupported())
 	{
 		SUCCEED() << "Coroutines not supported";
 		return;
@@ -2658,7 +2732,7 @@ TEST(ReactorUnitTests, Coroutines_Vectors)
 // is properly cleaned up in between.
 TEST(ReactorUnitTests, Coroutines_NoYield)
 {
-	if(!rr::Caps.CoroutinesSupported)
+	if(!rr::Caps::coroutinesSupported())
 	{
 		SUCCEED() << "Coroutines not supported";
 		return;
@@ -2683,7 +2757,7 @@ TEST(ReactorUnitTests, Coroutines_NoYield)
 // sure the implementation manages per-call instance data correctly.
 TEST(ReactorUnitTests, Coroutines_Parallel)
 {
-	if(!rr::Caps.CoroutinesSupported)
+	if(!rr::Caps::coroutinesSupported())
 	{
 		SUCCEED() << "Coroutines not supported";
 		return;
@@ -3478,7 +3552,7 @@ TEST(ReactorUnitTests, Multithreaded_Function)
 
 TEST(ReactorUnitTests, Multithreaded_Coroutine)
 {
-	if(!rr::Caps.CoroutinesSupported)
+	if(!rr::Caps::coroutinesSupported())
 	{
 		SUCCEED() << "Coroutines not supported";
 		return;
