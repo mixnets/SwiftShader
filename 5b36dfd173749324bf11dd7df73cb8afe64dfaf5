@@ -22,6 +22,30 @@
       },
       "revId": "5b36dfd173749324bf11dd7df73cb8afe64dfaf5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "962fc1ca_36ce90e6",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1072,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-01-31T13:10:25Z",
+      "side": 1,
+      "message": "True. Most common values are either fairly low (16) or essentially limitless (4294967295). Which one makes more sense for SwiftShader?\nhttps://vulkan.gpuinfo.org/displayextensionproperty.php?extensionname\u003dVK_EXT_subgroup_size_control\u0026extensionproperty\u003dmaxComputeWorkgroupSubgroups\u0026platform\u003dall",
+      "parentUuid": "71740984_f949775d",
+      "range": {
+        "startLine": 1072,
+        "startChar": 13,
+        "endLine": 1072,
+        "endChar": 75
+      },
+      "revId": "5b36dfd173749324bf11dd7df73cb8afe64dfaf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
