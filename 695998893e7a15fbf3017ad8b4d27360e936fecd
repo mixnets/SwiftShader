@@ -70,6 +70,30 @@
       },
       "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bc99325_b64988fc",
+        "filename": "src/Reactor/EmulatedIntrinsics.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-01T16:04:05Z",
+      "side": 1,
+      "message": "I\u0027ve made an attempt at clarifying the design at b/214591655#comment3. Basically if you have a multiplication and addition that are \"allowed\" to be fused, but  it\u0027s not necessary, use rr::MulAdd(). If you must have a fused operation in a certain algorithm, use rr:FMA(), and fmaIsFast() can be used to fall back to an alternative code path if we have an algorithm that is faster than using fma() function calls and still correct.\n\nNote that Vulkan never demands FMA. Not even for its SPIR-V fma instruction.",
+      "parentUuid": "92a1779a_aed4e301",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 85
+      },
+      "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
