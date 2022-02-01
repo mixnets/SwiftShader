@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "d8f50786_1cfd2832",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 101136
+      },
+      "writtenOn": "2022-02-01T12:57:09Z",
+      "side": 1,
+      "message": "Visual Studio: I\u0027m not sure.\n\nOlder Clang: I don\u0027t think so, this is tagged as Wdeprecated-copy in Clang 14 too, which is turned on already here. Clang 14 must detect more of these cases.",
+      "parentUuid": "09a272b3_ac7ca8e1",
+      "range": {
+        "startLine": 9,
+        "startChar": 11,
+        "endLine": 9,
+        "endChar": 21
+      },
+      "revId": "957a1563c60ca1a6a14759412841904be4084fd2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "babbd001_ec06a4a6",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
