@@ -14,9 +14,11 @@
 
 #include "Util.hpp"
 #include "VulkanTester.hpp"
+
 #include "benchmark/benchmark.h"
 
 #include <cassert>
+
 class ClearImageBenchmark
 {
 public:
