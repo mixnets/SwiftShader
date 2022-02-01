@@ -46,6 +46,30 @@
       },
       "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92a1779a_aed4e301",
+        "filename": "src/Reactor/EmulatedIntrinsics.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-01T14:24:11Z",
+      "side": 1,
+      "message": "What I meant was: should there be some way for us to only use FMA in a certain scenario (like if highp is requested) and revert to faster math for medp or lowp, even if something would generate a strict FMA in a shader.",
+      "parentUuid": "881fb321_d475e46d",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 85
+      },
+      "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
