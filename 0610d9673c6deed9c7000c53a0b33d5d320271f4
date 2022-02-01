@@ -94,6 +94,30 @@
       },
       "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c24c518_10b2a964",
+        "filename": "src/Reactor/CPUID.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-01T14:20:56Z",
+      "side": 1,
+      "message": "I don\u0027t see how putting 0x18001000 in a named constant hurts readability, but, in any case, it should, at the very least, be explained in a comment. I don\u0027t think most people will read this and instantly understand why 0x18001000 is used to detect AVX.",
+      "parentUuid": "393b12fe_204e7b34",
+      "range": {
+        "startLine": 61,
+        "startChar": 1,
+        "endLine": 61,
+        "endChar": 72
+      },
+      "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
