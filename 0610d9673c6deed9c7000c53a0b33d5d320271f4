@@ -70,6 +70,30 @@
       },
       "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "393b12fe_204e7b34",
+        "filename": "src/Reactor/CPUID.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-01T04:24:20Z",
+      "side": 1,
+      "message": "I don\u0027t think adding a layer of abstraction is useful here. It\u0027s only used once, and the bit positions are hard-coded by the instruction specification. I mean this is an assembly instruction after all, and moving stuff into functions or named constants is only going to cause confusion about what happens at the assembly level.",
+      "parentUuid": "fe14c89b_5d605528",
+      "range": {
+        "startLine": 61,
+        "startChar": 1,
+        "endLine": 61,
+        "endChar": 72
+      },
+      "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
