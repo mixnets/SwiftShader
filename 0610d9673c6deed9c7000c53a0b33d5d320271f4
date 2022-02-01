@@ -46,6 +46,30 @@
       },
       "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe14c89b_5d605528",
+        "filename": "src/Reactor/CPUID.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-01T04:10:34Z",
+      "side": 1,
+      "message": "I\u0027m not suggesting calling CPUID twice, I\u0027m simply suggesting to move that line into its own separate function, with the result of cpuid as the input argument.\n0x18001000 could also be defined in a constant / explained by a comment.",
+      "parentUuid": "fc7f9240_53d2e806",
+      "range": {
+        "startLine": 61,
+        "startChar": 1,
+        "endLine": 61,
+        "endChar": 72
+      },
+      "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
