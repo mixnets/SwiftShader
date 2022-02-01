@@ -142,6 +142,30 @@
       },
       "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3f4133b_e5c8f634",
+        "filename": "src/Reactor/CPUID.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-01T19:17:56Z",
+      "side": 1,
+      "message": "IMHO, a comment can also prevent people from tampering with code later 😊\nYes, I was looking for something like:\n// Test bits 12 (fma), 27 (xsave) and 28 (avx)\nJust so that it\u0027s instantly clear what this line does.",
+      "parentUuid": "78417eb4_385a072d",
+      "range": {
+        "startLine": 61,
+        "startChar": 1,
+        "endLine": 61,
+        "endChar": 72
+      },
+      "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
