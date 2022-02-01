@@ -118,6 +118,30 @@
       },
       "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78417eb4_385a072d",
+        "filename": "src/Reactor/CPUID.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-01T16:46:54Z",
+      "side": 1,
+      "message": "\u003e I don\u0027t see how putting 0x18001000 in a named constant hurts readability\n\nWhen reading the Intel Manual, it says bit 28 of ECX indicates AVX support. Hiding something like that in a symbol creates an unnecessary indirection. I\u0027d have to reference more code to check that things are correct, on top of peering through the Manual.\n\n\u003e it should, at the very least, be explained in a comment\n\nI\u0027m open to that, but there\u0027s already a comment at line 63 that\u0027s meant to explain the intent. Note that this is the kind of code that is either correct and we never have to look at it again, or there\u0027s a bug, we read the comment, open the Intel Manual to check that the intent matches the spec, and fix what\u0027s wrong. I don\u0027t think anything essential is missing from this existing comment.\n\n\u003e I don\u0027t think most people will read this and instantly understand why 0x18001000 is used to detect AVX.\n\nNobody should read this code and try to mess with it, without having the Manual open next to them. So there\u0027s no need to \"instantly\" understand it, beyond what the current comment explains, nor do I think that\u0027s achievable. Why is AVX indicated by bit 28? There\u0027s nothing to understand there. The literal value is what it is because the spec says so. The thing that needs explaining is the intent of checking AVX, OSXSAVE, and FMA, and I believe I did that adequately. That said, if you see specific ways to improve the comment in a way that is likely to help us in the future, I\u0027m all ears.",
+      "parentUuid": "3c24c518_10b2a964",
+      "range": {
+        "startLine": 61,
+        "startChar": 1,
+        "endLine": 61,
+        "endChar": 72
+      },
+      "revId": "0610d9673c6deed9c7000c53a0b33d5d320271f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
