@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e5a5f43_30e06a03",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-01T16:55:20Z",
+      "side": 1,
+      "message": "This looks great! I0044dcb095ae1ae195de153485088f91fa987fb6 received a Regres result on both branches when I applied this patch locally. Just some tiny nits about the remaining usage of \"ID\" in comments that could cause a bit of confusion:",
+      "revId": "b775e269ed8a23fdc934fb114f057856695f9e1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6599503e_f76a2a93",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-01T16:55:20Z",
+      "side": 1,
+      "message": "change number",
+      "range": {
+        "startLine": 96,
+        "startChar": 84,
+        "endLine": 96,
+        "endChar": 86
+      },
+      "revId": "b775e269ed8a23fdc934fb114f057856695f9e1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ccd6ee3e_d5613992",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-01T16:55:20Z",
+      "side": 1,
+      "message": "change number",
+      "range": {
+        "startLine": 145,
+        "startChar": 76,
+        "endLine": 145,
+        "endChar": 78
+      },
+      "revId": "b775e269ed8a23fdc934fb114f057856695f9e1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a4103ae_af0137b1",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-01T16:55:20Z",
+      "side": 1,
+      "message": "number",
+      "range": {
+        "startLine": 290,
+        "startChar": 44,
+        "endLine": 290,
+        "endChar": 46
+      },
+      "revId": "b775e269ed8a23fdc934fb114f057856695f9e1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "040c868b_b0140f6e",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 1043,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-01T16:55:20Z",
+      "side": 1,
+      "message": "number",
+      "range": {
+        "startLine": 1043,
+        "startChar": 32,
+        "endLine": 1043,
+        "endChar": 42
+      },
+      "revId": "b775e269ed8a23fdc934fb114f057856695f9e1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
