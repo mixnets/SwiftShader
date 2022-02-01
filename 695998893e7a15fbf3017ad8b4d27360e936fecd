@@ -22,6 +22,30 @@
       },
       "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "881fb321_d475e46d",
+        "filename": "src/Reactor/EmulatedIntrinsics.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-01T04:28:59Z",
+      "side": 1,
+      "message": "This is for implementing FMA, which must perform a fused multiply-add, i.e. without intermediate rounding. If FMA instructions are not available, it has to be emulated, which cannot be done with a separate multiplication and addition since rounding happens on the intermediate result. The fmaf() function provides this emulated implementation. It is obviously slow, but that\u0027s why fmaIsFast() exists to avoid it.",
+      "parentUuid": "ae772e94_6606805d",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 85
+      },
+      "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
