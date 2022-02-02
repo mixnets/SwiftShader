@@ -94,6 +94,30 @@
       },
       "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "18dd5921_944fc0c8",
+        "filename": "src/Reactor/EmulatedIntrinsics.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-02T13:27:51Z",
+      "side": 1,
+      "message": "My only question would be, then:\nIs there any real world scenario where we\u0027d want to use rr:FMA()? In what context would we use this?",
+      "parentUuid": "1bc99325_b64988fc",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 85
+      },
+      "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
