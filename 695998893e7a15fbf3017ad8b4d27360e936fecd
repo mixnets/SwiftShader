@@ -142,6 +142,30 @@
       },
       "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a005b2e3_33c4adca",
+        "filename": "src/Reactor/EmulatedIntrinsics.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-02T14:55:19Z",
+      "side": 1,
+      "message": "I\u0027m still not entirely sure we\u0027d ever use this, due to its poor performance, but as a reference for testability, it\u0027s good enough for now.",
+      "parentUuid": "420637f2_220f6d5b",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 85
+      },
+      "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
