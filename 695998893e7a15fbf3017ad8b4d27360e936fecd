@@ -166,6 +166,30 @@
       },
       "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45477337_f095cbef",
+        "filename": "src/Reactor/EmulatedIntrinsics.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-02T15:24:33Z",
+      "side": 1,
+      "message": "Yes, this \u0027emulated\u0027 FMA is for testing, as a reference, and last-ditch fallback, just like the rest of the functions in this source file. It\u0027s used by Subzero only. LLVM already does exactly the same thing for its fma intrinsic.\n\nWhile certainly ideally SwiftShader uses none of the functions in this file as part of implementing Vulkan, I think Reactor should remain an independent API/language for JIT compilation, where not detrimental to its primary (and currently only) usage. As part of go/swiftshader-optimize-transcendentals we decided to add reference implementations of transcendental functions to Reactor, mainly to use as a comparison point for benchmarking the optimized versions.\n\nAs part of b/169754022 I\u0027m re-evaluating the best place to put things. There\u0027s pros and cons to consider but I\u0027m leaning towards using LLVM as guidance for what goes in Reactor\u0027s \u0027core\u0027, while polynomial approximations should go in in a \u0027Math\u0027 library either as a kind of \u0027runtime\u0027 library that comes as part of Reactor, or just keep them in ShaderCore on the strictly SwiftShader side of the fence since these would be Vulkan-specific.",
+      "parentUuid": "a005b2e3_33c4adca",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 85
+      },
+      "revId": "695998893e7a15fbf3017ad8b4d27360e936fecd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
