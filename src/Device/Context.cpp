@@ -312,9 +312,10 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 	cullMode = rasterizationState->cullMode;
 	frontFace = rasterizationState->frontFace;
 	polygonMode = rasterizationState->polygonMode;
-	constantDepthBias = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasConstantFactor : 0.0f;
-	slopeDepthBias = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasSlopeFactor : 0.0f;
-	depthBiasClamp = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasClamp : 0.0f;
+	depthBiasEnable = rasterizationState->depthBiasEnable;
+	constantDepthBias = rasterizationState->depthBiasConstantFactor;
+	slopeDepthBias = rasterizationState->depthBiasSlopeFactor;
+	depthBiasClamp = rasterizationState->depthBiasClamp;
 	depthRangeUnrestricted = device->hasExtension(VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME);
 	depthClampEnable = rasterizationState->depthClampEnable != VK_FALSE;
 	depthClipEnable = !depthClampEnable;
@@ -552,6 +553,11 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 
 uint32_t GraphicsState::getDynamicStateIndex(VkDynamicState dynamicState)
 {
+	static constexpr uint32_t CullModeIndexStart =
+	    VK_DYNAMIC_STATE_STENCIL_REFERENCE + 1;
+	static constexpr uint32_t RasterizerDiscardIndexStart =
+	    CullModeIndexStart + (VK_DYNAMIC_STATE_STENCIL_OP - VK_DYNAMIC_STATE_CULL_MODE + 1);
+
 	switch(dynamicState)
 	{
 	case VK_DYNAMIC_STATE_VIEWPORT:
@@ -576,7 +582,11 @@ uint32_t GraphicsState::getDynamicStateIndex(VkDynamicState dynamicState)
 	case VK_DYNAMIC_STATE_DEPTH_BOUNDS_TEST_ENABLE:
 	case VK_DYNAMIC_STATE_STENCIL_TEST_ENABLE:
 	case VK_DYNAMIC_STATE_STENCIL_OP:
-		return (dynamicState - VK_DYNAMIC_STATE_CULL_MODE) + VK_DYNAMIC_STATE_STENCIL_REFERENCE + 1;
+		return (dynamicState - VK_DYNAMIC_STATE_CULL_MODE) + CullModeIndexStart;
+	case VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE:
+	case VK_DYNAMIC_STATE_DEPTH_BIAS_ENABLE:
+	case VK_DYNAMIC_STATE_PRIMITIVE_RESTART_ENABLE:
+		return (dynamicState - VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE) + RasterizerDiscardIndexStart;
 	default:
 		UNSUPPORTED("VkDynamicState %d", int(dynamicState));
 	}
@@ -696,6 +706,21 @@ const GraphicsState GraphicsState::combineStates(const DynamicState &dynamicStat
 	if(hasDynamicState(VK_DYNAMIC_STATE_STENCIL_TEST_ENABLE))
 	{
 		combinedState.stencilEnable = dynamicState.stencilTestEnable;
+	}
+
+	if(hasDynamicState(VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE))
+	{
+		combinedState.rasterizerDiscard = dynamicState.rasterizerDiscardEnable;
+	}
+
+	if(hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BIAS_ENABLE))
+	{
+		combinedState.depthBiasEnable = dynamicState.depthBiasEnable;
+	}
+
+	if(hasDynamicState(VK_DYNAMIC_STATE_PRIMITIVE_RESTART_ENABLE))
+	{
+		combinedState.primitiveRestartEnable = dynamicState.primitiveRestartEnable;
 	}
 
 	if(hasDynamicState(VK_DYNAMIC_STATE_SCISSOR))
