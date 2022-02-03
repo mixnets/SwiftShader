@@ -337,7 +337,7 @@ VkDeviceSize Inputs::getVertexStride(uint32_t i, bool dynamicVertexStride) const
 	auto &attrib = stream[i];
 	if(attrib.format != VK_FORMAT_UNDEFINED)
 	{
-		if (dynamicVertexStride)
+		if(dynamicVertexStride)
 		{
 			return vertexInputBindings[attrib.binding].stride;
 		}
@@ -407,9 +407,10 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 	cullMode = rasterizationState->cullMode;
 	frontFace = rasterizationState->frontFace;
 	polygonMode = rasterizationState->polygonMode;
-	constantDepthBias = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasConstantFactor : 0.0f;
-	slopeDepthBias = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasSlopeFactor : 0.0f;
-	depthBiasClamp = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasClamp : 0.0f;
+	depthBiasEnable = rasterizationState->depthBiasEnable;
+	constantDepthBias = rasterizationState->depthBiasConstantFactor;
+	slopeDepthBias = rasterizationState->depthBiasSlopeFactor;
+	depthBiasClamp = rasterizationState->depthBiasClamp;
 	depthRangeUnrestricted = device->hasExtension(VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME);
 	depthClampEnable = rasterizationState->depthClampEnable != VK_FALSE;
 	depthClipEnable = !depthClampEnable;
@@ -747,6 +748,21 @@ const GraphicsState GraphicsState::combineStates(const DynamicState &dynamicStat
 	if(dynamicStateFlags & DYNAMIC_STENCIL_TEST_ENABLE)
 	{
 		combinedState.stencilEnable = dynamicState.stencilTestEnable;
+	}
+
+	if(dynamicStateFlags & DYNAMIC_RASTERIZER_DISCARD_ENABLE)
+	{
+		combinedState.rasterizerDiscard = dynamicState.rasterizerDiscardEnable;
+	}
+
+	if(dynamicStateFlags & DYNAMIC_DEPTH_BIAS_ENABLE)
+	{
+		combinedState.depthBiasEnable = dynamicState.depthBiasEnable;
+	}
+
+	if(dynamicStateFlags & DYNAMIC_PRIMITIVE_RESTART_ENABLE)
+	{
+		combinedState.primitiveRestartEnable = dynamicState.primitiveRestartEnable;
 	}
 
 	if(dynamicStateFlags & DYNAMIC_SCISSOR)
