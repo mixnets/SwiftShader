@@ -150,6 +150,33 @@ struct DynamicState
 	VkBool32 primitiveRestartEnable = VK_FALSE;
 };
 
+struct DynamicRendering
+{
+	DynamicRendering(const VkRenderingInfo *pRenderingInfo);
+	~DynamicRendering();
+
+	void getAttachments(Attachments *attachments) const;
+	VkRect2D getRenderArea() const { return renderArea; }
+	uint32_t getLayerCount() const { return layerCount; }
+	uint32_t getViewMask() const { return (viewMask > 0) ? viewMask : 1; }
+	uint32_t getColorAttachmentCount() const { return colorAttachmentCount; }
+	const VkRenderingAttachmentInfo *getColorAttachment(uint32_t i) const
+	{
+		return (i < colorAttachmentCount) ? &(pColorAttachments[i]) : nullptr;
+	}
+	const VkRenderingAttachmentInfo *getDepthAttachment() const { return pDepthAttachment; }
+	const VkRenderingAttachmentInfo *getStencilAttachment() const { return pStencilAttachment; }
+
+private:
+	VkRect2D renderArea = {};
+	uint32_t layerCount = 0;
+	uint32_t viewMask = 0;
+	uint32_t colorAttachmentCount = 0;
+	VkRenderingAttachmentInfo *pColorAttachments = nullptr;
+	VkRenderingAttachmentInfo *pDepthAttachment = nullptr;
+	VkRenderingAttachmentInfo *pStencilAttachment = nullptr;
+};
+
 struct GraphicsState
 {
 	GraphicsState(const Device *device, const VkGraphicsPipelineCreateInfo *pCreateInfo, const PipelineLayout *layout, bool robustBufferAccess);
@@ -212,6 +239,18 @@ struct GraphicsState
 	inline bool hasDynamicVertexStride() const { return dynamicStateFlags.dynamicVertexInputBindingStride; }
 	inline bool hasDynamicTopology() const { return dynamicStateFlags.dynamicPrimitiveTopology; }
 
+	struct DynamicRendering
+	{
+		void operator=(const VkPipelineRenderingCreateInfo &renderingCreateInfo);
+
+		uint32_t viewMask = 0;
+		uint32_t colorAttachmentCount = 0;
+		VkFormat pColorAttachmentFormats[sw::MAX_COLOR_BUFFERS] = {};
+		VkFormat depthAttachmentFormat = VK_FORMAT_UNDEFINED;
+		VkFormat stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
+	};
+	const DynamicRendering &getDynamicRendering() const { return dynamicRendering; }
+
 private:
 	struct DynamicStateFlags
 	{
@@ -242,6 +281,8 @@ private:
 	};
 
 	static DynamicStateFlags ParseDynamicStateFlags(const VkPipelineDynamicStateCreateInfo *dynamicStateCreateInfo);
+	void setDepthStencilState(const VkPipelineDepthStencilStateCreateInfo *depthStencilState);
+	void setColorBlendState(const VkPipelineColorBlendStateCreateInfo *colorBlendState);
 
 	VkBlendFactor blendFactor(VkBlendOp blendOperation, VkBlendFactor blendFactor) const;
 	VkBlendOp blendOperation(VkBlendOp blendOperation, VkBlendFactor sourceBlendFactor, VkBlendFactor destBlendFactor, vk::Format format) const;
@@ -299,6 +340,8 @@ private:
 	sw::float4 blendConstants = {};
 
 	BlendState blendState[sw::MAX_COLOR_BUFFERS] = {};
+
+	DynamicRendering dynamicRendering;
 };
 
 }  // namespace vk

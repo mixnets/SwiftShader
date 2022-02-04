@@ -72,6 +72,44 @@ void Framebuffer::destroy(const VkAllocationCallbacks *pAllocator)
 	vk::freeHostMemory(attachments, pAllocator);
 }
 
+VkImageAspectFlags Framebuffer::GetClearMask(VkAttachmentLoadOp loadOp, VkAttachmentLoadOp stencilLoadOp, VkFormat format)
+{
+	VkImageAspectFlags clearMask = 0;
+
+	switch(loadOp)
+	{
+	case VK_ATTACHMENT_LOAD_OP_CLEAR:
+		clearMask |= VK_IMAGE_ASPECT_COLOR_BIT | VK_IMAGE_ASPECT_DEPTH_BIT;
+		break;
+	case VK_ATTACHMENT_LOAD_OP_LOAD:
+	case VK_ATTACHMENT_LOAD_OP_DONT_CARE:
+	case VK_ATTACHMENT_LOAD_OP_NONE_EXT:
+		// Don't clear the attachment's color or depth aspect.
+		break;
+	default:
+		UNSUPPORTED("loadOp %d", loadOp);
+	}
+
+	switch(stencilLoadOp)
+	{
+	case VK_ATTACHMENT_LOAD_OP_CLEAR:
+		clearMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		break;
+	case VK_ATTACHMENT_LOAD_OP_LOAD:
+	case VK_ATTACHMENT_LOAD_OP_DONT_CARE:
+	case VK_ATTACHMENT_LOAD_OP_NONE_EXT:
+		// Don't clear the attachment's stencil aspect.
+		break;
+	default:
+		UNSUPPORTED("stencilLoadOp %d", stencilLoadOp);
+	}
+
+	// Image::clear() demands that we only specify existing aspects.
+	clearMask &= Format(format).getAspects();
+
+	return clearMask;
+}
+
 void Framebuffer::executeLoadOp(const RenderPass *renderPass, uint32_t clearValueCount, const VkClearValue *pClearValues, const VkRect2D &renderArea)
 {
 	// This gets called at the start of a renderpass. Logically the `loadOp` gets executed at the
@@ -84,38 +122,7 @@ void Framebuffer::executeLoadOp(const RenderPass *renderPass, uint32_t clearValu
 	for(uint32_t i = 0; i < count; i++)
 	{
 		const VkAttachmentDescription attachment = renderPass->getAttachment(i);
-		VkImageAspectFlags clearMask = 0;
-
-		switch(attachment.loadOp)
-		{
-		case VK_ATTACHMENT_LOAD_OP_CLEAR:
-			clearMask |= VK_IMAGE_ASPECT_COLOR_BIT | VK_IMAGE_ASPECT_DEPTH_BIT;
-			break;
-		case VK_ATTACHMENT_LOAD_OP_LOAD:
-		case VK_ATTACHMENT_LOAD_OP_DONT_CARE:
-		case VK_ATTACHMENT_LOAD_OP_NONE_EXT:
-			// Don't clear the attachment's color or depth aspect.
-			break;
-		default:
-			UNSUPPORTED("attachment.loadOp %d", attachment.loadOp);
-		}
-
-		switch(attachment.stencilLoadOp)
-		{
-		case VK_ATTACHMENT_LOAD_OP_CLEAR:
-			clearMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
-			break;
-		case VK_ATTACHMENT_LOAD_OP_LOAD:
-		case VK_ATTACHMENT_LOAD_OP_DONT_CARE:
-		case VK_ATTACHMENT_LOAD_OP_NONE_EXT:
-			// Don't clear the attachment's stencil aspect.
-			break;
-		default:
-			UNSUPPORTED("attachment.stencilLoadOp %d", attachment.stencilLoadOp);
-		}
-
-		// Image::clear() demands that we only specify existing aspects.
-		clearMask &= Format(attachment.format).getAspects();
+		VkImageAspectFlags clearMask = GetClearMask(attachment.loadOp, attachment.stencilLoadOp, attachment.format);
 
 		if(!clearMask || !renderPass->isAttachmentUsed(i))
 		{
@@ -226,7 +233,8 @@ void Framebuffer::resolve(const RenderPass *renderPass, uint32_t subpassIndex)
 		if(depthStencilAttachment != VK_ATTACHMENT_UNUSED)
 		{
 			ImageView *imageView = attachments[depthStencilAttachment];
-			imageView->resolveDepthStencil(attachments[dsResolve.pDepthStencilResolveAttachment->attachment], dsResolve);
+			imageView->resolveDepthStencil(attachments[dsResolve.pDepthStencilResolveAttachment->attachment],
+			                               dsResolve.depthResolveMode, dsResolve.stencilResolveMode);
 		}
 	}
 }
