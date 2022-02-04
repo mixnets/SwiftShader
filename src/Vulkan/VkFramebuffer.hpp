@@ -38,6 +38,8 @@ public:
 
 	const VkExtent3D &getExtent() const { return extent; }
 
+	static VkImageAspectFlags GetClearMask(VkAttachmentLoadOp loadOp, VkAttachmentLoadOp stencilLoadOp, VkFormat format);
+
 private:
 	uint32_t attachmentCount = 0;
 	ImageView **attachments = nullptr;

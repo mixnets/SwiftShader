@@ -65,6 +65,8 @@ public:
 	void nextSubpass(VkSubpassContents contents);
 	void endRenderPass();
 	void executeCommands(uint32_t commandBufferCount, const VkCommandBuffer *pCommandBuffers);
+	void beginRendering(const VkRenderingInfo *pRenderingInfo);
+	void endRendering();
 
 	void setDeviceMask(uint32_t deviceMask);
 	void dispatchBase(uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ,
@@ -156,6 +158,7 @@ public:
 		sw::CountedEvent *events = nullptr;
 		RenderPass *renderPass = nullptr;
 		Framebuffer *renderPassFramebuffer = nullptr;
+		DynamicRendering *dynamicRendering = nullptr;
 
 		// VK_PIPELINE_BIND_POINT_GRAPHICS = 0
 		// VK_PIPELINE_BIND_POINT_COMPUTE = 1
@@ -173,6 +176,8 @@ public:
 
 		void bindAttachments(Attachments *attachments);
 
+		VkExtent3D getExtent() const;
+		uint32_t getViewMask() const;
 		uint32_t viewCount() const;
 	};
 
