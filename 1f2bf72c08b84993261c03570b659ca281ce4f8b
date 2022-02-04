@@ -1,0 +1,205 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba5310c0_84dee504",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-04T16:24:53Z",
+      "side": 1,
+      "message": "This could use clarification of how each of them are handled. Specifically, I\u0027d like to know which ones we use as specialization state and thus would cause routines to be recompile at draw time, or are effectively just treated as data?\n\nI\u0027m assuming the vertex attribute stride is data and the rest is specialization state?\n\nThere\u0027s no harm in being explicit about each individual dynamic state variable here since we could use some documentation on this topic because it may not be immediately clear to other developers how this is handled in SwiftShader.",
+      "range": {
+        "startLine": 11,
+        "startChar": 10,
+        "endLine": 13,
+        "endChar": 27
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "883d9a97_bd160646",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-04T16:24:53Z",
+      "side": 1,
+      "message": "I\u0027m worried about the variability in Regres timings. Could it be caused by leaving some state variables uninitialized and thus causing unintended recompiles?",
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b099179b_c3efbb17",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-04T16:24:53Z",
+      "side": 1,
+      "message": "Let\u0027s just use an if statement here for readability.",
+      "range": {
+        "startLine": 249,
+        "startChar": 72,
+        "endLine": 249,
+        "endChar": 73
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af4da75b_a13d65b1",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-04T16:24:53Z",
+      "side": 1,
+      "message": "Shouldn\u0027t we just return 0 if the format is undefined?",
+      "range": {
+        "startLine": 249,
+        "startChar": 50,
+        "endLine": 249,
+        "endChar": 69
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f39e1dd1_7f760b33",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-04T16:24:53Z",
+      "side": 1,
+      "message": "This looks hacky and is confusing without looking at the definition of these enums. We can just explicitly return the index for each enum. The compiler should recognize the ranges of values that align and produce code that is as optimal as this.",
+      "range": {
+        "startLine": 579,
+        "startChar": 2,
+        "endLine": 579,
+        "endChar": 9
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89a3acba_e8de4039",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-04T16:24:53Z",
+      "side": 1,
+      "message": "Could this value cause any issues? I don\u0027t think there\u0027s harm in just returning 0 here, which I think would result in considering the viewport to be dynamic even if it\u0027s not, whereas this value has no valid meaning and could be misinterpreted as -1 and cause some type of overflow.\n\nWhile we don\u0027t waste cycles validating application errors, note that returning this value  instead of 0 for an unrecognized enum likely produces extra code.",
+      "range": {
+        "startLine": 584,
+        "startChar": 8,
+        "endLine": 584,
+        "endChar": 18
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "411fbba0_782bf126",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 676,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-04T16:24:53Z",
+      "side": 1,
+      "message": "Wouldn\u0027t it be a faster/cleaner approach to have a bitfield which indicates which dynamic states are in use? Each of these hasDynamicState() calls looks up the index and does some explicit shifts and bit manipulation. The switch statement in the GraphicsState::GraphicsState() can just set the bitfield for each corresponding enum, and every other code dealing with this state can just use the bitfield.\n\nSeems like a refactoring worth doing in a prior CL.",
+      "range": {
+        "startLine": 676,
+        "startChar": 4,
+        "endLine": 676,
+        "endChar": 19
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91dc8d52_0e8c98d6",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-04T16:24:53Z",
+      "side": 1,
+      "message": "Should some/all of these fields get initialization values, or are they guaranteed to be written each time?",
+      "range": {
+        "startLine": 39,
+        "startChar": 20,
+        "endLine": 39,
+        "endChar": 21
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22c7a44a_5b53ec09",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-04T16:24:53Z",
+      "side": 1,
+      "message": "nit: Since this is Core Vulkan 1.3 functionality I don\u0027t think this comment adds value.",
+      "range": {
+        "startLine": 133,
+        "startChar": 1,
+        "endLine": 133,
+        "endChar": 45
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
