@@ -22,6 +22,30 @@
       },
       "revId": "1df84f1c878543e6ab4ff774a1db8288d9ce4f53",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a95d4d48_e74447ba",
+        "filename": "src/System/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 101271
+      },
+      "writtenOn": "2022-02-04T21:00:06Z",
+      "side": 1,
+      "message": "Yes unfortunately, I\u0027ve tried hard to avoid this but I don\u0027t see another clean way. Ideally, this (and other code) should be run at library load / library unload. I\u0027m only familiar with Windows\u0027 DllMain mechanism, but not sure about whether this is portable to other platforms.",
+      "parentUuid": "8a1af770_36e960cd",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 64
+      },
+      "revId": "1df84f1c878543e6ab4ff774a1db8288d9ce4f53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
