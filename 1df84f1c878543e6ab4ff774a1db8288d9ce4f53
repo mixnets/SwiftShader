@@ -46,6 +46,30 @@
       },
       "revId": "1df84f1c878543e6ab4ff774a1db8288d9ce4f53",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cbaa6f62_9e16d3e4",
+        "filename": "src/System/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-06T03:24:55Z",
+      "side": 1,
+      "message": "No worries. We have a few other uses of them and they\u0027re not trivial to avoid. Personally I think the warning is a bit pedantic and exit-time destructors are fine if used judiciously.",
+      "parentUuid": "a95d4d48_e74447ba",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 64
+      },
+      "revId": "1df84f1c878543e6ab4ff774a1db8288d9ce4f53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
