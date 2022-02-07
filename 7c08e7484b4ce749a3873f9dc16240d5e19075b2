@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f9acd3b_b89f275a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T21:39:04Z",
+      "side": 1,
+      "message": "Is this just silencing warnings which have been happening for a while, or is this recent? Are there any more that could use silencing? Just checking if this is a one-off or could use opening a bug. LGTM either way.",
+      "range": {
+        "startLine": 11,
+        "startChar": 5,
+        "endLine": 11,
+        "endChar": 8
+      },
+      "revId": "7c08e7484b4ce749a3873f9dc16240d5e19075b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
