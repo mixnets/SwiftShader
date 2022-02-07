@@ -22,6 +22,30 @@
       },
       "revId": "080f54c7e3bac556fb1ec2d29d69fd7b97a15889",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d9de19e_ee70092e",
+        "filename": "tests/PipelineBenchmarks/PipelineBenchmarks.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T15:43:59Z",
+      "side": 1,
+      "message": "Note this is a benchmark, not a unit test, so we\u0027re mostly interested in measuring the typical case. Randomization, even with a known algorithm and seed value, makes that harder to control. Note we have b/169904252 for checking the effect of subnormal handling so we should benchmark those at that time.\n\nInf is full speed on all recent CPU micro-architectures I\u0027m aware of. NaN is not required to be supported by Vulkan implementations, which effectively means it produces unspecified values and applications will try hard to avoid them (e.g. division by zero is never a good thing for portable behavior).\n\nEither way this change is just about \u0027unrolling\u0027 what we already were benchmarking.",
+      "parentUuid": "60099eea_0d4ec68f",
+      "range": {
+        "startLine": 82,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 36
+      },
+      "revId": "080f54c7e3bac556fb1ec2d29d69fd7b97a15889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
