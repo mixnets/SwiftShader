@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bff6907_1a10cd6b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T14:13:21Z",
+      "side": 1,
+      "message": "Note this change includes both updates to the result files, corresponding with adding VK_KHR_synchronization2 support, and updating the input testlists for a newer version of dEQP. It would be less confusing if the suggestions from b/201453797#comment11 were implemented.\n\nAnyway, landing this as-is shouldn\u0027t cause any issues.",
+      "revId": "5f1e076ff3338fa18ccf09ac0ce5f02634135506",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3799f1d1_599c50c3",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 212479,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T14:13:21Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/58549\n\nAlso all the dEQP-VK.synchronization2.* changes below.",
+      "range": {
+        "startLine": 212479,
+        "startChar": 108,
+        "endLine": 212479,
+        "endChar": 114
+      },
+      "revId": "5f1e076ff3338fa18ccf09ac0ce5f02634135506",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
