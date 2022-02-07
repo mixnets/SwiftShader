@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e85cad3_0e57f8d0",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-07T14:23:37Z",
+      "side": 1,
+      "message": "Nit: this can easily be optimized inside SinOrCos(). If you had SinOrCosOrTan(), it would look something like:\n\n        if(sin || cos)\n        {\n        \tFloat4 r \u003d Reciprocal(s2 * s2 + c2 * c2); // Only for sin or cos\n\t\tif(sin)\n\t\t{\n\t\t\treturn Float4(2.0f) * s2 * c2 * r;\n\t\t}\n\t\telse if(cos)\n\t\t{\n\t\t\treturn ((c2 * c2) - (s2 * s2)) * r;\n\t\t}\n\t}\n\telse if(tan) // Doesn\u0027t need to compute Reciprocal\n\t{\n\t\treturn (Float4(2.0f) * s2 * c2) / ((c2 * c2) - (s2 * s2));\n\t}",
+      "range": {
+        "startLine": 221,
+        "startChar": 8,
+        "endLine": 221,
+        "endChar": 47
+      },
+      "revId": "cb03aa3e0f539a7e157c4ad9784c1ff8dc0c0e18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
