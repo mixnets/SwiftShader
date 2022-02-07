@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "374ba051_f96c88c2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T17:32:23Z",
+      "side": 1,
+      "message": "The results look \"correct\" so lets land this. Just need to prioritize fixing b/218318109.",
+      "revId": "861ea48a542f790cbbcade14a04109a770ced1f1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4cd0a8d4_20b8505e",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T17:32:23Z",
+      "side": 1,
+      "message": "b/200826740",
+      "range": {
+        "startLine": 3,
+        "startChar": 28,
+        "endLine": 3,
+        "endChar": 42
+      },
+      "revId": "861ea48a542f790cbbcade14a04109a770ced1f1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebd2d6ae_cd733af0",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T17:32:23Z",
+      "side": 1,
+      "message": "b/218318109",
+      "range": {
+        "startLine": 7,
+        "startChar": 8,
+        "endLine": 7,
+        "endChar": 15
+      },
+      "revId": "861ea48a542f790cbbcade14a04109a770ced1f1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

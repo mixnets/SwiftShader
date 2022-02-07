@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fd8f404_c3d54468",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T17:32:23Z",
+      "side": 0,
+      "message": "Now hits UNSUPPORTED() so probably not fixed.",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 64
+      },
+      "revId": "d57e6c7a89a5f70738964fb381e0ab8ef3181217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af8cdbdf_128e30b9",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T17:32:23Z",
+      "side": 0,
+      "message": "b/207139112",
+      "range": {
+        "startLine": 1,
+        "startChar": 55,
+        "endLine": 1,
+        "endChar": 77
+      },
+      "revId": "d57e6c7a89a5f70738964fb381e0ab8ef3181217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "29fa2683_d1d0dddd",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T17:32:23Z",
+      "side": 0,
+      "message": "b/207139946",
+      "range": {
+        "startLine": 5,
+        "startChar": 35,
+        "endLine": 5,
+        "endChar": 69
+      },
+      "revId": "d57e6c7a89a5f70738964fb381e0ab8ef3181217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
