@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "147ac828_785a7eef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T23:41:05Z",
+      "side": 1,
+      "message": "Note this is a cherry-pick of the change for the conformance-1.2.6.2 branch.",
+      "revId": "034813236f0434cca9c4e8ef2e8fc56a240c2ddf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
