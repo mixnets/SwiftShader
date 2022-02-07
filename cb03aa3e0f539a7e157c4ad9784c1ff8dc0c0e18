@@ -46,6 +46,30 @@
       },
       "revId": "cb03aa3e0f539a7e157c4ad9784c1ff8dc0c0e18",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a4abad3_7a323367",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-07T14:59:51Z",
+      "side": 1,
+      "message": "At the moment. we ship Subzero with Chromium, though, so I\u0027d prefer if we didn\u0027t rely on potential compiler optimizations so much.",
+      "parentUuid": "bc8fcc75_0e5918ec",
+      "range": {
+        "startLine": 221,
+        "startChar": 8,
+        "endLine": 221,
+        "endChar": 47
+      },
+      "revId": "cb03aa3e0f539a7e157c4ad9784c1ff8dc0c0e18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
