@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60099eea_0d4ec68f",
+        "filename": "tests/PipelineBenchmarks/PipelineBenchmarks.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-07T14:37:58Z",
+      "side": 1,
+      "message": "IWBN to have randomly generated numbers (with a seed) here, so that we test more than a single case, since we\u0027re already looping anyway.\n\nShould there be some Inf / NaN cases here too?",
+      "range": {
+        "startLine": 82,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 36
+      },
+      "revId": "080f54c7e3bac556fb1ec2d29d69fd7b97a15889",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
