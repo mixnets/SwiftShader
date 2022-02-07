@@ -14,6 +14,7 @@
 
 #include "ShaderCore.hpp"
 #include "Reactor/Reactor.hpp"
+#include "System/Types.hpp"
 
 #include "benchmark/benchmark.h"
 
@@ -39,20 +40,20 @@ static void Transcedental1(benchmark::State &state, Func func, Args &&...args)
 
 	FunctionT<float(float *)> function;
 	{
-		Pointer<Float> a = function.Arg<0>();
+		Pointer<Float4> a = Pointer<Float>(function.Arg<0>());
 		Float4 r(0.0f);
 
 		for(int i = 0; i < REPS; i++)
 		{
-			r += func(Float4(a[i]), args...);
+			r += func(a[i], args...);
 		}
 
-		Return(Float(r.x));
+		Return(Float(r.x) + Float(r.y) + Float(r.z) + Float(r.w));
 	}
 
 	auto routine = function("one");
 
-	std::vector<float> input(REPS, 1.0f);
+	std::vector<float> input(4 * REPS, 1.0f);
 
 	for(auto _ : state)
 	{
@@ -88,7 +89,14 @@ static void Transcedental2(benchmark::State &state, Func func, Args &&...args)
 	}
 }
 
-static const int REPS = 10;
+static const int REPS = 20;
+
+Float4 Nop(RValue<Float4> x)
+{
+	return x;
+}
+
+//BENCHMARK_CAPTURE(Transcedental1, Nop, Nop)->Arg(REPS);
 
 BENCHMARK_CAPTURE(Transcedental1, rr_Sin, rr::Sin)->Arg(REPS);
 BENCHMARK_CAPTURE(Transcedental1, sw_Sin, sw::Sin)->Arg(REPS);
