@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a4a888c_efa9e0d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-07T22:11:54Z",
+      "side": 1,
+      "message": "Kokoro test timings vary a lot, but this last one took only 24 minutes which is really good. As expected, building these small benchmarks shouldn\u0027t add much time.",
+      "revId": "16bdd09289d515d8e8137c12d5f4202081b8bc96",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
