@@ -22,6 +22,30 @@
       },
       "revId": "566526359f6fee9afa5c138712eea3a4d4c05965",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de7c7f14_ccbbc260",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3884,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-07T19:29:17Z",
+      "side": 1,
+      "message": "Yeah, that\u0027s my fault, thanks for fixing it.",
+      "parentUuid": "4a999b5a_ae38fff4",
+      "range": {
+        "startLine": 3884,
+        "startChar": 105,
+        "endLine": 3884,
+        "endChar": 107
+      },
+      "revId": "566526359f6fee9afa5c138712eea3a4d4c05965",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
