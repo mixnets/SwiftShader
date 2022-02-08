@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "142860b1_12b63cd2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-08T21:24:41Z",
+      "side": 1,
+      "message": "+2 to land this quickly, had some nits, but they\u0027re addressed in patchset 2.",
+      "revId": "6c1e924e30aa6baa6f7e60f55d56603868da252d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
