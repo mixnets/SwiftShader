@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "5f2b51ed_b153ad61",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-08T17:03:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba5310c0_84dee504",
+      "range": {
+        "startLine": 11,
+        "startChar": 10,
+        "endLine": 13,
+        "endChar": 27
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "883d9a97_bd160646",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 3
@@ -87,6 +111,54 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b665f846_f122577b",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-08T17:03:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af4da75b_a13d65b1",
+      "range": {
+        "startLine": 249,
+        "startChar": 50,
+        "endLine": 249,
+        "endChar": 69
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "66ae69c7_ca5bfaa4",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-08T17:03:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b099179b_c3efbb17",
+      "range": {
+        "startLine": 249,
+        "startChar": 72,
+        "endLine": 249,
+        "endChar": 73
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f39e1dd1_7f760b33",
@@ -100,6 +172,30 @@
       "writtenOn": "2022-02-04T16:24:53Z",
       "side": 1,
       "message": "This looks hacky and is confusing without looking at the definition of these enums. We can just explicitly return the index for each enum. The compiler should recognize the ranges of values that align and produce code that is as optimal as this.",
+      "range": {
+        "startLine": 579,
+        "startChar": 2,
+        "endLine": 579,
+        "endChar": 9
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4051d07_83e59337",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-08T17:03:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f39e1dd1_7f760b33",
       "range": {
         "startLine": 579,
         "startChar": 2,
@@ -133,6 +229,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "72410d7e_9200260f",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-08T17:03:53Z",
+      "side": 1,
+      "message": "Done (Obsolete)",
+      "parentUuid": "89a3acba_e8de4039",
+      "range": {
+        "startLine": 584,
+        "startChar": 8,
+        "endLine": 584,
+        "endChar": 18
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "411fbba0_782bf126",
@@ -146,6 +266,30 @@
       "writtenOn": "2022-02-04T16:24:53Z",
       "side": 1,
       "message": "Wouldn\u0027t it be a faster/cleaner approach to have a bitfield which indicates which dynamic states are in use? Each of these hasDynamicState() calls looks up the index and does some explicit shifts and bit manipulation. The switch statement in the GraphicsState::GraphicsState() can just set the bitfield for each corresponding enum, and every other code dealing with this state can just use the bitfield.\n\nSeems like a refactoring worth doing in a prior CL.",
+      "range": {
+        "startLine": 676,
+        "startChar": 4,
+        "endLine": 676,
+        "endChar": 19
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "183c86ae_8336e9a6",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 676,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-08T17:03:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "411fbba0_782bf126",
       "range": {
         "startLine": 676,
         "startChar": 4,
@@ -179,6 +323,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "20929076_ff8fbad3",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-08T17:03:53Z",
+      "side": 1,
+      "message": "Added default values, shouldn\u0027t hurt.",
+      "parentUuid": "91dc8d52_0e8c98d6",
+      "range": {
+        "startLine": 39,
+        "startChar": 20,
+        "endLine": 39,
+        "endChar": 21
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "22c7a44a_5b53ec09",
@@ -192,6 +360,30 @@
       "writtenOn": "2022-02-04T16:24:53Z",
       "side": 1,
       "message": "nit: Since this is Core Vulkan 1.3 functionality I don\u0027t think this comment adds value.",
+      "range": {
+        "startLine": 133,
+        "startChar": 1,
+        "endLine": 133,
+        "endChar": 45
+      },
+      "revId": "1f2bf72c08b84993261c03570b659ca281ce4f8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5db043b_355e4f46",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-08T17:03:53Z",
+      "side": 1,
+      "message": "Removed",
+      "parentUuid": "22c7a44a_5b53ec09",
       "range": {
         "startLine": 133,
         "startChar": 1,
