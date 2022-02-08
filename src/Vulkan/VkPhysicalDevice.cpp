@@ -1082,6 +1082,14 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceSubgroupSizeControlProperties
 	properties->requiredSubgroupSizeStages = subgroupProperties.supportedStages;
 }
 
+void PhysicalDevice::getProperties(VkPhysicalDeviceTexelBufferAlignmentProperties *properties) const
+{
+	properties->storageTexelBufferOffsetAlignmentBytes = vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT;
+	properties->storageTexelBufferOffsetSingleTexelAlignment = VK_FALSE;
+	properties->uniformTexelBufferOffsetAlignmentBytes = vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT;
+	properties->uniformTexelBufferOffsetSingleTexelAlignment = VK_FALSE;
+}
+
 template<typename T>
 static void getSamplerFilterMinmaxProperties(T *properties)
 {
