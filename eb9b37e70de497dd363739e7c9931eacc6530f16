@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b352b947_545c38ff",
+        "filename": "tests/VulkanBenchmarks/ComputeBenchmarks.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-08T22:41:57Z",
+      "side": 1,
+      "message": "This was actually copied from VulkanUnitTests which has the same (benign) issue. Note that an actual app would typically allocate several hundred MB of device memory and then bind buffers to it. Complying with the alignment rules and retrieving the requirements from this API call is a bit tedious and seems a bit unnecessary to me for a SwiftShader-specific benchmark where we know this will work as-is (which is also why we took some shortcuts in VulkanUnitTests and why we simply use queue number 0). Doing it properly would reduce readability of what we\u0027re really trying to achieve with this benchmark.\n\nI think in due time we can clean it up a bit (VulkanWrapper was a start at that), but I don\u0027t think it\u0027s a good use of time right now.",
+      "parentUuid": "7defc732_7e24eb6f",
+      "range": {
+        "startLine": 141,
+        "startChar": 54,
+        "endLine": 141,
+        "endChar": 97
+      },
+      "revId": "eb9b37e70de497dd363739e7c9931eacc6530f16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "783d15c6_b37fcc7a",
         "filename": "tests/VulkanBenchmarks/ComputeBenchmarks.cpp",
         "patchSetId": 3
@@ -37,6 +61,30 @@
       "writtenOn": "2022-02-07T14:14:24Z",
       "side": 1,
       "message": "Is it spec compliant to delete it here? Seems too early to me.",
+      "range": {
+        "startLine": 200,
+        "startChar": 1,
+        "endLine": 200,
+        "endChar": 42
+      },
+      "revId": "eb9b37e70de497dd363739e7c9931eacc6530f16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a285aab0_db1b286c",
+        "filename": "tests/VulkanBenchmarks/ComputeBenchmarks.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-08T22:41:57Z",
+      "side": 1,
+      "message": "Yes, it\u0027s compliant. I added a comment.",
+      "parentUuid": "783d15c6_b37fcc7a",
       "range": {
         "startLine": 200,
         "startChar": 1,
@@ -60,6 +108,30 @@
       "writtenOn": "2022-02-07T14:14:24Z",
       "side": 1,
       "message": "Nit: Did you run formatting on this file? If so, just remove this extra space. (I guess formatting probably doesn\u0027t affect string contents).",
+      "range": {
+        "startLine": 299,
+        "startChar": 4,
+        "endLine": 299,
+        "endChar": 5
+      },
+      "revId": "eb9b37e70de497dd363739e7c9931eacc6530f16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e384440_03b7ea4f",
+        "filename": "tests/VulkanBenchmarks/ComputeBenchmarks.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-08T22:41:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cfad362b_9b2d233e",
       "range": {
         "startLine": 299,
         "startChar": 4,
