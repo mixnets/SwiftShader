@@ -349,6 +349,11 @@ static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsF
 	features->formatA4B4G4R4 = VK_TRUE;
 }
 
+static void getPhysicalDeviceTexelBufferAlignmentFeaturesExt(VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT *features)
+{
+	features->texelBufferAlignment = VK_TRUE;
+}
+
 static void getPhysicalDeviceSynchronization2Features(VkPhysicalDeviceSynchronization2Features *features)
 {
 	features->synchronization2 = VK_TRUE;
@@ -453,6 +458,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT:
 			getPhysicalDevice4444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT:
+			getPhysicalDeviceTexelBufferAlignmentFeaturesExt(reinterpret_cast<struct VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES:
 			getPhysicalDeviceSynchronization2Features(reinterpret_cast<struct VkPhysicalDeviceSynchronization2Features *>(curExtension));
@@ -1060,6 +1068,14 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceBlendOperationAdvancedPropert
 	properties->advancedBlendNonPremultipliedDstColor = VK_FALSE;
 	properties->advancedBlendCorrelatedOverlap = VK_FALSE;
 	properties->advancedBlendAllOperations = VK_FALSE;
+}
+
+void PhysicalDevice::getProperties(VkPhysicalDeviceTexelBufferAlignmentProperties *properties) const
+{
+	properties->storageTexelBufferOffsetAlignmentBytes = vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT;
+	properties->storageTexelBufferOffsetSingleTexelAlignment = VK_FALSE;
+	properties->uniformTexelBufferOffsetAlignmentBytes = vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT;
+	properties->uniformTexelBufferOffsetSingleTexelAlignment = VK_FALSE;
 }
 
 template<typename T>
