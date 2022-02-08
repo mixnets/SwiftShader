@@ -120,7 +120,7 @@ llvm::Value *lowerPMOV(llvm::Value *op, llvm::Type *dstType, bool sext)
 	llvm::FixedVectorType *dstTy = llvm::cast<llvm::FixedVectorType>(dstType);
 
 	llvm::Value *undef = llvm::UndefValue::get(srcTy);
-	llvm::SmallVector<uint32_t, 16> mask(dstTy->getNumElements());
+	llvm::SmallVector<int, 16> mask(dstTy->getNumElements());
 	std::iota(mask.begin(), mask.end(), 0);
 	llvm::Value *v = jit->builder->CreateShuffleVector(op, undef, mask);
 
@@ -245,8 +245,8 @@ llvm::Value *lowerMulAdd(llvm::Value *x, llvm::Value *y)
 
 	llvm::Value *undef = llvm::UndefValue::get(extTy);
 
-	llvm::SmallVector<uint32_t, 16> evenIdx;
-	llvm::SmallVector<uint32_t, 16> oddIdx;
+	llvm::SmallVector<int, 16> evenIdx;
+	llvm::SmallVector<int, 16> oddIdx;
 	for(uint64_t i = 0, n = ty->getNumElements(); i < n; i += 2)
 	{
 		evenIdx.push_back(i);
@@ -288,7 +288,7 @@ llvm::Value *lowerPack(llvm::Value *x, llvm::Value *y, bool isSigned)
 	x = jit->builder->CreateTrunc(x, dstTy);
 	y = jit->builder->CreateTrunc(y, dstTy);
 
-	llvm::SmallVector<uint32_t, 16> index(srcTy->getNumElements() * 2);
+	llvm::SmallVector<int, 16> index(srcTy->getNumElements() * 2);
 	std::iota(index.begin(), index.end(), 0);
 
 	return jit->builder->CreateShuffleVector(x, y, index);
@@ -1663,18 +1663,8 @@ Value *Nucleus::createShuffleVector(Value *v1, Value *v2, const int *select)
 	RR_DEBUG_INFO_UPDATE_LOC();
 
 	int size = llvm::cast<llvm::FixedVectorType>(V(v1)->getType())->getNumElements();
-	const int maxSize = 16;
-	llvm::Constant *swizzle[maxSize];
-	ASSERT(size <= maxSize);
 
-	for(int i = 0; i < size; i++)
-	{
-		swizzle[i] = llvm::ConstantInt::get(llvm::Type::getInt32Ty(*jit->context), select[i]);
-	}
-
-	llvm::Value *shuffle = llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant *>(swizzle, size));
-
-	return V(jit->builder->CreateShuffleVector(V(v1), V(v2), shuffle));
+	return V(jit->builder->CreateShuffleVector(V(v1), V(v2), llvm::ArrayRef<int>(select, size)));
 }
 
 Value *Nucleus::createSelect(Value *c, Value *ifTrue, Value *ifFalse)
