@@ -243,6 +243,95 @@ void Inputs::advanceInstanceAttributes()
 	}
 }
 
+uint32_t GraphicsState::GetDynamicStateFlags(const VkPipelineDynamicStateCreateInfo &dynamicStateCreateInfo)
+{
+	uint32_t dynamicStateFlags = 0;
+
+	for(uint32_t i = 0; i < dynamicStateCreateInfo.dynamicStateCount; i++)
+	{
+		VkDynamicState dynamicState = dynamicStateCreateInfo.pDynamicStates[i];
+		switch(dynamicState)
+		{
+		case VK_DYNAMIC_STATE_VIEWPORT:
+			dynamicStateFlags |= DYNAMIC_VIEWPORT;
+			break;
+		case VK_DYNAMIC_STATE_SCISSOR:
+			dynamicStateFlags |= DYNAMIC_SCISSOR;
+			break;
+		case VK_DYNAMIC_STATE_LINE_WIDTH:
+			dynamicStateFlags |= DYNAMIC_LINE_WIDTH;
+			break;
+		case VK_DYNAMIC_STATE_DEPTH_BIAS:
+			dynamicStateFlags |= DYNAMIC_DEPTH_BIAS;
+			break;
+		case VK_DYNAMIC_STATE_BLEND_CONSTANTS:
+			dynamicStateFlags |= DYNAMIC_BLEND_CONSTANTS;
+			break;
+		case VK_DYNAMIC_STATE_DEPTH_BOUNDS:
+			dynamicStateFlags |= DYNAMIC_DEPTH_BOUNDS;
+			break;
+		case VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK:
+			dynamicStateFlags |= DYNAMIC_STENCIL_COMPARE_MASK;
+			break;
+		case VK_DYNAMIC_STATE_STENCIL_WRITE_MASK:
+			dynamicStateFlags |= DYNAMIC_STENCIL_WRITE_MASK;
+			break;
+		case VK_DYNAMIC_STATE_STENCIL_REFERENCE:
+			dynamicStateFlags |= DYNAMIC_STENCIL_REFERENCE;
+			break;
+		case VK_DYNAMIC_STATE_CULL_MODE:
+			dynamicStateFlags |= DYNAMIC_CULL_MODE;
+			break;
+		case VK_DYNAMIC_STATE_FRONT_FACE:
+			dynamicStateFlags |= DYNAMIC_FRONT_FACE;
+			break;
+		case VK_DYNAMIC_STATE_PRIMITIVE_TOPOLOGY:
+			dynamicStateFlags |= DYNAMIC_PRIMITIVE_TOPOLOGY;
+			break;
+		case VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT:
+			dynamicStateFlags |= DYNAMIC_VIEWPORT_WITH_COUNT;
+			break;
+		case VK_DYNAMIC_STATE_SCISSOR_WITH_COUNT:
+			dynamicStateFlags |= DYNAMIC_SCISSOR_WITH_COUNT;
+			break;
+		case VK_DYNAMIC_STATE_VERTEX_INPUT_BINDING_STRIDE:
+			dynamicStateFlags |= DYNAMIC_VERTEX_INPUT_BINDING_STRIDE;
+			break;
+		case VK_DYNAMIC_STATE_DEPTH_TEST_ENABLE:
+			dynamicStateFlags |= DYNAMIC_DEPTH_TEST_ENABLE;
+			break;
+		case VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE:
+			dynamicStateFlags |= DYNAMIC_DEPTH_WRITE_ENABLE;
+			break;
+		case VK_DYNAMIC_STATE_DEPTH_COMPARE_OP:
+			dynamicStateFlags |= DYNAMIC_DEPTH_COMPARE_OP;
+			break;
+		case VK_DYNAMIC_STATE_DEPTH_BOUNDS_TEST_ENABLE:
+			dynamicStateFlags |= DYNAMIC_DEPTH_BOUNDS_TEST_ENABLE;
+			break;
+		case VK_DYNAMIC_STATE_STENCIL_TEST_ENABLE:
+			dynamicStateFlags |= DYNAMIC_STENCIL_TEST_ENABLE;
+			break;
+		case VK_DYNAMIC_STATE_STENCIL_OP:
+			dynamicStateFlags |= DYNAMIC_STENCIL_OP;
+			break;
+		case VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE:
+			dynamicStateFlags |= DYNAMIC_RASTERIZER_DISCARD_ENABLE;
+			break;
+		case VK_DYNAMIC_STATE_DEPTH_BIAS_ENABLE:
+			dynamicStateFlags |= DYNAMIC_DEPTH_BIAS_ENABLE;
+			break;
+		case VK_DYNAMIC_STATE_PRIMITIVE_RESTART_ENABLE:
+			dynamicStateFlags |= DYNAMIC_PRIMITIVE_RESTART_ENABLE;
+			break;
+		default:
+			UNSUPPORTED("VkDynamicState %d", int(dynamicState));
+		}
+	}
+
+	return dynamicStateFlags;
+}
+
 GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreateInfo *pCreateInfo,
                              const PipelineLayout *layout, bool robustBufferAccess)
     : pipelineLayout(layout)
@@ -266,27 +355,7 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 			UNSUPPORTED("pCreateInfo->pDynamicState->flags %d", int(pCreateInfo->pDynamicState->flags));
 		}
 
-		for(uint32_t i = 0; i < pCreateInfo->pDynamicState->dynamicStateCount; i++)
-		{
-			VkDynamicState dynamicState = pCreateInfo->pDynamicState->pDynamicStates[i];
-			switch(dynamicState)
-			{
-			case VK_DYNAMIC_STATE_VIEWPORT:
-			case VK_DYNAMIC_STATE_SCISSOR:
-			case VK_DYNAMIC_STATE_LINE_WIDTH:
-			case VK_DYNAMIC_STATE_DEPTH_BIAS:
-			case VK_DYNAMIC_STATE_BLEND_CONSTANTS:
-			case VK_DYNAMIC_STATE_DEPTH_BOUNDS:
-			case VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK:
-			case VK_DYNAMIC_STATE_STENCIL_WRITE_MASK:
-			case VK_DYNAMIC_STATE_STENCIL_REFERENCE:
-				ASSERT(dynamicState < (sizeof(dynamicStateFlags) * 8));
-				dynamicStateFlags |= (1 << dynamicState);
-				break;
-			default:
-				UNSUPPORTED("VkDynamicState %d", int(dynamicState));
-			}
-		}
+		dynamicStateFlags = GetDynamicStateFlags(*(pCreateInfo->pDynamicState));
 	}
 
 	const VkPipelineVertexInputStateCreateInfo *vertexInputState = pCreateInfo->pVertexInputState;
@@ -406,12 +475,12 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 			UNSUPPORTED("VkPhysicalDeviceFeatures::multiViewport");
 		}
 
-		if(!hasDynamicState(VK_DYNAMIC_STATE_SCISSOR))
+		if((dynamicStateFlags & DYNAMIC_SCISSOR) == 0)
 		{
 			scissor = viewportState->pScissors[0];
 		}
 
-		if(!hasDynamicState(VK_DYNAMIC_STATE_VIEWPORT))
+		if((dynamicStateFlags & DYNAMIC_VIEWPORT) == 0)
 		{
 			viewport = viewportState->pViewports[0];
 		}
@@ -510,7 +579,7 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 				UNSUPPORTED("VkPhysicalDeviceFeatures::logicOp");
 			}
 
-			if(!hasDynamicState(VK_DYNAMIC_STATE_BLEND_CONSTANTS))
+			if((dynamicStateFlags & DYNAMIC_BLEND_CONSTANTS) == 0)
 			{
 				blendConstants.x = colorBlendState->blendConstants[0];
 				blendConstants.y = colorBlendState->blendConstants[1];
@@ -637,47 +706,47 @@ const GraphicsState GraphicsState::combineStates(const DynamicState &dynamicStat
 	GraphicsState combinedState = *this;
 
 	// Apply either pipeline state or dynamic state
-	if(hasDynamicState(VK_DYNAMIC_STATE_SCISSOR))
+	if(dynamicStateFlags & DYNAMIC_SCISSOR)
 	{
 		combinedState.scissor = dynamicState.scissor;
 	}
 
-	if(hasDynamicState(VK_DYNAMIC_STATE_VIEWPORT))
+	if(dynamicStateFlags & DYNAMIC_VIEWPORT)
 	{
 		combinedState.viewport = dynamicState.viewport;
 	}
 
-	if(hasDynamicState(VK_DYNAMIC_STATE_BLEND_CONSTANTS))
+	if(dynamicStateFlags & DYNAMIC_BLEND_CONSTANTS)
 	{
 		combinedState.blendConstants = dynamicState.blendConstants;
 	}
 
-	if(hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BIAS))
+	if(dynamicStateFlags & DYNAMIC_DEPTH_BIAS)
 	{
 		combinedState.constantDepthBias = dynamicState.depthBiasConstantFactor;
 		combinedState.slopeDepthBias = dynamicState.depthBiasSlopeFactor;
 		combinedState.depthBiasClamp = dynamicState.depthBiasClamp;
 	}
 
-	if(hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BOUNDS) && depthBoundsTestEnable)
+	if((dynamicStateFlags & DYNAMIC_DEPTH_BOUNDS) && depthBoundsTestEnable)
 	{
 		combinedState.minDepthBounds = dynamicState.minDepthBounds;
 		combinedState.maxDepthBounds = dynamicState.maxDepthBounds;
 	}
 
-	if(hasDynamicState(VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK) && stencilEnable)
+	if((dynamicStateFlags & DYNAMIC_STENCIL_COMPARE_MASK) && stencilEnable)
 	{
 		combinedState.frontStencil.compareMask = dynamicState.compareMask[0];
 		combinedState.backStencil.compareMask = dynamicState.compareMask[1];
 	}
 
-	if(hasDynamicState(VK_DYNAMIC_STATE_STENCIL_WRITE_MASK) && stencilEnable)
+	if((dynamicStateFlags & DYNAMIC_STENCIL_WRITE_MASK) && stencilEnable)
 	{
 		combinedState.frontStencil.writeMask = dynamicState.writeMask[0];
 		combinedState.backStencil.writeMask = dynamicState.writeMask[1];
 	}
 
-	if(hasDynamicState(VK_DYNAMIC_STATE_STENCIL_REFERENCE) && stencilEnable)
+	if((dynamicStateFlags & DYNAMIC_STENCIL_REFERENCE) && stencilEnable)
 	{
 		combinedState.frontStencil.reference = dynamicState.reference[0];
 		combinedState.backStencil.reference = dynamicState.reference[1];

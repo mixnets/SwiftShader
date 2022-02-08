@@ -192,7 +192,34 @@ struct GraphicsState
 	bool depthBoundsTestActive(const Attachments &attachments) const;
 
 private:
-	inline bool hasDynamicState(VkDynamicState dynamicState) const { return (dynamicStateFlags & (1 << dynamicState)) != 0; }
+	enum DynamicStateFlags
+	{
+		DYNAMIC_VIEWPORT = 0x00000001,
+		DYNAMIC_SCISSOR = 0x00000002,
+		DYNAMIC_LINE_WIDTH = 0x00000004,
+		DYNAMIC_DEPTH_BIAS = 0x00000008,
+		DYNAMIC_BLEND_CONSTANTS = 0x00000010,
+		DYNAMIC_DEPTH_BOUNDS = 0x00000020,
+		DYNAMIC_STENCIL_COMPARE_MASK = 0x00000040,
+		DYNAMIC_STENCIL_WRITE_MASK = 0x00000080,
+		DYNAMIC_STENCIL_REFERENCE = 0x00000100,
+		DYNAMIC_CULL_MODE = 0x00000200,
+		DYNAMIC_FRONT_FACE = 0x00000400,
+		DYNAMIC_PRIMITIVE_TOPOLOGY = 0x00000800,
+		DYNAMIC_VIEWPORT_WITH_COUNT = 0x00001000,
+		DYNAMIC_SCISSOR_WITH_COUNT = 0x00002000,
+		DYNAMIC_VERTEX_INPUT_BINDING_STRIDE = 0x00004000,
+		DYNAMIC_DEPTH_TEST_ENABLE = 0x00008000,
+		DYNAMIC_DEPTH_WRITE_ENABLE = 0x00010000,
+		DYNAMIC_DEPTH_COMPARE_OP = 0x00020000,
+		DYNAMIC_DEPTH_BOUNDS_TEST_ENABLE = 0x00040000,
+		DYNAMIC_STENCIL_TEST_ENABLE = 0x00080000,
+		DYNAMIC_STENCIL_OP = 0x00100000,
+		DYNAMIC_RASTERIZER_DISCARD_ENABLE = 0x00200000,
+		DYNAMIC_DEPTH_BIAS_ENABLE = 0x00400000,
+		DYNAMIC_PRIMITIVE_RESTART_ENABLE = 0x00800000,
+	};
+	static uint32_t GetDynamicStateFlags(const VkPipelineDynamicStateCreateInfo &dynamicStateCreateInfo);
 
 	VkBlendFactor blendFactor(VkBlendOp blendOperation, VkBlendFactor blendFactor) const;
 	VkBlendOp blendOperation(VkBlendOp blendOperation, VkBlendFactor sourceBlendFactor, VkBlendFactor destBlendFactor, vk::Format format) const;
