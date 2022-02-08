@@ -1,0 +1,35 @@
+From 2118b684e6a247c111cc6390b14ec0f1563dfcfe Mon Sep 17 00:00:00 2001
+From: Samuel Iglesias Gonsálvez <siglesias@igalia.com>
+Date: Tue, 08 Feb 2022 14:58:10 +0100
+Subject: [PATCH] Only pass VkImageViewMinLodCreateInfoEXT when minLod is != 0.0f
+
+We avoid to passing VkImageViewMinLodCreateInfoEXT when creating
+the image view when the tests are actually not testing this.
+
+Therefore, the drivers that don't support this extension won't
+see errors when processing VkImageViewCreateInfo.
+
+Components: Vulkan
+VK-GL-CTS issue: 3094
+
+Affected tests:
+
+    dEQP-VK.texture.mipmap.*
+
+Signed-off-by: Samuel Iglesias Gonsálvez <siglesias@igalia.com>
+Change-Id: I09110ef2e6ebfb6f55c084eda85359ebf5cfa742
+---
+
+diff --git a/external/vulkancts/modules/vulkan/texture/vktTextureTestUtil.cpp b/external/vulkancts/modules/vulkan/texture/vktTextureTestUtil.cpp
+index 481f5e9..e5b24bb 100644
+--- a/external/vulkancts/modules/vulkan/texture/vktTextureTestUtil.cpp
++++ b/external/vulkancts/modules/vulkan/texture/vktTextureTestUtil.cpp
+@@ -468,7 +468,7 @@
+ 	const vk::VkImageViewCreateInfo				viewParams				=
+ 	{
+ 		vk::VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,						// VkStructureType			sType;
+-		imageViewMinLod >= 0.0f ? &imageViewMinLodCreateInfo : DE_NULL,		// const void*				pNext;
++		imageViewMinLod > 0.0f ? &imageViewMinLodCreateInfo : DE_NULL,		// const void*				pNext;
+ 		0u,																	// VkImageViewCreateFlags	flags;
+ 		*m_textureImage,													// VkImage					image;
+ 		imageViewType,														// VkImageViewType			viewType;

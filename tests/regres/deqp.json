@@ -3,6 +3,7 @@
     "branch": "",
     "sha": "b594e2aabae92e183421a58ea3f710f1b50504f9",
     "patches": [
-        "tests/regres/deqp-patches/deqp-x11.patch"
+        "tests/regres/deqp-patches/deqp-x11.patch",
+        "tests/regres/deqp-patches/2118b68.diff"
     ]
 }
