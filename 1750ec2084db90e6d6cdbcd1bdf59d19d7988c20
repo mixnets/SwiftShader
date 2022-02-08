@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae188e53_e0332da3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-08T16:52:07Z",
+      "side": 1,
+      "message": "Thanks for the patch! I hope you don\u0027t mind I rewrote it a bit in an attempt to make it compatible with LLVM 10 (I should have probably made it a separate CL). I restored the part where the shuffle constants are explicitly created, and removed code that was no longer needed.",
+      "revId": "1750ec2084db90e6d6cdbcd1bdf59d19d7988c20",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
