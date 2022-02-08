@@ -22,6 +22,30 @@
       },
       "revId": "d71e904b81665ee2c1e1d5256643bb7cde83a78a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0143409e_e7941287",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2022-02-08T01:09:10Z",
+      "side": 1,
+      "message": "Yiwei mentioned that this is intentionally private and supposed to be hidden from the public headers. I guess that\u0027s because it\u0027s only supposed to be for use between the Android framework and Android vulkan implementations and not supposed to be exposed to any kind of apps.",
+      "parentUuid": "5859ec4d_f48fb393",
+      "range": {
+        "startLine": 134,
+        "startChar": 60,
+        "endLine": 134,
+        "endChar": 109
+      },
+      "revId": "d71e904b81665ee2c1e1d5256643bb7cde83a78a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
