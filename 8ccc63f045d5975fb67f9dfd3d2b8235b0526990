@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "758d0f81_55686140",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-08T20:05:28Z",
+      "side": 1,
+      "message": "Looks like this fails to build on Android: https://android-review.googlesource.com/c/platform/external/swiftshader/+/1977187\n\n/mnt/disks/build-disk/src/android/master/external/swiftshader/src/Reactor/LLVMReactor.cpp:240:35: error: no matching member function for call to \u0027CreateShuffleVector\u0027 [clang-diagnostic-error]\n        llvm::Value *lhs \u003d jit-\u003ebuilder-\u003eCreateShuffleVector(mult, undef, evenIdx);\n                           ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~\nexternal/swiftshader/third_party/llvm-10.0/llvm/include/llvm/IR/IRBuilder.h:2547:10: note: candidate function not viable: no known conversion from \u0027llvm::SmallVector\u003cint, 16\u003e\u0027 to \u0027llvm::Value *\u0027 for 3rd argument\n  Value *CreateShuffleVector(Value *V1, Value *V2, Value *Mask,\n         ^\nexternal/swiftshader/third_party/llvm-10.0/llvm/include/llvm/IR/IRBuilder.h:2556:10: note: candidate function not viable: no known conversion from \u0027llvm::SmallVector\u003cint, 16\u003e\u0027 to \u0027ArrayRef\u003cuint32_t\u003e\u0027 (aka \u0027ArrayRef\u003cunsigned int\u003e\u0027) for 3rd argument\n  Value *CreateShuffleVector(Value *V1, Value *V2, ArrayRef\u003cuint32_t\u003e IntMask,\n         ^",
+      "revId": "8ccc63f045d5975fb67f9dfd3d2b8235b0526990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
