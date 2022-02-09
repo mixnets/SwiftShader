@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5f04b021_1cdd486b",
+        "filename": "tests/VulkanBenchmarks/ComputeBenchmarks.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-09T13:08:34Z",
+      "side": 1,
+      "message": "Ok for now, but this is why many Chromium Tests have a Setup() method, where the stuff required to run the test, which isn\u0027t the test itself, is done in a separate function, so that the tests are small and easy to understand. Here, the initialize() function contains the entire test. I think it would be more readable to cut this into parts (setup / test / teardown). Anyway, this can be done once there\u0027s more than one test here.",
+      "parentUuid": "b352b947_545c38ff",
+      "range": {
+        "startLine": 141,
+        "startChar": 54,
+        "endLine": 141,
+        "endChar": 97
+      },
+      "revId": "eb9b37e70de497dd363739e7c9931eacc6530f16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "783d15c6_b37fcc7a",
         "filename": "tests/VulkanBenchmarks/ComputeBenchmarks.cpp",
         "patchSetId": 3
