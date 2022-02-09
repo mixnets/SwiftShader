@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "601b846d_220d3483",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-09T20:15:08Z",
+      "side": 1,
+      "message": "The code looks good but I\u0027m still worried about those Regres \u0027Test duration changes\u0027. Those tests don\u0027t seem like they should become 2x - 3x slower due to implementing this extension (I\u0027m assuming they don\u0027t use it).\n\nCould you check the number of Reactor routines that get generated, before and after this patch, for these tests? Might require a Release build if there\u0027s UB somewhere...",
+      "revId": "83f2d570fd704a930145435fffd93ddd87cf1083",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
