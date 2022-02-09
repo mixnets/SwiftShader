@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa7d002f_6b40bf29",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 942,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-09T16:30:03Z",
+      "side": 1,
+      "message": "Use core, non-EXT version. Same elsewhere.",
+      "range": {
+        "startLine": 942,
+        "startChar": 72,
+        "endLine": 942,
+        "endChar": 76
+      },
+      "revId": "d69f790556047f3625470cd34dbc4ee12ea4f744",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
