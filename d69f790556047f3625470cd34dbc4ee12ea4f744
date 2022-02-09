@@ -46,6 +46,30 @@
       },
       "revId": "d69f790556047f3625470cd34dbc4ee12ea4f744",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "189a70aa_06e301e5",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 942,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-09T20:46:06Z",
+      "side": 1,
+      "message": "Ah, I see, to expose the extension we need the EXT feature struct, but to implement Core 1.3 we only need the non-EXT properties struct.\n\nIn that case, let\u0027s just implement only the Core 1.3 functionality. The extension is for hardware/drivers that need to inform apps about these additional alignment properties. SwiftShader doesn\u0027t need it, so let\u0027s not add it since it may confuse apps and clutters up our code (I know it\u0027s a tiny extension, just want to set the right precedent). It\u0027s trivial to add later if we do end up having a use for it.",
+      "parentUuid": "2c85689d_e6854eb3",
+      "range": {
+        "startLine": 942,
+        "startChar": 72,
+        "endLine": 942,
+        "endChar": 76
+      },
+      "revId": "d69f790556047f3625470cd34dbc4ee12ea4f744",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
