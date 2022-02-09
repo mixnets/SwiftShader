@@ -72,6 +72,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3ba506e_373a02f3",
+        "filename": "tests/VulkanBenchmarks/ComputeBenchmarks.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-09T16:48:28Z",
+      "side": 1,
+      "message": "FWIW, this basically is the whole \u0027setup\u0027 part. Vulkan isn\u0027t succinct. :) The run() method is he \u0027test\u0027 part. The ComputeOp derived class creates the variants (currently six).\n\nAnyway, yes, there\u0027s room for improvement and I think we can add some more helper functionality to VulkanWrapper.",
+      "parentUuid": "5f04b021_1cdd486b",
+      "range": {
+        "startLine": 141,
+        "startChar": 54,
+        "endLine": 141,
+        "endChar": 97
+      },
+      "revId": "eb9b37e70de497dd363739e7c9931eacc6530f16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "783d15c6_b37fcc7a",
