@@ -399,6 +399,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "881fc675_3bcc23f6",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-09T15:43:21Z",
+      "side": 1,
+      "message": "PTAL at the current version to see if you prefer this to allocating the memory in the descriptor pool.",
+      "parentUuid": "54912c7e_8799e1ec",
+      "range": {
+        "startLine": 89,
+        "startChar": 1,
+        "endLine": 89,
+        "endChar": 17
+      },
+      "revId": "46f1692bed875c0c5fab7b93ca2fe0c3c0b638eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "4aa0f1b8_cfddfd02",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 2
