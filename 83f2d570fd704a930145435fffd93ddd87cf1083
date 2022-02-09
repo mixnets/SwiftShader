@@ -16,6 +16,24 @@
       "message": "The code looks good but I\u0027m still worried about those Regres \u0027Test duration changes\u0027. Those tests don\u0027t seem like they should become 2x - 3x slower due to implementing this extension (I\u0027m assuming they don\u0027t use it).\n\nCould you check the number of Reactor routines that get generated, before and after this patch, for these tests? Might require a Release build if there\u0027s UB somewhere...",
       "revId": "83f2d570fd704a930145435fffd93ddd87cf1083",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45720afc_4d64c80c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-09T20:34:05Z",
+      "side": 1,
+      "message": "Isn\u0027t this just a result of running these in a random order?\nThe global Regres stats of that run were:\nPass: 252158 -\u003e 261777 (+9619 +3%)\nTime taken: 41m53.663742452s -\u003e 42m28.86075432s (+1%)\nIt doesn\u0027t seem to me like the extra 35 seconds is unreasonable given the extra 9k+ rendering tests being run. Also, it doesn\u0027t look like these changes affect the runtime of any of the existing tests here:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/62188/3#message-92cb5e6051042fe21333731bff2435d0aad8c5c4",
+      "parentUuid": "601b846d_220d3483",
+      "revId": "83f2d570fd704a930145435fffd93ddd87cf1083",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
