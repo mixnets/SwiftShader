@@ -243,9 +243,10 @@ private:
 
 namespace vk {
 
-Pipeline::Pipeline(PipelineLayout *layout, Device *device)
+Pipeline::Pipeline(PipelineLayout *layout, Device *device, std::shared_ptr<sw::SpirvProfiler> spirvProfiler)
     : layout(layout)
     , device(device)
+    , spvProfiler(spirvProfiler)
     , robustBufferAccess(device->getEnabledFeatures().robustBufferAccess)
 {
 	layout->incRefCount();
@@ -258,8 +259,8 @@ void Pipeline::destroy(const VkAllocationCallbacks *pAllocator)
 	vk::release(static_cast<VkPipelineLayout>(*layout), pAllocator);
 }
 
-GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateInfo, void *mem, Device *device)
-    : Pipeline(vk::Cast(pCreateInfo->layout), device)
+GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateInfo, void *mem, Device *device, std::shared_ptr<sw::SpirvProfiler> spirvProfiler)
+    : Pipeline(vk::Cast(pCreateInfo->layout), device, spirvProfiler)
     , state(device, pCreateInfo, layout, robustBufferAccess)
     , inputs(pCreateInfo->pVertexInputState)
 {
@@ -375,7 +376,7 @@ VkResult GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocato
 
 		// TODO(b/201798871): use allocator.
 		auto shader = std::make_shared<sw::SpirvShader>(stageInfo.stage, stageInfo.pName, spirv,
-		                                                vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass, robustBufferAccess, dbgctx);
+		                                                vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass, robustBufferAccess, dbgctx, spvProfiler);
 
 		setShader(stageInfo.stage, shader);
 
@@ -385,8 +386,8 @@ VkResult GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocato
 	return VK_SUCCESS;
 }
 
-ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo *pCreateInfo, void *mem, Device *device)
-    : Pipeline(vk::Cast(pCreateInfo->layout), device)
+ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo *pCreateInfo, void *mem, Device *device, std::shared_ptr<sw::SpirvProfiler> spirvProfiler)
+    : Pipeline(vk::Cast(pCreateInfo->layout), device, spirvProfiler)
 {
 }
 
@@ -449,7 +450,7 @@ VkResult ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator
 
 	// TODO(b/201798871): use allocator.
 	shader = std::make_shared<sw::SpirvShader>(stage.stage, stage.pName, spirv,
-	                                           nullptr, 0, robustBufferAccess, dbgctx);
+	                                           nullptr, 0, robustBufferAccess, dbgctx, spvProfiler);
 
 	const PipelineCache::ComputeProgramKey programKey(shader->getIdentifier(), layout->identifier);
 

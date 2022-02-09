@@ -23,6 +23,7 @@ namespace sw {
 
 class ComputeProgram;
 class SpirvShader;
+class SpirvProfiler;
 
 }  // namespace sw
 
@@ -37,7 +38,7 @@ class ShaderModule;
 class Pipeline
 {
 public:
-	Pipeline(PipelineLayout *layout, Device *device);
+	Pipeline(PipelineLayout *layout, Device *device, std::shared_ptr<sw::SpirvProfiler> spirvProfiler);
 	virtual ~Pipeline() = default;
 
 	operator VkPipeline()
@@ -70,6 +71,7 @@ public:
 protected:
 	PipelineLayout *layout = nullptr;
 	Device *const device;
+	std::shared_ptr<sw::SpirvProfiler> spvProfiler = nullptr;
 
 	const bool robustBufferAccess = true;
 };
@@ -79,7 +81,8 @@ class GraphicsPipeline : public Pipeline, public ObjectBase<GraphicsPipeline, Vk
 public:
 	GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateInfo,
 	                 void *mem,
-	                 Device *device);
+	                 Device *device,
+	                 std::shared_ptr<sw::SpirvProfiler> spirvProfiler);
 	virtual ~GraphicsPipeline() = default;
 
 	void destroyPipeline(const VkAllocationCallbacks *pAllocator) override;
@@ -125,7 +128,7 @@ private:
 class ComputePipeline : public Pipeline, public ObjectBase<ComputePipeline, VkPipeline>
 {
 public:
-	ComputePipeline(const VkComputePipelineCreateInfo *pCreateInfo, void *mem, Device *device);
+	ComputePipeline(const VkComputePipelineCreateInfo *pCreateInfo, void *mem, Device *device, std::shared_ptr<sw::SpirvProfiler> spirvProfiler);
 	virtual ~ComputePipeline() = default;
 
 	void destroyPipeline(const VkAllocationCallbacks *pAllocator) override;
