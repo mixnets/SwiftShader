@@ -52,6 +52,24 @@
       "parentUuid": "45720afc_4d64c80c",
       "revId": "83f2d570fd704a930145435fffd93ddd87cf1083",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a2ed5d1_faa6afac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-10T15:34:25Z",
+      "side": 1,
+      "message": "Both before and after this change, in VK.memory_model.write_after_read.ext.u32.coherent.atomic_atomic.atomicwrite.subgroup.payload_local.buffer.guard_local.image.vert, a single SpirvBinary is generated, and its content both pre-op and post-op is identical before and after this change.\n\nIn both cases rr::Routine::Routine() is called 4 times.\n\nAll the changes here would affect values used by rendering before the binaries are generated, so I\u0027m not sure how this change could influence that, especially if the new functions are not used by older tests.\n\nMy guess would be that adding 9k+ tests, most of which contain draw calls, might end up creating more threads than the system can do in parallel at once, increasing CPU pressure and time for tests which also require multi-threading to produce a result.",
+      "parentUuid": "4628559b_c7cd7154",
+      "revId": "83f2d570fd704a930145435fffd93ddd87cf1083",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
