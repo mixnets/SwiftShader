@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74b53794_a5afd2ab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-10T14:17:20Z",
+      "side": 1,
+      "message": "LGTM",
+      "revId": "070c8376d0e5971258e596b698acddefc05d0548",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40640594_7af38876",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 222279,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-10T14:17:20Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/58828 makes more tests pass than \"expected\".",
+      "range": {
+        "startLine": 222279,
+        "startChar": 63,
+        "endLine": 222279,
+        "endChar": 75
+      },
+      "revId": "070c8376d0e5971258e596b698acddefc05d0548",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
