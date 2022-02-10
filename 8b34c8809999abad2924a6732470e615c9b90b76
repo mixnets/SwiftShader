@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cf735f5_a9d3a08b",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-10T14:21:29Z",
+      "side": 1,
+      "message": "note: I\u0027m cleaning this up in the next CL. I just wanted to minimize the diff for this one to keep the focus on the new implementation.",
+      "range": {
+        "startLine": 165,
+        "startChar": 0,
+        "endLine": 165,
+        "endChar": 16
+      },
+      "revId": "8b34c8809999abad2924a6732470e615c9b90b76",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
