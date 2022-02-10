@@ -34,6 +34,24 @@
       "parentUuid": "601b846d_220d3483",
       "revId": "83f2d570fd704a930145435fffd93ddd87cf1083",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4628559b_c7cd7154",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-10T14:44:32Z",
+      "side": 1,
+      "message": "I used https://swiftshader-review.googlesource.com/c/SwiftShader/+/62688 to check the timings when not running any new tests. Looks good!\n\nIt\u0027s still a bit weird though. On the P920 the timings have been very reliable and steady (only a couple of the \"many_draws\" tests have a bit of variability, which is not unexpected). Also note e.g. https://swiftshader-review.googlesource.com/c/SwiftShader/+/58549 passes 7705 new tests without affecting the timings of individual tests. Of course total time for both that CL and this one goes up a bit, I\u0027m not worried about that part.\n\nI\u0027m not sure if the change in test order explains it. Each test runs in a different process, so they don\u0027t affect each other\u0027s routine caches or things like that. They only affect each other in ways that should cause far less than a 4x difference we\u0027re seeing in the latest test run.\n\nSo please check if e.g. dEQP-VK.memory_model.write_after_read.ext.u32.coherent.atomic_atomic.atomicwrite.subgroup.payload_local.buffer.guard_local.image.vert has the same number of Reactor routines generated before and after this CL. If that\u0027s the case then I\u0027m out of theories and will +2 it, and hope this is just a transitory effect.",
+      "parentUuid": "45720afc_4d64c80c",
+      "revId": "83f2d570fd704a930145435fffd93ddd87cf1083",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
