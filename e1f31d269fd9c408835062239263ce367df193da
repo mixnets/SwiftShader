@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f495780c_dfe97c92",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-11T18:31:21Z",
+      "side": 1,
+      "message": "Looks great, just one request (below), and unfortunately std::filesystem is not supported yet by Chromium (actually its main C++17 restriction).",
+      "revId": "e1f31d269fd9c408835062239263ce367df193da",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d44cf5a_c1ea623f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2040,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-11T18:31:21Z",
+      "side": 1,
+      "message": "Can this be pushed deeper? That is, let the Pipeline create/get the Profiler by itself, avoiding this internal feature from requiring passing an extra parameter on creation.",
+      "range": {
+        "startLine": 2040,
+        "startChar": 111,
+        "endLine": 2040,
+        "endChar": 139
+      },
+      "revId": "e1f31d269fd9c408835062239263ce367df193da",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
