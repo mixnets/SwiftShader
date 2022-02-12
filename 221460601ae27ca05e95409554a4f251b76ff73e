@@ -16,6 +16,24 @@
       "message": "Oops, unintentially reused my uniform block CL for this. No matter, I\u0027ll restart a new uniform block CL, it needs a bit of redesign anyway.",
       "revId": "221460601ae27ca05e95409554a4f251b76ff73e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "133ed513_1da80372",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-12T02:56:24Z",
+      "side": 1,
+      "message": "Perhaps upload the unicode fix using a new Change-Id, and reuse this one for the next VK_EXT_inline_uniform_block revision? That way we don\u0027t lose the comments history.",
+      "parentUuid": "5ef07608_94224a01",
+      "revId": "221460601ae27ca05e95409554a4f251b76ff73e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
