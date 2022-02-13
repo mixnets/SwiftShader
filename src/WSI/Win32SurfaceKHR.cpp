@@ -44,12 +44,10 @@ Win32SurfaceKHR::Win32SurfaceKHR(const VkWin32SurfaceCreateInfoKHR *pCreateInfo,
 	ASSERT(IsWindow(hwnd) == TRUE);
 	windowContext = GetDC(hwnd);
 	bitmapContext = CreateCompatibleDC(windowContext);
-	lazyCreateFrameBuffer();
 }
 
 void Win32SurfaceKHR::destroySurface(const VkAllocationCallbacks *pAllocator)
 {
-	destroyFrameBuffer();
 	ReleaseDC(hwnd, windowContext);
 	DeleteDC(bitmapContext);
 }
@@ -71,6 +69,36 @@ VkResult Win32SurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurf
 	return result;
 }
 
+void* Win32SurfaceKHR::allocateImageMemory(PresentImage *image, const VkMemoryAllocateInfo &allocateInfo)
+{
+	auto& bitmap = bitmaps[image];
+
+	int stride = image->getImage()->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+	int bytesPerPixel = static_cast<int>(image->getImage()->getFormat(VK_IMAGE_ASPECT_COLOR_BIT).bytes());
+	int width = stride / bytesPerPixel;
+	int height = allocateInfo.allocationSize / stride;
+
+	BITMAPINFO bitmapInfo = {};
+	bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFO);
+	bitmapInfo.bmiHeader.biBitCount = bytesPerPixel * 8;
+	bitmapInfo.bmiHeader.biPlanes = 1;
+	bitmapInfo.bmiHeader.biHeight = -static_cast<LONG>(height);  // Negative for top-down DIB, origin in upper-left corner
+	bitmapInfo.bmiHeader.biWidth = width;
+	bitmapInfo.bmiHeader.biCompression = BI_RGB;
+
+	void* framebuffer = nullptr;
+	bitmap = CreateDIBSection(bitmapContext, &bitmapInfo, DIB_RGB_COLORS, &framebuffer, 0, 0);
+	return framebuffer;
+}
+
+void Win32SurfaceKHR::releaseImageMemory(PresentImage *image)
+{
+	auto it = bitmaps.find(image);
+	assert(it != bitmaps.end());
+	auto& bitmap = it->second;
+	DeleteObject(bitmap);
+	bitmaps.erase(it);
+}
 void Win32SurfaceKHR::attachImage(PresentImage *image)
 {
 	// Nothing to do here, the current implementation based on GDI blits on
@@ -85,87 +113,14 @@ void Win32SurfaceKHR::detachImage(PresentImage *image)
 
 VkResult Win32SurfaceKHR::present(PresentImage *image)
 {
-	// Recreate frame buffer in case window size has changed
-	VkResult result = lazyCreateFrameBuffer();
-	if(result != VK_SUCCESS)
-	{
-		return result;
-	}
-
-	if(!framebuffer)
-	{
-		// e.g. window width or height is 0
-		return VK_SUCCESS;
-	}
-
 	const VkExtent3D &extent = image->getImage()->getExtent();
-
-	if(windowExtent.width != extent.width || windowExtent.height != extent.height)
-	{
-		return VK_ERROR_OUT_OF_DATE_KHR;
-	}
-
-	image->getImage()->copyTo(reinterpret_cast<uint8_t *>(framebuffer), bitmapRowPitch);
-
-	StretchBlt(windowContext, 0, 0, extent.width, extent.height, bitmapContext, 0, 0, extent.width, extent.height, SRCCOPY);
-
-	return VK_SUCCESS;
-}
-
-VkResult Win32SurfaceKHR::lazyCreateFrameBuffer()
-{
-	VkExtent2D currWindowExtent;
-	VkResult result = getWindowSize(hwnd, currWindowExtent);
-	if(result != VK_SUCCESS)
-	{
-		destroyFrameBuffer();
-		return result;
-	}
-
-	if(currWindowExtent.width == windowExtent.width && currWindowExtent.height == windowExtent.height)
-	{
-		return VK_SUCCESS;
-	}
-
-	windowExtent = currWindowExtent;
-
-	if(framebuffer)
-	{
-		destroyFrameBuffer();
-	}
-
-	if(windowExtent.width == 0 || windowExtent.height == 0)
-	{
-		return VK_SUCCESS;
-	}
-
-	BITMAPINFO bitmapInfo = {};
-	bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFO);
-	bitmapInfo.bmiHeader.biBitCount = 32;
-	bitmapInfo.bmiHeader.biPlanes = 1;
-	bitmapInfo.bmiHeader.biHeight = -static_cast<LONG>(windowExtent.height);  // Negative for top-down DIB, origin in upper-left corner
-	bitmapInfo.bmiHeader.biWidth = windowExtent.width;
-	bitmapInfo.bmiHeader.biCompression = BI_RGB;
-
-	bitmap = CreateDIBSection(bitmapContext, &bitmapInfo, DIB_RGB_COLORS, &framebuffer, 0, 0);
-	ASSERT(bitmap != NULL);
+	auto it = bitmaps.find(image);
+	assert(it != bitmaps.end());
+	auto& bitmap = it->second;
 	SelectObject(bitmapContext, bitmap);
-
-	BITMAP header;
-	int status = GetObject(bitmap, sizeof(BITMAP), &header);
-	ASSERT(status != 0);
-	bitmapRowPitch = static_cast<int>(header.bmWidthBytes);
-
-	return VK_SUCCESS;
-}
-
-void Win32SurfaceKHR::destroyFrameBuffer()
-{
+	StretchBlt(windowContext, 0, 0, extent.width, extent.height, bitmapContext, 0, 0, extent.width, extent.height, SRCCOPY);
 	SelectObject(bitmapContext, NULL);
-	DeleteObject(bitmap);
-	bitmap = {};
-	bitmapRowPitch = 0;
-	framebuffer = nullptr;
+	return VK_SUCCESS;
 }
 
 }  // namespace vk
