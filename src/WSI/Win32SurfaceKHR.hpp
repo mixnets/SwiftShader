@@ -25,7 +25,7 @@
 #include <Windows.h>
 #include <vulkan/vulkan_win32.h>
 
-#include <map>
+#include <unordered_map>
 
 namespace vk {
 
@@ -40,23 +40,20 @@ public:
 
 	VkResult getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const override;
 
+	virtual void* allocateImageMemory(PresentImage *image, const VkMemoryAllocateInfo &allocateInfo) override;
+	virtual void releaseImageMemory(PresentImage *image) override;
 	virtual void attachImage(PresentImage *image) override;
 	virtual void detachImage(PresentImage *image) override;
 	VkResult present(PresentImage *image) override;
 
 private:
-	VkResult lazyCreateFrameBuffer();
-	void destroyFrameBuffer();
-
 	const HWND hwnd;
 
 	HDC windowContext = {};
 	HDC bitmapContext = {};
 	VkExtent2D windowExtent = {};
 
-	HBITMAP bitmap = {};
-	unsigned int bitmapRowPitch = 0;
-	void *framebuffer = nullptr;
+	std::unordered_map<PresentImage *, HBITMAP> bitmaps;
 };
 
 }  // namespace vk
