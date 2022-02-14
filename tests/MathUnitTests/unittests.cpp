@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "System/CPUID.hpp"
 #include "System/Half.hpp"
 
 #include <gmock/gmock.h>
@@ -20,6 +21,31 @@
 #include <cstdlib>
 
 using namespace sw;
+
+// Returns the next floating-point number which is not treated equal to the input.
+// Note that std::nextafter() does not skip representations flushed to zero.
+static inline float inc(float x)
+{
+	int x1 = bit_cast<int>(x);
+
+	while(bit_cast<float>(x1) == x)
+	{
+		// Since IEEE 754 uses ones' complement and integers are two's complement,
+		// we need to explicitly hop from negative zero to positive zero.
+		if(x1 == 0x80000000)  // -0.0f
+		{
+			// Note that while the comparison -0.0f == +0.0f returns true, this
+			// function returns the next value which can be treated differently.
+			return +0.0f;
+		}
+
+		// Negative ones' complement value are made less negative by subtracting 1
+		// in two's complement representation.
+		x1 += (x1 >= 0) ? 1 : -1;
+	}
+
+	return bit_cast<float>(x1);
+}
 
 // Polynomal approximation of order 5 for sin(x * 2 * pi) in the range [-1/4, 1/4]
 static float sin5(float x)
@@ -40,7 +66,7 @@ TEST(MathTest, SinExhaustive)
 	const float tolerance = powf(2.0f, -12.0f);  // Vulkan requires absolute error <= 2^−11 inside the range [−pi, pi]
 	const float pi = 3.1415926535f;
 
-	for(float x = -pi; x <= pi; x = nextafterf(x, +INFINITY))
+	for(float x = -pi; x <= pi; x = inc(x))
 	{
 		// Range reduction and mirroring
 		float x_2 = 0.25f - x * (0.5f / pi);
@@ -57,7 +83,7 @@ TEST(MathTest, CosExhaustive)
 	const float tolerance = powf(2.0f, -12.0f);  // Vulkan requires absolute error <= 2^−11 inside the range [−pi, pi]
 	const float pi = 3.1415926535f;
 
-	for(float x = -pi; x <= pi; x = nextafterf(x, +INFINITY))
+	for(float x = -pi; x <= pi; x = inc(x))
 	{
 		// Phase shift, range reduction, and mirroring
 		float x_2 = x * (0.5f / pi);
