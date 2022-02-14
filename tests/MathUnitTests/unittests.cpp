@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "System/Half.hpp"
+#include "System/Math.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -40,7 +41,7 @@ TEST(MathTest, SinExhaustive)
 	const float tolerance = powf(2.0f, -12.0f);  // Vulkan requires absolute error <= 2^−11 inside the range [−pi, pi]
 	const float pi = 3.1415926535f;
 
-	for(float x = -pi; x <= pi; x = nextafterf(x, +INFINITY))
+	for(float x = -pi; x <= pi; x = inc(x))
 	{
 		// Range reduction and mirroring
 		float x_2 = 0.25f - x * (0.5f / pi);
@@ -57,7 +58,7 @@ TEST(MathTest, CosExhaustive)
 	const float tolerance = powf(2.0f, -12.0f);  // Vulkan requires absolute error <= 2^−11 inside the range [−pi, pi]
 	const float pi = 3.1415926535f;
 
-	for(float x = -pi; x <= pi; x = nextafterf(x, +INFINITY))
+	for(float x = -pi; x <= pi; x = inc(x))
 	{
 		// Phase shift, range reduction, and mirroring
 		float x_2 = x * (0.5f / pi);
