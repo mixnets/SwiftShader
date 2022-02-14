@@ -321,6 +321,12 @@ VkResult AHardwareBufferExternalMemory::lockAndroidHardwareBuffer(void **pBuffer
 
 VkResult AHardwareBufferExternalMemory::unlockAndroidHardwareBuffer()
 {
+	// If allocation, import, or locking failed, no need to unlock.
+	if(ahbPlanes.planeCount == 0)
+	{
+		return VK_SUCCESS;
+	}
+
 	int ret = AHardwareBuffer_unlock(ahb, /*fence=*/nullptr);
 	if(ret != 0)
 	{
