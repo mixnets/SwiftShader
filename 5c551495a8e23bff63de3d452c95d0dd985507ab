@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc6eeaba_4efbc811",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-15T02:31:30Z",
+      "side": 1,
+      "message": "Is it possible this might indicate a different problem and this change would silence a legitimate warning about it? I believe this is only called when freeing the memory, but if the AHB can\u0027t be locked perhaps we shouldn\u0027t have indicated successful allocation in the first place?",
+      "range": {
+        "startLine": 325,
+        "startChar": 14,
+        "endLine": 325,
+        "endChar": 29
+      },
+      "revId": "5c551495a8e23bff63de3d452c95d0dd985507ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
