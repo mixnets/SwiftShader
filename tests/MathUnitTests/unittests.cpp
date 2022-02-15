@@ -112,6 +112,94 @@ float Exp2(float x)
 	return ii * ff;
 }
 
+// 0.855 / 2.567
+float f_(float x)
+{
+	float u = 1.8964611e-3f;
+	u = u * x + 8.942829e-3f;
+	u = u * x + 5.5866246e-2f;
+	u = u * x + 2.4013971e-1f;
+	u = u * x + 6.9315475e-1f;
+	return u * x + 9.9999989e-1f;
+}
+
+// 0.730871022 / 2.25927114 (3+2*x-4*x^2)
+float f_5(float x)
+{
+	float u = 1.9231812e-3f;
+	u = u * x + 8.8780127e-3f;
+	u = u * x + 5.5920537e-2f;
+	u = u * x + 2.4012159e-1f;
+	u = u * x + 6.9315677e-1f;
+	return u * x + 9.9999986e-1f;
+}
+
+// 0.0887 (1+2*x-2*x^2)
+float f_relaxed3(float x)
+{
+	float u = 7.922819e-2f;
+	u = u * x + 2.2447526e-1f;
+	u = u * x + 6.9629655e-1f;
+	return u * x + 9.9991348e-1f;
+}
+
+// ULP_16: 2.05 (1+2*x-2*x^2)
+float f_relaxed2(float x)
+{
+	float u = 3.4418286e-1f;
+	u = u * x + 6.5181382e-1f;
+	return u * x + 1.0020017f;
+}
+
+float exp2_relaxed(float x)
+{
+	float xi = floor(x);
+	int i = int(xi);
+	float ii = bit_cast<float>((i + int(127)) << 23);  // Add single-precision bias, and shift into exponent.
+
+	// For the fractional part use a polynomial
+	// which approximates 2^f in the 0 to 1 range.
+	float f = x - xi;
+
+	float ff = f_relaxed2(f);
+
+	return ii * ff;
+}
+
+// 3.43447590 / 1.09918177 (3+2*x-4*x^2)
+float f_r_(float x)
+{
+	float u = 1.8164049e-3f;
+	u = u * x + 9.1452093e-3f;
+	u = u * x + 5.5689077e-2f;
+	u = u * x + 2.4020142e-1f;
+	return u * x + 6.9314771e-1f;
+}
+
+float f_r(float x)
+{
+	float u = 1.8674689e-3f;
+	u = u * x + 9.0165929e-3f;
+	u = u * x + 5.5799878e-2f;
+	u = u * x + 2.4016463e-1f;
+	return u * x + 6.9315127e-1f;
+}
+
+float exp2_5(float x)
+{
+	float xi = floor(x);
+	int i = int(xi);
+	float ii = bit_cast<float>((i + int(127)) << 23);  // Add single-precision bias, and shift into exponent.
+
+	// For the fractional part use a polynomial
+	// which approximates 2^f in the 0 to 1 range.
+	float f = x - xi;
+
+	float ff = f_r(f) * f + 1;
+
+	return ii * ff;
+}
+
 TEST(MathTest, Exp2Exhaustive)
 {
 	CPUID::setDenormalsAreZero(true);
@@ -125,12 +213,49 @@ TEST(MathTest, Exp2Exhaustive)
 
 	for(float x = -10; x <= 10; x = inc(x))
 	{
-		float val = Exp2(x);
+		float val = exp2_5(x);
 
 		double ref = exp2((double)x);
 		float ulp = (float)ULP_32(ref, (double)val);
 
 		float tolerance = (3 + 2 * abs(x));
+		float margin = ulp / tolerance;
+
+		if(margin > worst_margin)
+		{
+			worst_margin = margin;
+			worst_ulp = ulp;
+			worst_x = x;
+			worst_val = val;
+			worst_ref = ref;
+		}
+	}
+
+	ASSERT_TRUE(worst_margin <= 1.0f);
+
+	CPUID::setDenormalsAreZero(false);
+	CPUID::setFlushToZero(false);
+}
+
+TEST(MathTest, Exp2RelaxedExhaustive)
+{
+	CPUID::setDenormalsAreZero(true);
+	CPUID::setFlushToZero(true);
+
+	float worst_margin = 0;
+	float worst_ulp = 0;
+	float worst_x = 0;
+	float worst_val = 0;
+	float worst_ref = 0;
+
+	for(float x = -10; x <= 10; x = inc(x))
+	{
+		float val = exp2_relaxed(x);
+
+		double ref = exp2((double)x);
+		float ulp = (float)ULP_16(ref, val);
+
+		float tolerance = (1 + 2 * abs(x));
 		float margin = ulp / tolerance;
 
 		if(margin > worst_margin)
