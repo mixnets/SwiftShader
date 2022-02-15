@@ -16,6 +16,23 @@
       "message": "Verified in Google3 with LLVM 14+",
       "revId": "4caa3b2c6c40ef12cdd4730ed5e4f907a12d935b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fac1c068_61c6f1e6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101301
+      },
+      "writtenOn": "2022-02-15T02:59:39Z",
+      "side": 1,
+      "message": "Comment removed by: Nicolas Capens; Reason: bad",
+      "revId": "4caa3b2c6c40ef12cdd4730ed5e4f907a12d935b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
