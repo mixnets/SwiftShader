@@ -52,7 +52,7 @@ float ULP_16(float x, float a)
 	return abs(a - x) / ulp;
 }
 
-// ULP-32: 3.36676240, Vulkan margin: 1.0737335
+// ULP-32: 2.90, Vulkan margin: 0.927
 float Exp2_legacy(float x)
 {
 	// This implementation is based on 2^(i + f) = 2^i * 2^f,
@@ -75,7 +75,7 @@ float Exp2_legacy(float x)
 	ff = ff * f + bit_cast<float>(int(0x3C134806));  // 8.9893397e-3f
 	ff = ff * f + bit_cast<float>(int(0x3D64AA23));  // 5.5826318e-2f
 	ff = ff * f + bit_cast<float>(int(0x3E75EAD4));  // 2.4015361e-1f
-	ff = ff * f + bit_cast<float>(int(0x3F31727B));  // 6.9315308e-1f
+	ff = ff * f + bit_cast<float>(int(0x3F31727A));  // 6.9315302e-1f
 	ff = ff * f + float(1.0f);
 
 	return ii * ff;
