@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "57a9ebc2_9542bf02",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-15T20:42:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "7f91a08c_e4eb6998",
+      "range": {
+        "startLine": 9,
+        "startChar": 24,
+        "endLine": 10,
+        "endChar": 6
+      },
+      "revId": "5d04ea20e3e44365a6f753361f0596b68c0cff1e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b675b433_df5863a7",
@@ -47,6 +71,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "abd20e62_1af6ae1c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-15T20:42:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b675b433_df5863a7",
+      "range": {
+        "startLine": 11,
+        "startChar": 38,
+        "endLine": 11,
+        "endChar": 49
+      },
+      "revId": "5d04ea20e3e44365a6f753361f0596b68c0cff1e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eed8769a_160c44ff",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-02-15T20:26:03Z",
       "side": 1,
       "message": "That\u0027s not a goal of inline uniform blocks.",
+      "range": {
+        "startLine": 12,
+        "startChar": 4,
+        "endLine": 12,
+        "endChar": 23
+      },
+      "revId": "5d04ea20e3e44365a6f753361f0596b68c0cff1e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5e7c405_871d65fa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-15T20:42:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "eed8769a_160c44ff",
       "range": {
         "startLine": 12,
         "startChar": 4,
@@ -112,6 +184,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f06e9bce_7f02e95e",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-15T20:42:48Z",
+      "side": 1,
+      "message": "Ok, then how do we allocate multiple uniform blocks of different sizes? Or is that not allowed within a pool?",
+      "parentUuid": "7226c133_5ee0453d",
+      "range": {
+        "startLine": 69,
+        "startChar": 3,
+        "endLine": 69,
+        "endChar": 40
+      },
+      "revId": "5d04ea20e3e44365a6f753361f0596b68c0cff1e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5a335b8a_84160b28",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -123,6 +219,30 @@
       "writtenOn": "2022-02-15T20:26:03Z",
       "side": 1,
       "message": "I don\u0027t think we should treat them as a `BufferDescriptor`. We don\u0027t need any of its fields as far as I can tell, so the added size on top of the array of raw bytes can be zero.\n\nSome of the arithmetic in this file and others could be simplified if this function returned 1, so you can still do `descriptorCount * descriptorSize` to obtain the total byte size.",
+      "range": {
+        "startLine": 139,
+        "startChar": 6,
+        "endLine": 139,
+        "endChar": 45
+      },
+      "revId": "5d04ea20e3e44365a6f753361f0596b68c0cff1e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0e5ed5b_3b2ef3d2",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-15T20:42:48Z",
+      "side": 1,
+      "message": "Adding a new type of descriptor here will add complexity in the SPIR-V code, and possibly everywhere we already use BufferDescriptor. I can add a new type, but I\u0027ve already tried that and it will increase the size and complexity of this CL.",
+      "parentUuid": "5a335b8a_84160b28",
       "range": {
         "startLine": 139,
         "startChar": 6,
