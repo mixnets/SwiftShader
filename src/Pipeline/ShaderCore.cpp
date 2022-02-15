@@ -332,7 +332,7 @@ Float4 Exp2(RValue<Float4> x)
 	ff = ff * f + As<Float4>(Int4(0x3C134806));  // 8.9893397e-3f
 	ff = ff * f + As<Float4>(Int4(0x3D64AA23));  // 5.5826318e-2f
 	ff = ff * f + As<Float4>(Int4(0x3E75EAD4));  // 2.4015361e-1f
-	ff = ff * f + As<Float4>(Int4(0x3F31727B));  // 6.9315308e-1f
+	ff = ff * f + As<Float4>(Int4(0x3F31727A));  // 6.9315302e-1f
 	ff = ff * f + Float4(1.0f);
 
 	return ii * ff;
