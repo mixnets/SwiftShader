@@ -22,6 +22,30 @@
       },
       "revId": "5c551495a8e23bff63de3d452c95d0dd985507ab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2bd9c685_d1fd215c",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2022-02-15T16:59:44Z",
+      "side": 1,
+      "message": "Good point. I believe you are correct in that we should not be able to allocate anything that we can\u0027t lock and this is probably only useful in the dev context of ag/16853590 which is a work in progress.",
+      "parentUuid": "fc6eeaba_4efbc811",
+      "range": {
+        "startLine": 325,
+        "startChar": 14,
+        "endLine": 325,
+        "endChar": 29
+      },
+      "revId": "5c551495a8e23bff63de3d452c95d0dd985507ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
