@@ -322,12 +322,13 @@ Float4 Exp2(RValue<Float4> x)
 	x0 = Min(x0, As<Float4>(Int4(0x43010000)));  // 129.00000e+0f
 	x0 = Max(x0, As<Float4>(Int4(0xC2FDFFFF)));  // -126.99999e+0f
 
-	Int4 i = RoundInt(x0 - Float4(0.5f));
+	Float4 xi = Floor(x0);
+	Int4 i = Int4(xi);
 	Float4 ii = As<Float4>((i + Int4(127)) << 23);  // Add single-precision bias, and shift into exponent.
 
 	// For the fractional part use a polynomial
 	// which approximates 2^f in the 0 to 1 range.
-	Float4 f = x0 - Float4(i);
+	Float4 f = x0 - xi;
 	Float4 ff = As<Float4>(Int4(0x3AF61905));    // 1.8775767e-3f
 	ff = ff * f + As<Float4>(Int4(0x3C134806));  // 8.9893397e-3f
 	ff = ff * f + As<Float4>(Int4(0x3D64AA23));  // 5.5826318e-2f
