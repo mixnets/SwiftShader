@@ -16,6 +16,24 @@
       "message": "Does this new test correctly fail with this CL?",
       "revId": "30cacb62c40b2afcc5980bc0256e999d88374178",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8157455e_cfd57176",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-16T16:17:27Z",
+      "side": 1,
+      "message": "Yes, fails the check at https://swiftshader-review.googlesource.com/c/SwiftShader/+/62889/6/tests/MathUnitTests/unittests.cpp#115 with `worst_margin` being 1.07373357 which is also the value mentioned in the commit message.\n\nAnd just for the records we don\u0027t run these tests as part of CI so this failure is just informative, and is fixed by a subsequent change.",
+      "parentUuid": "50e17e1e_b26a318e",
+      "revId": "30cacb62c40b2afcc5980bc0256e999d88374178",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
