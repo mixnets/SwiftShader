@@ -747,14 +747,23 @@ void PixelRoutine::writeDepth(Pointer<Byte> &zBuffer, const Int &x, const Int zM
 
 	for(unsigned int q : samples)
 	{
+		Float4 zQ = z[q];
+		if(state.depthClipNegativeOneToOne)
+		{
+			// If depth_clip_control is active, then depth ranges from [-1, 1]
+			// must be clamped to [0, 1] before writing.
+			rr::Print("Incoming z[{0}]: {1}", q, zQ);
+			zQ = Min(Max(zQ, Float4(0.0f)), Float4(1.0f));
+			rr::Print("Outgoing z[{0}]: {1}", q, zQ);
+		}
 		switch(state.depthFormat)
 		{
 		case VK_FORMAT_D16_UNORM:
-			writeDepth16(zBuffer, q, x, z[q], zMask[q]);
+			writeDepth16(zBuffer, q, x, zQ, zMask[q]);
 			break;
 		case VK_FORMAT_D32_SFLOAT:
 		case VK_FORMAT_D32_SFLOAT_S8_UINT:
-			writeDepth32F(zBuffer, q, x, z[q], zMask[q]);
+			writeDepth32F(zBuffer, q, x, zQ, zMask[q]);
 			break;
 		default:
 			UNSUPPORTED("Depth format: %d", int(state.depthFormat));

@@ -55,6 +55,13 @@ static constexpr int MaxDrawCount = 16;
 using TriangleBatch = std::array<Triangle, MaxBatchSize>;
 using PrimitiveBatch = std::array<Primitive, MaxBatchSize>;
 
+struct DepthClipState
+{
+	bool enabled;
+	// VK_EXT_depth_clip_control
+	bool negativeOneToOne;
+};
+
 struct DrawData
 {
 	vk::DescriptorSet::Bindings descriptorSets = {};
@@ -87,7 +94,7 @@ struct DrawData
 	float constantDepthBias;
 	float slopeDepthBias;
 	float depthBiasClamp;
-	bool depthClipEnable;
+	DepthClipState depthClipState;
 
 	unsigned int *colorBuffer[MAX_COLOR_BUFFERS];
 	int colorPitchB[MAX_COLOR_BUFFERS];
@@ -153,7 +160,7 @@ struct DrawCall
 	VkIndexType indexType;
 	VkLineRasterizationModeEXT lineRasterizationMode;
 
-	bool depthClipEnable;
+	DepthClipState depthClipState;
 
 	VertexProcessor::RoutineType vertexRoutine;
 	SetupProcessor::RoutineType setupRoutine;

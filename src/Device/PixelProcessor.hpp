@@ -98,6 +98,7 @@ public:
 		vk::Format depthFormat;
 		bool depthBias;
 		bool depthClamp;
+		bool depthClipNegativeOneToOne;
 
 		float minDepthClamp;
 		float maxDepthClamp;
