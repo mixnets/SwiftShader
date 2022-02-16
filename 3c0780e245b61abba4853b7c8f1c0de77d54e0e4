@@ -93,6 +93,30 @@
       },
       "revId": "3c0780e245b61abba4853b7c8f1c0de77d54e0e4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b6f2d32_470e7d80",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-16T16:08:16Z",
+      "side": 1,
+      "message": "I\u0027m not so sure. `renderArea` is also a field in the `VkRenderPassBeginInfo` struct, and `VkRenderingInfo::renderArea` is defined as \"the render area that is affected by the render pass instance\" so I think they\u0027re exactly the same thing. While they don\u0027t affect draw calls directly, they affect attachment operations such as resolve but also clear which can definitely change the result of a test involving draw operations.\n\nLooks to me like the dynamic rendering tests offer some coverage for b/177842474. Let\u0027s mention it in the commit message and then this can land.",
+      "parentUuid": "d569e086_ee17f885",
+      "range": {
+        "startLine": 11,
+        "startChar": 21,
+        "endLine": 11,
+        "endChar": 59
+      },
+      "revId": "3c0780e245b61abba4853b7c8f1c0de77d54e0e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
