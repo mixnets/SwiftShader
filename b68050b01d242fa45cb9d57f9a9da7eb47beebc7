@@ -16,6 +16,24 @@
       "message": "The Kokoro failure is a flake on gcp_windows_reactor_llvm. All other bots passed.",
       "revId": "b68050b01d242fa45cb9d57f9a9da7eb47beebc7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a96a3ad_c16deed6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-16T14:49:38Z",
+      "side": 1,
+      "message": "FYI there are two ways to re-run it without a new Patchset: http://go/swiftshader/development/code-reviews.md#re-running-presubmit",
+      "parentUuid": "a0b8bb1f_a5955f99",
+      "revId": "b68050b01d242fa45cb9d57f9a9da7eb47beebc7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
