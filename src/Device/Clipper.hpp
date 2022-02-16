@@ -21,6 +21,7 @@ namespace sw {
 
 struct DrawCall;
 struct Polygon;
+struct DepthClipState;
 
 struct Clipper
 {
@@ -39,7 +40,7 @@ struct Clipper
 		CLIP_FINITE = 1 << 7,  // All position coordinates are finite
 	};
 
-	static unsigned int ComputeClipFlags(const float4 &v, bool depthClipEnable);
+	static unsigned int ComputeClipFlags(const float4 &v, DepthClipState depthClipEnable);
 	static bool Clip(Polygon &polygon, int clipFlagsOr, const DrawCall &draw);
 };
 

@@ -17,6 +17,8 @@
 #include "Polygon.hpp"
 #include "Renderer.hpp"
 
+#include <iostream>
+
 namespace {
 
 inline void clipEdge(sw::float4 &Vo, const sw::float4 &Vi, const sw::float4 &Vj, float di, float dj)
@@ -40,8 +42,8 @@ void clipNear(sw::Polygon &polygon)
 	{
 		int j = i == polygon.n - 1 ? 0 : i + 1;
 
-		float di = V[i]->z;
-		float dj = V[j]->z;
+		float di = V[i]->w + V[i]->z;
+		float dj = V[j]->w + V[j]->z;
 
 		if(di >= 0)
 		{
@@ -261,15 +263,27 @@ void clipBottom(sw::Polygon &polygon)
 
 namespace sw {
 
-unsigned int Clipper::ComputeClipFlags(const float4 &v, bool depthClipEnable)
+unsigned int Clipper::ComputeClipFlags(const float4 &v, DepthClipState depthClipState)
 {
+	// Per 26.4: Primitive Culling
+	// Zc is clipped to Zm <= Zc <= Wc
+	// Where if negativeOneToOne is true, Zm is equal to -Wc, otherwise it is equal to 0
+	float Zm = depthClipState.negativeOneToOne ? -v.w : 0.0f;
 	int depthClipFlags = ((v.z > v.w) ? CLIP_FAR : 0) |
-	                     ((v.z < 0) ? CLIP_NEAR : 0);
+	                     ((v.z < Zm) ? CLIP_NEAR : 0);
+	if(depthClipState.negativeOneToOne && depthClipFlags & CLIP_NEAR)
+	{
+		std::cout << "Clipping near!!" << std::endl;
+	}
+	else
+	{
+		std::cout << "NO CLIP OF THE NEAR!!" << std::endl;
+	}
 	return ((v.x > v.w) ? CLIP_RIGHT : 0) |
 	       ((v.y > v.w) ? CLIP_TOP : 0) |
 	       ((v.x < -v.w) ? CLIP_LEFT : 0) |
 	       ((v.y < -v.w) ? CLIP_BOTTOM : 0) |
-	       (depthClipEnable ? depthClipFlags : 0) |
+	       (depthClipState.enabled ? depthClipFlags : 0) |
 	       Clipper::CLIP_FINITE;  // FIXME: xyz finite
 }
 

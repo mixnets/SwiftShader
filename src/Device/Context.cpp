@@ -486,6 +486,23 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 			// Vulkan 1.2: "flags is reserved for future use." "flags must be 0"
 			UNSUPPORTED("pCreateInfo->pViewportState->flags %d", int(pCreateInfo->pViewportState->flags));
 		}
+		extensionCreateInfo = reinterpret_cast<const VkBaseInStructure *>(viewportState->pNext);
+		while(extensionCreateInfo)
+		{
+			switch(extensionCreateInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT:
+				{
+					const auto *depthClipControlInfo = reinterpret_cast<const VkPipelineViewportDepthClipControlCreateInfoEXT *>(extensionCreateInfo);
+					depthClipNegativeOneToOne = depthClipControlInfo->negativeOneToOne != VK_FALSE;
+					break;
+				}
+			default:
+				UNSUPPORTED("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
+				break;
+			}
+			extensionCreateInfo = extensionCreateInfo->pNext;
+		}
 
 		if((viewportState->viewportCount > 1) ||
 		   (viewportState->scissorCount > 1))

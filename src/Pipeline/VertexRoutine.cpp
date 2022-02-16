@@ -136,7 +136,15 @@ void VertexRoutine::computeClipFlags()
 		if(state.depthClipEnable)
 		{
 			Int4 maxZ = CmpLT(posW, posZ);
-			Int4 minZ = CmpNLE(Float4(0.0f), posZ);
+			Int4 minZ;
+			if(state.depthClipNegativeOneToOne)
+			{
+				minZ = CmpNLE(-posW, posZ);
+			}
+			else
+			{
+				minZ = CmpNLE(Float4(0.0f), posZ);
+			}
 			clipFlags |= Pointer<Int>(constants + OFFSET(Constants, maxZ))[SignMask(maxZ)];
 			clipFlags |= Pointer<Int>(constants + OFFSET(Constants, minZ))[SignMask(minZ)];
 		}
