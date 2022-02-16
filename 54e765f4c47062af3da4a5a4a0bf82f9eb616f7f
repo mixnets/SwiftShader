@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de7699bd_ad7132f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-16T17:39:36Z",
+      "side": 1,
+      "message": "Kokoro passed. PTAL.",
+      "revId": "54e765f4c47062af3da4a5a4a0bf82f9eb616f7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
