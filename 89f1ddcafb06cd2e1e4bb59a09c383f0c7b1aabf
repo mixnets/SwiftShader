@@ -22,6 +22,30 @@
       },
       "revId": "89f1ddcafb06cd2e1e4bb59a09c383f0c7b1aabf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2e40f3f_d3a3a507",
+        "filename": "tests/MathUnitTests/unittests.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-16T16:13:07Z",
+      "side": 1,
+      "message": "Indeed! The worst error \u0027margin\u0027 is 0.943966746 as also noted in the commit message and above, and the test asserts that worst_margin \u003c\u003d 1.0.",
+      "parentUuid": "1fb0c09d_ff0fc055",
+      "range": {
+        "startLine": 119,
+        "startChar": 4,
+        "endLine": 119,
+        "endChar": 30
+      },
+      "revId": "89f1ddcafb06cd2e1e4bb59a09c383f0c7b1aabf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
