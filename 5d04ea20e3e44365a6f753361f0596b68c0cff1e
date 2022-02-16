@@ -254,6 +254,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e49d019d_1f4f128e",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-16T21:35:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b26fdc69_43fb4efb",
+      "range": {
+        "startLine": 69,
+        "startChar": 3,
+        "endLine": 69,
+        "endChar": 40
+      },
+      "revId": "5d04ea20e3e44365a6f753361f0596b68c0cff1e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5a335b8a_84160b28",
@@ -339,6 +363,30 @@
       "side": 1,
       "message": "Ok, I can make that change. One question: what happens with robustness? Do we simply allow OOB reads to happen for uniform block descriptors? That doesn\u0027t seem correct to me, but if that\u0027s what we want, I can do it.",
       "parentUuid": "88b4e405_ef9c8b91",
+      "range": {
+        "startLine": 139,
+        "startChar": 6,
+        "endLine": 139,
+        "endChar": 45
+      },
+      "revId": "5d04ea20e3e44365a6f753361f0596b68c0cff1e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bbf6403c_de5c3224",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-16T21:35:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d74c2bc8_43dd351a",
       "range": {
         "startLine": 139,
         "startChar": 6,
