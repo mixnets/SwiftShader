@@ -34,6 +34,52 @@
       "parentUuid": "45088849_1a0f86b8",
       "revId": "a3f0c4f5a8d54bf6f54b10f4fca009d75c16d9bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3eaea54_fc79fb8b",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-16T15:34:20Z",
+      "side": 1,
+      "message": "b/214957976",
+      "range": {
+        "startLine": 6,
+        "startChar": 14,
+        "endLine": 6,
+        "endChar": 46
+      },
+      "revId": "a3f0c4f5a8d54bf6f54b10f4fca009d75c16d9bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "271788c5_71cb2a2b",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-16T15:34:20Z",
+      "side": 1,
+      "message": "These may or may not be the same issue but let\u0027s also look into these as part of b/214957976.",
+      "range": {
+        "startLine": 74,
+        "startChar": 14,
+        "endLine": 74,
+        "endChar": 32
+      },
+      "revId": "a3f0c4f5a8d54bf6f54b10f4fca009d75c16d9bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
