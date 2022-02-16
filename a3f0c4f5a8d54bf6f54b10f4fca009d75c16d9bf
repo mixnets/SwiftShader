@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45088849_1a0f86b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-16T13:56:30Z",
+      "side": 1,
+      "message": "All of these new asserts appear to come from a test which uses these usage bits without checking for the extension first:\nhttps://gitlab.khronos.org/Tracker/vk-gl-cts/-/blob/main/external/vulkancts/modules/vulkan/image/vktImageExtendedUsageBitTests.cpp#L247",
+      "revId": "a3f0c4f5a8d54bf6f54b10f4fca009d75c16d9bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
