@@ -34,6 +34,24 @@
       "parentUuid": "50e17e1e_b26a318e",
       "revId": "30cacb62c40b2afcc5980bc0256e999d88374178",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "afa2bbcf_5cae286d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-16T16:57:52Z",
+      "side": 1,
+      "message": "That\u0027s all good, I just wanted to make sure the test was accurately going from pass to fail in these CLs and that it was explicitly documented as such.",
+      "parentUuid": "8157455e_cfd57176",
+      "revId": "30cacb62c40b2afcc5980bc0256e999d88374178",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
