@@ -37,8 +37,6 @@ SpirvShader::SpirvShader(
     const std::shared_ptr<vk::dbg::Context> &dbgctx,
     std::shared_ptr<SpirvProfiler> profiler)
     : insns{ insns }
-    , inputs{ MAX_INTERFACE_COMPONENTS }
-    , outputs{ MAX_INTERFACE_COMPONENTS }
     , robustBufferAccess(robustBufferAccess)
     , profiler(profiler)
 {
