@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "285a3ceb_5a889de1",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-17T14:19:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c9a37012_2da0b32b",
+      "range": {
+        "startLine": 398,
+        "startChar": 84,
+        "endLine": 398,
+        "endChar": 113
+      },
+      "revId": "d3d9b6a4cb9403aaed7b4cb8703e8429f093add8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9b12da70_4935c2f6",
@@ -64,6 +88,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e151723f_ccb602ef",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-17T14:19:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9b12da70_4935c2f6",
+      "range": {
+        "startLine": 404,
+        "startChar": 45,
+        "endLine": 404,
+        "endChar": 74
+      },
+      "revId": "d3d9b6a4cb9403aaed7b4cb8703e8429f093add8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "79098c40_2502411c",
@@ -77,6 +125,30 @@
       "writtenOn": "2022-02-17T05:33:02Z",
       "side": 1,
       "message": "Not really used. Can be eliminated.",
+      "range": {
+        "startLine": 84,
+        "startChar": 19,
+        "endLine": 84,
+        "endChar": 47
+      },
+      "revId": "d3d9b6a4cb9403aaed7b4cb8703e8429f093add8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6167942a_63e3cf8d",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-17T14:19:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "79098c40_2502411c",
       "range": {
         "startLine": 84,
         "startChar": 19,
