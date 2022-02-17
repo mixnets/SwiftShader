@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d96ae603_dd749797",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-17T05:33:02Z",
+      "side": 1,
+      "message": "Great to see this became simpler indeed!",
+      "revId": "d3d9b6a4cb9403aaed7b4cb8703e8429f093add8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c9a37012_2da0b32b",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-17T05:33:02Z",
+      "side": 1,
+      "message": "inline uniform block",
+      "range": {
+        "startLine": 398,
+        "startChar": 84,
+        "endLine": 398,
+        "endChar": 113
+      },
+      "revId": "d3d9b6a4cb9403aaed7b4cb8703e8429f093add8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b12da70_4935c2f6",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-17T05:33:02Z",
+      "side": 1,
+      "message": "Let\u0027s make sure we\u0027re not paying the cost of bounds checking. Note the spec explicitly mentions \"Do the robustness guarantees of robustBufferAccess apply to inline uniform block accesses? RESOLVED: No, similarly to push constants, as they are not backed by buffer memory like uniform buffers.\"\n\nThis can be achieved by passing `pointerId` instead of `pointerTy.storageClass` to `getOutOfBoundsBehavior()` so we can determine the descriptor type as done above.",
+      "range": {
+        "startLine": 404,
+        "startChar": 45,
+        "endLine": 404,
+        "endChar": 74
+      },
+      "revId": "d3d9b6a4cb9403aaed7b4cb8703e8429f093add8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "79098c40_2502411c",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-17T05:33:02Z",
+      "side": 1,
+      "message": "Not really used. Can be eliminated.",
+      "range": {
+        "startLine": 84,
+        "startChar": 19,
+        "endLine": 84,
+        "endChar": 47
+      },
+      "revId": "d3d9b6a4cb9403aaed7b4cb8703e8429f093add8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
