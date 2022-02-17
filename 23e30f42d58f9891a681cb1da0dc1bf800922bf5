@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "174d2f38_7266a8c9",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-17T17:11:46Z",
+      "side": 1,
+      "message": "No change in behavior here. Just making the type explicit.",
+      "range": {
+        "startLine": 930,
+        "startChar": 18,
+        "endLine": 930,
+        "endChar": 26
+      },
+      "revId": "23e30f42d58f9891a681cb1da0dc1bf800922bf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
