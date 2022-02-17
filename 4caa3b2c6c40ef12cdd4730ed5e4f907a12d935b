@@ -33,6 +33,23 @@
       "message": "Comment removed by: Nicolas Capens; Reason: bad",
       "revId": "4caa3b2c6c40ef12cdd4730ed5e4f907a12d935b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27876056_9648f4f5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101296
+      },
+      "writtenOn": "2022-02-17T14:02:54Z",
+      "side": 1,
+      "message": "Just applied the patch on RISC-V and it resolves the `ReactorUnitTests.RoundInt` failure.\n\n```\n[ RUN      ] ReactorUnitTests.RoundInt\n[       OK ] ReactorUnitTests.RoundInt (37 ms)\n```\n",
+      "revId": "4caa3b2c6c40ef12cdd4730ed5e4f907a12d935b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
