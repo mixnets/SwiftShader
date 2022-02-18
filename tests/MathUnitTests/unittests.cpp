@@ -77,6 +77,30 @@ float Log2_legacy(float x)
 	return bit_cast<float>((pos_inf_x & bit_cast<int>(x)) | (~pos_inf_x & bit_cast<int>(x1)));
 }
 
+// lolremez --float -d 6 -r "0:1" "log2(x+1)"
+float f(float x)
+{
+	float u = -2.5691089e-2f;
+	u = u * x + 1.2100224e-1f;
+	u = u * x + -2.7654074e-1f;
+	u = u * x + 4.5652166e-1f;
+	u = u * x + -7.1779108e-1f;
+	u = u * x + 1.4424953f;
+	return u * x + 1.8456867e-6f;
+}
+
+float Log2(float x)
+{
+	int im = bit_cast<int>(x);
+	//float q = (float)im * (1.0f / (1 << 23)) - 127.0f;
+	float q = (float)((im & 0x7F800000) >> 23) - 127.0f;
+
+	//float y = bit_cast<float>((im & 0x007FFFFF) | 0x3F800000);  // 1.0 - 2.0
+	float y = (float)(im & 0x007FFFFF) * (1.0f / (1 << 23));  // 0.0 - 1.0
+
+	return q + f(y);
+}
+
 TEST(MathTest, Log2Exhaustive)
 {
 	CPUID::setDenormalsAreZero(true);
@@ -92,7 +116,7 @@ TEST(MathTest, Log2Exhaustive)
 
 	for(float x = 0.10f; x <= 10.0f; x = inc(x))
 	{
-		float val = Log2_legacy(x);
+		float val = Log2(x);
 
 		double ref = log2((double)x);
 
