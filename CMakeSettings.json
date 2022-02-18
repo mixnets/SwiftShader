@@ -13,8 +13,18 @@
       "variables": [
         {
           "name": "REACTOR_BACKEND",
-          "value": "Subzero",
+          "value": "LLVM",
           "type": "STRING"
+        },
+        {
+          "name": "SWIFTSHADER_BUILD_BENCHMARKS",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "SWIFTSHADER_BUILD_PVR",
+          "value": "True",
+          "type": "BOOL"
         }
       ]
     },
