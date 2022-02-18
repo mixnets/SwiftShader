@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b7b5934_4bb01bf3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-18T16:17:12Z",
+      "side": 1,
+      "message": "Thanks for keeping the option to run without firejail, but I think we should ensure that when sandboxing is expected it doesn\u0027t automatically fall back to not using it. That should only happen when we explicitly allow it.\n\nAlso please update docs/Regres.md with installation instructions and command line options.",
+      "revId": "091b25dda39271b097db1bfb55c150805ab51686",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
