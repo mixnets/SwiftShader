@@ -22,6 +22,30 @@
       },
       "revId": "003cb9ad09842813e4a1f1341f108a2e1316fd95",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f1941c1_26d4d33a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-18T15:08:18Z",
+      "side": 1,
+      "message": "It\u0027s required for VK_KHR_maintenance4.\nSpecifically, we need support for SpvOpExecutionModeId.",
+      "parentUuid": "611aff5e_5aacf0c3",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 75,
+        "endChar": 16
+      },
+      "revId": "003cb9ad09842813e4a1f1341f108a2e1316fd95",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
