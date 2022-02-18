@@ -19,6 +19,11 @@
 
 #include <limits.h>
 
+// TODO(chromium:1299047)
+#ifndef SWIFTSHADER_LEGACY_TRANSCENDENTALS
+#define SWIFTSHADER_LEGACY_TRANSCENDENTALS false
+#endif
+
 namespace sw {
 
 Vector4s::Vector4s()
@@ -322,6 +327,24 @@ Float4 Exp2(RValue<Float4> x)
 	x0 = Min(x0, As<Float4>(Int4(0x4300FFFF)));  // 128.999985
 	x0 = Max(x0, As<Float4>(Int4(0xC2FDFFFF)));  // -126.999992
 
+	if(SWIFTSHADER_LEGACY_TRANSCENDENTALS)  // TODO(chromium:1299047)
+	{
+		Int4 i = RoundInt(x0 - Float4(0.5f));
+		Float4 ii = As<Float4>((i + Int4(127)) << 23);  // Add single-precision bias, and shift into exponent.
+	
+		// For the fractional part use a polynomial
+		// which approximates 2^f in the 0 to 1 range.
+		Float4 f = x0 - Float4(i);
+		Float4 ff = As<Float4>(Int4(0x3AF61905));    // 1.8775767e-3f
+		ff = ff * f + As<Float4>(Int4(0x3C134806));  // 8.9893397e-3f
+		ff = ff * f + As<Float4>(Int4(0x3D64AA23));  // 5.5826318e-2f
+		ff = ff * f + As<Float4>(Int4(0x3E75EAD4));  // 2.4015361e-1f
+		ff = ff * f + As<Float4>(Int4(0x3F31727B));  // 6.9315308e-1f
+		ff = ff * f + Float4(1.0f);
+		
+		return ii * ff;
+	}
+	
 	Float4 xi = Floor(x0);
 	Int4 i = Int4(xi);
 	Float4 ii = As<Float4>((i + Int4(127)) << 23);  // Add single-precision bias, and shift into exponent.
