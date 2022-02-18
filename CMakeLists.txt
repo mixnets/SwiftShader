@@ -48,9 +48,109 @@ if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch
     else()
         set(ARCH "arm")
     endif()
+<<<<<<< HEAD   (c2e6e7 Update SPIR-V Headers to 6a55fade6)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "mips*")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(ARCH "mips64el")
+=======
+  endif()
+
+  if(${SPIRV_WERROR})
+    set(SPIRV_WARNINGS ${SPIRV_WARNINGS} -Werror)
+  endif()
+elseif(MSVC)
+  set(SPIRV_WARNINGS -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS /wd4800 /wd4819)
+
+  if(${SPIRV_WERROR})
+    set(SPIRV_WARNINGS ${SPIRV_WARNINGS} /WX)
+  endif()
+endif()
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
+
+option(SPIRV_COLOR_TERMINAL "Enable color terminal output" ON)
+if(${SPIRV_COLOR_TERMINAL})
+  add_definitions(-DSPIRV_COLOR_TERMINAL)
+endif()
+
+option(SPIRV_LOG_DEBUG "Enable excessive debug output" OFF)
+if(${SPIRV_LOG_DEBUG})
+  add_definitions(-DSPIRV_LOG_DEBUG)
+endif()
+
+if (DEFINED SPIRV_TOOLS_EXTRA_DEFINITIONS)
+  add_definitions(${SPIRV_TOOLS_EXTRA_DEFINITIONS})
+endif()
+
+# Library build setting definitions:
+#
+# * SPIRV_TOOLS_BUILD_STATIC - ON or OFF - Defaults to ON.
+#   If enabled the following targets will be created:
+#     ${SPIRV_TOOLS}-static - STATIC library.
+#                             Has full public symbol visibility.
+#     ${SPIRV_TOOLS}-shared - SHARED library.
+#                             Has default-hidden symbol visibility.
+#     ${SPIRV_TOOLS}        - will alias to one of above, based on BUILD_SHARED_LIBS.
+#   If disabled the following targets will be created:
+#     ${SPIRV_TOOLS}        - either STATIC or SHARED based on SPIRV_TOOLS_LIBRARY_TYPE.
+#                             Has full public symbol visibility.
+#     ${SPIRV_TOOLS}-shared - SHARED library.
+#                             Has default-hidden symbol visibility.
+#
+# * SPIRV_TOOLS_LIBRARY_TYPE - SHARED or STATIC.
+#   Specifies the library type used for building SPIRV-Tools libraries.
+#   Defaults to SHARED when BUILD_SHARED_LIBS=1, otherwise STATIC.
+#
+# * SPIRV_TOOLS_FULL_VISIBILITY - "${SPIRV_TOOLS}-static" or "${SPIRV_TOOLS}"
+#   Evaluates to the SPIRV_TOOLS target library name that has no hidden symbols.
+#   This is used by internal targets for accessing symbols that are non-public.
+#   Note this target provides no API stability guarantees.
+#
+# Ideally, all of these will go away - see https://github.com/KhronosGroup/SPIRV-Tools/issues/3909.
+option(ENABLE_EXCEPTIONS_ON_MSVC "Build SPIRV-TOOLS with c++ exceptions enabled in MSVC" ON)
+option(SPIRV_TOOLS_BUILD_STATIC "Build ${SPIRV_TOOLS}-static target. ${SPIRV_TOOLS} will alias to ${SPIRV_TOOLS}-static or ${SPIRV_TOOLS}-shared based on BUILD_SHARED_LIBS" ON)
+if(SPIRV_TOOLS_BUILD_STATIC)
+  set(SPIRV_TOOLS_FULL_VISIBILITY ${SPIRV_TOOLS}-static)
+  set(SPIRV_TOOLS_LIBRARY_TYPE "STATIC")
+else(SPIRV_TOOLS_BUILD_STATIC)
+  set(SPIRV_TOOLS_FULL_VISIBILITY ${SPIRV_TOOLS})
+  if (NOT DEFINED SPIRV_TOOLS_LIBRARY_TYPE)
+      if(BUILD_SHARED_LIBS)
+        set(SPIRV_TOOLS_LIBRARY_TYPE "SHARED")
+      else()
+        set(SPIRV_TOOLS_LIBRARY_TYPE "STATIC")
+      endif()
+  endif()
+endif(SPIRV_TOOLS_BUILD_STATIC)
+
+function(spvtools_default_compile_options TARGET)
+  target_compile_options(${TARGET} PRIVATE ${SPIRV_WARNINGS})
+
+  if (${COMPILER_IS_LIKE_GNU})
+    target_compile_options(${TARGET} PRIVATE -std=c++11 -fno-exceptions)
+    target_compile_options(${TARGET} PRIVATE
+      -Wall -Wextra -Wno-long-long -Wshadow -Wundef -Wconversion
+      -Wno-sign-conversion)
+
+    if(NOT ENABLE_RTTI)
+        add_compile_options(-fno-rtti)
+    endif()
+    # For good call stacks in profiles, keep the frame pointers.
+    if(NOT "${SPIRV_PERF}" STREQUAL "")
+      target_compile_options(${TARGET} PRIVATE -fno-omit-frame-pointer)
+    endif()
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      set(SPIRV_USE_SANITIZER "" CACHE STRING
+        "Use the clang sanitizer [address|memory|thread|...]")
+      if(NOT "${SPIRV_USE_SANITIZER}" STREQUAL "")
+        target_compile_options(${TARGET} PRIVATE
+          -fsanitize=${SPIRV_USE_SANITIZER})
+        set_target_properties(${TARGET} PROPERTIES
+          LINK_FLAGS -fsanitize=${SPIRV_USE_SANITIZER})
+      endif()
+      target_compile_options(${TARGET} PRIVATE
+         -ftemplate-depth=1024)
+>>>>>>> BRANCH (b398bf Squashed 'third_party/SPIRV-Tools/' changes from c75a1a46f..)
     else()
         set(ARCH "mipsel")
     endif()
