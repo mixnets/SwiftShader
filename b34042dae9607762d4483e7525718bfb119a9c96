@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cb1faaf_0b6742ce",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-18T21:19:31Z",
+      "side": 1,
+      "message": "byte",
+      "range": {
+        "startLine": 14,
+        "startChar": 45,
+        "endLine": 14,
+        "endChar": 49
+      },
+      "revId": "b34042dae9607762d4483e7525718bfb119a9c96",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac11f52e_e543457e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-18T21:19:31Z",
+      "side": 1,
+      "message": "Also b/201282910",
+      "revId": "b34042dae9607762d4483e7525718bfb119a9c96",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49fbed52_73f1f0fa",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-18T21:19:31Z",
+      "side": 1,
+      "message": "nit: Does this comment serve a notable purpose? If we violate this requirement the test will fail, qnd it\u0027s not like we\u0027re doing anything unexpected here that needs explaining (like on the left side). I would just remove this.",
+      "range": {
+        "startLine": 63,
+        "startChar": 1,
+        "endLine": 64,
+        "endChar": 99
+      },
+      "revId": "b34042dae9607762d4483e7525718bfb119a9c96",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5be3adb9_d56ddccb",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-18T21:19:31Z",
+      "side": 1,
+      "message": "byte",
+      "range": {
+        "startLine": 111,
+        "startChar": 45,
+        "endLine": 111,
+        "endChar": 47
+      },
+      "revId": "b34042dae9607762d4483e7525718bfb119a9c96",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f73ae86c_4f8842df",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-18T21:19:31Z",
+      "side": 1,
+      "message": "Remove this TODO line. We can no longer take advantage of increasing the memory requirement.",
+      "range": {
+        "startLine": 112,
+        "startChar": 1,
+        "endLine": 112,
+        "endChar": 115
+      },
+      "revId": "b34042dae9607762d4483e7525718bfb119a9c96",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
