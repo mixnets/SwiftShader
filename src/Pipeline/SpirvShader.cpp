@@ -99,6 +99,7 @@ SpirvShader::SpirvShader(
 			break;
 
 		case spv::OpExecutionMode:
+		case spv::OpExecutionModeId:
 			ProcessExecutionMode(insn);
 			break;
 
@@ -396,6 +397,7 @@ SpirvShader::SpirvShader(
 					executionModes.WorkgroupSizeX = object.constantValue[0];
 					executionModes.WorkgroupSizeY = object.constantValue[1];
 					executionModes.WorkgroupSizeZ = object.constantValue[2];
+					executionModes.useWorkgroupSizeId = false;
 				}
 			}
 			break;
@@ -1007,9 +1009,11 @@ void SpirvShader::ProcessExecutionMode(InsnIterator insn)
 		executionModes.DepthUnchanged = true;
 		break;
 	case spv::ExecutionModeLocalSize:
+	case spv::ExecutionModeLocalSizeId:
 		executionModes.WorkgroupSizeX = insn.word(3);
 		executionModes.WorkgroupSizeY = insn.word(4);
 		executionModes.WorkgroupSizeZ = insn.word(5);
+		executionModes.useWorkgroupSizeId = (mode == spv::ExecutionModeLocalSizeId);
 		break;
 	case spv::ExecutionModeOriginUpperLeft:
 		// This is always the case for a Vulkan shader. Do nothing.
@@ -1017,6 +1021,21 @@ void SpirvShader::ProcessExecutionMode(InsnIterator insn)
 	default:
 		UNREACHABLE("Execution mode: %d", int(mode));
 	}
+}
+
+uint32_t SpirvShader::getWorkgroupSizeX() const
+{
+	return executionModes.useWorkgroupSizeId ? getObject(executionModes.WorkgroupSizeX).constantValue[0] : executionModes.WorkgroupSizeX.value();
+}
+
+uint32_t SpirvShader::getWorkgroupSizeY() const
+{
+	return executionModes.useWorkgroupSizeId ? getObject(executionModes.WorkgroupSizeY).constantValue[0] : executionModes.WorkgroupSizeY.value();
+}
+
+uint32_t SpirvShader::getWorkgroupSizeZ() const
+{
+	return executionModes.useWorkgroupSizeId ? getObject(executionModes.WorkgroupSizeZ).constantValue[0] : executionModes.WorkgroupSizeZ.value();
 }
 
 uint32_t SpirvShader::ComputeTypeSize(InsnIterator insn)
@@ -1799,6 +1818,7 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 	case spv::OpTypeSampledImage:
 	case spv::OpTypeSampler:
 	case spv::OpExecutionMode:
+	case spv::OpExecutionModeId:
 	case spv::OpMemoryModel:
 	case spv::OpFunction:
 	case spv::OpFunctionEnd:
