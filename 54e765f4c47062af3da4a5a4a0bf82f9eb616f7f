@@ -16,6 +16,52 @@
       "message": "Kokoro passed. PTAL.",
       "revId": "54e765f4c47062af3da4a5a4a0bf82f9eb616f7f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5d0d699_dac441cd",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-18T15:43:16Z",
+      "side": 1,
+      "message": "This isn\u0027t used anywhere other than as the only private member of `CmdBeginRendering`, so these fields can just be added to it.",
+      "range": {
+        "startLine": 153,
+        "startChar": 7,
+        "endLine": 153,
+        "endChar": 23
+      },
+      "revId": "54e765f4c47062af3da4a5a4a0bf82f9eb616f7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "679041d3_36a58d87",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-18T15:43:16Z",
+      "side": 1,
+      "message": "It think these should just be hard copies (with the color attachments an array of the max count). `VkRenderingAttachmentInfo` is quite small and this saves dynamic allocation overhead and indirections.",
+      "range": {
+        "startLine": 177,
+        "startChar": 1,
+        "endLine": 179,
+        "endChar": 57
+      },
+      "revId": "54e765f4c47062af3da4a5a4a0bf82f9eb616f7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
