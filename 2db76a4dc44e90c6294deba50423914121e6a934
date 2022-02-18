@@ -22,6 +22,30 @@
       },
       "revId": "2db76a4dc44e90c6294deba50423914121e6a934",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2cbe51ad_8431f26a",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-18T21:50:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2c648e87_adba4571",
+      "range": {
+        "startLine": 334,
+        "startChar": 0,
+        "endLine": 334,
+        "endChar": 1
+      },
+      "revId": "2db76a4dc44e90c6294deba50423914121e6a934",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
