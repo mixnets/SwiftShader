@@ -52,29 +52,28 @@ float ULP_16(float x, float a)
 	return abs(a - x) / ulp;
 }
 
+// lolremez --float -d 6 -r "0:1" "log2(x+1)"
+float f(float x)
+{
+	float u = -2.5691089e-2f;
+	u = u * x + 1.2100224e-1f;
+	u = u * x + -2.7654074e-1f;
+	u = u * x + 4.5652166e-1f;
+	u = u * x + -7.1779108e-1f;
+	u = u * x + 1.4424953f;
+	return u * x + 1.8456867e-6f;
+}
+
 float Log2_legacy(float x)
 {
-	float x0;
-	float x1;
-	float x2;
-	float x3;
+	int im = bit_cast<int>(x);
+	//float q = (float)im * (1.0f / (1 << 23)) - 127.0f;
+	float q = (float)((im & 0x7F800000) >> 23) - 127.0f;
 
-	x0 = x;
+	//float y = bit_cast<float>((im & 0x007FFFFF) | 0x3F800000);  // 1.0 - 2.0
+	float y = (float)(im & 0x007FFFFF) * (1.0f / (1 << 23));  // 0.0 - 1.0
 
-	x1 = bit_cast<float>(bit_cast<int>(x0) & int(0x7F800000));
-	x1 = bit_cast<float>(bit_cast<unsigned int>(x1) >> 8);
-	x1 = bit_cast<float>(bit_cast<int>(x1) | bit_cast<int>(float(1.0f)));
-	x1 = (x1 - float(1.4960938f)) * float(256.0f);  // FIXME: (x1 - 1.4960938f) * 256.0f;
-	x0 = bit_cast<float>((bit_cast<int>(x0) & int(0x007FFFFF)) | bit_cast<int>(float(1.0f)));
-
-	x2 = (float(9.5428179e-2f) * x0 + float(4.7779095e-1f)) * x0 + float(1.9782813e-1f);
-	x3 = ((float(1.6618466e-2f) * x0 + float(2.0350508e-1f)) * x0 + float(2.7382900e-1f)) * x0 + float(4.0496687e-2f);
-	x2 /= x3;
-
-	x1 += (x0 - float(1.0f)) * x2;
-
-	int pos_inf_x = (bit_cast<int>(x) == int(0x7F800000)) ? 0xFFFFFFFF : 0x00000000;
-	return bit_cast<float>((pos_inf_x & bit_cast<int>(x)) | (~pos_inf_x & bit_cast<int>(x1)));
+	return q + f(y);
 }
 
 TEST(MathTest, Log2Exhaustive)
