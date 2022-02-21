@@ -35,6 +35,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8e61c06_b620c2f8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7273
+      },
+      "writtenOn": "2022-02-21T07:07:37Z",
+      "side": 1,
+      "message": "I think yes. Otherwise, ChromeOs/X11 won\u0027t work correctly.",
+      "parentUuid": "5137675a_f728c2c3",
+      "revId": "10bc3c17fa3fd06abd82bed74e1fe879e4c0bb9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d04fa2cf_6c2df54e",
