@@ -53,6 +53,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "75453046_2cbf20fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-21T16:28:59Z",
+      "side": 1,
+      "message": "Thanks! I uploaded https://swiftshader-review.googlesource.com/c/SwiftShader/+/63189 to re-enable it.",
+      "parentUuid": "b8e61c06_b620c2f8",
+      "revId": "10bc3c17fa3fd06abd82bed74e1fe879e4c0bb9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d04fa2cf_6c2df54e",
