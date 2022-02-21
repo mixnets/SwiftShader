@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "22fe14af_017463ac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-21T05:57:06Z",
+      "side": 1,
+      "message": "LGTM",
+      "revId": "be62aa3d52d58948a58dbebbff9facda255ce43f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "92e28c52_be30a72a",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-21T05:57:06Z",
+      "side": 1,
+      "message": "b/204502117\n\nSeems flaky.",
+      "range": {
+        "startLine": 3,
+        "startChar": 22,
+        "endLine": 3,
+        "endChar": 42
+      },
+      "revId": "be62aa3d52d58948a58dbebbff9facda255ce43f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca3f2d44_36d64459",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-21T05:57:06Z",
+      "side": 1,
+      "message": "b/204502119",
+      "range": {
+        "startLine": 300,
+        "startChar": 0,
+        "endLine": 300,
+        "endChar": 36
+      },
+      "revId": "be62aa3d52d58948a58dbebbff9facda255ce43f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d2c9ad4_83329a18",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 76479,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-21T05:57:06Z",
+      "side": 1,
+      "message": "b/204502119",
+      "range": {
+        "startLine": 76479,
+        "startChar": 13,
+        "endLine": 76479,
+        "endChar": 30
+      },
+      "revId": "be62aa3d52d58948a58dbebbff9facda255ce43f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "61f200a9_4beaaf84",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 225820,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-21T05:57:06Z",
+      "side": 1,
+      "message": "https://github.com/KhronosGroup/VK-GL-CTS/commit/67edc437a20c6d167b27975b9fc98657a21dcbac",
+      "range": {
+        "startLine": 225820,
+        "startChar": 0,
+        "endLine": 225820,
+        "endChar": 53
+      },
+      "revId": "be62aa3d52d58948a58dbebbff9facda255ce43f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
