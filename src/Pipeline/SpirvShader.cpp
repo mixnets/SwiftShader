@@ -425,6 +425,10 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityStorageImageExtendedFormats: capabilities.StorageImageExtendedFormats = true; break;
 				case spv::CapabilityImageQuery: capabilities.ImageQuery = true; break;
 				case spv::CapabilityDerivativeControl: capabilities.DerivativeControl = true; break;
+				case spv::CapabilityDotProductInputAll: capabilities.DerivativeControl = true; break;
+				case spv::CapabilityDotProductInput4x8Bit: capabilities.DotProductInputAll = true; break;
+				case spv::CapabilityDotProductInput4x8BitPacked: capabilities.DotProductInput4x8Bit = true; break;
+				case spv::CapabilityDotProduct: capabilities.DotProductInput4x8BitPacked = true; break;
 				case spv::CapabilityInterpolationFunction: capabilities.InterpolationFunction = true; break;
 				case spv::CapabilityStorageImageWriteWithoutFormat: capabilities.StorageImageWriteWithoutFormat = true; break;
 				case spv::CapabilityGroupNonUniform: capabilities.GroupNonUniform = true; break;
@@ -649,6 +653,12 @@ SpirvShader::SpirvShader(
 		case spv::OpIAddCarry:
 		case spv::OpISubBorrow:
 		case spv::OpDot:
+		case spv::OpSDot:
+		case spv::OpUDot:
+		case spv::OpSUDot:
+		case spv::OpSDotAccSat:
+		case spv::OpUDotAccSat:
+		case spv::OpSUDotAccSat:
 		case spv::OpConvertFToU:
 		case spv::OpConvertFToS:
 		case spv::OpConvertSToF:
@@ -785,6 +795,7 @@ SpirvShader::SpirvShader(
 				if(!strcmp(ext, "SPV_KHR_multiview")) break;
 				if(!strcmp(ext, "SPV_EXT_shader_stencil_export")) break;
 				if(!strcmp(ext, "SPV_KHR_float_controls")) break;
+				if(!strcmp(ext, "SPV_KHR_integer_dot_product")) break;
 				if(!strcmp(ext, "SPV_KHR_non_semantic_info")) break;
 				if(!strcmp(ext, "SPV_KHR_vulkan_memory_model")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_decorate_string")) break;
@@ -2000,6 +2011,12 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 		return EmitBinaryOp(insn, state);
 
 	case spv::OpDot:
+	case spv::OpSDot:
+	case spv::OpUDot:
+	case spv::OpSUDot:
+	case spv::OpSDotAccSat:
+	case spv::OpUDotAccSat:
+	case spv::OpSUDotAccSat:
 		return EmitDot(insn, state);
 
 	case spv::OpSelect:
