@@ -47,6 +47,7 @@ public:
 	bool hasExtendedFeatures(const VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *features) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceSubgroupSizeControlFeatures *requested) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceInlineUniformBlockFeatures *features) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceShaderIntegerDotProductFeatures *features) const;
 
 	const VkPhysicalDeviceProperties &getProperties() const;
 	void getProperties(VkPhysicalDeviceIDProperties *properties) const;
@@ -80,6 +81,7 @@ public:
 	void getProperties(VkPhysicalDeviceSubgroupSizeControlProperties *properties) const;
 	void getProperties(VkPhysicalDeviceInlineUniformBlockProperties *properties) const;
 	void getProperties(VkPhysicalDeviceTexelBufferAlignmentProperties *properties) const;
+	void getProperties(VkPhysicalDeviceShaderIntegerDotProductProperties *properties) const;
 	void getProperties(VkPhysicalDeviceVulkan11Properties *properties) const;
 
 	static void GetFormatProperties(Format format, VkFormatProperties *pFormatProperties);
