@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b31cfc5c_a499574c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101256
+      },
+      "writtenOn": "2022-02-22T02:55:49Z",
+      "side": 1,
+      "message": "lgtm, but seems I cannot +1 for it.",
+      "revId": "05b4172d29b0c8a6499e268218dc4d076d71431d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
