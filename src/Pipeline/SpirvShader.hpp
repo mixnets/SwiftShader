@@ -673,6 +673,10 @@ public:
 		bool StorageImageExtendedFormats : 1;
 		bool ImageQuery : 1;
 		bool DerivativeControl : 1;
+		bool DotProductInputAll : 1;
+		bool DotProductInput4x8Bit : 1;
+		bool DotProductInput4x8BitPacked : 1;
+		bool DotProduct : 1;
 		bool InterpolationFunction : 1;
 		bool StorageImageWriteWithoutFormat : 1;
 		bool GroupNonUniform : 1;
@@ -1382,6 +1386,12 @@ private:
 
 	// Helper as we often need to take dot products as part of doing other things.
 	SIMD::Float Dot(unsigned numComponents, Operand const &x, Operand const &y) const;
+	SIMD::Int SDot(unsigned numComponents, Operand const &x, Operand const &y) const;
+	SIMD::UInt UDot(unsigned numComponents, Operand const &x, Operand const &y) const;
+	SIMD::Int SUDot(unsigned numComponents, Operand const &x, Operand const &y) const;
+	SIMD::Int SDotAccSat(unsigned numComponents, Operand const &x, Operand const &y) const;
+	SIMD::UInt UDotAccSat(unsigned numComponents, Operand const &x, Operand const &y) const;
+	SIMD::Int SUDotAccSat(unsigned numComponents, Operand const &x, Operand const &y) const;
 
 	// Splits x into a floating-point significand in the range [0.5, 1.0)
 	// and an integral exponent of two, such that:

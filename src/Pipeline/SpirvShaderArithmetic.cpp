@@ -522,7 +522,34 @@ SpirvShader::EmitResult SpirvShader::EmitDot(InsnIterator insn, EmitState *state
 	auto lhs = Operand(this, state, insn.word(3));
 	auto rhs = Operand(this, state, insn.word(4));
 
-	dst.move(0, Dot(lhsType.componentCount, lhs, rhs));
+	auto opcode = insn.opcode();
+	switch(opcode)
+	{
+	case spv::OpDot:
+		dst.move(0, Dot(lhsType.componentCount, lhs, rhs));
+		break;
+	case spv::OpSDot:
+		dst.move(0, SDot(lhsType.componentCount, lhs, rhs));
+		break;
+	case spv::OpUDot:
+		dst.move(0, UDot(lhsType.componentCount, lhs, rhs));
+		break;
+	case spv::OpSUDot:
+		dst.move(0, SUDot(lhsType.componentCount, lhs, rhs));
+		break;
+	case spv::OpSDotAccSat:
+		dst.move(0, SDotAccSat(lhsType.componentCount, lhs, rhs));
+		break;
+	case spv::OpUDotAccSat:
+		dst.move(0, UDotAccSat(lhsType.componentCount, lhs, rhs));
+		break;
+	case spv::OpSUDotAccSat:
+		dst.move(0, SUDotAccSat(lhsType.componentCount, lhs, rhs));
+		break;
+	default:
+		UNREACHABLE("%s", OpcodeName(opcode));
+		break;
+	}
 
 	SPIRV_SHADER_DBG("{0}: {1}", insn.resultId(), dst);
 	SPIRV_SHADER_DBG("{0}: {1}", insn.word(3), lhs);
@@ -541,6 +568,204 @@ SIMD::Float SpirvShader::Dot(unsigned numComponents, Operand const &x, Operand c
 	}
 
 	return d;
+}
+
+SIMD::Int SpirvShader::SDot(unsigned numComponents, Operand const &x, Operand const &y) const
+{
+	if(numComponents == 1)
+	{
+		SIMD::Int d(0);
+
+		// 4x8
+		for(auto i = 0u; i < 4; i++)
+		{
+			Int4 xs(As<SByte4>(Extract(x.Int(0), i)));
+			Int4 ys(As<SByte4>(Extract(y.Int(0), i)));
+
+			Int4 xy = xs * ys;
+			rr::Int sum = Extract(xy, 0) + Extract(xy, 1) + Extract(xy, 2) + Extract(xy, 3);
+
+			d = Insert(d, sum, i);
+		}
+
+		return d;
+	}
+	else
+	{
+		SIMD::Int d = x.Int(0) * y.Int(0);
+
+		for(auto i = 1u; i < numComponents; i++)
+		{
+			d += x.Int(i) * y.Int(i);
+		}
+
+		return d;
+	}
+}
+
+SIMD::UInt SpirvShader::UDot(unsigned numComponents, Operand const &x, Operand const &y) const
+{
+	if(numComponents == 1)
+	{
+		SIMD::UInt d(0);
+
+		// 4x8
+		for(auto i = 0u; i < 4; i++)
+		{
+			Int4 xs(As<Byte4>(Extract(x.Int(0), i)));
+			Int4 ys(As<Byte4>(Extract(y.Int(0), i)));
+
+			UInt4 xy = xs * ys;
+			rr::UInt sum = Extract(xy, 0) + Extract(xy, 1) + Extract(xy, 2) + Extract(xy, 3);
+
+			d = Insert(d, sum, i);
+		}
+
+		return d;
+	}
+	else
+	{
+		SIMD::UInt d = x.UInt(0) * y.UInt(0);
+
+		for(auto i = 1u; i < numComponents; i++)
+		{
+			d += x.UInt(i) * y.UInt(i);
+		}
+
+		return d;
+	}
+}
+
+SIMD::Int SpirvShader::SUDot(unsigned numComponents, Operand const &x, Operand const &y) const
+{
+	if(numComponents == 1)
+	{
+		SIMD::Int d(0);
+
+		// 4x8
+		for(auto i = 0u; i < 4; i++)
+		{
+			Int4 xs(As<SByte4>(Extract(x.Int(0), i)));
+			Int4 ys(As<Byte4>(Extract(y.Int(0), i)));
+
+			Int4 xy = xs * ys;
+			rr::Int sum = Extract(xy, 0) + Extract(xy, 1) + Extract(xy, 2) + Extract(xy, 3);
+
+			d = Insert(d, sum, i);
+		}
+
+		return d;
+	}
+	else
+	{
+		SIMD::Int d = x.Int(0) * As<SIMD::Int>(y.UInt(0));
+
+		for(auto i = 1u; i < numComponents; i++)
+		{
+			d += x.Int(i) * As<SIMD::Int>(y.UInt(i));
+		}
+
+		return d;
+	}
+}
+
+SIMD::Int SpirvShader::SDotAccSat(unsigned numComponents, Operand const &x, Operand const &y) const
+{
+	if(numComponents == 1)
+	{
+		SIMD::Int d(0);
+
+		// 4x8
+		for(auto i = 0u; i < 4; i++)
+		{
+			Int4 xs(As<SByte4>(Extract(x.Int(0), i)));
+			Int4 ys(As<SByte4>(Extract(y.Int(0), i)));
+
+			Int4 xy = xs * ys;
+			rr::Int sum = Extract(xy, 0) + Extract(xy, 1) + Extract(xy, 2) + Extract(xy, 3);
+
+			d = Insert(d, sum, i);
+		}
+
+		return d;
+	}
+	else
+	{
+		SIMD::Int d = x.Int(0) * y.Int(0);
+
+		for(auto i = 1u; i < numComponents; i++)
+		{
+			d += x.Int(i) * y.Int(i);  // FIXME: saturated add
+		}
+
+		return d;
+	}
+}
+
+SIMD::UInt SpirvShader::UDotAccSat(unsigned numComponents, Operand const &x, Operand const &y) const
+{
+	if(numComponents == 1)
+	{
+		SIMD::UInt d(0);
+
+		// 4x8
+		for(auto i = 0u; i < 4; i++)
+		{
+			Int4 xs(As<Byte4>(Extract(x.Int(0), i)));
+			Int4 ys(As<Byte4>(Extract(y.Int(0), i)));
+
+			UInt4 xy = xs * ys;
+			rr::UInt sum = Extract(xy, 0) + Extract(xy, 1) + Extract(xy, 2) + Extract(xy, 3);
+
+			d = Insert(d, sum, i);
+		}
+
+		return d;
+	}
+	else
+	{
+		SIMD::UInt d = x.UInt(0) * y.UInt(0);
+
+		for(auto i = 1u; i < numComponents; i++)
+		{
+			d += x.UInt(i) * y.UInt(i);  // FIXME: saturated add
+		}
+
+		return d;
+	}
+}
+
+SIMD::Int SpirvShader::SUDotAccSat(unsigned numComponents, Operand const &x, Operand const &y) const
+{
+	if(numComponents == 1)
+	{
+		SIMD::Int d(0);
+
+		// 4x8
+		for(auto i = 0u; i < 4; i++)
+		{
+			Int4 xs(As<SByte4>(Extract(x.Int(0), i)));
+			Int4 ys(As<Byte4>(Extract(y.Int(0), i)));
+
+			Int4 xy = xs * ys;
+			rr::Int sum = Extract(xy, 0) + Extract(xy, 1) + Extract(xy, 2) + Extract(xy, 3);
+
+			d = Insert(d, sum, i);
+		}
+
+		return d;
+	}
+	else
+	{
+		SIMD::Int d = x.Int(0) * As<SIMD::Int>(y.UInt(0));
+
+		for(auto i = 1u; i < numComponents; i++)
+		{
+			d += x.Int(i) * As<SIMD::Int>(y.UInt(i));  // FIXME: saturated add
+		}
+
+		return d;
+	}
 }
 
 std::pair<SIMD::Float, SIMD::Int> SpirvShader::Frexp(RValue<SIMD::Float> val) const
