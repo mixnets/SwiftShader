@@ -472,7 +472,8 @@ public:
 		{
 			Unknown,
 			GLSLstd450,
-			OpenCLDebugInfo100
+			OpenCLDebugInfo100,
+			NonSemanticShaderDebugInfo100,
 		};
 
 		Name name;
