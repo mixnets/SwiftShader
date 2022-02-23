@@ -61,7 +61,7 @@ class SamplerCore
 public:
 	SamplerCore(Pointer<Byte> &constants, const Sampler &state, SamplerFunction function);
 
-	Vector4f sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &q, Int &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample);
+	Vector4f sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &q, Int lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample);
 
 private:
 	Float4 applySwizzle(const Vector4f &c, VkComponentSwizzle swizzle, bool integer);

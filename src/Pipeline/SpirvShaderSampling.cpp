@@ -250,7 +250,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstructionSig
 		}
 		else
 		{
-			Vector4f sample = s.sampleTexture(texture, uvwa, dRef, Int(lodOrBias.x), (dsx.x), (dsy.x), offset, sampleId);
+			Vector4f sample = s.sampleTexture(texture, uvwa, dRef, lodOrBias.x, (dsx.x), (dsy.x), offset, sampleId);
 
 			Pointer<SIMD::Float> rgba = out;
 			rgba[0] = sample.x;
