@@ -1596,6 +1596,9 @@ public:
 	Int(const Reference<Int> &rhs);
 	Int(const Reference<UInt> &rhs);
 
+	template<int T>
+	Int(const SwizzleMask1<Int4, T> &rhs);
+
 	RValue<Int> operator=(int rhs);
 	RValue<Int> operator=(RValue<Int> rhs);
 	RValue<Int> operator=(RValue<UInt> rhs);
@@ -1603,6 +1606,9 @@ public:
 	RValue<Int> operator=(const UInt &rhs);
 	RValue<Int> operator=(const Reference<Int> &rhs);
 	RValue<Int> operator=(const Reference<UInt> &rhs);
+
+	template<int T>
+	RValue<Int> operator=(const SwizzleMask1<Int4, T> &rhs);
 
 	static Type *type();
 };
@@ -2895,6 +2901,18 @@ RValue<Vector4> SwizzleMask2<Vector4, T>::operator=(RValue<Vector4> rhs)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	return Mask(*parent, Float4(rhs), T);
+}
+
+template<int T>
+Int::Int(const SwizzleMask1<Int4, T> &rhs)
+{
+	*this = rhs.operator RValue<Int>();
+}
+
+template<int T>
+RValue<Int> Int::operator=(const SwizzleMask1<Int4, T> &rhs)
+{
+	return *this = rhs.operator RValue<Int>();
 }
 
 template<int T>
