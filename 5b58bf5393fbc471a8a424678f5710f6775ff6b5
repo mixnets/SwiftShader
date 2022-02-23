@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "7312a05c_101a0dfa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-23T18:16:37Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b129b1e8_0fd3f52c",
+      "range": {
+        "startLine": 9,
+        "startChar": 27,
+        "endLine": 9,
+        "endChar": 38
+      },
+      "revId": "5b58bf5393fbc471a8a424678f5710f6775ff6b5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "7f94e391_787ef9f8",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -72,6 +96,30 @@
       "writtenOn": "2022-02-23T15:22:30Z",
       "side": 1,
       "message": "Can we call a static `Image::GetMemoryRequirements()` for `vkGetDeviceImageMemoryRequirements()` below as well or is that too convoluted (and if it is, is it justified complexity or should we consider refactoring things)?",
+      "range": {
+        "startLine": 4131,
+        "startChar": 17,
+        "endLine": 4131,
+        "endChar": 38
+      },
+      "revId": "5b58bf5393fbc471a8a424678f5710f6775ff6b5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b5bed6ad_93ddf027",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4131,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-23T18:16:37Z",
+      "side": 1,
+      "message": "So, I can do that, but we have no way of computing the required size of an image without creating an image object (it would require a major refactor, which probably isn\u0027t something we\u0027d want to do since we can easily emulate it by creating a temporary vk::Image object). I *may* be able to move the Image related logic inside the VkImage.cpp, though, if that sounds preferable to having it located in libVulkan.cpp (to be verified).",
+      "parentUuid": "b49832cf_6fecc71f",
       "range": {
         "startLine": 4131,
         "startChar": 17,
