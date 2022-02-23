@@ -135,6 +135,8 @@ public:
 		if(!executionState.dynamicRendering->resume())
 		{
 			VkRect2D renderArea = executionState.dynamicRendering->getRenderArea();
+			uint32_t viewMask = executionState.dynamicRendering->getViewMask();
+			bool isMultiview = viewMask > 0;
 
 			// Vulkan specifies that the attachments' `loadOp` gets executed "at the beginning of the subpass where it is first used."
 			// Since we don't discard any contents between subpasses, this is equivalent to executing it at the start of the renderpass.
@@ -147,7 +149,14 @@ public:
 					vk::ImageView *imageView = vk::Cast(colorAttachment->imageView);
 					if(imageView)
 					{
-						imageView->clear(colorAttachment->clearValue, VK_IMAGE_ASPECT_COLOR_BIT, renderArea);
+						if(isMultiview)
+						{
+							imageView->clearWithLayerMask(colorAttachment->clearValue, VK_IMAGE_ASPECT_COLOR_BIT, renderArea, viewMask);
+						}
+						else
+						{
+							imageView->clear(colorAttachment->clearValue, VK_IMAGE_ASPECT_COLOR_BIT, renderArea);
+						}
 					}
 				}
 			}
@@ -158,7 +167,14 @@ public:
 				vk::ImageView *imageView = vk::Cast(stencilAttachment.imageView);
 				if(imageView)
 				{
-					imageView->clear(stencilAttachment.clearValue, VK_IMAGE_ASPECT_STENCIL_BIT, renderArea);
+					if(isMultiview)
+					{
+						imageView->clearWithLayerMask(stencilAttachment.clearValue, VK_IMAGE_ASPECT_STENCIL_BIT, renderArea, viewMask);
+					}
+					else
+					{
+						imageView->clear(stencilAttachment.clearValue, VK_IMAGE_ASPECT_STENCIL_BIT, renderArea);
+					}
 				}
 			}
 
@@ -169,7 +185,14 @@ public:
 
 				if(imageView)
 				{
-					imageView->clear(depthAttachment.clearValue, VK_IMAGE_ASPECT_DEPTH_BIT, renderArea);
+					if(isMultiview)
+					{
+						imageView->clearWithLayerMask(depthAttachment.clearValue, VK_IMAGE_ASPECT_DEPTH_BIT, renderArea, viewMask);
+					}
+					else
+					{
+						imageView->clear(depthAttachment.clearValue, VK_IMAGE_ASPECT_DEPTH_BIT, renderArea);
+					}
 				}
 			}
 		}
@@ -191,6 +214,8 @@ public:
 
 		if(!executionState.dynamicRendering->suspend())
 		{
+			uint32_t viewMask = sw::max(executionState.dynamicRendering->getViewMask(), 1u);
+
 			// TODO(b/197691917): Eliminate redundant resolve operations.
 			uint32_t colorAttachmentCount = executionState.dynamicRendering->getColorAttachmentCount();
 			for(uint32_t i = 0; i < colorAttachmentCount; i++)
@@ -200,7 +225,7 @@ public:
 				{
 					vk::ImageView *imageView = vk::Cast(colorAttachment->imageView);
 					vk::ImageView *resolveImageView = vk::Cast(colorAttachment->resolveImageView);
-					imageView->resolveWithLayerMask(resolveImageView, executionState.dynamicRendering->getViewMask());
+					imageView->resolveWithLayerMask(resolveImageView, viewMask);
 				}
 			}
 
@@ -1237,7 +1262,7 @@ public:
 		else if(executionState.dynamicRendering)
 		{
 			uint32_t viewMask = executionState.dynamicRendering->getViewMask();
-			bool isMultiview = viewMask > 1;
+			bool isMultiview = viewMask > 0;
 
 			if(attachment.aspectMask & VK_IMAGE_ASPECT_COLOR_BIT)
 			{
@@ -2423,7 +2448,7 @@ uint32_t CommandBuffer::ExecutionState::getViewMask() const
 	}
 	else if(dynamicRendering)
 	{
-		viewMask = dynamicRendering->getViewMask();
+		viewMask = sw::max(dynamicRendering->getViewMask(), 1u);
 	}
 
 	return viewMask;
