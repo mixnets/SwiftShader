@@ -51,6 +51,24 @@
       "message": "According to crbug.com/1225003#c66 this doesn\u0027t help make the tests pass. Thanks Xiyuan for testing it!\n\nI\u0027ll keep this around for a bit, just in case it does have some value. My impression was that `ozone_platform_x11` is getting deprecated though so I won\u0027t land this unless that\u0027s not the case and we need this.",
       "revId": "05b4172d29b0c8a6499e268218dc4d076d71431d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c11c03f_11b1cb3e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7273
+      },
+      "writtenOn": "2022-02-23T18:49:33Z",
+      "side": 1,
+      "message": "use_x11 was deprecated and removed in favor of ozone_platform_x11.",
+      "parentUuid": "794ff2a8_9c7aebc9",
+      "revId": "05b4172d29b0c8a6499e268218dc4d076d71431d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
