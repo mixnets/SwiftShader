@@ -78,7 +78,7 @@ public:
 		return attachmentFirstUse[i] >= 0;
 	}
 
-	uint32_t getViewMask(uint32_t subpassIndex) const
+	uint32_t getLayerMask(uint32_t subpassIndex) const
 	{
 		return viewMasks ? viewMasks[subpassIndex] : 1;
 	}
