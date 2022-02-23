@@ -145,3 +145,40 @@ target_link_libraries(ReactorLLVM
         llvm
         ${REACTOR_PRIVATE_LINK_LIBRARIES}
 )
+
+# ReactorLLVMLatest library
+
+add_library(ReactorLLVMLatest STATIC EXCLUDE_FROM_ALL
+    ${REACTOR_SRC_FILES}
+    ${LLVM_SRC_FILES}
+)
+
+set_target_properties(ReactorLLVMLatest PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
+    FOLDER "Reactor"
+)
+
+target_include_directories(ReactorLLVMLatest
+    PUBLIC
+        .
+        "${THIRD_PARTY_DIR}/llvm-project/llvm/include"
+        "${CMAKE_BINARY_DIR}/third_party/llvm-project/llvm/include"
+)
+
+target_compile_definitions(ReactorLLVMLatest
+    PUBLIC
+        ${REACTOR_PUBLIC_COMPILE_DEFINITIONS}
+    PRIVATE
+        ${REACTOR_PRIVATE_COMPILE_DEFINITIONS}
+)
+
+target_compile_options(ReactorLLVMLatest
+    PRIVATE
+        ${ROOT_PROJECT_COMPILE_OPTIONS}
+)
+
+target_link_libraries(ReactorLLVMLatest
+    PRIVATE
+        ${llvm_libs}
+        ${REACTOR_PRIVATE_LINK_LIBRARIES}
+)
