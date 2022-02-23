@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "b129b1e8_0fd3f52c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-23T15:22:30Z",
+      "side": 1,
+      "message": "Could you split this into two changes, one for the memory related changes, and the other for the SPIR-V changes? Those things seem fully unrelated. That would also make it easier to quote the bullet points from the extension spec that each change implements, and limit the list of dEQP tests added to each one.  That helps if we encounter any issues down the line.",
+      "range": {
+        "startLine": 9,
+        "startChar": 27,
+        "endLine": 9,
+        "endChar": 38
+      },
+      "revId": "5b58bf5393fbc471a8a424678f5710f6775ff6b5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "7f94e391_787ef9f8",
@@ -14,6 +37,47 @@
       "writtenOn": "2022-02-22T18:47:39Z",
       "side": 1,
       "message": "I double checked and dEQP-VK.api.buffer.basic.size_max_uint64 going from PASS to NOT_SUPPORTED is an expected outcome of specifying a value for VkPhysicalDeviceMaintenance4Properties::maxBufferSize smaller than UINT64_MAX.",
+      "revId": "5b58bf5393fbc471a8a424678f5710f6775ff6b5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5be701cc_ae18a05f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-23T15:22:30Z",
+      "side": 1,
+      "message": "Sounds good. Thanks for checking that.",
+      "parentUuid": "7f94e391_787ef9f8",
+      "revId": "5b58bf5393fbc471a8a424678f5710f6775ff6b5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b49832cf_6fecc71f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4131,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-23T15:22:30Z",
+      "side": 1,
+      "message": "Can we call a static `Image::GetMemoryRequirements()` for `vkGetDeviceImageMemoryRequirements()` below as well or is that too convoluted (and if it is, is it justified complexity or should we consider refactoring things)?",
+      "range": {
+        "startLine": 4131,
+        "startChar": 17,
+        "endLine": 4131,
+        "endChar": 38
+      },
       "revId": "5b58bf5393fbc471a8a424678f5710f6775ff6b5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
