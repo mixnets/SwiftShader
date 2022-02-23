@@ -128,6 +128,30 @@
       },
       "revId": "5b58bf5393fbc471a8a424678f5710f6775ff6b5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1f90908_bfe845a3",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4131,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-23T19:29:53Z",
+      "side": 1,
+      "message": "Partially moved some logic to VkImage.cpp, but leaving all objects creation in libVulkan.cpp for simplicity. PTAL.",
+      "parentUuid": "b5bed6ad_93ddf027",
+      "range": {
+        "startLine": 4131,
+        "startChar": 17,
+        "endLine": 4131,
+        "endChar": 38
+      },
+      "revId": "5b58bf5393fbc471a8a424678f5710f6775ff6b5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
