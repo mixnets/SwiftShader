@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "82acecfe_e8793a15",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-23T02:00:07Z",
+      "side": 1,
+      "message": "LGTM with minor change:",
+      "revId": "454857580a1f8ff2bc930b7007f0755789aef9fd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0527506a_59321441",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 476,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-23T02:00:07Z",
+      "side": 1,
+      "message": "Not debug info specific, as far as I can tell. Just `NonSemanticInfo` should do?",
+      "range": {
+        "startLine": 476,
+        "startChar": 14,
+        "endLine": 476,
+        "endChar": 32
+      },
+      "revId": "454857580a1f8ff2bc930b7007f0755789aef9fd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
