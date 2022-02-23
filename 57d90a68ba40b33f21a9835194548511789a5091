@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18d7a400_9d89921e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-23T14:47:08Z",
+      "side": 1,
+      "message": "LGTM but b/204502119 doesn\u0027t appear completely fixed yet.",
+      "revId": "57d90a68ba40b33f21a9835194548511789a5091",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
