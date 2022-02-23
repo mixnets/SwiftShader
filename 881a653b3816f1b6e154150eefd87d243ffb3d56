@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b72da75_9c6571c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101296
+      },
+      "writtenOn": "2022-02-23T23:59:08Z",
+      "side": 1,
+      "message": "So I added the option to use the latest version of LLVM as a submodule.\nAs this is my first commit for this repository I\u0027m looking forward to learn about style guidelines (that I probably did not follow).",
+      "revId": "881a653b3816f1b6e154150eefd87d243ffb3d56",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
