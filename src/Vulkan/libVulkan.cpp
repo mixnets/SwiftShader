@@ -4103,12 +4103,31 @@ VKAPI_ATTR void VKAPI_CALL vkGetDeviceImageMemoryRequirements(VkDevice device, c
 {
 	TRACE("(VkDevice device = %p, const VkDeviceImageMemoryRequirements* pInfo = %p, VkMemoryRequirements2* pMemoryRequirements = %p)",
 	      device, pInfo, pMemoryRequirements);
+
+	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pInfo->pNext);
+	while(extInfo)
+	{
+		UNSUPPORTED("pInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
+		extInfo = extInfo->pNext;
+	}
+
+	pMemoryRequirements->memoryRequirements = {};
+	const VkAllocationCallbacks *pAllocator = nullptr;
+	VkImage image = { VK_NULL_HANDLE };
+	VkResult result = vk::Image::Create(pAllocator, pInfo->pCreateInfo, &image, vk::Cast(device));
+	if(result == VK_SUCCESS)
+	{
+		vk::Cast(image)->getMemoryRequirements(pMemoryRequirements);
+	}
+	vk::destroy(image, pAllocator);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetDeviceImageSparseMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements)
 {
 	TRACE("(VkDevice device = %p, const VkDeviceImageMemoryRequirements* pInfo = %p, uint32_t* pSparseMemoryRequirementCount = %p, VkSparseImageMemoryRequirements2* pSparseMemoryRequirements = %p)",
 	      device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
+
+	*pSparseMemoryRequirementCount = 0;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern)
