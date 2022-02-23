@@ -34,6 +34,23 @@
       "parentUuid": "5ef07608_94224a01",
       "revId": "221460601ae27ca05e95409554a4f251b76ff73e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0bd6648b_f2c552bf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-23T18:23:50Z",
+      "side": 1,
+      "message": "Uniform block code already landed. Trivial CL PTAL.",
+      "revId": "221460601ae27ca05e95409554a4f251b76ff73e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
