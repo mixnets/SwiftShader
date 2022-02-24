@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5fa7cee8_aef59cce",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T14:52:46Z",
+      "side": 1,
+      "message": "note: Was only broken on Windows, where DAZ mode was enabled, but https://swiftshader-review.googlesource.com/c/SwiftShader/+/56889 will also enable it for other operating systems.",
+      "range": {
+        "startLine": 17,
+        "startChar": 6,
+        "endLine": 17,
+        "endChar": 45
+      },
+      "revId": "f58bfb8116290360a61d5a2076ad38cdb47cd523",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
