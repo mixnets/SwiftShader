@@ -355,6 +355,10 @@ void Image::getSubresourceLayout(const VkImageSubresource *pSubresource, VkSubre
 
 	auto aspect = static_cast<VkImageAspectFlagBits>(pSubresource->aspectMask);
 	pLayout->offset = getMemoryOffset(aspect, pSubresource->mipLevel, pSubresource->arrayLayer);
+	if(deviceMemory && !deviceMemory->hasExternalImageProperties())
+	{
+		pLayout->offset -= memoryOffset;
+	}
 	pLayout->size = getMultiSampledLevelSize(aspect, pSubresource->mipLevel);
 	pLayout->rowPitch = rowPitchBytes(aspect, pSubresource->mipLevel);
 	pLayout->depthPitch = slicePitchBytes(aspect, pSubresource->mipLevel);
