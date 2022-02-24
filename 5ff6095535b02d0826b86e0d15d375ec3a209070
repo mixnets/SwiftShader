@@ -80,6 +80,30 @@
       },
       "revId": "5ff6095535b02d0826b86e0d15d375ec3a209070",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5aa74961_6509e4c1",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-24T20:16:25Z",
+      "side": 1,
+      "message": "New version with small refactor. PTAL.",
+      "parentUuid": "5b1d9103_d3e2644a",
+      "range": {
+        "startLine": 139,
+        "startChar": 3,
+        "endLine": 139,
+        "endChar": 35
+      },
+      "revId": "5ff6095535b02d0826b86e0d15d375ec3a209070",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
