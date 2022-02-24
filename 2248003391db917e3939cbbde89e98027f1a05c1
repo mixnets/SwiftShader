@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "208aaade_0a7625a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T17:43:45Z",
+      "side": 1,
+      "message": "LGTM with the addition of a comment:",
+      "revId": "2248003391db917e3939cbbde89e98027f1a05c1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6aca6234_63ba0d04",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T17:43:45Z",
+      "side": 1,
+      "message": "Please add a comment, something along the lines of:\n\n// Initialization of workgroup memory is done by each subgroup and requires waiting on a barrier.\n// TODO(b/221242292): Initialize just once per workgroup and eliminate the barrier.",
+      "revId": "2248003391db917e3939cbbde89e98027f1a05c1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
