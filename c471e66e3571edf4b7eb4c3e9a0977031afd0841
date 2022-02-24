@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3fc06ea8_2c97eecb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T02:30:37Z",
+      "side": 1,
+      "message": "Note that practically half of the reports at [0] only have advancedBlendMaxColorAttachments \u003d 1, so if you want to support those devices it may require said complexity, and SwiftShader could help validate that implementation.\n\n[0] https://vulkan.gpuinfo.org/displayextensionproperty.php?extensionname\u003dVK_EXT_blend_operation_advanced\u0026extensionproperty\u003dadvancedBlendMaxColorAttachments\u0026platform\u003dandroid",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 55
+      },
+      "revId": "c471e66e3571edf4b7eb4c3e9a0977031afd0841",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
