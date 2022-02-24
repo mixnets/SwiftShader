@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d9b84a2_3f5d82c1",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 864,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T16:33:39Z",
+      "side": 1,
+      "message": "Because it avoids the bitwise not. See comment at 841.",
+      "parentUuid": "cd4ddd22_70404939",
+      "range": {
+        "startLine": 864,
+        "startChar": 8,
+        "endLine": 864,
+        "endChar": 47
+      },
+      "revId": "5b478004223ae1be455f69cdf8e638f4f220c679",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "548af385_8864bf3d",
@@ -54,6 +78,30 @@
       "writtenOn": "2022-02-24T15:12:08Z",
       "side": 1,
       "message": "Same",
+      "range": {
+        "startLine": 870,
+        "startChar": 8,
+        "endLine": 870,
+        "endChar": 49
+      },
+      "revId": "5b478004223ae1be455f69cdf8e638f4f220c679",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95bdc708_465371f1",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 870,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T16:33:39Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "548af385_8864bf3d",
       "range": {
         "startLine": 870,
         "startChar": 8,
