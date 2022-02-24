@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d3b475f4_148887a8",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 659,
+      "author": {
+        "id": 101296
+      },
+      "writtenOn": "2022-02-24T00:03:29Z",
+      "side": 1,
+      "message": "Should a build just assume host\u003dtarget or should I add all targets to llvm_libs for every build?",
+      "revId": "881a653b3816f1b6e154150eefd87d243ffb3d56",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "227774ef_111d3d58",
         "filename": "src/Reactor/LLVMJIT.cpp",
         "patchSetId": 1
