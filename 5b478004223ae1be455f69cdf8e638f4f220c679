@@ -89,6 +89,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "699c9c25_5b3ec7f3",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 864,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T18:31:01Z",
+      "side": 1,
+      "message": "I agree it\u0027s a little less readable, but it\u0027s very localized and still straightforward to understand when we have a reason to revisit this. I added the TODOs to make AllTrue/AnyFalse equally fast once we have full wide SIMD support. Note this file contains various building blocks that should be trusted to be fast, so some localized/temporary complexity is justified.",
+      "parentUuid": "ab13e234_94dd9313",
+      "range": {
+        "startLine": 864,
+        "startChar": 8,
+        "endLine": 864,
+        "endChar": 47
+      },
+      "revId": "5b478004223ae1be455f69cdf8e638f4f220c679",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "548af385_8864bf3d",
