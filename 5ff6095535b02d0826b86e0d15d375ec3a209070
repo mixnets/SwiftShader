@@ -56,6 +56,30 @@
       },
       "revId": "5ff6095535b02d0826b86e0d15d375ec3a209070",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b1d9103_d3e2644a",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-24T19:30:29Z",
+      "side": 1,
+      "message": "FWIW, I don\u0027t think it contradicts the comment on line 2440. It says:\n\"Returns the view mask, or 1 if multiview is disabled\", which is true.\nIt doesn\u0027t say that returning 1 means that multiview is disabled. I understand the confusion, though, with this function potentially returning 0, but the function at line 2440 could not be used to determine whether or not multiview is enabled, since a value of 1 could mean both enabled or disabled.\nI\u0027ll look into refactoring this code to make it more centralized.",
+      "parentUuid": "1524d989_93afbdad",
+      "range": {
+        "startLine": 139,
+        "startChar": 3,
+        "endLine": 139,
+        "endChar": 35
+      },
+      "revId": "5ff6095535b02d0826b86e0d15d375ec3a209070",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
