@@ -70,6 +70,30 @@
       },
       "revId": "c471e66e3571edf4b7eb4c3e9a0977031afd0841",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d220f9f_3395ea10",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T02:50:06Z",
+      "side": 1,
+      "message": "Verified+1 has to be set manually, and we let the author do that since Kokoro and Regres results are non-blocking and there may be other tests they should verify.",
+      "parentUuid": "0671e148_ff1acf45",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 55
+      },
+      "revId": "c471e66e3571edf4b7eb4c3e9a0977031afd0841",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
