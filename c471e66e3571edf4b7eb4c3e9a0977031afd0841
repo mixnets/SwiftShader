@@ -94,6 +94,30 @@
       },
       "revId": "c471e66e3571edf4b7eb4c3e9a0977031afd0841",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef2afc8e_422eb1a3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-02-24T03:11:45Z",
+      "side": 1,
+      "message": "Ah ok, I guess I can Verify+1 now? I don\u0027t see anything from Regres. More importantly, I\u0027m not sure if Kokoro ran the VK CTS with this change, did it?",
+      "parentUuid": "6d220f9f_3395ea10",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 55
+      },
+      "revId": "c471e66e3571edf4b7eb4c3e9a0977031afd0841",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
