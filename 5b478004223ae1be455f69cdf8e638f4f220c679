@@ -65,6 +65,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab13e234_94dd9313",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 864,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-24T16:50:09Z",
+      "side": 1,
+      "message": "Is a \"bitwise not\" worth the weirdness in readability? Anyway, not going to hold the CL on this detail.",
+      "parentUuid": "6d9b84a2_3f5d82c1",
+      "range": {
+        "startLine": 864,
+        "startChar": 8,
+        "endLine": 864,
+        "endChar": 47
+      },
+      "revId": "5b478004223ae1be455f69cdf8e638f4f220c679",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "548af385_8864bf3d",
