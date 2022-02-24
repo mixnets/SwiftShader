@@ -16,6 +16,46 @@
       "message": "Updated my local dEQP checkout to catch these (hopefully) last 2 cases.",
       "revId": "5ff6095535b02d0826b86e0d15d375ec3a209070",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b8b4134_6a687b69",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T17:19:41Z",
+      "side": 1,
+      "message": "Good to have a working fix, but I think that having two sets multiview-related failures indicates we may need a small refactoring to make this code clearer:",
+      "revId": "5ff6095535b02d0826b86e0d15d375ec3a209070",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1524d989_93afbdad",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-24T17:19:41Z",
+      "side": 1,
+      "message": "This is getting quite confusing as it contradicts the comment at line 2440 (which is a different getViewMask(), but that\u0027s part of my point). Is this due to a semantic difference in the `viewMask` fields set by the application, and how we use internal variables with the same name? I suggest we use a different name then.\n\nDo we even have to treat multiview and non-multiview differently? There appear to be several conditionals to select between two similar methods. If we could consolidate e.g. `ImageView::clear()` and `clearWithLayerMask()` things could become more readable. Perhaps `layerMask` makes a good name for our internal version of `viewMask` which has bit 0 set to 1 when multiview is disabled?",
+      "range": {
+        "startLine": 139,
+        "startChar": 3,
+        "endLine": 139,
+        "endChar": 35
+      },
+      "revId": "5ff6095535b02d0826b86e0d15d375ec3a209070",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
