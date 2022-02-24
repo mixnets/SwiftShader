@@ -56,6 +56,10 @@ swiftshader_source_set("System") {
 
   include_dirs = [ ".." ]
 
+   defines = [
+     "SWIFTSHADER_LEGACY_PRECISION=true",  # TODO(chromium:1299047)
+  ]
+
   deps = [
     "../../third_party/marl:Marl",
   ]

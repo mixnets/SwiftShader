@@ -13,13 +13,18 @@
 // limitations under the License.
 
 #include "SwiftConfig.hpp"
+
 #include "CPUID.hpp"
 #include "Configurator.hpp"
 #include "Debug.hpp"
-
 #include "marl/scheduler.h"
 
 #include <algorithm>
+
+// TODO(chromium:1299047)
+#ifndef SWIFTSHADER_LEGACY_PRECISION
+#	define SWIFTSHADER_LEGACY_PRECISION false
+#endif
 
 namespace {
 
@@ -141,8 +146,11 @@ marl::Scheduler::Config getSchedulerConfiguration(const Configuration &config)
 	cfg.setWorkerThreadCount(threadCount);
 	cfg.setWorkerThreadAffinityPolicy(affinityPolicy);
 	cfg.setWorkerThreadInitializer([](int) {
-		sw::CPUID::setFlushToZero(true);
-		sw::CPUID::setDenormalsAreZero(true);
+		if(!SWIFTSHADER_LEGACY_PRECISION)  // TODO(chromium:1299047)
+		{
+			sw::CPUID::setFlushToZero(true);
+			sw::CPUID::setDenormalsAreZero(true);
+		}
 	});
 	return cfg;
 }
