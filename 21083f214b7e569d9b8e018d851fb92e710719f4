@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a673d29_e104e70a",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-25T14:11:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d2555bb0_74f7d1ae",
+      "range": {
+        "startLine": 96,
+        "startChar": 1,
+        "endLine": 96,
+        "endChar": 79
+      },
+      "revId": "21083f214b7e569d9b8e018d851fb92e710719f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fd33b691_5c354dd2",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-02-25T06:03:02Z",
       "side": 1,
       "message": "Move to previous CL.",
+      "range": {
+        "startLine": 44,
+        "startChar": 1,
+        "endLine": 44,
+        "endChar": 79
+      },
+      "revId": "21083f214b7e569d9b8e018d851fb92e710719f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac0f0117_25dfe67f",
+        "filename": "src/Vulkan/VkShaderModule.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-25T14:11:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd33b691_5c354dd2",
       "range": {
         "startLine": 44,
         "startChar": 1,
