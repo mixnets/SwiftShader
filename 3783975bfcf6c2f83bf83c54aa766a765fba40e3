@@ -56,6 +56,30 @@
       },
       "revId": "3783975bfcf6c2f83bf83c54aa766a765fba40e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4abf50c_9a6f64e1",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4117,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-25T04:33:36Z",
+      "side": 1,
+      "message": "I could absolutely write a refactor of vk::Image to handle this, but it would be quite large. Every function we\u0027ve ever written to compute an Image\u0027s size (related to mipmaps, layers, multisampling, slice, pitch, etc) depends on internal members of the Image object, so to re-write all this to be independent of the image object will require a relatively large change which would touch a lot of code in vk::Image. I\u0027ll try to do it as a follow-up after landing this to see if it\u0027s worth going down that route.",
+      "parentUuid": "17aa20ee_df825bd2",
+      "range": {
+        "startLine": 4117,
+        "startChar": 30,
+        "endLine": 4117,
+        "endChar": 36
+      },
+      "revId": "3783975bfcf6c2f83bf83c54aa766a765fba40e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
