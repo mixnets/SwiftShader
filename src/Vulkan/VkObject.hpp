@@ -18,7 +18,7 @@
 #include "VkConfig.hpp"
 #include "VkMemory.hpp"
 #include "System/Debug.hpp"
-
+#define WIN32_LEAN_AND_MEAN
 #include <vulkan/vk_icd.h>
 #undef None
 #undef Bool

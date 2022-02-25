@@ -15,6 +15,8 @@
 #ifndef Memory_hpp
 #define Memory_hpp
 
+#include "Types.hpp"
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -22,9 +24,9 @@ namespace sw {
 
 size_t memoryPageSize();
 
-void *allocateUninitialized(size_t bytes, size_t alignment = 16);  // Never initialized.
-void *allocateZero(size_t bytes, size_t alignment = 16);           // Always initialized to zero.
-void *allocateZeroOrPoison(size_t bytes, size_t alignment = 16);   // Initialized to zero, except in MemorySanitizer builds.
+byte *allocateUninitialized(size_t bytes, size_t alignment = 16);  // Never initialized.
+byte *allocateZero(size_t bytes, size_t alignment = 16);           // Always initialized to zero.
+byte *allocateZeroOrPoison(size_t bytes, size_t alignment = 16);   // Initialized to zero, except in MemorySanitizer builds.
 
 void freeMemory(void *memory);
 

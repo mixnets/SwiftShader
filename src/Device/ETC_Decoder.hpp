@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "System/Types.hpp"
+
 class ETC_Decoder
 {
 public:
@@ -35,5 +37,5 @@ public:
 	/// @param dstBpp         dst image bytes per pixel
 	/// @param inputType      src's format
 	/// @return               true if the decoding was performed
-	static bool Decode(const unsigned char *src, unsigned char *dst, int w, int h, int dstPitch, int dstBpp, InputType inputType);
+	static bool Decode(const uint8_t *src, uint8_t *dst, int w, int h, int dstPitch, int dstBpp, InputType inputType);
 };

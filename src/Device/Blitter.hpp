@@ -18,6 +18,7 @@
 #include "Memset.hpp"
 #include "RoutineCache.hpp"
 #include "Reactor/Reactor.hpp"
+#include "System/Types.hpp"
 #include "Vulkan/VkFormat.hpp"
 
 #include "marl/mutex.h"
@@ -146,7 +147,7 @@ public:
 	void blit(const vk::Image *src, vk::Image *dst, VkImageBlit2KHR region, VkFilter filter);
 	void resolve(const vk::Image *src, vk::Image *dst, VkImageResolve2KHR region);
 	void resolveDepthStencil(const vk::ImageView *src, vk::ImageView *dst, VkResolveModeFlagBits depthResolveMode, VkResolveModeFlagBits stencilResolveMode);
-	void copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch);
+	void copy(const vk::Image *src, byte *dst, unsigned int dstPitch);
 
 	void updateBorders(const vk::Image *image, const VkImageSubresource &subresource);
 

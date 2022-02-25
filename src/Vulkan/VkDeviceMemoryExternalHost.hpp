@@ -17,8 +17,10 @@
 
 #include "VkDeviceMemory.hpp"
 
+namespace vk {
+
 // Host-allocated memory and host-mapped foreign memory
-class ExternalMemoryHost : public vk::DeviceMemory, public vk::ObjectBase<ExternalMemoryHost, VkDeviceMemory>
+class ExternalMemoryHost : public DeviceMemory, public ObjectBase<ExternalMemoryHost, VkDeviceMemory>
 {
 public:
 	struct AllocateInfo
@@ -28,14 +30,14 @@ public:
 
 		AllocateInfo() = default;
 
-		AllocateInfo(const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo);
+		AllocateInfo(const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo);
 	};
 
 	static const VkExternalMemoryHandleTypeFlagBits typeFlagBit = (VkExternalMemoryHandleTypeFlagBits)(VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT | VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT);
 
-	static bool SupportsAllocateInfo(const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo);
+	static bool SupportsAllocateInfo(const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo);
 
-	explicit ExternalMemoryHost(const VkMemoryAllocateInfo *pCreateInfo, void *mem, const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, vk::Device *pDevice);
+	explicit ExternalMemoryHost(const VkMemoryAllocateInfo *pCreateInfo, void *mem, const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, Device *pDevice);
 
 	VkResult allocateBuffer() override;
 	void freeBuffer() override;
@@ -44,5 +46,7 @@ public:
 private:
 	AllocateInfo allocateInfo;
 };
+
+}  // namespace vk
 
 #endif  // VK_DEVICE_MEMORY_EXTERNAL_HOST_HPP_

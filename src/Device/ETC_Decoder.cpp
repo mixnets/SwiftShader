@@ -15,9 +15,9 @@
 #include "ETC_Decoder.hpp"
 
 namespace {
-inline unsigned char clampByte(int value)
+inline uint8_t clampByte(int value)
 {
-	return static_cast<unsigned char>((value < 0) ? 0 : ((value > 255) ? 255 : value));
+	return static_cast<uint8_t>((value < 0) ? 0 : ((value > 255) ? 255 : value));
 }
 
 inline signed char clampSByte(int value)
@@ -34,10 +34,10 @@ inline short clampEAC(int value, bool isSigned)
 
 struct bgra8
 {
-	unsigned char b;
-	unsigned char g;
-	unsigned char r;
-	unsigned char a;
+	uint8_t b;
+	uint8_t g;
+	uint8_t r;
+	uint8_t a;
 
 	inline bgra8()
 	{
@@ -58,7 +58,7 @@ struct bgra8
 		a = clampByte(alpha);
 	}
 
-	const bgra8 &addA(unsigned char alpha)
+	const bgra8 &addA(uint8_t alpha)
 	{
 		a = alpha;
 		return *this;
@@ -88,7 +88,7 @@ inline int extend_7to8bits(int x)
 struct ETC2
 {
 	// Decodes unsigned single or dual channel block to bytes
-	static void DecodeBlock(const ETC2 **sources, unsigned char *dest, int nbChannels, int x, int y, int w, int h, int pitch, bool isSigned, bool isEAC)
+	static void DecodeBlock(const ETC2 **sources, uint8_t *dest, int nbChannels, int x, int y, int w, int h, int pitch, bool isSigned, bool isEAC)
 	{
 		if(isEAC)
 		{
@@ -140,7 +140,7 @@ struct ETC2
 	}
 
 	// Decodes RGB block to bgra8
-	void decodeBlock(unsigned char *dest, int x, int y, int w, int h, int pitch, unsigned char alphaValues[4][4], bool punchThroughAlpha) const
+	void decodeBlock(uint8_t *dest, int x, int y, int w, int h, int pitch, uint8_t alphaValues[4][4], bool punchThroughAlpha) const
 	{
 		bool opaqueBit = diffbit;
 		bool nonOpaquePunchThroughAlpha = punchThroughAlpha && !opaqueBit;
@@ -191,128 +191,128 @@ private:
 						{
 							struct  // Individual colors
 							{
-								unsigned char R2 : 4;
-								unsigned char R1 : 4;
-								unsigned char G2 : 4;
-								unsigned char G1 : 4;
-								unsigned char B2 : 4;
-								unsigned char B1 : 4;
+								uint8_t R2 : 4;
+								uint8_t R1 : 4;
+								uint8_t G2 : 4;
+								uint8_t G1 : 4;
+								uint8_t B2 : 4;
+								uint8_t B1 : 4;
 							};
 
 							struct  // Differential colors
 							{
 								signed char dR : 3;
-								unsigned char R : 5;
+								uint8_t R : 5;
 								signed char dG : 3;
-								unsigned char G : 5;
+								uint8_t G : 5;
 								signed char dB : 3;
-								unsigned char B : 5;
+								uint8_t B : 5;
 							};
 						};
 
-						bool flipbit : 1;
-						bool diffbit : 1;
-						unsigned char cw2 : 3;
-						unsigned char cw1 : 3;
+						uint8_t flipbit : 1;
+						uint8_t diffbit : 1;
+						uint8_t cw2 : 3;
+						uint8_t cw1 : 3;
 					};
 
 					// T mode
 					struct
 					{
 						// Byte 1
-						unsigned char TR1b : 2;
-						unsigned char TunusedB : 1;
-						unsigned char TR1a : 2;
-						unsigned char TunusedA : 3;
+						uint8_t TR1b : 2;
+						uint8_t TunusedB : 1;
+						uint8_t TR1a : 2;
+						uint8_t TunusedA : 3;
 
 						// Byte 2
-						unsigned char TB1 : 4;
-						unsigned char TG1 : 4;
+						uint8_t TB1 : 4;
+						uint8_t TG1 : 4;
 
 						// Byte 3
-						unsigned char TG2 : 4;
-						unsigned char TR2 : 4;
+						uint8_t TG2 : 4;
+						uint8_t TR2 : 4;
 
 						// Byte 4
-						unsigned char Tdb : 1;
-						bool Tflipbit : 1;
-						unsigned char Tda : 2;
-						unsigned char TB2 : 4;
+						uint8_t Tdb : 1;
+						uint8_t Tflipbit : 1;
+						uint8_t Tda : 2;
+						uint8_t TB2 : 4;
 					};
 
 					// H mode
 					struct
 					{
 						// Byte 1
-						unsigned char HG1a : 3;
-						unsigned char HR1 : 4;
-						unsigned char HunusedA : 1;
+						uint8_t HG1a : 3;
+						uint8_t HR1 : 4;
+						uint8_t HunusedA : 1;
 
 						// Byte 2
-						unsigned char HB1b : 2;
-						unsigned char HunusedC : 1;
-						unsigned char HB1a : 1;
-						unsigned char HG1b : 1;
-						unsigned char HunusedB : 3;
+						uint8_t HB1b : 2;
+						uint8_t HunusedC : 1;
+						uint8_t HB1a : 1;
+						uint8_t HG1b : 1;
+						uint8_t HunusedB : 3;
 
 						// Byte 3
-						unsigned char HG2a : 3;
-						unsigned char HR2 : 4;
-						unsigned char HB1c : 1;
+						uint8_t HG2a : 3;
+						uint8_t HR2 : 4;
+						uint8_t HB1c : 1;
 
 						// Byte 4
-						unsigned char Hdb : 1;
-						bool Hflipbit : 1;
-						unsigned char Hda : 1;
-						unsigned char HB2 : 4;
-						unsigned char HG2b : 1;
+						uint8_t Hdb : 1;
+						uint8_t Hflipbit : 1;
+						uint8_t Hda : 1;
+						uint8_t HB2 : 4;
+						uint8_t HG2b : 1;
 					};
 				};
 
-				unsigned char pixelIndexMSB[2];
-				unsigned char pixelIndexLSB[2];
+				uint8_t pixelIndexMSB[2];
+				uint8_t pixelIndexLSB[2];
 			};
 
 			// planar mode
 			struct
 			{
 				// Byte 1
-				unsigned char GO1 : 1;
-				unsigned char RO : 6;
-				unsigned char PunusedA : 1;
+				uint8_t GO1 : 1;
+				uint8_t RO : 6;
+				uint8_t PunusedA : 1;
 
 				// Byte 2
-				unsigned char BO1 : 1;
-				unsigned char GO2 : 6;
-				unsigned char PunusedB : 1;
+				uint8_t BO1 : 1;
+				uint8_t GO2 : 6;
+				uint8_t PunusedB : 1;
 
 				// Byte 3
-				unsigned char BO3a : 2;
-				unsigned char PunusedD : 1;
-				unsigned char BO2 : 2;
-				unsigned char PunusedC : 3;
+				uint8_t BO3a : 2;
+				uint8_t PunusedD : 1;
+				uint8_t BO2 : 2;
+				uint8_t PunusedC : 3;
 
 				// Byte 4
-				unsigned char RH2 : 1;
-				bool Pflipbit : 1;
-				unsigned char RH1 : 5;
-				unsigned char BO3b : 1;
+				uint8_t RH2 : 1;
+				uint8_t Pflipbit : 1;
+				uint8_t RH1 : 5;
+				uint8_t BO3b : 1;
 
 				// Byte 5
-				unsigned char BHa : 1;
-				unsigned char GH : 7;
+				uint8_t BHa : 1;
+				uint8_t GH : 7;
 
 				// Byte 6
-				unsigned char RVa : 3;
-				unsigned char BHb : 5;
+				uint8_t RVa : 3;
+				uint8_t BHb : 5;
 
 				// Byte 7
-				unsigned char GVa : 5;
-				unsigned char RVb : 3;
+				uint8_t GVa : 5;
+				uint8_t RVb : 3;
 
 				// Byte 8
-				unsigned char BV : 6;
-				unsigned char GVb : 2;
+				uint8_t BV : 6;
+				uint8_t GVb : 2;
 			};
 
 			// Single channel block
@@ -320,43 +320,43 @@ private:
 			{
 				union
 				{
-					unsigned char base_codeword;
+					uint8_t base_codeword;
 					signed char signed_base_codeword;
 				};
 
-				unsigned char table_index : 4;
-				unsigned char multiplier : 4;
+				uint8_t table_index : 4;
+				uint8_t multiplier : 4;
 
-				unsigned char mc1 : 2;
-				unsigned char mb : 3;
-				unsigned char ma : 3;
+				uint8_t mc1 : 2;
+				uint8_t mb : 3;
+				uint8_t ma : 3;
 
-				unsigned char mf1 : 1;
-				unsigned char me : 3;
-				unsigned char md : 3;
-				unsigned char mc2 : 1;
+				uint8_t mf1 : 1;
+				uint8_t me : 3;
+				uint8_t md : 3;
+				uint8_t mc2 : 1;
 
-				unsigned char mh : 3;
-				unsigned char mg : 3;
-				unsigned char mf2 : 2;
+				uint8_t mh : 3;
+				uint8_t mg : 3;
+				uint8_t mf2 : 2;
 
-				unsigned char mk1 : 2;
-				unsigned char mj : 3;
-				unsigned char mi : 3;
+				uint8_t mk1 : 2;
+				uint8_t mj : 3;
+				uint8_t mi : 3;
 
-				unsigned char mn1 : 1;
-				unsigned char mm : 3;
-				unsigned char ml : 3;
-				unsigned char mk2 : 1;
+				uint8_t mn1 : 1;
+				uint8_t mm : 3;
+				uint8_t ml : 3;
+				uint8_t mk2 : 1;
 
-				unsigned char mp : 3;
-				unsigned char mo : 3;
-				unsigned char mn2 : 2;
+				uint8_t mp : 3;
+				uint8_t mo : 3;
+				uint8_t mn2 : 2;
 			};
 		};
 	};
 
-	void decodeIndividualBlock(unsigned char *dest, int x, int y, int w, int h, int pitch, unsigned char alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
+	void decodeIndividualBlock(uint8_t *dest, int x, int y, int w, int h, int pitch, uint8_t alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
 	{
 		int r1 = extend_4to8bits(R1);
 		int g1 = extend_4to8bits(G1);
@@ -369,7 +369,7 @@ private:
 		decodeIndividualOrDifferentialBlock(dest, x, y, w, h, pitch, r1, g1, b1, r2, g2, b2, alphaValues, nonOpaquePunchThroughAlpha);
 	}
 
-	void decodeDifferentialBlock(unsigned char *dest, int x, int y, int w, int h, int pitch, unsigned char alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
+	void decodeDifferentialBlock(uint8_t *dest, int x, int y, int w, int h, int pitch, uint8_t alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
 	{
 		int b1 = extend_5to8bits(B);
 		int g1 = extend_5to8bits(G);
@@ -382,7 +382,7 @@ private:
 		decodeIndividualOrDifferentialBlock(dest, x, y, w, h, pitch, r1, g1, b1, r2, g2, b2, alphaValues, nonOpaquePunchThroughAlpha);
 	}
 
-	void decodeIndividualOrDifferentialBlock(unsigned char *dest, int x, int y, int w, int h, int pitch, int r1, int g1, int b1, int r2, int g2, int b2, unsigned char alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
+	void decodeIndividualOrDifferentialBlock(uint8_t *dest, int x, int y, int w, int h, int pitch, int r1, int g1, int b1, int r2, int g2, int b2, uint8_t alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
 	{
 		// Table 3.17.2 sorted according to table 3.17.3
 		static const int intensityModifierDefault[8][4] = {
@@ -433,7 +433,7 @@ private:
 		subblockColors1[2].set(r2 + i22, g2 + i22, b2 + i22);
 		subblockColors1[3].set(r2 + i23, g2 + i23, b2 + i23);
 
-		unsigned char *destStart = dest;
+		uint8_t *destStart = dest;
 
 		if(flipbit)
 		{
@@ -476,7 +476,7 @@ private:
 		}
 	}
 
-	void decodeTBlock(unsigned char *dest, int x, int y, int w, int h, int pitch, unsigned char alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
+	void decodeTBlock(uint8_t *dest, int x, int y, int w, int h, int pitch, uint8_t alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
 	{
 		// Table C.8, distance index fot T and H modes
 		static const int distance[8] = { 3, 6, 11, 16, 23, 32, 41, 64 };
@@ -498,7 +498,7 @@ private:
 		paintColors[2].set(r2, g2, b2);
 		paintColors[3].set(r2 - d, g2 - d, b2 - d);
 
-		unsigned char *destStart = dest;
+		uint8_t *destStart = dest;
 
 		for(int j = 0; j < 4 && (y + j) < h; j++)
 		{
@@ -516,7 +516,7 @@ private:
 		}
 	}
 
-	void decodeHBlock(unsigned char *dest, int x, int y, int w, int h, int pitch, unsigned char alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
+	void decodeHBlock(uint8_t *dest, int x, int y, int w, int h, int pitch, uint8_t alphaValues[4][4], bool nonOpaquePunchThroughAlpha) const
 	{
 		// Table C.8, distance index fot T and H modes
 		static const int distance[8] = { 3, 6, 11, 16, 23, 32, 41, 64 };
@@ -538,7 +538,7 @@ private:
 		paintColors[2].set(r2 + d, g2 + d, b2 + d);
 		paintColors[3].set(r2 - d, g2 - d, b2 - d);
 
-		unsigned char *destStart = dest;
+		uint8_t *destStart = dest;
 
 		for(int j = 0; j < 4 && (y + j) < h; j++)
 		{
@@ -556,7 +556,7 @@ private:
 		}
 	}
 
-	void decodePlanarBlock(unsigned char *dest, int x, int y, int w, int h, int pitch, unsigned char alphaValues[4][4]) const
+	void decodePlanarBlock(uint8_t *dest, int x, int y, int w, int h, int pitch, uint8_t alphaValues[4][4]) const
 	{
 		int ro = extend_6to8bits(RO);
 		int go = extend_7to8bits(GO1 << 6 | GO2);
@@ -597,7 +597,7 @@ private:
 		return (msb << 1) | lsb;
 	}
 
-	void decodePunchThroughAlphaBlock(unsigned char *dest, int x, int y, int w, int h, int pitch) const
+	void decodePunchThroughAlphaBlock(uint8_t *dest, int x, int y, int w, int h, int pitch) const
 	{
 		for(int j = 0; j < 4 && (y + j) < h; j++)
 		{
@@ -667,12 +667,12 @@ private:
 }  // namespace
 
 // Decodes 1 to 4 channel images to 8 bit output
-bool ETC_Decoder::Decode(const unsigned char *src, unsigned char *dst, int w, int h, int dstPitch, int dstBpp, InputType inputType)
+bool ETC_Decoder::Decode(const uint8_t *src, uint8_t *dst, int w, int h, int dstPitch, int dstBpp, InputType inputType)
 {
 	const ETC2 *sources[2];
 	sources[0] = (const ETC2 *)src;
 
-	unsigned char alphaValues[4][4] = { { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, { 255, 255, 255, 255 } };
+	uint8_t alphaValues[4][4] = { { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, { 255, 255, 255, 255 } };
 
 	switch(inputType)
 	{
@@ -680,7 +680,7 @@ bool ETC_Decoder::Decode(const unsigned char *src, unsigned char *dst, int w, in
 	case ETC_R_UNSIGNED:
 		for(int y = 0; y < h; y += 4)
 		{
-			unsigned char *dstRow = dst + (y * dstPitch);
+			uint8_t *dstRow = dst + (y * dstPitch);
 			for(int x = 0; x < w; x += 4, sources[0]++)
 			{
 				ETC2::DecodeBlock(sources, dstRow + (x * dstBpp), 1, x, y, w, h, dstPitch, inputType == ETC_R_SIGNED, true);
@@ -692,7 +692,7 @@ bool ETC_Decoder::Decode(const unsigned char *src, unsigned char *dst, int w, in
 		sources[1] = sources[0] + 1;
 		for(int y = 0; y < h; y += 4)
 		{
-			unsigned char *dstRow = dst + (y * dstPitch);
+			uint8_t *dstRow = dst + (y * dstPitch);
 			for(int x = 0; x < w; x += 4, sources[0] += 2, sources[1] += 2)
 			{
 				ETC2::DecodeBlock(sources, dstRow + (x * dstBpp), 2, x, y, w, h, dstPitch, inputType == ETC_RG_SIGNED, true);
@@ -703,7 +703,7 @@ bool ETC_Decoder::Decode(const unsigned char *src, unsigned char *dst, int w, in
 	case ETC_RGB_PUNCHTHROUGH_ALPHA:
 		for(int y = 0; y < h; y += 4)
 		{
-			unsigned char *dstRow = dst + (y * dstPitch);
+			uint8_t *dstRow = dst + (y * dstPitch);
 			for(int x = 0; x < w; x += 4, sources[0]++)
 			{
 				sources[0]->decodeBlock(dstRow + (x * dstBpp), x, y, w, h, dstPitch, alphaValues, inputType == ETC_RGB_PUNCHTHROUGH_ALPHA);
@@ -713,7 +713,7 @@ bool ETC_Decoder::Decode(const unsigned char *src, unsigned char *dst, int w, in
 	case ETC_RGBA:
 		for(int y = 0; y < h; y += 4)
 		{
-			unsigned char *dstRow = dst + (y * dstPitch);
+			uint8_t *dstRow = dst + (y * dstPitch);
 			for(int x = 0; x < w; x += 4)
 			{
 				// Decode Alpha

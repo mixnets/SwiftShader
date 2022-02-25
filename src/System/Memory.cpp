@@ -53,7 +53,7 @@ namespace {
 struct Allocation
 {
 	// size_t bytes;
-	unsigned char *block;
+	byte *block;
 };
 
 }  // anonymous namespace
@@ -73,13 +73,13 @@ size_t memoryPageSize()
 	return pageSize;
 }
 
-static void *allocate(size_t bytes, size_t alignment, bool clearToZero)
+static byte *allocate(size_t bytes, size_t alignment, bool clearToZero)
 {
 	ASSERT((alignment & (alignment - 1)) == 0);  // Power of 2 alignment.
 
 	size_t size = bytes + sizeof(Allocation) + alignment;
-	unsigned char *block = (unsigned char *)malloc(size);
-	unsigned char *aligned = nullptr;
+	byte *block = (byte *)malloc(size);
+	byte *aligned = nullptr;
 
 	if(block)
 	{
@@ -88,7 +88,7 @@ static void *allocate(size_t bytes, size_t alignment, bool clearToZero)
 			memset(block, 0, size);
 		}
 
-		aligned = (unsigned char *)((uintptr_t)(block + sizeof(Allocation) + alignment - 1) & -(intptr_t)alignment);
+		aligned = (byte *)((uintptr_t)(block + sizeof(Allocation) + alignment - 1) & -(intptr_t)alignment);
 		Allocation *allocation = (Allocation *)(aligned - sizeof(Allocation));
 
 		// allocation->bytes = bytes;
@@ -99,19 +99,19 @@ static void *allocate(size_t bytes, size_t alignment, bool clearToZero)
 }
 
 // TODO(b/140991626): Rename to allocate().
-void *allocateUninitialized(size_t bytes, size_t alignment)
+byte *allocateUninitialized(size_t bytes, size_t alignment)
 {
 	return allocate(bytes, alignment, false);
 }
 
-void *allocateZero(size_t bytes, size_t alignment)
+byte *allocateZero(size_t bytes, size_t alignment)
 {
 	return allocate(bytes, alignment, true);
 }
 
 // This funtion allocates memory that is zero-initialized for security reasons
 // only. In MemorySanitizer enabled builds it is left uninitialized.
-void *allocateZeroOrPoison(size_t bytes, size_t alignment)
+byte *allocateZeroOrPoison(size_t bytes, size_t alignment)
 {
 	return allocate(bytes, alignment, !__has_feature(memory_sanitizer));
 }
@@ -120,7 +120,7 @@ void freeMemory(void *memory)
 {
 	if(memory)
 	{
-		unsigned char *aligned = (unsigned char *)memory;
+		byte *aligned = (byte *)memory;
 		Allocation *allocation = (Allocation *)(aligned - sizeof(Allocation));
 
 		free(allocation->block);

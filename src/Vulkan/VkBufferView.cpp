@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkBufferView.hpp"
+
 #include "VkBuffer.hpp"
 #include "VkFormat.hpp"
 
@@ -34,9 +35,9 @@ BufferView::BufferView(const VkBufferViewCreateInfo *pCreateInfo, void *mem)
 	}
 }
 
-void *BufferView::getPointer() const
+byte *BufferView::getPointer() const
 {
-	return buffer->getOffsetPointer(offset);
+	return buffer->getPointer() + offset;
 }
 
 }  // namespace vk

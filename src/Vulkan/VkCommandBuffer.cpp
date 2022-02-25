@@ -315,7 +315,7 @@ public:
 
 	void execute(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		auto cmd = reinterpret_cast<VkDispatchIndirectCommand const *>(buffer->getOffsetPointer(offset));
+		auto cmd = reinterpret_cast<const VkDispatchIndirectCommand *>(buffer->getPointer() + offset);
 
 		auto const &pipelineState = executionState.pipelineState[VK_PIPELINE_BIND_POINT_COMPUTE];
 
@@ -985,7 +985,7 @@ public:
 	{
 		for(auto drawId = 0u; drawId < drawCount; drawId++)
 		{
-			auto cmd = reinterpret_cast<VkDrawIndirectCommand const *>(buffer->getOffsetPointer(offset + drawId * stride));
+			auto cmd = reinterpret_cast<const VkDrawIndirectCommand *>(buffer->getPointer() + offset + drawId * stride);
 			draw(executionState, false, cmd->vertexCount, cmd->instanceCount, 0, cmd->firstVertex, cmd->firstInstance);
 		}
 	}
@@ -1014,7 +1014,7 @@ public:
 	{
 		for(auto drawId = 0u; drawId < drawCount; drawId++)
 		{
-			auto cmd = reinterpret_cast<VkDrawIndexedIndirectCommand const *>(buffer->getOffsetPointer(offset + drawId * stride));
+			auto cmd = reinterpret_cast<const VkDrawIndexedIndirectCommand *>(buffer->getPointer() + offset + drawId * stride);
 			draw(executionState, true, cmd->indexCount, cmd->instanceCount, cmd->firstIndex, cmd->vertexOffset, cmd->firstInstance);
 		}
 	}
@@ -1666,7 +1666,7 @@ public:
 	void execute(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		queryPool->getResults(firstQuery, queryCount, dstBuffer->getSize() - dstOffset,
-		                      dstBuffer->getOffsetPointer(dstOffset), stride, flags);
+		                      dstBuffer->getPointer() + dstOffset, stride, flags);
 	}
 
 	std::string description() override { return "vkCmdCopyQueryPoolResults()"; }
@@ -1805,7 +1805,7 @@ VkResult CommandBuffer::reset(VkCommandPoolResetFlags flags)
 }
 
 template<typename T, typename... Args>
-void CommandBuffer::addCommand(Args &&... args)
+void CommandBuffer::addCommand(Args &&...args)
 {
 	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
 	commands.push_back(std::make_unique<T>(std::forward<Args>(args)...));

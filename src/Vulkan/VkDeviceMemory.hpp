@@ -16,6 +16,7 @@
 #define VK_DEVICE_MEMORY_HPP_
 
 #include "VkConfig.hpp"
+#include "VkMemory.hpp"
 #include "VkObject.hpp"
 
 namespace vk {
@@ -80,7 +81,7 @@ public:
 	VkResult allocate();
 	VkResult map(VkDeviceSize offset, VkDeviceSize size, void **ppData);
 	VkDeviceSize getCommittedMemoryInBytes() const;
-	void *getOffsetPointer(VkDeviceSize pOffset) const;
+	byte *getPointer() const;
 	uint32_t getMemoryTypeIndex() const { return memoryTypeIndex; }
 
 	// If this is external memory, return true iff its handle type matches the bitmask
@@ -117,7 +118,7 @@ protected:
 	}
 #endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 
-	void *buffer = nullptr;
+	byte *buffer = nullptr;
 	const VkDeviceSize allocationSize;
 	const uint32_t memoryTypeIndex;
 	Device *const device;

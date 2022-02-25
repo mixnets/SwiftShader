@@ -16,6 +16,7 @@
 #define sw_Types_hpp
 
 #include <cassert>
+#include <cstddef>
 #include <limits>
 #include <type_traits>
 
@@ -48,6 +49,8 @@ typedef unsigned __int64 uint64_t;
 #	define ALIGN(bytes, type) type __attribute__((aligned(bytes)))
 #endif
 
+using byte = std::byte;
+
 namespace sw {
 
 // assert_cast<> is like a static_cast<> which asserts that no information was lost.
@@ -73,7 +76,6 @@ constexpr inline uint32_t bit_ceil(uint32_t i)
 	return i;
 }
 
-typedef ALIGN(1, uint8_t) byte;
 typedef ALIGN(2, uint16_t) word;
 typedef ALIGN(4, uint32_t) dword;
 typedef ALIGN(8, uint64_t) qword;
@@ -209,19 +211,19 @@ using dword3 = vec3<dword>;
 using int4 = vec4<int>;
 using uint4 = vec4<unsigned int>;
 using float4 = vec4<float>;
-using byte4 = vec4<byte>;
+using byte4 = vec4<uint8_t>;
 using sbyte4 = vec4<sbyte>;
 using short4 = vec4<short>;
 using ushort4 = vec4<unsigned short>;
 using word4 = vec4<word>;
 using dword4 = vec4<dword>;
 
-using byte8 = vec8<byte>;
+using byte8 = vec8<uint8_t>;
 using sbyte8 = vec8<sbyte>;
 using short8 = vec8<short>;
 using ushort8 = vec8<unsigned short>;
 
-using byte16 = vec16<byte>;
+using byte16 = vec16<uint8_t>;
 using sbyte16 = vec16<sbyte>;
 
 inline constexpr float4 vector(float x, float y, float z, float w)

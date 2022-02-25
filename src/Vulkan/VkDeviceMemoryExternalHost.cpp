@@ -14,7 +14,9 @@
 
 #include "VkDeviceMemoryExternalHost.hpp"
 
-ExternalMemoryHost::AllocateInfo::AllocateInfo(const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo)
+namespace vk {
+
+ExternalMemoryHost::AllocateInfo::AllocateInfo(const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo)
 {
 	if(extendedAllocationInfo.importMemoryHostPointerInfo)
 	{
@@ -29,14 +31,14 @@ ExternalMemoryHost::AllocateInfo::AllocateInfo(const vk::DeviceMemory::ExtendedA
 	}
 }
 
-bool ExternalMemoryHost::SupportsAllocateInfo(const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo)
+bool ExternalMemoryHost::SupportsAllocateInfo(const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo)
 {
 	AllocateInfo info(extendedAllocationInfo);
 	return info.supported;
 }
 
-ExternalMemoryHost::ExternalMemoryHost(const VkMemoryAllocateInfo *pCreateInfo, void *mem, const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, vk::Device *pDevice)
-    : vk::DeviceMemory(pCreateInfo, pDevice)
+ExternalMemoryHost::ExternalMemoryHost(const VkMemoryAllocateInfo *pCreateInfo, void *mem, const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, Device *pDevice)
+    : DeviceMemory(pCreateInfo, pDevice)
     , allocateInfo(extendedAllocationInfo)
 {}
 
@@ -44,7 +46,7 @@ VkResult ExternalMemoryHost::allocateBuffer()
 {
 	if(allocateInfo.supported)
 	{
-		buffer = allocateInfo.hostPointer;
+		buffer = reinterpret_cast<byte *>(allocateInfo.hostPointer);
 		return VK_SUCCESS;
 	}
 	return VK_ERROR_INVALID_EXTERNAL_HANDLE;
@@ -57,3 +59,5 @@ VkExternalMemoryHandleTypeFlagBits ExternalMemoryHost::getFlagBit() const
 {
 	return typeFlagBit;
 }
+
+}  // namespace vk

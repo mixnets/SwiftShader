@@ -96,26 +96,26 @@ bool Buffer::canBindToMemory(DeviceMemory *pDeviceMemory) const
 
 void Buffer::bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset)
 {
-	memory = pDeviceMemory->getOffsetPointer(pMemoryOffset);
+	memory = pDeviceMemory->getPointer() + pMemoryOffset;
 }
 
 void Buffer::copyFrom(const void *srcMemory, VkDeviceSize pSize, VkDeviceSize pOffset)
 {
 	ASSERT((pSize + pOffset) <= size);
 
-	memcpy(getOffsetPointer(pOffset), srcMemory, pSize);
+	memcpy(getPointer() + pOffset, srcMemory, pSize);
 }
 
 void Buffer::copyTo(void *dstMemory, VkDeviceSize pSize, VkDeviceSize pOffset) const
 {
 	ASSERT((pSize + pOffset) <= size);
 
-	memcpy(dstMemory, getOffsetPointer(pOffset), pSize);
+	memcpy(dstMemory, getPointer() + pOffset, pSize);
 }
 
 void Buffer::copyTo(Buffer *dstBuffer, const VkBufferCopy2KHR &pRegion) const
 {
-	copyTo(dstBuffer->getOffsetPointer(pRegion.dstOffset), pRegion.size, pRegion.srcOffset);
+	copyTo(dstBuffer->getPointer() + pRegion.dstOffset, pRegion.size, pRegion.srcOffset);
 }
 
 void Buffer::fill(VkDeviceSize dstOffset, VkDeviceSize fillSize, uint32_t data)
@@ -124,7 +124,7 @@ void Buffer::fill(VkDeviceSize dstOffset, VkDeviceSize fillSize, uint32_t data)
 
 	ASSERT((bytes + dstOffset) <= size);
 
-	uint32_t *memToWrite = static_cast<uint32_t *>(getOffsetPointer(dstOffset));
+	uint32_t *memToWrite = reinterpret_cast<uint32_t *>(getPointer() + dstOffset);
 
 	// Vulkan 1.1 spec: "If VK_WHOLE_SIZE is used and the remaining size of the buffer is
 	//                   not a multiple of 4, then the nearest smaller multiple is used."
@@ -138,17 +138,17 @@ void Buffer::update(VkDeviceSize dstOffset, VkDeviceSize dataSize, const void *p
 {
 	ASSERT((dataSize + dstOffset) <= size);
 
-	memcpy(getOffsetPointer(dstOffset), pData, dataSize);
+	memcpy(getPointer() + dstOffset, pData, dataSize);
 }
 
-void *Buffer::getOffsetPointer(VkDeviceSize offset) const
+byte *Buffer::getPointer() const
 {
-	return reinterpret_cast<uint8_t *>(memory) + offset;
+	return reinterpret_cast<byte *>(memory);
 }
 
-uint8_t *Buffer::end() const
+byte *Buffer::end() const
 {
-	return reinterpret_cast<uint8_t *>(getOffsetPointer(size + 1));
+	return getPointer() + size + 1;
 }
 
 }  // namespace vk

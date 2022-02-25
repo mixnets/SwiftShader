@@ -37,9 +37,9 @@ public:
 	void copyTo(Buffer *dstBuffer, const VkBufferCopy2KHR &pRegion) const;
 	void fill(VkDeviceSize dstOffset, VkDeviceSize fillSize, uint32_t data);
 	void update(VkDeviceSize dstOffset, VkDeviceSize dataSize, const void *pData);
-	void *getOffsetPointer(VkDeviceSize offset) const;
+	byte *getPointer() const;
 	inline VkDeviceSize getSize() const { return size; }
-	uint8_t *end() const;
+	byte *end() const;
 	bool canBindToMemory(DeviceMemory *pDeviceMemory) const;
 
 	VkBufferUsageFlags getUsage() const { return usage; }

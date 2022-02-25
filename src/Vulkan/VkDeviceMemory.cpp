@@ -283,7 +283,7 @@ VkResult DeviceMemory::allocate()
 
 VkResult DeviceMemory::map(VkDeviceSize pOffset, VkDeviceSize pSize, void **ppData)
 {
-	*ppData = getOffsetPointer(pOffset);
+	*ppData = buffer + pOffset;
 
 	return VK_SUCCESS;
 }
@@ -293,10 +293,10 @@ VkDeviceSize DeviceMemory::getCommittedMemoryInBytes() const
 	return allocationSize;
 }
 
-void *DeviceMemory::getOffsetPointer(VkDeviceSize pOffset) const
+byte *DeviceMemory::getPointer() const
 {
 	ASSERT(buffer);
-	return reinterpret_cast<char *>(buffer) + pOffset;
+	return buffer;
 }
 
 bool DeviceMemory::checkExternalMemoryHandleType(

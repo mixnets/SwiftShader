@@ -110,7 +110,7 @@ void IndexBuffer::getIndexBuffers(VkPrimitiveTopology topology, uint32_t count, 
 
 	if(indexed)
 	{
-		void *indexBuffer = binding.buffer->getOffsetPointer(binding.offset + first * bytesPerIndex());
+		void *indexBuffer = binding.buffer->getPointer() + binding.offset + first * bytesPerIndex();
 		if(hasPrimitiveRestartEnable)
 		{
 			switch(indexType)
@@ -212,7 +212,7 @@ void Inputs::bindVertexInputs(int firstInstance)
 			const auto &vertexInput = vertexInputBindings[attrib.binding];
 			VkDeviceSize offset = attrib.offset + vertexInput.offset +
 			                      attrib.instanceStride * firstInstance;
-			attrib.buffer = vertexInput.buffer ? vertexInput.buffer->getOffsetPointer(offset) : nullptr;
+			attrib.buffer = vertexInput.buffer ? vertexInput.buffer->getPointer() + offset : nullptr;
 
 			VkDeviceSize size = vertexInput.buffer ? vertexInput.buffer->getSize() : 0;
 			attrib.robustnessSize = (size > offset) ? size - offset : 0;

@@ -15,20 +15,21 @@
 #ifndef VK_MEMORY_HPP_
 #define VK_MEMORY_HPP_
 
+#include "System/Types.hpp"
 #include "Vulkan/VulkanPlatform.hpp"
 
 namespace vk {
 
 // TODO(b/192449828): Pass VkDeviceDeviceMemoryReportCreateInfoEXT into these functions to
 // centralize device memory report callback usage.
-void *allocateDeviceMemory(size_t bytes, size_t alignment);
+byte *allocateDeviceMemory(size_t bytes, size_t alignment);
 void freeDeviceMemory(void *ptr);
 
 // TODO(b/201798871): Fix host allocation callback usage. Uses of this symbolic constant indicate
 // places where we should use an allocator instead of unaccounted memory allocations.
 constexpr VkAllocationCallbacks *NULL_ALLOCATION_CALLBACKS = nullptr;
 
-void *allocateHostMemory(size_t bytes, size_t alignment, const VkAllocationCallbacks *pAllocator,
+byte *allocateHostMemory(size_t bytes, size_t alignment, const VkAllocationCallbacks *pAllocator,
                          VkSystemAllocationScope allocationScope);
 void freeHostMemory(void *ptr, const VkAllocationCallbacks *pAllocator);
 

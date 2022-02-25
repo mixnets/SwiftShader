@@ -65,7 +65,7 @@ public:
 	void copyFrom(Buffer *srcBuffer, const VkBufferImageCopy2KHR &region);
 
 	void blitTo(Image *dstImage, const VkImageBlit2KHR &region, VkFilter filter) const;
-	void copyTo(uint8_t *dst, unsigned int dstPitch) const;
+	void copyTo(byte *dst, unsigned int dstPitch) const;
 	void resolveTo(Image *dstImage, const VkImageResolve2KHR &region) const;
 	void resolveDepthStencilTo(const ImageView *src, ImageView *dst, VkResolveModeFlagBits depthResolveMode, VkResolveModeFlagBits stencilResolveMode) const;
 	void clear(const VkClearValue &clearValue, const vk::Format &viewFormat, const VkRect2D &renderArea, const VkImageSubresourceRange &subresourceRange);
@@ -93,7 +93,7 @@ public:
 	void *getTexelPointer(const VkOffset3D &offset, const VkImageSubresource &subresource) const;
 	bool isCubeCompatible() const;
 	bool is3DSlice() const;
-	uint8_t *end() const;
+	byte *end() const;
 	VkDeviceSize getLayerSize(VkImageAspectFlagBits aspect) const;
 	VkDeviceSize getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	bool canBindToMemory(DeviceMemory *pDeviceMemory) const;
@@ -126,9 +126,9 @@ private:
 	VkDeviceSize getMultiSampledLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getLayerOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
-	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer) const;
+	VkDeviceSize getSubresourceOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer) const;
 	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D &offset, const VkImageSubresource &subresource) const;
-	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect) const;
+	VkDeviceSize getMemoryOffset_(VkImageAspectFlagBits aspect) const;
 	VkExtent3D imageExtentInBlocks(const VkExtent3D &extent, VkImageAspectFlagBits aspect) const;
 	VkOffset3D imageOffsetInBlocks(const VkOffset3D &offset, VkImageAspectFlagBits aspect) const;
 	VkExtent2D bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferImageCopy2KHR &region) const;

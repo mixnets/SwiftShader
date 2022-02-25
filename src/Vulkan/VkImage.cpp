@@ -232,26 +232,26 @@ const VkMemoryRequirements Image::getMemoryRequirements() const
 	return memoryRequirements;
 }
 
-void Image::getMemoryRequirements(VkMemoryRequirements2* pMemoryRequirements) const
+void Image::getMemoryRequirements(VkMemoryRequirements2 *pMemoryRequirements) const
 {
-	VkBaseOutStructure* extensionRequirements = reinterpret_cast<VkBaseOutStructure*>(pMemoryRequirements->pNext);
+	VkBaseOutStructure *extensionRequirements = reinterpret_cast<VkBaseOutStructure *>(pMemoryRequirements->pNext);
 	while(extensionRequirements)
 	{
 		switch(extensionRequirements->sType)
 		{
 		case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS:
-		{
-			auto requirements = reinterpret_cast<VkMemoryDedicatedRequirements*>(extensionRequirements);
-			device->getRequirements(requirements);
-#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
-			if(getSupportedExternalMemoryHandleTypes() == VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID)
 			{
-				requirements->prefersDedicatedAllocation = VK_TRUE;
-				requirements->requiresDedicatedAllocation = VK_TRUE;
-			}
+				auto requirements = reinterpret_cast<VkMemoryDedicatedRequirements *>(extensionRequirements);
+				device->getRequirements(requirements);
+#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+				if(getSupportedExternalMemoryHandleTypes() == VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID)
+				{
+					requirements->prefersDedicatedAllocation = VK_TRUE;
+					requirements->requiresDedicatedAllocation = VK_TRUE;
+				}
 #endif
-		}
-		break;
+			}
+			break;
 		default:
 			UNSUPPORTED("pMemoryRequirements->pNext sType = %s", vk::Stringify(extensionRequirements->sType).c_str());
 			break;
@@ -345,8 +345,8 @@ VkResult Image::prepareForExternalUseANDROID() const
 	int bufferRowBytes = backingMemory.stride * getFormat().bytes();
 	ASSERT(imageRowBytes <= bufferRowBytes);
 
-	uint8_t *srcBuffer = static_cast<uint8_t *>(deviceMemory->getOffsetPointer(0));
-	uint8_t *dstBuffer = static_cast<uint8_t *>(nativeBuffer);
+	byte *srcBuffer = static_cast<byte *>(deviceMemory->getOffsetPointer(0));
+	byte *dstBuffer = static_cast<byte *>(nativeBuffer);
 	for(uint32_t i = 0; i < extent.height; i++)
 	{
 		memcpy(dstBuffer + (i * bufferRowBytes), srcBuffer + (i * imageRowBytes), imageRowBytes);
@@ -385,7 +385,7 @@ void Image::getSubresourceLayout(const VkImageSubresource *pSubresource, VkSubre
 	}
 
 	auto aspect = static_cast<VkImageAspectFlagBits>(pSubresource->aspectMask);
-	pLayout->offset = getMemoryOffset(aspect, pSubresource->mipLevel, pSubresource->arrayLayer);
+	pLayout->offset = getSubresourceOffset(aspect, pSubresource->mipLevel, pSubresource->arrayLayer);
 	pLayout->size = getMultiSampledLevelSize(aspect, pSubresource->mipLevel);
 	pLayout->rowPitch = rowPitchBytes(aspect, pSubresource->mipLevel);
 	pLayout->depthPitch = slicePitchBytes(aspect, pSubresource->mipLevel);
@@ -505,8 +505,8 @@ void Image::copySingleAspectTo(Image *dstImage, const VkImageCopy2KHR &region) c
 	                     (copyExtent.height == dstExtent.height) &&
 	                     (srcDepthPitch == dstDepthPitch);
 
-	const uint8_t *srcLayer = static_cast<const uint8_t *>(getTexelPointer(region.srcOffset, ImageSubresource(region.srcSubresource)));
-	uint8_t *dstLayer = static_cast<uint8_t *>(dstImage->getTexelPointer(region.dstOffset, ImageSubresource(region.dstSubresource)));
+	const byte *srcLayer = static_cast<const byte *>(getTexelPointer(region.srcOffset, ImageSubresource(region.srcSubresource)));
+	byte *dstLayer = static_cast<byte *>(dstImage->getTexelPointer(region.dstOffset, ImageSubresource(region.dstSubresource)));
 
 	for(uint32_t layer = 0; layer < layerCount; layer++)
 	{
@@ -534,8 +534,8 @@ void Image::copySingleAspectTo(Image *dstImage, const VkImageCopy2KHR &region) c
 		else if(isEntireRow)  // Copy slice by slice
 		{
 			size_t sliceSize = copyExtent.height * srcRowPitch;
-			const uint8_t *srcSlice = srcLayer;
-			uint8_t *dstSlice = dstLayer;
+			const byte *srcSlice = srcLayer;
+			byte *dstSlice = dstLayer;
 
 			for(uint32_t z = 0; z < sliceCount; z++)
 			{
@@ -551,13 +551,13 @@ void Image::copySingleAspectTo(Image *dstImage, const VkImageCopy2KHR &region) c
 		else  // Copy row by row
 		{
 			size_t rowSize = copyExtent.width * bytesPerBlock;
-			const uint8_t *srcSlice = srcLayer;
-			uint8_t *dstSlice = dstLayer;
+			const byte *srcSlice = srcLayer;
+			byte *dstSlice = dstLayer;
 
 			for(uint32_t z = 0; z < sliceCount; z++)
 			{
-				const uint8_t *srcRow = srcSlice;
-				uint8_t *dstRow = dstSlice;
+				const byte *srcRow = srcSlice;
+				byte *dstRow = dstSlice;
 
 				for(uint32_t y = 0; y < copyExtent.height; y++)
 				{
@@ -614,10 +614,10 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy2KHR &region, bool buffe
 	int bufferSlicePitchBytes = bufferExtent.height * bufferRowPitchBytes;
 	ASSERT(samples == 1);
 
-	uint8_t *bufferMemory = static_cast<uint8_t *>(buffer->getOffsetPointer(region.bufferOffset));
-	uint8_t *imageMemory = static_cast<uint8_t *>(getTexelPointer(region.imageOffset, ImageSubresource(region.imageSubresource)));
-	uint8_t *srcMemory = bufferIsSource ? bufferMemory : imageMemory;
-	uint8_t *dstMemory = bufferIsSource ? imageMemory : bufferMemory;
+	byte *bufferMemory = buffer->getPointer() + region.bufferOffset;
+	byte *imageMemory = static_cast<byte *>(getTexelPointer(region.imageOffset, ImageSubresource(region.imageSubresource)));
+	byte *srcMemory = bufferIsSource ? bufferMemory : imageMemory;
+	byte *dstMemory = bufferIsSource ? imageMemory : bufferMemory;
 	int imageRowPitchBytes = rowPitchBytes(aspect, region.imageSubresource.mipLevel);
 	int imageSlicePitchBytes = slicePitchBytes(aspect, region.imageSubresource.mipLevel);
 
@@ -670,8 +670,8 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy2KHR &region, bool buffe
 		}
 		else if(isEntireRow)  // Copy slice by slice
 		{
-			uint8_t *srcSliceMemory = srcMemory;
-			uint8_t *dstSliceMemory = dstMemory;
+			byte *srcSliceMemory = srcMemory;
+			byte *dstSliceMemory = dstMemory;
 			for(uint32_t z = 0; z < imageExtent.depth; z++)
 			{
 				ASSERT(((bufferIsSource ? dstSliceMemory : srcSliceMemory) + copySize) < end());
@@ -683,12 +683,12 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy2KHR &region, bool buffe
 		}
 		else  // Copy row by row
 		{
-			uint8_t *srcLayerMemory = srcMemory;
-			uint8_t *dstLayerMemory = dstMemory;
+			byte *srcLayerMemory = srcMemory;
+			byte *dstLayerMemory = dstMemory;
 			for(uint32_t z = 0; z < imageExtent.depth; z++)
 			{
-				uint8_t *srcSliceMemory = srcLayerMemory;
-				uint8_t *dstSliceMemory = dstLayerMemory;
+				byte *srcSliceMemory = srcLayerMemory;
+				byte *dstSliceMemory = dstLayerMemory;
 				for(uint32_t y = 0; y < imageExtent.height; y++)
 				{
 					ASSERT(((bufferIsSource ? dstSliceMemory : srcSliceMemory) + copySize) < end());
@@ -725,8 +725,8 @@ void Image::copyFrom(Buffer *srcBuffer, const VkBufferImageCopy2KHR &region)
 void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresource &subresource) const
 {
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresource.aspectMask);
-	return deviceMemory->getOffsetPointer(texelOffsetBytesInStorage(offset, subresource) +
-	                                      getMemoryOffset(aspect, subresource.mipLevel, subresource.arrayLayer));
+	return deviceMemory->getPointer() + texelOffsetBytesInStorage(offset, subresource) +
+	       getSubresourceOffset(aspect, subresource.mipLevel, subresource.arrayLayer);
 }
 
 VkExtent3D Image::imageExtentInBlocks(const VkExtent3D &extent, VkImageAspectFlagBits aspect) const
@@ -907,12 +907,12 @@ bool Image::isCubeCompatible() const
 	return cubeCompatible;
 }
 
-uint8_t *Image::end() const
+byte *Image::end() const
 {
-	return reinterpret_cast<uint8_t *>(deviceMemory->getOffsetPointer(deviceMemory->getCommittedMemoryInBytes() + 1));
+	return deviceMemory->getPointer() + deviceMemory->getCommittedMemoryInBytes() + 1;
 }
 
-VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect) const
+VkDeviceSize Image::getMemoryOffset_(VkImageAspectFlagBits aspect) const
 {
 	if(deviceMemory && deviceMemory->hasExternalImageProperties())
 	{
@@ -959,7 +959,7 @@ VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect) const
 
 VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 {
-	VkDeviceSize offset = getMemoryOffset(aspect);
+	VkDeviceSize offset = getMemoryOffset_(aspect);
 	for(uint32_t i = 0; i < mipLevel; ++i)
 	{
 		offset += getMultiSampledLevelSize(aspect, i);
@@ -967,7 +967,7 @@ VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLe
 	return offset;
 }
 
-VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer) const
+VkDeviceSize Image::getSubresourceOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer) const
 {
 	return layer * getLayerOffset(aspect, mipLevel) + getMemoryOffset(aspect, mipLevel);
 }
@@ -1057,7 +1057,7 @@ void Image::blitTo(Image *dstImage, const VkImageBlit2KHR &region, VkFilter filt
 	device->getBlitter()->blit(decompressedImage ? decompressedImage : this, dstImage, region, filter);
 }
 
-void Image::copyTo(uint8_t *dst, unsigned int dstPitch) const
+void Image::copyTo(byte *dst, unsigned int dstPitch) const
 {
 	device->getBlitter()->copy(this, dst, dstPitch);
 }
@@ -1373,8 +1373,8 @@ void Image::decodeETC2(const VkImageSubresource &subresource) const
 
 	for(int32_t depth = 0; depth < static_cast<int32_t>(mipLevelExtent.depth); depth++)
 	{
-		uint8_t *source = static_cast<uint8_t *>(getTexelPointer({ 0, 0, depth }, subresource));
-		uint8_t *dest = static_cast<uint8_t *>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource));
+		byte *source = static_cast<byte *>(getTexelPointer({ 0, 0, depth }, subresource));
+		byte *dest = static_cast<byte *>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource));
 
 		if(fakeAlpha)
 		{
@@ -1382,8 +1382,8 @@ void Image::decodeETC2(const VkImageSubresource &subresource) const
 			memset(dest, 0xFF, sizeToWrite);
 		}
 
-		ETC_Decoder::Decode(source, dest, mipLevelExtent.width, mipLevelExtent.height,
-		                    pitchB, bytes, inputType);
+		ETC_Decoder::Decode(reinterpret_cast<uint8_t *>(source), reinterpret_cast<uint8_t *>(dest),
+		                    mipLevelExtent.width, mipLevelExtent.height, pitchB, bytes, inputType);
 	}
 }
 
@@ -1402,11 +1402,11 @@ void Image::decodeBC(const VkImageSubresource &subresource) const
 
 	for(int32_t depth = 0; depth < static_cast<int32_t>(mipLevelExtent.depth); depth++)
 	{
-		uint8_t *source = static_cast<uint8_t *>(getTexelPointer({ 0, 0, depth }, subresource));
-		uint8_t *dest = static_cast<uint8_t *>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource));
+		byte *source = static_cast<byte *>(getTexelPointer({ 0, 0, depth }, subresource));
+		byte *dest = static_cast<byte *>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource));
 
-		BC_Decoder::Decode(source, dest, mipLevelExtent.width, mipLevelExtent.height,
-		                   pitchB, bytes, n, noAlphaU);
+		BC_Decoder::Decode(reinterpret_cast<uint8_t *>(source), reinterpret_cast<uint8_t *>(dest),
+		                   mipLevelExtent.width, mipLevelExtent.height, pitchB, bytes, n, noAlphaU);
 	}
 }
 
@@ -1437,10 +1437,11 @@ void Image::decodeASTC(const VkImageSubresource &subresource) const
 
 	for(int32_t depth = 0; depth < static_cast<int32_t>(mipLevelExtent.depth); depth++)
 	{
-		uint8_t *source = static_cast<uint8_t *>(getTexelPointer({ 0, 0, depth }, subresource));
-		uint8_t *dest = static_cast<uint8_t *>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource));
+		byte *source = static_cast<byte *>(getTexelPointer({ 0, 0, depth }, subresource));
+		byte *dest = static_cast<byte *>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource));
 
-		ASTC_Decoder::Decode(source, dest, mipLevelExtent.width, mipLevelExtent.height, mipLevelExtent.depth, bytes, pitchB, sliceB,
+		ASTC_Decoder::Decode(reinterpret_cast<uint8_t *>(source), reinterpret_cast<uint8_t *>(dest),
+		                     mipLevelExtent.width, mipLevelExtent.height, mipLevelExtent.depth, bytes, pitchB, sliceB,
 		                     xBlockSize, yBlockSize, zBlockSize, xblocks, yblocks, zblocks, isUnsigned);
 	}
 }

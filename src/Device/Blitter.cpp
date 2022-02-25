@@ -267,12 +267,12 @@ bool Blitter::fastClear(const void *clearValue, vk::Format clearFormat, vk::Imag
 		{
 			for(uint32_t depth = 0; depth < extent.depth; depth++)
 			{
-				uint8_t *slice = (uint8_t *)dest->getTexelPointer(
+				byte *slice = (byte *)dest->getTexelPointer(
 				    { area.offset.x, area.offset.y, static_cast<int32_t>(depth) }, subres);
 
 				for(int j = 0; j < dest->getSampleCountFlagBits(); j++)
 				{
-					uint8_t *d = slice;
+					byte *d = slice;
 
 					switch(viewFormat.bytes())
 					{
@@ -1979,8 +1979,8 @@ static void resolveDepth(const vk::ImageView *src, vk::ImageView *dst, const VkR
 
 	// To support other resolve modes, get the slice bytes and get a pointer to each sample plane.
 	// Then modify the loop below to include logic for handling each new mode.
-	uint8_t *source = (uint8_t *)src->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0);
-	uint8_t *dest = (uint8_t *)dst->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0);
+	byte *source = (byte *)src->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0);
+	byte *dest = (byte *)dst->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0);
 
 	size_t formatSize = format.bytes();
 	// TODO(b/167558951) support other resolve modes.
@@ -2010,8 +2010,8 @@ static void resolveStencil(const vk::ImageView *src, vk::ImageView *dst, const V
 
 	// To support other resolve modes, use src->slicePitchBytes() and get a pointer to each sample's slice.
 	// Then modify the loop below to include logic for handling each new mode.
-	uint8_t *source = reinterpret_cast<uint8_t *>(src->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_STENCIL_BIT, 0, 0));
-	uint8_t *dest = reinterpret_cast<uint8_t *>(dst->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_STENCIL_BIT, 0, 0));
+	byte *source = reinterpret_cast<byte *>(src->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_STENCIL_BIT, 0, 0));
+	byte *dest = reinterpret_cast<byte *>(dst->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_STENCIL_BIT, 0, 0));
 
 	// TODO(b/167558951) support other resolve modes.
 	ASSERT(stencilResolveMode == VK_RESOLVE_MODE_SAMPLE_ZERO_BIT);
@@ -2135,7 +2135,7 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve2K
 	};
 
 	void *source = src->getTexelPointer({ 0, 0, 0 }, srcSubresource);
-	uint8_t *dest = reinterpret_cast<uint8_t *>(dst->getTexelPointer({ 0, 0, 0 }, dstSubresource));
+	byte *dest = reinterpret_cast<byte *>(dst->getTexelPointer({ 0, 0, 0 }, dstSubresource));
 
 	auto format = src->getFormat();
 	auto samples = src->getSampleCountFlagBits();
@@ -2146,10 +2146,10 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve2K
 	int pitch = src->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, region.srcSubresource.mipLevel);
 	int slice = src->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, region.srcSubresource.mipLevel);
 
-	uint8_t *source0 = (uint8_t *)source;
-	uint8_t *source1 = source0 + slice;
-	uint8_t *source2 = source1 + slice;
-	uint8_t *source3 = source2 + slice;
+	byte *source0 = (byte *)source;
+	byte *source1 = source0 + slice;
+	byte *source2 = source1 + slice;
+	byte *source3 = source2 + slice;
 
 	[[maybe_unused]] const bool SSE2 = CPUID::supportsSSE2();
 
@@ -2218,15 +2218,15 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve2K
 	return true;
 }
 
-void Blitter::copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch)
+void Blitter::copy(const vk::Image *src, byte *dst, unsigned int dstPitch)
 {
 	VkExtent3D extent = src->getExtent();
 	size_t rowBytes = src->getFormat(VK_IMAGE_ASPECT_COLOR_BIT).bytes() * extent.width;
 	unsigned int srcPitch = src->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 	ASSERT(dstPitch >= rowBytes && srcPitch >= rowBytes && src->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0).height >= extent.height);
 
-	const uint8_t *s = (uint8_t *)src->getTexelPointer({ 0, 0, 0 }, { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0 });
-	uint8_t *d = dst;
+	const byte *s = (byte *)src->getTexelPointer({ 0, 0, 0 }, { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0 });
+	byte *d = dst;
 
 	for(uint32_t y = 0; y < extent.height; y++)
 	{
@@ -2414,8 +2414,8 @@ void Blitter::copyCubeEdge(const vk::Image *image,
 		dstOffset.y += reverse ? h : 1;
 	}
 
-	const uint8_t *src = static_cast<const uint8_t *>(image->getTexelPointer(srcOffset, srcSubresource));
-	uint8_t *dst = static_cast<uint8_t *>(image->getTexelPointer(dstOffset, dstSubresource));
+	const byte *src = static_cast<const byte *>(image->getTexelPointer(srcOffset, srcSubresource));
+	byte *dst = static_cast<byte *>(image->getTexelPointer(dstOffset, dstSubresource));
 	ASSERT((src < image->end()) && ((src + (w * srcDelta)) < image->end()));
 	ASSERT((dst < image->end()) && ((dst + (w * dstDelta)) < image->end()));
 
