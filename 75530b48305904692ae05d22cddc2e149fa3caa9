@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79e58f42_4f0641d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-25T06:11:15Z",
+      "side": 1,
+      "message": "This will be needed for supporting an upgraded version of LLVM: https://swiftshader-review.googlesource.com/c/SwiftShader/+/63308",
+      "revId": "75530b48305904692ae05d22cddc2e149fa3caa9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
