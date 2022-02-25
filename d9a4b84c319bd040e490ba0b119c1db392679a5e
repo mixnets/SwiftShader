@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb23e1b1_d275ccbe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-25T16:09:24Z",
+      "side": 1,
+      "message": "Manually verified to work as expected with newer and older LLVM version.",
+      "revId": "d9a4b84c319bd040e490ba0b119c1db392679a5e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
