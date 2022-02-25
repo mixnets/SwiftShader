@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8ef56d5_5f9b21b9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-25T00:49:59Z",
+      "side": 1,
+      "message": "LGTM with comment added:",
+      "revId": "3783975bfcf6c2f83bf83c54aa766a765fba40e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff9bfb74_fc209375",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4106,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-25T00:49:59Z",
+      "side": 1,
+      "message": "Please add a comment along the lines of:\n\n// Create a temporary image object to obtain the memory requirements.\n// TODO(b/221299948): Reduce overhead by using a lightweight local proxy.",
+      "revId": "3783975bfcf6c2f83bf83c54aa766a765fba40e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17aa20ee_df825bd2",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4117,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-25T00:49:59Z",
+      "side": 1,
+      "message": "For the records (to continue the discussion from https://swiftshader-review.googlesource.com/c/SwiftShader/+/63228/comments/b49832cf_6fecc71f):\n\nIt feels like it defeats the purpose of vkGetDeviceImageMemoryRequirements(), which is to obtain the memory requirements of an image without creating an image object, when we just create an object internally. Any app/engine can just provide a helper function that does this. So it only makes sense that this got added to the Vulkan API itself if it avoids unnecessary object creation/destruction overhead in the driver. It appears this feature originates from an extension proposal that got merged into VK_KHR_maintenance4: https://gitlab.khronos.org/vulkan/vulkan/-/merge_requests/4508. The discussion provides a couple examples of where it\u0027s deemed useful.\n\nAnyway, this is fine for now and I\u0027ve created b/221299948 for potential follow-up.",
+      "range": {
+        "startLine": 4117,
+        "startChar": 30,
+        "endLine": 4117,
+        "endChar": 36
+      },
+      "revId": "3783975bfcf6c2f83bf83c54aa766a765fba40e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
