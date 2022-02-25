@@ -104,6 +104,30 @@
       },
       "revId": "5ff6095535b02d0826b86e0d15d375ec3a209070",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ce383fe_3449fa71",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-25T14:58:53Z",
+      "side": 1,
+      "message": "\u003e I\u0027ll look into refactoring this code to make it more centralized.\n\nNice improvement, thanks!\n\n\u003e the function at line 2440 could not be used to determine whether or not multiview is enabled, since a value of 1 could mean both enabled or disabled.\n\nThat\u0027s my point, and I think there\u0027s still some straightforward room for improvement. There are two things called `viewMask` currently, and they have different semantics. So I think my suggestion of naming the one with our own semantics `layerMask` is still worth considering.\n\nLooks like Patchset 2 actually made more things use the Vulkan semantic of 0 meaning multiview disabled? Please check all instances of viewmask/layermask.",
+      "parentUuid": "5aa74961_6509e4c1",
+      "range": {
+        "startLine": 139,
+        "startChar": 3,
+        "endLine": 139,
+        "endChar": 35
+      },
+      "revId": "5ff6095535b02d0826b86e0d15d375ec3a209070",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
