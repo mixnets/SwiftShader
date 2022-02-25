@@ -98,6 +98,30 @@
       },
       "revId": "3783975bfcf6c2f83bf83c54aa766a765fba40e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4778caab_bebfc46c",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4117,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-25T05:29:06Z",
+      "side": 1,
+      "message": "Yes, like I wrote at b/221299948, it might make more sense to create a lightweight \u0027proxy\u0027 object that can live on the stack, to hold the required member variables instead of passing everything around to static functions.\n\nAnyway, it made it P4 as it\u0027s not important right now. I just wanted to make sure we understood the intent of these new API functions and documented the shortcut that was taken and provide ideas on how to improve it if/when that becomes useful.",
+      "parentUuid": "a4abf50c_9a6f64e1",
+      "range": {
+        "startLine": 4117,
+        "startChar": 30,
+        "endLine": 4117,
+        "endChar": 36
+      },
+      "revId": "3783975bfcf6c2f83bf83c54aa766a765fba40e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
