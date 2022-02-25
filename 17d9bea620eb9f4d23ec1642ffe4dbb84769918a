@@ -16,6 +16,24 @@
       "message": "Looks like the `validatorOptions.SetAllowLocalSizeId(true)` belong here.",
       "revId": "17d9bea620eb9f4d23ec1642ffe4dbb84769918a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4c9bc5c_11ff9c0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-02-25T13:10:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4f6747b0_08a2204d",
+      "revId": "17d9bea620eb9f4d23ec1642ffe4dbb84769918a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
