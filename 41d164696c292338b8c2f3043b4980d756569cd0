@@ -16,6 +16,24 @@
       "message": "Joshua, could you check if this fixes dEQP-VK.image.subresource_layout.* for the Android Emulator?\n\nJason, does Cuttlefish have a similar issue? I\u0027m curious if we need additional test coverage.",
       "revId": "41d164696c292338b8c2f3043b4980d756569cd0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4eebb5ff_32ef5d6f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101316
+      },
+      "writtenOn": "2022-02-26T18:07:17Z",
+      "side": 1,
+      "message": "This CL fixes the dEQP-VK.image.subresource_layout.* failures for Android emulator.",
+      "parentUuid": "40a97163_651756ef",
+      "revId": "41d164696c292338b8c2f3043b4980d756569cd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
