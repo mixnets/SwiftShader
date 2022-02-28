@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "498d9539_4df5d2c2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-28T15:18:29Z",
+      "side": 1,
+      "message": "Updates the results from rolling dEQP forward: https://swiftshader-review.googlesource.com/c/SwiftShader/+/63430. Includes a fix for the dEQP-VK.image.format_reinterpret.* failures.",
+      "revId": "658a760b453490e6d6819b4cf8040fb659a72867",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "44c04e1b_89df8ec5",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 112634,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-28T15:18:29Z",
+      "side": 1,
+      "message": "https://github.com/KhronosGroup/VK-GL-CTS/commit/0f0473342f80ab4ddcdd3588c034fc41b285e6ca",
+      "range": {
+        "startLine": 112634,
+        "startChar": 0,
+        "endLine": 112634,
+        "endChar": 52
+      },
+      "revId": "658a760b453490e6d6819b4cf8040fb659a72867",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd8c907b_0f8865d0",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-02-28T15:18:29Z",
+      "side": 0,
+      "message": "https://github.com/KhronosGroup/VK-GL-CTS/commit/38c800fec0093c98971400799bab1916c11e8e07",
+      "range": {
+        "startLine": 117,
+        "startChar": 0,
+        "endLine": 117,
+        "endChar": 33
+      },
+      "revId": "949ffcf551518e729099feff57cd01a41ee884b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
