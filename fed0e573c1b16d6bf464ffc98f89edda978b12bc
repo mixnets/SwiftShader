@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb5246e3_932ee269",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-03-02T18:44:04Z",
+      "side": 1,
+      "message": "Nit: Might be worth putting these magic numbers into variables similar to how exp2 is implemented.",
+      "revId": "fed0e573c1b16d6bf464ffc98f89edda978b12bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
