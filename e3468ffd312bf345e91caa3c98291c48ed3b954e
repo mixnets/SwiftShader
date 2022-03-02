@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46f2bdb6_c6423842",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101316
+      },
+      "writtenOn": "2022-03-02T19:05:34Z",
+      "side": 1,
+      "message": "Passing before and after applying this CL for Android emulator.",
+      "revId": "e3468ffd312bf345e91caa3c98291c48ed3b954e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
