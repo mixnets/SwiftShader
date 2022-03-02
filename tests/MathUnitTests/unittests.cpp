@@ -52,6 +52,73 @@ float ULP_16(float x, float a)
 	return abs(a - x) / ulp;
 }
 
+// lolremez --float - d 2 - r "0:1" "(2^x-x-1)/x" "1/x"
+// ULP-16: 0.130859017
+float P(float x)
+{
+	float u = 7.8145574e-2f;
+	u = u * x + 2.2617357e-1f;
+	return u * x + -3.0444314e-1f;
+}
+
+float Exp2Relaxed(float x)
+{
+	float x0 = x;
+	x0 = min(x0, bit_cast<float>(int(0x4300FFFF)));  // 128.999985
+	x0 = max(x0, bit_cast<float>(int(0xC2FDFFFF)));  // -126.999992
+
+	const float f = x0 - floor(x0);
+
+	// 2^f - f - 1 as P(f) * f
+	float y = P(f) * f + x0;
+
+	int i = (int)((1 << 23) * y + (127 << 23));
+
+	return bit_cast<float>(i);
+}
+
+TEST(MathTest, Exp2RelaxedExhaustive)
+{
+	CPUID::setDenormalsAreZero(true);
+	CPUID::setFlushToZero(true);
+
+	float worst_margin = 0;
+	float worst_ulp = 0;
+	float worst_x = 0;
+	float worst_val = 0;
+	float worst_ref = 0;
+
+	for(float x = -10; x <= 10; x = inc(x))
+	{
+		float val = Exp2Relaxed(x);
+
+		double ref = exp2((double)x);
+
+		if(x == (int)x)
+		{
+			ASSERT_EQ(val, ref);
+		}
+
+		const float tolerance = (1 + 2 * abs(x));
+		float ulp = ULP_16((float)ref, val);
+		float margin = ulp / tolerance;
+
+		if(margin > worst_margin)
+		{
+			worst_margin = margin;
+			worst_ulp = ulp;
+			worst_x = x;
+			worst_val = val;
+			worst_ref = ref;
+		}
+	}
+
+	ASSERT_TRUE(worst_margin <= 1.0f);
+
+	CPUID::setDenormalsAreZero(false);
+	CPUID::setFlushToZero(false);
+}
+
 float Log2_legacy(float x)
 {
 	float x0;
@@ -165,15 +232,18 @@ float Exp2_legacy(float x)
 	return ii * ff;
 }
 
-// lolremez --float -d 4 -r "0:1" "(2^x-1)/x" "(3+2*x-1)/x"
-// ULP_32: 2.95602512, Vulkan margin: 0.943966746
+// lolremez --float -d 4 -r "0:1" "(2^x-1)/x" "1/x"
+// ULP_32: 2.65837669, Vulkan margin: 0.847366512
 float f_r(float x)
 {
-	float u = 1.8674689e-3f;
-	u = u * x + 9.0165929e-3f;
-	u = u * x + 5.5799878e-2f;
-	u = u * x + 2.4016463e-1f;
-	return u * x + 6.9315127e-1f;
+	float f = x;
+	const float a = 1.8852974e-3f;
+	const float b = 8.9733787e-3f;
+	const float c = 5.5835927e-2f;
+	const float d = 2.4015281e-1f;
+	const float e = 6.9315247e-1f;
+
+	return fma(fma(fma(fma(fma(a, f, b), f, c), f, d), f, e), f, 1.0f);
 }
 
 float Exp2(float x)
@@ -195,7 +265,7 @@ float Exp2(float x)
 	// For the fractional part use a polynomial which approximates 2^f in the 0 to 1 range.
 	// To be exact at integers it uses the form f(x) * x + 1.
 	float f = x0 - xi;
-	float ff = f_r(f) * f + 1.0f;
+	float ff = f_r(f);  // * f + 1.0f;
 
 	return ii * ff;
 }
