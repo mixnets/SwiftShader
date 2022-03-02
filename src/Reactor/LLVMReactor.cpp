@@ -3008,7 +3008,7 @@ RValue<Float> RcpSqrtApprox(RValue<Float> x)
 #endif
 }
 
-RValue<Float> Sqrt(RValue<Float> x)
+RValue<Float> Sqrt(RValue<Float> x, bool relaxedPrecision)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
@@ -3202,7 +3202,7 @@ RValue<Float4> RcpSqrt_pp(RValue<Float4> x)
 #endif
 }
 
-RValue<Float4> Sqrt(RValue<Float4> x)
+RValue<Float4> Sqrt(RValue<Float4> x, bool relaxedPrecision)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)

@@ -1774,7 +1774,7 @@ RValue<Float> Rcp_pp(RValue<Float> val, bool exactAtPow2 = false);
 RValue<Float> RcpSqrt_pp(RValue<Float> val);
 RValue<Float> Rcp(RValue<Float> x, bool relaxedPrecision, bool exactAtPow2 = false);
 RValue<Float> RcpSqrt(RValue<Float> x, bool relaxedPrecision);
-RValue<Float> Sqrt(RValue<Float> x);
+RValue<Float> Sqrt(RValue<Float> x, bool relaxedPrecision);
 
 //	RValue<Int4> IsInf(RValue<Float> x);
 //	RValue<Int4> IsNan(RValue<Float> x);
@@ -1950,7 +1950,7 @@ RValue<Float4> Rcp_pp(RValue<Float4> val, bool exactAtPow2 = false);
 RValue<Float4> RcpSqrt_pp(RValue<Float4> val);
 RValue<Float4> Rcp(RValue<Float4> x, bool relaxedPrecision, bool exactAtPow2 = false);
 RValue<Float4> RcpSqrt(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Sqrt(RValue<Float4> x);
+RValue<Float4> Sqrt(RValue<Float4> x, bool relaxedPrecision);
 RValue<Float4> Insert(RValue<Float4> val, RValue<Float> element, int i);
 RValue<Float> Extract(RValue<Float4> x, int i);
 RValue<Float4> Swizzle(RValue<Float4> x, uint16_t select);
