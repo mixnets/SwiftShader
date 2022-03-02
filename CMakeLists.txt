@@ -206,7 +206,53 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
     message(FATAL_ERROR "In source builds are not allowed by LLVM, please create a build/ directory and build from there. You may have to delete the CMakeCache.txt file and CMakeFiles directory that are next to the CMakeLists.txt.")
 endif()
 
+<<<<<<< HEAD   (6e9eaf Support implicit conversion of Int4 component to Int)
 set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
+=======
+###########################################################
+# File lists
+###########################################################
+set(MARL_LIST
+    ${MARL_SRC_DIR}/debug.cpp
+    ${MARL_SRC_DIR}/memory.cpp
+    ${MARL_SRC_DIR}/scheduler.cpp
+    ${MARL_SRC_DIR}/thread.cpp
+    ${MARL_SRC_DIR}/trace.cpp
+)
+if(NOT MSVC)
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_aarch64.c
+        ${MARL_SRC_DIR}/osfiber_arm.c
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_mips64.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_rv64.S
+	${MARL_SRC_DIR}/osfiber_asm_loongarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+        ${MARL_SRC_DIR}/osfiber_mips64.c
+        ${MARL_SRC_DIR}/osfiber_ppc64.c
+        ${MARL_SRC_DIR}/osfiber_rv64.c
+	${MARL_SRC_DIR}/osfiber_loongarch64.c
+        ${MARL_SRC_DIR}/osfiber_x64.c
+        ${MARL_SRC_DIR}/osfiber_x86.c
+    )
+    # CMAKE_OSX_ARCHITECTURES settings aren't propagated to assembly files when
+    # building for Apple platforms (https://gitlab.kitware.com/cmake/cmake/-/issues/20771),
+    # we treat assembly files as C files to work around this bug.
+    set_source_files_properties(
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_mips64.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+	${MARL_SRC_DIR}/osfiber_asm_loongarch64.S
+        PROPERTIES LANGUAGE C
+    )
+endif(NOT MSVC)
+>>>>>>> BRANCH (b96d4a Squashed 'third_party/marl/' changes from f936d9438..166fc60)
 
 ###########################################################
 # Directories
@@ -242,9 +288,15 @@ if (BUILD_VULKAN_WRAPPER)
     InitSubmodule(glslang ${THIRD_PARTY_DIR}/glslang)
 endif()
 
+<<<<<<< HEAD   (6e9eaf Support implicit conversion of Int4 component to Int)
 if (SWIFTSHADER_BUILD_TESTS)
     InitSubmodule(gtest ${THIRD_PARTY_DIR}/googletest)
 endif()
+=======
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^rv.*")
+        target_link_libraries(${target} INTERFACE atomic) #explicitly use -latomic for RISC-V linking
+    endif()
+>>>>>>> BRANCH (b96d4a Squashed 'third_party/marl/' changes from f936d9438..166fc60)
 
 if(SWIFTSHADER_BUILD_BENCHMARKS)
     InitSubmodule(benchmark::benchmark ${THIRD_PARTY_DIR}/benchmark)
