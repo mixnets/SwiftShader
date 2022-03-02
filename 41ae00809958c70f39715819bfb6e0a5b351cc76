@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b28df5b_0d6c1164",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-02T06:11:22Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/63550/3#message-e3f24c74b1dc56ece839ae9b089d0cfdd0ce44f6 is a CI result produced by running Regres with this patch applied.\n\nThe total run time went up significantly. Firejail claims to be very low overhead, but it seems it may have some startup cost, and Regres launches tons of processes. I wonder if the regres process itself can be sandboxed (through run.sh) so the subprocesses it creates are faster to launch?\n\nIt\u0027s also interesting that `dEQP-VK.api.device_init.create_instance_layer_name_abuse` passes. This indicates that SwiftShader is being loaded through the Vulkan Loader. See https://swiftshader-review.googlesource.com/c/SwiftShader/+/57348",
+      "revId": "41ae00809958c70f39715819bfb6e0a5b351cc76",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "092f4346_dac0a273",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-02T06:11:22Z",
+      "side": 1,
+      "message": "nit: gofmt defaults to use tabs for indentation",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 153,
+        "endChar": 4
+      },
+      "revId": "41ae00809958c70f39715819bfb6e0a5b351cc76",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
