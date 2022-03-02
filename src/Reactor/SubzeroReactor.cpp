@@ -3868,10 +3868,10 @@ RValue<Float> Rcp_pp(RValue<Float> x, bool exactAtPow2)
 RValue<Float> RcpSqrt_pp(RValue<Float> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return Rcp_pp(Sqrt(x));
+	return Rcp_pp(Sqrt(x, true));
 }
 
-RValue<Float> Sqrt(RValue<Float> x)
+RValue<Float> Sqrt(RValue<Float> x, bool relaxedPrecision)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Ice::Variable *result = ::function->makeVariable(Ice::IceType_f32);
@@ -4029,13 +4029,13 @@ RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
 RValue<Float4> Rcp_pp(RValue<Float4> x, bool exactAtPow2)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return Float4(1.0f) / x;
+	return 1.0f / x;
 }
 
 RValue<Float4> RcpSqrt_pp(RValue<Float4> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return Rcp_pp(Sqrt(x));
+	return Rcp_pp(Sqrt(x, true));
 }
 
 bool HasRcpApprox()
@@ -4077,16 +4077,16 @@ RValue<Float> RcpSqrtApprox(RValue<Float> x)
 	return { 0.0f };
 }
 
-RValue<Float4> Sqrt(RValue<Float4> x)
+RValue<Float4> Sqrt(RValue<Float4> x, bool relaxedPrecision)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	if(emulateIntrinsics || CPUID::ARM)
 	{
 		Float4 result;
-		result.x = Sqrt(Float(Float4(x).x));
-		result.y = Sqrt(Float(Float4(x).y));
-		result.z = Sqrt(Float(Float4(x).z));
-		result.w = Sqrt(Float(Float4(x).w));
+		result.x = Sqrt(Float(Float4(x).x), relaxedPrecision);
+		result.y = Sqrt(Float(Float4(x).y), relaxedPrecision);
+		result.z = Sqrt(Float(Float4(x).z), relaxedPrecision);
+		result.w = Sqrt(Float(Float4(x).w), relaxedPrecision);
 
 		return result;
 	}

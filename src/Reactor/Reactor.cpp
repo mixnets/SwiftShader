@@ -4753,7 +4753,7 @@ static RValue<T> DoRcpSqrt(RValue<T> x, bool relaxedPrecision)
 	}
 	else
 	{
-		return T(1.0f) / Sqrt(x);
+		return T(1.0f) / Sqrt(x, relaxedPrecision);
 	}
 }
 
