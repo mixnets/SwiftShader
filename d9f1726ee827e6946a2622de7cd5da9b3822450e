@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c163bcd1_c7fe2003",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-02T14:42:41Z",
+      "side": 1,
+      "message": "I\u0027ll look for ways to bring back the old syntax, but for now this is a small price for the dozens of cases where we had to explicitly broadcast constants. The next next few changes in the stack make good use of the implicit broadcast.",
+      "range": {
+        "startLine": 99,
+        "startChar": 34,
+        "endLine": 99,
+        "endChar": 46
+      },
+      "revId": "d9f1726ee827e6946a2622de7cd5da9b3822450e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
