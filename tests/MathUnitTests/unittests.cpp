@@ -52,6 +52,192 @@ float ULP_16(float x, float a)
 	return abs(a - x) / ulp;
 }
 
+// lolremez --float -d 6 -r "0:1" "log2(x+1)"
+float f(float x)
+{
+	float u = -3.4484843e-1f;
+	u = u * x + 1.3349689f;
+	return u * x + 4.93976e-3f;
+}
+
+float Log2Relaxed(float x)
+{
+	int im = bit_cast<int>(x);
+	// float q = (float)im * (1.0f / (1 << 23)) - 127.0f;
+	float q = (float)((im & 0x7F800000) >> 23) - 127.0f;
+
+	// float y = bit_cast<float>((im & 0x007FFFFF) | 0x3F800000);  // 1.0 - 2.0
+	float y = (float)(im & 0x007FFFFF) * (1.0f / (1 << 23));  // 0.0 - 1.0
+
+	return q + f(y);
+}
+
+TEST(MathTest, Log2RelaxedExhaustive)
+{
+	CPUID::setDenormalsAreZero(true);
+	CPUID::setFlushToZero(true);
+
+	float worst_margin = 0;
+	float worst_ulp = 0;
+	float worst_x = 0;
+	float worst_val = 0;
+	float worst_ref = 0;
+
+	float worst_abs = 0;
+
+	for(float x = 0.10f; x <= 10.0f; x = inc(x))
+	{
+		float val = Log2Relaxed(x);
+
+		double ref = log2((double)x);
+
+		if(ref == (int)ref)
+		{
+			//	ASSERT_EQ(val, ref);
+		}
+		else if(x >= 0.5f && x <= 2.0f)
+		{
+			const float tolerance = pow(2.0f, -7.0f);  // Absolute
+
+			float margin = abs(val - ref) / tolerance;
+
+			if(margin > worst_abs)
+			{
+				worst_abs = margin;
+			}
+		}
+		else
+		{
+			const float tolerance = 3;  // ULP
+
+			float ulp = (float)ULP_16(ref, (double)val);
+			float margin = ulp / tolerance;
+
+			if(margin > worst_margin)
+			{
+				worst_margin = margin;
+				worst_ulp = ulp;
+				worst_x = x;
+				worst_val = val;
+				worst_ref = ref;
+			}
+		}
+	}
+
+	ASSERT_TRUE(worst_margin < 1.0f);
+	ASSERT_TRUE(worst_abs <= 1.0f);
+
+	CPUID::setDenormalsAreZero(false);
+	CPUID::setFlushToZero(false);
+}
+
+// lolremez --float -d 2 -r "0:1" "(2^x-1)/x" "(1+2*x)/x"
+// ULP_16: 0.195800781, Vulkan margin: 0.195800707
+float f2_(float x)
+{
+	float u = 7.6525497e-2f;
+	u = u * x + 2.2840021e-1f;
+	return u * x + 6.9488315e-1f;
+}
+
+// lolremez --float -d 2 -r "0:1" "(2^x-1)/x" "1/x"
+// ULP_16: 0.127075195, Vulkan margin: 0.127075136
+float f2__(float x)
+{
+	float u = 7.8145574e-2f;
+	u = u * x + 2.2617357e-1f;
+	return u * x + 6.9555686e-1f;
+}
+
+// lolremez --float -d 2 -r "0:1" "(2^x-1)/x" "(2-1*x)/x"
+// ULP_16: 0.0893554688, Vulkan margin: 0.0893554464
+float f2(float x)
+{
+	float u = 7.9227399e-2f;
+	u = u * x + 2.2463806e-1f;
+	return u * x + 6.9604738e-1f;
+}
+
+// lolremez --float -d 1 -r "0:1" "(2^x-1)/x" "(2-1*x)/x"
+// 2.2
+float f1_(float x)
+{
+	float u = 3.4138127e-1f;
+	return u * x + 6.5647311e-1f;
+}
+
+float f1(float x)
+{
+	float u = 3.3568144e-1f;
+	return u * x + 6.6130719e-1f;
+}
+
+float Exp2Relaxed(float x)
+{
+	// This implementation is based on 2^(i + f) = 2^i * 2^f,
+	// where i is the integer part of x and f is the fraction.
+
+	// For 2^i we can put the integer part directly in the exponent of
+	// the IEEE-754 floating-point number. Clamp to prevent overflow
+	// past the representation of infinity.
+	float x0 = x;
+	x0 = min(x0, bit_cast<float>(int(0x4300FFFF)));  // 128.999985
+	x0 = max(x0, bit_cast<float>(int(0xC2FDFFFF)));  // -126.999992
+
+	float xi = floor(x0);
+	int i = int(xi);
+	float ii = bit_cast<float>((i + int(127)) << 23);  // Add single-precision bias, and shift into exponent.
+
+	// For the fractional part use a polynomial which approximates 2^f in the 0 to 1 range.
+	// To be exact at integers it uses the form f(x) * x + 1.
+	float f = x0 - xi;
+	float ff = f1(f) * f + 1.0f;
+
+	return ii * ff;
+}
+
+TEST(MathTest, Exp2RelaxedExhaustive)
+{
+	CPUID::setDenormalsAreZero(true);
+	CPUID::setFlushToZero(true);
+
+	float worst_margin = 0;
+	float worst_ulp = 0;
+	float worst_x = 0;
+	float worst_val = 0;
+	float worst_ref = 0;
+
+	for(float x = -10; x <= 10; x = inc(x))
+	{
+		float val = Exp2Relaxed(x);
+
+		double ref = exp2((double)x);
+
+		if(x == (int)x)
+		{
+			ASSERT_EQ(val, ref);
+		}
+
+		const float tolerance = (1 + 2 * abs(x));
+		float ulp = ULP_16((float)ref, val);
+		float margin = ulp / tolerance;
+
+		if(margin > worst_margin)
+		{
+			worst_margin = margin;
+			worst_ulp = ulp;
+			worst_x = x;
+			worst_val = val;
+			worst_ref = ref;
+		}
+	}
+
+	ASSERT_TRUE(worst_margin <= 1.0f);
+
+	CPUID::setDenormalsAreZero(false);
+	CPUID::setFlushToZero(false);
+}
+
 float Log2_legacy(float x)
 {
 	float x0;
