@@ -1952,6 +1952,28 @@ RValue<Float4> RcpSqrt_pp(RValue<Float4> val);
 RValue<Float4> Rcp(RValue<Float4> x, bool relaxedPrecision, bool exactAtPow2 = false);
 RValue<Float4> RcpSqrt(RValue<Float4> x, bool relaxedPrecision);
 RValue<Float4> Sqrt(RValue<Float4> x, bool relaxedPrecision);
+
+enum Precision
+{
+	HighPrecision,
+	RelaxedPrecision
+};
+
+template<enum Precision precision = HighPrecision>
+RValue<Float4> Sqrt(RValue<Float4> x);
+
+template<>
+inline RValue<Float4> Sqrt<HighPrecision>(RValue<Float4> x)
+{
+	return Sqrt(x, false);
+}
+
+template<>
+inline RValue<Float4> Sqrt<RelaxedPrecision>(RValue<Float4> x)
+{
+	return Sqrt(x, true);
+}
+
 RValue<Float4> Insert(RValue<Float4> val, RValue<Float> element, int i);
 RValue<Float> Extract(RValue<Float4> x, int i);
 RValue<Float4> Swizzle(RValue<Float4> x, uint16_t select);
