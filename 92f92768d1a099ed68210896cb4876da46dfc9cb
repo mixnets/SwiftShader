@@ -16,6 +16,24 @@
       "message": "LGTM. Any particular reason for this upgrade / interesting new functionality?",
       "revId": "92f92768d1a099ed68210896cb4876da46dfc9cb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b35e7e0f_b6e7be8f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101271
+      },
+      "writtenOn": "2022-03-03T18:52:44Z",
+      "side": 1,
+      "message": "Without this upgrade, SwiftShader does not build with clang 13, throwing errors while compiling gmock. I am not sure if there\u0027s a workaround (maybe a flag), but given the upgrade seems to work across all test systems I figured it\u0027d be the easiest way.",
+      "parentUuid": "4fd3bb17_72bfd1eb",
+      "revId": "92f92768d1a099ed68210896cb4876da46dfc9cb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
