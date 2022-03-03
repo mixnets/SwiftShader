@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "576b86f8_d30bc54a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-03T19:00:31Z",
+      "side": 1,
+      "message": "Looks great!",
+      "revId": "460daac0d281f038af4f5bfd8c6e4ac9c4a42b1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df1a9997_57f88d90",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1749,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-03T19:00:31Z",
+      "side": 1,
+      "message": "style-nit: We try to put the `break` after the closing braces on the next line. That way it\u0027s right before the next case label, and easy to verify there\u0027s no fallthrough behavior even if the braces are part of a conditional statement.",
+      "range": {
+        "startLine": 1749,
+        "startChar": 5,
+        "endLine": 1749,
+        "endChar": 11
+      },
+      "revId": "460daac0d281f038af4f5bfd8c6e4ac9c4a42b1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
