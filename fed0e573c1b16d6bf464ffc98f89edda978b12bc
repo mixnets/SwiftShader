@@ -16,6 +16,24 @@
       "message": "Nit: Might be worth putting these magic numbers into variables similar to how exp2 is implemented.",
       "revId": "fed0e573c1b16d6bf464ffc98f89edda978b12bc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3060a2f_c03159dd",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-03T08:26:57Z",
+      "side": 1,
+      "message": "Good idea. I\u0027ll do that in a future change.",
+      "parentUuid": "bb5246e3_932ee269",
+      "revId": "fed0e573c1b16d6bf464ffc98f89edda978b12bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
