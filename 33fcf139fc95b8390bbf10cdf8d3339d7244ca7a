@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd3ed627_c7e67694",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-04T13:49:42Z",
+      "side": 1,
+      "message": "LGTM, I\u0027ll update the bugs. Sean or Jason, feel free to submit after +vote.",
+      "revId": "33fcf139fc95b8390bbf10cdf8d3339d7244ca7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85c05b01_8f4ad62f",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-04T13:49:42Z",
+      "side": 1,
+      "message": "b/219756793",
+      "range": {
+        "startLine": 129,
+        "startChar": 25,
+        "endLine": 129,
+        "endChar": 66
+      },
+      "revId": "33fcf139fc95b8390bbf10cdf8d3339d7244ca7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f84820b_442f1caa",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 266944,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-04T13:49:42Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/63748",
+      "range": {
+        "startLine": 266944,
+        "startChar": 25,
+        "endLine": 266944,
+        "endChar": 66
+      },
+      "revId": "33fcf139fc95b8390bbf10cdf8d3339d7244ca7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eef14d84_aeb47ecf",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-04T13:49:42Z",
+      "side": 1,
+      "message": "b/202873887",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 36
+      },
+      "revId": "33fcf139fc95b8390bbf10cdf8d3339d7244ca7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
