@@ -22,6 +22,30 @@
       },
       "revId": "c182e153204b677d1f46c6c0a14df5b394261efe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b5d25a0_60a30ec8",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 101271
+      },
+      "writtenOn": "2022-03-04T18:14:38Z",
+      "side": 1,
+      "message": "Yes. They changed the constructor\u0027s default argument and nullptr (which was by default in the old code) is not a valid argument anymore.",
+      "parentUuid": "efcbf2de_48022a93",
+      "range": {
+        "startLine": 362,
+        "startChar": 2,
+        "endLine": 370,
+        "endChar": 3
+      },
+      "revId": "c182e153204b677d1f46c6c0a14df5b394261efe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
