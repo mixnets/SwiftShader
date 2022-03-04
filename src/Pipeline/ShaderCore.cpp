@@ -349,18 +349,18 @@ Float4 Exp2(RValue<Float4> x)
 		return Exp2_legacy(x0);
 	}
 
-	Float4 xi = Floor(x0);
+	Float4 xi = Round(x0);
 	Int4 i = Int4(xi);
 	Float4 ii = As<Float4>((i + Int4(127)) << 23);  // Add single-precision bias, and shift into exponent.
 
-	// For the fractional part use a polynomial which approximates 2^f in the 0 to 1 range.
+	// For the fractional part use a polynomial which approximates 2^f in the -0.5 to 0.5 range.
 	// To be exact at integers it uses the form f(x) * x + 1.
 	Float4 f = x0 - xi;
-	const Float4 a = 1.8852974e-3f;
-	const Float4 b = 8.9733787e-3f;
-	const Float4 c = 5.5835927e-2f;
-	const Float4 d = 2.4015281e-1f;
-	const Float4 e = 6.9315247e-1f;
+	const Float4 a = 1.3146092e-3f;
+	const Float4 b = 9.6713871e-3f;
+	const Float4 c = 5.5510935e-2f;
+	const Float4 d = 2.4022245e-1f;
+	const Float4 e = 6.9314677e-1f;
 
 	Float4 ff = MulAdd(MulAdd(MulAdd(MulAdd(MulAdd(a, f, b), f, c), f, d), f, e), f, 1.0f);
 
