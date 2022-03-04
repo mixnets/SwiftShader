@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "efcbf2de_48022a93",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-04T18:04:09Z",
+      "side": 1,
+      "message": "Is this related to the build fix? Does pushing instructions to the front of the entry block\u0027s instruction list no longer work?",
+      "range": {
+        "startLine": 362,
+        "startChar": 2,
+        "endLine": 370,
+        "endChar": 3
+      },
+      "revId": "c182e153204b677d1f46c6c0a14df5b394261efe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
