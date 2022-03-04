@@ -77,7 +77,7 @@ float Log2_legacy(float x)
 	return bit_cast<float>((pos_inf_x & bit_cast<int>(x)) | (~pos_inf_x & bit_cast<int>(x1)));
 }
 
-TEST(MathTest, Log2Exhaustive)
+TEST(MathTest, DISABLED_Log2Exhaustive)
 {
 	CPUID::setDenormalsAreZero(true);
 	CPUID::setFlushToZero(true);
@@ -165,15 +165,15 @@ float Exp2_legacy(float x)
 	return ii * ff;
 }
 
-// lolremez --float -d 4 -r "0:1" "(2^x-1)/x" "1/x"
-// ULP_32: 2.65837669, Vulkan margin: 0.847366512
+// lolremez --float -d 4 -r "-0.5:0.5" "(2^x-1)/x" "1/x"
+// ULP_32: 2.80153370, Vulkan margin: 0.725886405
 float f_r(float x)
 {
-	float u = 1.8852974e-3f;
-	u = u * x + 8.9733787e-3f;
-	u = u * x + 5.5835927e-2f;
-	u = u * x + 2.4015281e-1f;
-	return u * x + 6.9315247e-1f;
+	float u = 1.3407259e-3f;
+	u = u * x + 9.6718751e-3f;
+	u = u * x + 5.5503084e-2f;
+	u = u * x + 2.4022235e-1f;
+	return u * x + 6.9314721e-1f;
 }
 
 float Exp2(float x)
@@ -188,11 +188,11 @@ float Exp2(float x)
 	x0 = min(x0, bit_cast<float>(int(0x4300FFFF)));  // 128.999985
 	x0 = max(x0, bit_cast<float>(int(0xC2FDFFFF)));  // -126.999992
 
-	float xi = floor(x0);
+	float xi = round(x0);
 	int i = int(xi);
 	float ii = bit_cast<float>((i + int(127)) << 23);  // Add single-precision bias, and shift into exponent.
 
-	// For the fractional part use a polynomial which approximates 2^f in the 0 to 1 range.
+	// For the fractional part use a polynomial which approximates 2^f in the -0.5 to 0.5 range.
 	// To be exact at integers it uses the form f(x) * x + 1.
 	float f = x0 - xi;
 	float ff = f_r(f) * f + 1.0f;
