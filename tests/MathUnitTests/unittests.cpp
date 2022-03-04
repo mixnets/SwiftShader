@@ -77,7 +77,7 @@ float Log2_legacy(float x)
 	return bit_cast<float>((pos_inf_x & bit_cast<int>(x)) | (~pos_inf_x & bit_cast<int>(x1)));
 }
 
-TEST(MathTest, Log2Exhaustive)
+TEST(MathTest, DISABLED_Log2Exhaustive)
 {
 	CPUID::setDenormalsAreZero(true);
 	CPUID::setFlushToZero(true);
@@ -165,15 +165,21 @@ float Exp2_legacy(float x)
 	return ii * ff;
 }
 
-// lolremez --float -d 4 -r "0:1" "(2^x-1)/x" "1/x"
-// ULP_32: 2.65837669, Vulkan margin: 0.847366512
+// lolremez-- float - d 4 - r "-0.5:0.5" "2*(2^x - 1) / x" "1/x"
+// ULP_32: 2.80153370, Vulkan margin: 0.725886405
 float f_r(float x)
 {
-	float u = 1.8852974e-3f;
-	u = u * x + 8.9733787e-3f;
-	u = u * x + 5.5835927e-2f;
-	u = u * x + 2.4015281e-1f;
-	return u * x + 6.9315247e-1f;
+	/*float u = 1.3146092e-3f;
+	u = u * x + 9.6713871e-3f;
+	u = u * x + 5.5510935e-2f;
+	u = u * x + 2.4022245e-1f;
+	return u * x + 6.9314677e-1f;*/
+
+	float u = 2.6814518e-3f;
+	u = u * x + 1.934375e-2f;
+	u = u * x + 1.1100617e-1f;
+	u = u * x + 4.8044469e-1f;
+	return u * x + 1.3862944f;
 }
 
 float Exp2(float x)
@@ -185,17 +191,17 @@ float Exp2(float x)
 	// the IEEE-754 floating-point number. Clamp to prevent overflow
 	// past the representation of infinity.
 	float x0 = x;
-	x0 = min(x0, bit_cast<float>(int(0x4300FFFF)));  // 128.999985
-	x0 = max(x0, bit_cast<float>(int(0xC2FDFFFF)));  // -126.999992
+	x0 = min(x0, bit_cast<float>(int(0x43017FFF)));  // 129.499985
+	x0 = max(x0, bit_cast<float>(int(0xC2FCFFFF)));  // -126.499992
 
-	float xi = floor(x0);
+	float xi = round(x0);
 	int i = int(xi);
-	float ii = bit_cast<float>((i + int(127)) << 23);  // Add single-precision bias, and shift into exponent.
+	float ii = bit_cast<float>((i + int(127 - 1)) << 23);  // Add single-precision bias, and shift into exponent.
 
-	// For the fractional part use a polynomial which approximates 2^f in the 0 to 1 range.
+	// For the fractional part use a polynomial which approximates 2^f in the -1.0 to 1.0 range.
 	// To be exact at integers it uses the form f(x) * x + 1.
 	float f = x0 - xi;
-	float ff = f_r(f) * f + 1.0f;
+	float ff = f_r(f) * f + 2.0f;
 
 	return ii * ff;
 }
@@ -213,7 +219,7 @@ TEST(MathTest, Exp2Exhaustive)
 
 	for(float x = -10; x <= 10; x = inc(x))
 	{
-		float val = Exp2(x);
+		float val = Exp2(/*1.44269504f **/ x);
 
 		double ref = exp2((double)x);
 

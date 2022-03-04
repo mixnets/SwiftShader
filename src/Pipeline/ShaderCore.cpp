@@ -341,28 +341,28 @@ Float4 Exp2(RValue<Float4> x)
 	// the IEEE-754 floating-point number. Clamp to prevent overflow
 	// past the representation of infinity.
 	Float4 x0 = x;
-	x0 = Min(x0, As<Float4>(Int4(0x4300FFFF)));  // 128.999985
-	x0 = Max(x0, As<Float4>(Int4(0xC2FDFFFF)));  // -126.999992
+	x0 = Min(x0, As<Float4>(Int4(0x43017FFF)));  // 129.499985
+	x0 = Max(x0, As<Float4>(Int4(0xC2FCFFFF)));  // -126.499992
 
 	if(SWIFTSHADER_LEGACY_PRECISION)  // TODO(chromium:1299047)
 	{
 		return Exp2_legacy(x0);
 	}
 
-	Float4 xi = Floor(x0);
+	Float4 xi = Round(x0);
 	Int4 i = Int4(xi);
-	Float4 ii = As<Float4>((i + Int4(127)) << 23);  // Add single-precision bias, and shift into exponent.
+	Float4 ii = As<Float4>((i + Int4(127 - 1)) << 23);  // Add single-precision bias, and shift into exponent.
 
-	// For the fractional part use a polynomial which approximates 2^f in the 0 to 1 range.
+	// For the fractional part use a polynomial which approximates 2^f in the -0.5 to 0.5 range.
 	// To be exact at integers it uses the form f(x) * x + 1.
 	Float4 f = x0 - xi;
-	const Float4 a = 1.8852974e-3f;
-	const Float4 b = 8.9733787e-3f;
-	const Float4 c = 5.5835927e-2f;
-	const Float4 d = 2.4015281e-1f;
-	const Float4 e = 6.9315247e-1f;
+	const Float4 a = 2.6814518e-3f;
+	const Float4 b = 1.934375e-2f;
+	const Float4 c = 1.1100617e-1f;
+	const Float4 d = 4.8044469e-1f;
+	const Float4 e = 1.3862944f;
 
-	Float4 ff = MulAdd(MulAdd(MulAdd(MulAdd(MulAdd(a, f, b), f, c), f, d), f, e), f, 1.0f);
+	Float4 ff = MulAdd(MulAdd(MulAdd(MulAdd(MulAdd(a, f, b), f, c), f, d), f, e), f, 2.0f);
 
 	return ii * ff;
 }
