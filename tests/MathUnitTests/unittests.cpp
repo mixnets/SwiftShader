@@ -40,6 +40,8 @@ double ULP_32(double x, double a)
 	double x1 = bit_cast<double>(bit_cast<uint64_t>(x) ^ 0x0000000020000000ull);
 	double ulp = abs(x1 - x);
 
+	// double q = exp2(floor(log2(x))) / 0x00800000;
+
 	return abs(a - x) / ulp;
 }
 
@@ -165,15 +167,15 @@ float Exp2_legacy(float x)
 	return ii * ff;
 }
 
-// lolremez --float -d 4 -r "-0.5:0.5" "(2^x-1)/x" "1/x"
-// ULP_32: 2.80153370, Vulkan margin: 0.725886405
+// lolremez --float -d 4 -r "-0.5:0.5" "(2^x-1)/x" "(3+3.5*x)/x"
+// ULP_32: 1.88399243, Vulkan margin: 0.536525011
 float f_r(float x)
 {
-	float u = 1.3407259e-3f;
-	u = u * x + 9.6718751e-3f;
-	u = u * x + 5.5503084e-2f;
-	u = u * x + 2.4022235e-1f;
-	return u * x + 6.9314721e-1f;
+	float u = 1.3146092e-3f;
+	u = u * x + 9.6713871e-3f;
+	u = u * x + 5.5510935e-2f;
+	u = u * x + 2.4022245e-1f;
+	return u * x + 6.9314677e-1f;
 }
 
 float Exp2(float x)
