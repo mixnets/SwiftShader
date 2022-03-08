@@ -240,6 +240,30 @@
       },
       "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d34c228_8e4dfd43",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1915,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-08T22:36:09Z",
+      "side": 1,
+      "message": "I though it was safe to remove this in:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/63118\nbut it turns out something was still relying on image planes to include these extra bytes.\n\nFYI, for your original comment, if the size is already 16 byte aligned, adding 15 here does nothing:\nhttps://cs.opensource.google/swiftshader/SwiftShader/+/master:src/System/Math.hpp;drc\u003de9fdc2ed2cd08ddb126888b9b913089aa9ce92dc;l\u003d356\n\nThe extra 15 bytes added per plane were supposed to prevent issues while reading/writing a full 16 bytes even when initiating the read or write operation at the last byte of the buffer. Without it, it looks like we may have issues, like overwriting the first bytes of a plane while writing the last bytes of a plane, as the write operation may overflow into the next plane, which is probably where this corruption comes from.",
+      "parentUuid": "a20025e5_29756f67",
+      "range": {
+        "startLine": 1915,
+        "startChar": 12,
+        "endLine": 1915,
+        "endChar": 21
+      },
+      "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
