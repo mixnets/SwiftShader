@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (60bf3b Regres: Update test lists @ 561264b7)
 # Ignored folders #
 /cache/
 /lib/
@@ -9,6 +10,32 @@
 CMakeFiles/
 .idea/
 cmake-build-debug/
+=======
+.clang_complete
+.ycm_extra_conf.py*
+*.pyc
+compile_commands.json
+/build*/
+/buildtools/
+/external/googletest
+/external/SPIRV-Headers
+/external/spirv-headers
+/external/effcee
+/external/re2
+/external/protobuf
+/out
+/TAGS
+/third_party/llvm-build/
+/testing
+/tools/clang/
+/utils/clang-format-diff.py
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-spirv-tools
+bazel-SPIRV-Tools
+bazel-testlogs
+>>>>>>> BRANCH (9cbc5e Squashed 'third_party/SPIRV-Tools/' changes from d18d0d92e..)
 
 # Per user vscode config files.
 .vscode/launch.json
