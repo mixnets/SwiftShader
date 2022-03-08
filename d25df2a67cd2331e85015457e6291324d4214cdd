@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56395337_d2f54cbc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 12655
+      },
+      "writtenOn": "2022-03-08T20:41:43Z",
+      "side": 1,
+      "message": "Hi,\nI just bisected a Skia image regression to this CL. We had a few tests that started producing rendering artifacts. One example is here: https://gold.skia.org/diff?test\u003dasync_rescale_and_read_rose\u0026left\u003dccb69373d0872d64f07fcc77c2aacf41\u0026right\u003ded42925bd1631a273ee1676353a828b2\n\nYou can see the full-size images:\nBefore: https://gold.skia.org/img/images/ed42925bd1631a273ee1676353a828b2.png\nAfter: https://gold.skia.org/img/images/ccb69373d0872d64f07fcc77c2aacf41.png\n\nI\u0027ve reproduced this locally as well. I can help with setting up repro, if that\u0027s useful.",
+      "revId": "d25df2a67cd2331e85015457e6291324d4214cdd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
