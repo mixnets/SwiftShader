@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ec0e159b_f1b4be35",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-08T22:15:04Z",
+      "side": 1,
+      "message": "I edited the description (it\u0027s specifically for image slice memory, but I think image memory is good enough)",
+      "parentUuid": "39e7d86b_94413644",
+      "range": {
+        "startLine": 7,
+        "startChar": 27,
+        "endLine": 7,
+        "endChar": 34
+      },
+      "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b0101c71_3bca811e",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -136,6 +160,30 @@
       "writtenOn": "2022-03-08T22:10:46Z",
       "side": 1,
       "message": "The first thing align\u003c16\u003e does is add 15 to ensure things are rounded up: https://cs.opensource.google/swiftshader/SwiftShader/+/master:src/System/Math.hpp;drc\u003de9fdc2ed2cd08ddb126888b9b913089aa9ce92dc;l\u003d356",
+      "range": {
+        "startLine": 1915,
+        "startChar": 12,
+        "endLine": 1915,
+        "endChar": 21
+      },
+      "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e305f959_ac9f9a47",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1915,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-08T22:15:04Z",
+      "side": 1,
+      "message": "Not sure why we need the extra memory, we\u0027ll need to investigate this. This is essentially a single file revert to fix a regression.",
+      "parentUuid": "599d5a6f_a2b46e65",
       "range": {
         "startLine": 1915,
         "startChar": 12,
