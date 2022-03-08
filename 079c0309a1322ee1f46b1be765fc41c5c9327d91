@@ -192,6 +192,30 @@
       },
       "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37517d57_5b7aa751",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1915,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-08T22:23:36Z",
+      "side": 1,
+      "message": "Right, but let\u0027s not be too hasty about reverting things we don\u0027t fully understand, as that could lead to unexpected issues.\n\nIt also seems possible we should be adding the padding elsewhere to fully fix things.",
+      "parentUuid": "e305f959_ac9f9a47",
+      "range": {
+        "startLine": 1915,
+        "startChar": 12,
+        "endLine": 1915,
+        "endChar": 21
+      },
+      "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "130b92df_7a0065f5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-08T22:23:36Z",
+      "side": 1,
+      "message": "Sorry, I\u0027d like to understand a bit better why we thought we could remove the padding before, but that appears to be wrong for specific cases. There might be another fix needed here.",
+      "revId": "bcf18ebc0e2a2799508a2856ef9c246858d574b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
