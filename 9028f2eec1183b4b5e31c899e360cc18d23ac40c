@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "30ee1e97_760f4eb4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-08T21:25:47Z",
+      "side": 1,
+      "message": "unfortunately it doesn\u0027t seem like this is going to work. We either overflow to infinity on an intermediate result before the final result would overflow, or we underflow to 0. While enabling subnormals prevents the latter, it could hurt performance.",
+      "revId": "9028f2eec1183b4b5e31c899e360cc18d23ac40c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
