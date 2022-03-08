@@ -264,6 +264,30 @@
       },
       "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9013fbd_5ff67314",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1915,
+      "author": {
+        "id": 12655
+      },
+      "writtenOn": "2022-03-08T22:54:27Z",
+      "side": 1,
+      "message": "For context: Our bots are generating bad images, but that\u0027s fine - Skia gold is good at handling that situation. So if you want to spend some extra time to root-cause this, nothing is \"broken\" per-se on our end.",
+      "parentUuid": "8d34c228_8e4dfd43",
+      "range": {
+        "startLine": 1915,
+        "startChar": 12,
+        "endLine": 1915,
+        "endChar": 21
+      },
+      "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
