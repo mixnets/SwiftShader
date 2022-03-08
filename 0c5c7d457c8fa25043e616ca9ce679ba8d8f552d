@@ -52,6 +52,24 @@
       "parentUuid": "4a3855f6_b59d64ea",
       "revId": "0c5c7d457c8fa25043e616ca9ce679ba8d8f552d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dfc98753_44044ebb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-08T22:03:35Z",
+      "side": 1,
+      "message": "\u003e Will you ever need Sqrt\u003cHighp\u003e(x) in the codebase ?\n\nYes: https://swiftshader-review.googlesource.com/c/SwiftShader/+/63688/7/src/Pipeline/ShaderCore.cpp#245\n\n\u003e I don\u0027t see what Sqrt\u003cMediump\u003e() adds over SqrtMediump()\n\nIt\u0027s just syntactic sugar to improve readability. `SqrtMediump()` is harder to read as a variant of `Sqrt()` in my opinion, and could make one wonder if it\u0027s a whole different function altogether (like `RcpSqrt()`).",
+      "parentUuid": "6c5474ae_40c8d488",
+      "revId": "0c5c7d457c8fa25043e616ca9ce679ba8d8f552d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
