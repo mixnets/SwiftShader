@@ -16,6 +16,24 @@
       "message": "Hi! Skia recently had a (visual) regression in some YUV related tests on our SwiftShader bot. I\u0027m assuming it\u0027s related to this CL. You can see the new (failing) images here: https://gold.skia.org/search?blame\u003d001000007004\u0026corpus\u003dgm\n\negdaniel@ theorizes that it\u0027s because we assume cosited sampling is supported in our tests (all GPUs we\u0027ve tested on support that sampling mode). Does this make sense? (There may not be anything to do here, other than us making a note and/or changing how we test).",
       "revId": "0587e07cb2e92d9d60fde50f7fc72016e90e3edb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b97cefb5_14bad240",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 12655
+      },
+      "writtenOn": "2022-03-08T20:29:19Z",
+      "side": 1,
+      "message": "Hi, sorry. Scratch that - I\u0027ve tracked it down to an earlier SwiftShader CL, actually. I\u0027ll ping elsewhere.",
+      "parentUuid": "63a4e761_8f06c2ad",
+      "revId": "0587e07cb2e92d9d60fde50f7fc72016e90e3edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
