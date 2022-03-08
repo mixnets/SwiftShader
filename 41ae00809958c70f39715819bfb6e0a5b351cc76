@@ -90,6 +90,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2d2d15c_87df0000",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-03-08T06:29:26Z",
+      "side": 1,
+      "message": "Ok, I separated out the go logic that parses arguments into a separate file. This way we can get the cache directory from the parser in main.go. Then main.go can create the cache dir, the firejail profile, and start run.go inside an instance of firejail without having to reproduce the parsing logic itself.\n\nI\u0027ve tested this and it seems to run correctly regardless of the directory you run regres from, and it should avoid the slowdown observed in an earlier version.",
+      "parentUuid": "9201200f_2eb03ecb",
+      "revId": "41ae00809958c70f39715819bfb6e0a5b351cc76",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "092f4346_dac0a273",
