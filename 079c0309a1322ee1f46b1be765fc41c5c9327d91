@@ -216,6 +216,30 @@
       },
       "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a20025e5_29756f67",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1915,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-08T22:28:43Z",
+      "side": 1,
+      "message": "To clarify: This CL isn\u0027t intended to close the issue. It\u0027s only meant to re-stabilize bots while we investigate the issue.",
+      "parentUuid": "37517d57_5b7aa751",
+      "range": {
+        "startLine": 1915,
+        "startChar": 12,
+        "endLine": 1915,
+        "endChar": 21
+      },
+      "revId": "079c0309a1322ee1f46b1be765fc41c5c9327d91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
