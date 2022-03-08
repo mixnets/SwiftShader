@@ -55,7 +55,7 @@ FrameBufferX11::FrameBufferX11(Display *display, Window window, int width, int h
 
 	XWindowAttributes attribs;
 	Status status = libX11->XGetWindowAttributes(display, window, &attribs);
-	assert(status == 0);
+	assert(status != 0);
 	int depth = attribs.depth;
 	Visual *visual = attribs.visual;
 
