@@ -34,6 +34,24 @@
       "parentUuid": "0d287ad4_611495bb",
       "revId": "0c5c7d457c8fa25043e616ca9ce679ba8d8f552d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c5474ae_40c8d488",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-08T21:23:39Z",
+      "side": 1,
+      "message": "What I\u0027m wondering is:\nWill you ever need Sqrt\u003cHighp\u003e(x) in the codebase ?\nIf not, we could just have:\n\ninline RValue\u003cFloat4\u003e SqrtMediump(RValue\u003cFloat4\u003e x) { return Sqrt(x, false); }\ninline RValue\u003cFloat4\u003e PowMediump(RValue\u003cFloat4\u003e x, RValue\u003cFloat4\u003e y) { return Pow(x, y, false); }\n\nand that would be it. I don\u0027t see what Sqrt\u003cMediump\u003e() adds over SqrtMediump(), unless you plan to call template functions within template functions to propagate the precision, but that doesn\u0027t seem like the goal here.",
+      "parentUuid": "4a3855f6_b59d64ea",
+      "revId": "0c5c7d457c8fa25043e616ca9ce679ba8d8f552d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
