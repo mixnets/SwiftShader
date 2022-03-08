@@ -16,6 +16,24 @@
       "message": "I\u0027m not sure what\u0027s gained through the use of a template argument here. Why not just use \"Precision precision\" instead of \"bool relaxedPrecision\" in all those functions? That would pave the way for a potentially faster lowp implementation, which we don\u0027t have now and would remove the boolean argument which reduces readability everywhere.",
       "revId": "0c5c7d457c8fa25043e616ca9ce679ba8d8f552d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a3855f6_b59d64ea",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-08T19:49:04Z",
+      "side": 1,
+      "message": "I want to avoid passing it as an argument when it\u0027s not variable. I think `Sqrt(x, Mediump)` looks worse than `Sqrt\u003cMediump\u003e(x)` since it looks as if it takes two operands. Template arguments are for providing a specialization at compile time. Usually for a type, but in this case a precision and I think subjectively it works well.\n\nVulkan doesn\u0027t have `lowp`, and GLSL 4.6 makes it clear that both the `mediump` and `lowp` qualifiers map to SPIR-V\u0027s `RelaxedPrecision` decoration. We naturally store this attribute as a Boolean, and the syntax `Sqrt(x, d.RelaxedPrecision)` is clear and reasonably concise. We\u0027d have to use `Sqrt(x, d.RelaxedPrecision ? Precision::Relaxed : Precision::Highp)` or add complexity elsewhere to deal with what is ultimately still just a Boolean.\n\nIf/when we need lower precision variants we should avoid entangling them with these SPIR-V shader specific functions (similarly the Reactor math functions no longer have anything to do with these ones: b/169755552). Arguably these templated function uses could also be specialized (and I\u0027ve added comments to them for this reason), but I\u0027m sure some GPU implementations use shaders for this advanced blend operation and gamma correction, so it works both ways.\n\nIt\u0027s possible there\u0027s room for improvement, but I still think this is a step foward which enabled the next CL which allows us to pass the RelaxedPrecision decoration everywhere we have a use for it. We could revisit this when the dust settles.",
+      "parentUuid": "0d287ad4_611495bb",
+      "revId": "0c5c7d457c8fa25043e616ca9ce679ba8d8f552d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
