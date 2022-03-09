@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03c1ae59_d6f1e108",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101346
+      },
+      "writtenOn": "2022-03-09T09:12:49Z",
+      "side": 1,
+      "message": "Hi again Nicolas. \n\nUnfortunately I as a non-googler can\u0027t see why the presubmit build fails. If you have the ability to provide me with some information on that, I\u0027d be happy. \n\nThanks\n\nHans-Filip",
+      "revId": "0deb1f1b85a05217fb9bfd24cdb0eeae54abf7a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
