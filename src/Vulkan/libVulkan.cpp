@@ -1745,24 +1745,24 @@ VKAPI_ATTR uint64_t VKAPI_CALL vkGetBufferDeviceAddress(VkDevice device, const V
 {
 	TRACE("(VkDevice device = %p, const VkBufferDeviceAddressInfo* pInfo = %p)",
 	      device, pInfo);
-	UNSUPPORTED("VK_KHR_buffer_device_address");
-	return 0;
+
+	return reinterpret_cast<uintptr_t>(vk::Cast(pInfo->buffer)->getOffsetPointer(0));
 }
 
 VKAPI_ATTR uint64_t VKAPI_CALL vkGetBufferOpaqueCaptureAddress(VkDevice device, const VkBufferDeviceAddressInfo *pInfo)
 {
 	TRACE("(VkDevice device = %p, const VkBufferDeviceAddressInfo* pInfo = %p)",
 	      device, pInfo);
-	UNSUPPORTED("VK_KHR_buffer_device_address");
-	return 0;
+
+	return vk::Cast(pInfo->buffer)->getOpaqueCaptureAddress();
 }
 
 VKAPI_ATTR uint64_t VKAPI_CALL vkGetDeviceMemoryOpaqueCaptureAddress(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfo *pInfo)
 {
 	TRACE("(VkDevice device = %p, const VkDeviceMemoryOpaqueCaptureAddressInfo* pInfo = %p)",
 	      device, pInfo);
-	UNSUPPORTED("VK_KHR_buffer_device_address");
-	return 0;
+
+	return vk::Cast(pInfo->memory)->getOpaqueCaptureAddress();
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateBufferView(VkDevice device, const VkBufferViewCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkBufferView *pView)
