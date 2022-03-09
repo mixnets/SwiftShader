@@ -73,28 +73,32 @@ struct PrintValue::Ty<sw::Intermediate>
 {
 	static inline std::string fmt(const sw::Intermediate &v, uint32_t i)
 	{
-		switch(v.typeHint)
+		switch(v.type)
 		{
-		case sw::Intermediate::TypeHint::Float:
+		case sw::Intermediate::Type::Float:
 			return PrintValue::Ty<sw::SIMD::Float>::fmt(v.Float(i));
-		case sw::Intermediate::TypeHint::Int:
+		case sw::Intermediate::Type::Int:
 			return PrintValue::Ty<sw::SIMD::Int>::fmt(v.Int(i));
-		case sw::Intermediate::TypeHint::UInt:
+		case sw::Intermediate::Type::UInt:
 			return PrintValue::Ty<sw::SIMD::UInt>::fmt(v.UInt(i));
+		case sw::Intermediate::Type::Pointer:
+			return PrintValue::Ty<sw::SIMD::Pointer>::fmt(v.Pointer(i));
 		}
 		return "";
 	}
 
 	static inline std::vector<Value *> val(const sw::Intermediate &v, uint32_t i)
 	{
-		switch(v.typeHint)
+		switch(v.type)
 		{
-		case sw::Intermediate::TypeHint::Float:
+		case sw::Intermediate::Type::Float:
 			return PrintValue::Ty<sw::SIMD::Float>::val(v.Float(i));
-		case sw::Intermediate::TypeHint::Int:
+		case sw::Intermediate::Type::Int:
 			return PrintValue::Ty<sw::SIMD::Int>::val(v.Int(i));
-		case sw::Intermediate::TypeHint::UInt:
+		case sw::Intermediate::Type::UInt:
 			return PrintValue::Ty<sw::SIMD::UInt>::val(v.UInt(i));
+		case sw::Intermediate::Type::Pointer:
+			return PrintValue::Ty<sw::SIMD::Pointer>::val(v.Pointer(i));
 		}
 		return {};
 	}
