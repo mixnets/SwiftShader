@@ -34,6 +34,24 @@
       "parentUuid": "03c1ae59_d6f1e108",
       "revId": "0deb1f1b85a05217fb9bfd24cdb0eeae54abf7a5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "532af3b7_828455ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101346
+      },
+      "writtenOn": "2022-03-09T13:46:02Z",
+      "side": 1,
+      "message": "Big thanks for your help Alexis. \n\nWe (at Vewd) are aware of the move to SwANGLE and are moving there as well, but I thought I might as well patch this up for those who still use it. \n\nI have another question, the precommit fails if I do not run clang-format on the entire file FrameBufferX11.cpp, with an error message telling me to run clang-format-all.sh. clang-format-all.sh does not format the folder \"Main\", so I ran clang format on that folder - see the first commit in relation chain:\n\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/63928/1\n\nDo you guys prefer me to skip the precommit and not reformat Main folder/FrameBufferX11.cpp, or should I keep my two commits as-they-are?",
+      "parentUuid": "87195cad_b640d83b",
+      "revId": "0deb1f1b85a05217fb9bfd24cdb0eeae54abf7a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
