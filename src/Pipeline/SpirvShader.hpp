@@ -757,6 +757,7 @@ public:
 		bool ShaderNonUniform : 1;
 		bool RuntimeDescriptorArray : 1;
 		bool StorageBufferArrayNonUniformIndexing : 1;
+		bool PhysicalStorageBufferAddresses : 1;
 	};
 
 	const Capabilities &getUsedCapabilities() const
@@ -1184,6 +1185,19 @@ private:
 			return intermediates.find(id) != intermediates.end();
 		}
 
+		void assignPhysicalStoragePointer(Object::ID id, SIMD::Pointer ptr)
+		{
+			auto it = pointers.find(id);
+			if(it != pointers.end())
+			{
+				it->second = ptr;
+			}
+			else
+			{
+				createPointer(id, ptr);
+			}
+		}
+
 		void createPointer(Object::ID id, SIMD::Pointer ptr)
 		{
 			bool added = pointers.emplace(id, ptr).second;
@@ -1193,7 +1207,11 @@ private:
 		SIMD::Pointer const &getPointer(Object::ID id) const
 		{
 			auto it = pointers.find(id);
-			ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
+			if(it == pointers.end())
+			{
+				auto it2 = intermediates.find(id);
+				return it2->second.Pointer(0);
+			}
 			return it->second;
 		}
 

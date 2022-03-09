@@ -67,6 +67,17 @@ SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *stat
 		else
 		{
 			dst.move(el.index, p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder));
+
+			// When loading the contents of a physical storage pointer,
+			// the entire data must be loaded in a single operation.
+			if(el.type.storageClass == spv::StorageClassPhysicalStorageBuffer)
+			{
+				for(uint32_t i = el.index + 1; i < dst.componentCount; i++)
+				{
+					p += sizeof(float);
+					dst.move(i, p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder));
+				}
+			}
 		}
 	});
 
@@ -316,7 +327,15 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 	switch(type.opcode())
 	{
 	case spv::OpTypePointer:
-		VisitMemoryObjectInner(type.definition.word(3), d, index, offset, f);
+		if(type.storageClass == spv::StorageClassPhysicalStorageBuffer)
+		{
+			// Load the pointer itself, rather than the structure pointed to by the pointer
+			f(MemoryElement{ index++, offset, type });
+		}
+		else
+		{
+			VisitMemoryObjectInner(type.definition.word(3), d, index, offset, f);
+		}
 		break;
 	case spv::OpTypeInt:
 	case spv::OpTypeFloat:
