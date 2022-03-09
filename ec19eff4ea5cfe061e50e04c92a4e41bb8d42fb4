@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81ce7a2a_e5e5ea16",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-09T17:21:39Z",
+      "side": 1,
+      "message": "Looks ok but this could easily be split into a change to update the enums, and one for the HDR extension.",
+      "revId": "ec19eff4ea5cfe061e50e04c92a4e41bb8d42fb4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
