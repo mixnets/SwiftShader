@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "f94a92d6_19a37207",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-09T14:46:41Z",
+      "side": 1,
+      "message": "Let\u0027s rephrase that a bit to clarify that this is an unoptimized implementation, and the \"Accelerated\" properties are set to false to indicate that.",
+      "range": {
+        "startLine": 9,
+        "startChar": 51,
+        "endLine": 11,
+        "endChar": 28
+      },
+      "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "9e1b4d91_4ba8d2dd",
@@ -31,6 +54,92 @@
       "writtenOn": "2022-03-08T14:54:21Z",
       "side": 1,
       "message": "PTAL",
+      "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24e3d1da_40f1e26e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-09T14:46:41Z",
+      "side": 1,
+      "message": "Great! Just some minor comments:",
+      "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d6f0788_c70f0f9a",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-09T14:46:41Z",
+      "side": 1,
+      "message": "These mappings don\u0027t look correct.",
+      "range": {
+        "startLine": 430,
+        "startChar": 4,
+        "endLine": 433,
+        "endChar": 91
+      },
+      "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d1ed465_9006d090",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1394,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-09T14:46:41Z",
+      "side": 1,
+      "message": "Let\u0027s rename this one to `FDot()` to better discern it from the others? I know the SPIR-V instruction is called `OpDot` but pretty much every other instruction indicates the operand type and it looks like they didn\u0027t anticipate integer dot product.\n\nThis way it\u0027s also clearer that `EmitDot()` doesn\u0027t always call this `Dot()`.",
+      "range": {
+        "startLine": 1394,
+        "startChar": 20,
+        "endLine": 1394,
+        "endChar": 23
+      },
+      "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7045b362_b60e6c64",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 713,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-09T14:46:41Z",
+      "side": 1,
+      "message": "nit: either",
+      "range": {
+        "startLine": 713,
+        "startChar": 70,
+        "endLine": 713,
+        "endChar": 73
+      },
       "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
