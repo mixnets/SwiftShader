@@ -52,6 +52,24 @@
       "parentUuid": "b97cefb5_14bad240",
       "revId": "0587e07cb2e92d9d60fde50f7fc72016e90e3edb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "77f169e2_bf929bcf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 12655
+      },
+      "writtenOn": "2022-03-09T14:11:40Z",
+      "side": 1,
+      "message": "Sorry, no. That was part of my mis-diagnosis. The Skia test is of a feature that\u0027s used in conjunction with YUV conversion in chrome, but according to the GPU folks that wrote the test (and my reading of it) there\u0027s no actual YUV format involved in the Skia code. (It does RGB to YUV conversion in a shader, then re-combines the planes, but again using a shader, not a real YUV format).\n\nOne interesting thing, though, is that when it\u0027s rendering to the planes, those are (3 separate) 8-bit/channel surfaces (R8) - each one in its own pass. (So no MRT involved, but there are formats with less than 32bpp). Not sure if that\u0027s relevant?",
+      "parentUuid": "9a630d20_12e2585c",
+      "revId": "0587e07cb2e92d9d60fde50f7fc72016e90e3edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
