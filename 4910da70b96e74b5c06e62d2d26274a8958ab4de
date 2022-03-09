@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "42d4bcdf_268e3430",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-09T15:29:12Z",
+      "side": 1,
+      "message": "This is blocked on https://autoroll.skia.org/r/vulkan-deps-chromium-autoroll updating SPIRV-Tools for (vulkan-deps itself has the functionality used by this change: https://chromium-review.googlesource.com/c/vulkan-deps/+/3507673), but is otherwise ready for code review.",
+      "revId": "4910da70b96e74b5c06e62d2d26274a8958ab4de",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
