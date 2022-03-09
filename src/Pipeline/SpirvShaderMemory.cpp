@@ -179,6 +179,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		break;
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
+	case spv::StorageClassPhysicalStorageBuffer:
 		{
 			const auto &d = descriptorDecorations.at(resultId);
 			ASSERT(d.DescriptorSet >= 0);
@@ -475,6 +476,7 @@ bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
+	case spv::StorageClassPhysicalStorageBuffer:
 	case spv::StorageClassImage:
 		return false;
 	default:
@@ -488,6 +490,7 @@ bool SpirvShader::IsExplicitLayout(spv::StorageClass storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
+	case spv::StorageClassPhysicalStorageBuffer:
 	case spv::StorageClassPushConstant:
 		return true;
 	default:
@@ -511,6 +514,7 @@ bool SpirvShader::IsStorageInterleavedByLane(spv::StorageClass storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
+	case spv::StorageClassPhysicalStorageBuffer:
 	case spv::StorageClassPushConstant:
 	case spv::StorageClassWorkgroup:
 	case spv::StorageClassImage:
