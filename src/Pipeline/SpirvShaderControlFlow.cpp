@@ -590,7 +590,7 @@ SpirvShader::EmitResult SpirvShader::EmitDemoteToHelperInvocation(InsnIterator i
 SpirvShader::EmitResult SpirvShader::EmitIsHelperInvocation(InsnIterator insn, EmitState *state) const
 {
 	auto &type = getType(insn.resultTypeId());
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 	dst.move(0, state->routine->helperInvocation);
 	return EmitResult::Continue;
 }
@@ -684,7 +684,7 @@ void SpirvShader::LoadPhi(InsnIterator insn, EmitState *state) const
 	ASSERT(storageIt != state->routine->phis.end());
 	auto &storage = storageIt->second;
 
-	auto &dst = state->createIntermediate(objectId, type.componentCount);
+	auto &dst = createIntermediate(objectId, type.componentCount, state);
 	for(uint32_t i = 0; i < type.componentCount; i++)
 	{
 		dst.move(i, storage[i]);
