@@ -75,40 +75,47 @@ class SpirvRoutine;
 class Intermediate
 {
 public:
-	Intermediate(uint32_t componentCount)
+	Intermediate(uint32_t componentCount, bool isPointer)
 	    : componentCount(componentCount)
-	    , scalar(new rr::Value *[componentCount])
+	    , scalar(isPointer ? nullptr : new rr::Value *[componentCount])
+	    , pointers(isPointer ? new SIMD::Pointer[componentCount] : nullptr)
+	    , type(isPointer ? Type::Pointer : Type::Float)
 	{
-		for(auto i = 0u; i < componentCount; i++) { scalar[i] = nullptr; }
+		if(!isPointer)
+		{
+			for(auto i = 0u; i < componentCount; i++) { scalar[i] = nullptr; }
+		}
 	}
 
 	~Intermediate()
 	{
 		delete[] scalar;
+		delete[] pointers;
 	}
 
-	// TypeHint is used as a hint for rr::PrintValue::Ty<sw::Intermediate> to
-	// decide the format used to print the intermediate data.
-	enum class TypeHint
+	enum class Type
 	{
 		Float,
 		Int,
-		UInt
+		UInt,
+		Pointer
 	};
 
-	void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value(), TypeHint::Float); }
-	void move(uint32_t i, RValue<SIMD::Int> &&scalar) { emplace(i, scalar.value(), TypeHint::Int); }
-	void move(uint32_t i, RValue<SIMD::UInt> &&scalar) { emplace(i, scalar.value(), TypeHint::UInt); }
+	void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value(), Type::Float); }
+	void move(uint32_t i, RValue<SIMD::Int> &&scalar) { emplace(i, scalar.value(), Type::Int); }
+	void move(uint32_t i, RValue<SIMD::UInt> &&scalar) { emplace(i, scalar.value(), Type::UInt); }
+	void move(uint32_t i, SIMD::Pointer scalar) { emplace(i, scalar, Type::Pointer); }
 
-	void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value(), TypeHint::Float); }
-	void move(uint32_t i, const RValue<SIMD::Int> &scalar) { emplace(i, scalar.value(), TypeHint::Int); }
-	void move(uint32_t i, const RValue<SIMD::UInt> &scalar) { emplace(i, scalar.value(), TypeHint::UInt); }
+	void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value(), Type::Float); }
+	void move(uint32_t i, const RValue<SIMD::Int> &scalar) { emplace(i, scalar.value(), Type::Int); }
+	void move(uint32_t i, const RValue<SIMD::UInt> &scalar) { emplace(i, scalar.value(), Type::UInt); }
 
 	// Value retrieval functions.
 	RValue<SIMD::Float> Float(uint32_t i) const
 	{
 		ASSERT(i < componentCount);
 		ASSERT(scalar[i] != nullptr);
+		ASSERT(!isPointer());
 		return As<SIMD::Float>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::Float>(scalar)
 	}
 
@@ -116,6 +123,7 @@ public:
 	{
 		ASSERT(i < componentCount);
 		ASSERT(scalar[i] != nullptr);
+		ASSERT(!isPointer());
 		return As<SIMD::Int>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::Int>(scalar)
 	}
 
@@ -123,7 +131,18 @@ public:
 	{
 		ASSERT(i < componentCount);
 		ASSERT(scalar[i] != nullptr);
+		ASSERT(!isPointer());
 		return As<SIMD::UInt>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::UInt>(scalar)
+	}
+
+	SIMD::Pointer &Pointer(uint32_t i) const
+	{
+		return pointers[i];
+	}
+
+	bool isPointer() const
+	{
+		return type == Type::Pointer;
 	}
 
 	// No copy/move construction or assignment
@@ -135,19 +154,27 @@ public:
 	const uint32_t componentCount;
 
 private:
-	void emplace(uint32_t i, rr::Value *value, TypeHint type)
+	void emplace(uint32_t i, rr::Value *value, Type t)
 	{
 		ASSERT(i < componentCount);
 		ASSERT(scalar[i] == nullptr);
 		scalar[i] = value;
-		RR_PRINT_ONLY(typeHint = type;)
+		type = t;
+	}
+
+	void emplace(uint32_t i, SIMD::Pointer value, Type t)
+	{
+		ASSERT(i < componentCount);
+		pointers[i] = value;
+		type = t;
 	}
 
 	rr::Value **const scalar;
+	SIMD::Pointer *pointers;
+	Type type = Type::Float;
 
 #ifdef ENABLE_RR_PRINT
 	friend struct rr::PrintValue::Ty<sw::Intermediate>;
-	TypeHint typeHint = TypeHint::Float;
 #endif  // ENABLE_RR_PRINT
 };
 
@@ -726,6 +753,7 @@ public:
 		bool ShaderNonUniform : 1;
 		bool RuntimeDescriptorArray : 1;
 		bool StorageBufferArrayNonUniformIndexing : 1;
+		bool PhysicalStorageBufferAddresses : 1;
 	};
 
 	const Capabilities &getUsedCapabilities() const
@@ -1132,11 +1160,11 @@ private:
 
 		unsigned int getMultiSampleCount() const { return multiSampleCount; }
 
-		Intermediate &createIntermediate(Object::ID id, uint32_t componentCount)
+		Intermediate &createIntermediate(Object::ID id, uint32_t componentCount, bool isPointer)
 		{
 			auto it = intermediates.emplace(std::piecewise_construct,
 			                                std::forward_as_tuple(id),
-			                                std::forward_as_tuple(componentCount));
+			                                std::forward_as_tuple(componentCount, isPointer));
 			ASSERT_MSG(it.second, "Intermediate %d created twice", id.value());
 			return it.first->second;
 		}
@@ -1148,6 +1176,24 @@ private:
 			return it->second;
 		}
 
+		bool isIntermediate(Object::ID id) const
+		{
+			return intermediates.find(id) != intermediates.end();
+		}
+
+		void assignPhysicalStoragePointer(Object::ID id, SIMD::Pointer ptr)
+		{
+			auto it = pointers.find(id);
+			if(it != pointers.end())
+			{
+				it->second = ptr;
+			}
+			else
+			{
+				createPointer(id, ptr);
+			}
+		}
+
 		void createPointer(Object::ID id, SIMD::Pointer ptr)
 		{
 			bool added = pointers.emplace(id, ptr).second;
@@ -1157,7 +1203,11 @@ private:
 		SIMD::Pointer const &getPointer(Object::ID id) const
 		{
 			auto it = pointers.find(id);
-			ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
+			if(it == pointers.end())
+			{
+				auto it2 = intermediates.find(id);
+				return it2->second.Pointer(0);
+			}
 			return it->second;
 		}
 
@@ -1218,6 +1268,21 @@ private:
 			return SIMD::UInt(constant[i]);
 		}
 
+		const SIMD::Pointer &Pointer(uint32_t i) const
+		{
+			if(intermediate)
+			{
+				return intermediate->Pointer(i);
+			}
+
+			return pointer[i];
+		}
+
+		bool isPointer() const
+		{
+			return intermediate ? intermediate->isPointer() : (pointer != nullptr);
+		}
+
 	private:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
 
@@ -1226,6 +1291,7 @@ private:
 
 		const uint32_t *constant;
 		const Intermediate *intermediate;
+		const SIMD::Pointer *pointer;
 
 	public:
 		const uint32_t componentCount;
@@ -1255,6 +1321,12 @@ private:
 	Type const &getObjectType(Object::ID id) const
 	{
 		return getType(getObject(id));
+	}
+
+	Intermediate &createIntermediate(Object::ID id, uint32_t componentCount, EmitState *state) const
+	{
+		bool isPointer = getObject(id).kind == Object::Kind::Pointer;
+		return state->createIntermediate(id, componentCount, isPointer);
 	}
 
 	Function const &getFunction(Function::ID id) const

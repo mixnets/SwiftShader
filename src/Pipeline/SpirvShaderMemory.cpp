@@ -55,12 +55,20 @@ SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *stat
 
 	auto ptr = GetPointerToData(pointerId, 0, false, state);
 	bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
-	auto &dst = state->createIntermediate(resultId, resultTy.componentCount);
+	auto &dst = createIntermediate(resultId, resultTy.componentCount, state);
+	bool isPointer = dst.isPointer();
 	auto robustness = getOutOfBoundsBehavior(pointerId, state);
 
 	VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
 		auto p = GetElementPointer(ptr, el.offset, interleavedByLane);
-		dst.move(el.index, p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder));
+		if(isPointer)
+		{
+			dst.move(el.index, p.Load<SIMD::Pointer>(robustness, state->activeLaneMask(), atomic, memoryOrder, sizeof(void *)));
+		}
+		else
+		{
+			dst.move(el.index, p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder));
+		}
 	});
 
 	SPIRV_SHADER_DBG("Load(atomic: {0}, order: {1}, ptr: {2}, val: {3}, mask: {4})", atomic, int(memoryOrder), ptr, dst, state->activeLaneMask());
@@ -94,6 +102,7 @@ void SpirvShader::Store(Object::ID pointerId, const Operand &value, bool atomic,
 	auto &pointer = getObject(pointerId);
 	auto &pointerTy = getType(pointer);
 	auto &elementTy = getType(pointerTy.element);
+	bool isPointer = value.isPointer();
 
 	ASSERT(!atomic || elementTy.opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
@@ -111,7 +120,14 @@ void SpirvShader::Store(Object::ID pointerId, const Operand &value, bool atomic,
 
 	VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
 		auto p = GetElementPointer(ptr, el.offset, interleavedByLane);
-		p.Store(value.Float(el.index), robustness, mask, atomic, memoryOrder);
+		if(isPointer)
+		{
+			p.Store(value.Pointer(el.index), robustness, mask, atomic, memoryOrder);
+		}
+		else
+		{
+			p.Store(value.Float(el.index), robustness, mask, atomic, memoryOrder);
+		}
 	});
 }
 
@@ -177,6 +193,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		break;
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
+	case spv::StorageClassPhysicalStorageBuffer:
 		{
 			const auto &d = descriptorDecorations.at(resultId);
 			ASSERT(d.DescriptorSet >= 0);
@@ -301,7 +318,14 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 	switch(type.opcode())
 	{
 	case spv::OpTypePointer:
-		VisitMemoryObjectInner(type.definition.word(3), d, index, offset, f);
+		if(type.storageClass == spv::StorageClassPhysicalStorageBuffer)
+		{
+			f(MemoryElement{ index++, offset, type });
+		}
+		else
+		{
+			VisitMemoryObjectInner(type.definition.word(3), d, index, offset, f);
+		}
 		break;
 	case spv::OpTypeInt:
 	case spv::OpTypeFloat:
@@ -513,6 +537,7 @@ bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
+	case spv::StorageClassPhysicalStorageBuffer:
 	case spv::StorageClassImage:
 		return false;
 	default:
@@ -526,6 +551,7 @@ bool SpirvShader::IsExplicitLayout(spv::StorageClass storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
+	case spv::StorageClassPhysicalStorageBuffer:
 	case spv::StorageClassPushConstant:
 		return true;
 	default:
@@ -556,6 +582,7 @@ bool SpirvShader::IsStorageInterleavedByLane(spv::StorageClass storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
+	case spv::StorageClassPhysicalStorageBuffer:
 	case spv::StorageClassPushConstant:
 	case spv::StorageClassWorkgroup:
 	case spv::StorageClassImage:
