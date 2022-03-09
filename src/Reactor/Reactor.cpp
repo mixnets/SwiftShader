@@ -4342,6 +4342,18 @@ RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset)
 	return lhs = lhs - offset;
 }
 
+Pointer4::Pointer4()
+    : base(nullptr)
+    , dynamicLimit(0)
+    , staticLimit(0)
+    , dynamicOffsets(0)
+    , staticOffsets{}
+    , hasDynamicLimit(false)
+    , hasDynamicOffsets(false)
+    , isBasePlusOffset(false)
+{
+}
+
 Pointer4::Pointer4(Pointer<Byte> base, rr::Int limit)
     : base(base)
     , dynamicLimit(limit)
@@ -4618,6 +4630,47 @@ Pointer<Byte> Pointer4::getPointerForLane(int lane) const
 	else
 	{
 		return pointers[lane];
+	}
+}
+
+void Pointer4::castFrom(UInt4 lowerBits, UInt4 upperBits)
+{
+	assert(sizeof(void *) == 8);
+	for(int i = 0; i < 4; i++)
+	{
+		UInt2 address;
+		address = Insert(address, Extract(lowerBits, i), 0);
+		address = Insert(address, Extract(upperBits, i), 1);
+		pointers[i] = As<rr::Pointer<Byte>>(address);
+	}
+}
+
+void Pointer4::castTo(UInt4 &lowerBits, UInt4 &upperBits) const
+{
+	assert(sizeof(void *) == 8);
+	for(int i = 0; i < 4; i++)
+	{
+		UInt2 address = As<UInt2>(pointers[i]);
+		lowerBits = Insert(lowerBits, Extract(address, 0), i);
+		upperBits = Insert(upperBits, Extract(address, 1), i);
+	}
+}
+
+void Pointer4::castFrom(UInt4 bits)
+{
+	assert(sizeof(void *) == 4);
+	for(int i = 0; i < 4; i++)
+	{
+		pointers[i] = As<rr::Pointer<Byte>>(Extract(bits, i));
+	}
+}
+
+void Pointer4::castTo(UInt4 &bits) const
+{
+	assert(sizeof(void *) == 4);
+	for(int i = 0; i < 4; i++)
+	{
+		bits = Insert(bits, As<UInt>(pointers[i]), i);
 	}
 }
 

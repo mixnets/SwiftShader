@@ -323,7 +323,7 @@ uint32_t SpirvShader::ImageInstruction::getImageOperandsMask(InsnIterator insn)
 SpirvShader::EmitResult SpirvShader::EmitImageSample(const ImageInstruction &instruction, EmitState *state) const
 {
 	auto &resultType = getType(instruction.resultTypeId);
-	auto &result = state->createIntermediate(instruction.resultId, resultType.componentCount);
+	auto &result = createIntermediate(instruction.resultId, resultType.componentCount, state);
 	Array<SIMD::Float> out(4);
 
 	// TODO(b/153380916): When we're in a code path that is always executed,
@@ -466,7 +466,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, Em
 	auto imageId = Object::ID(insn.word(3));
 	auto lodId = Object::ID(insn.word(4));
 
-	auto &dst = state->createIntermediate(insn.resultId(), resultTy.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), resultTy.componentCount, state);
 	GetImageDimensions(state, resultTy, imageId, lodId, dst);
 
 	return EmitResult::Continue;
@@ -478,7 +478,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageQuerySize(InsnIterator insn, EmitS
 	auto imageId = Object::ID(insn.word(3));
 	auto lodId = Object::ID(0);
 
-	auto &dst = state->createIntermediate(insn.resultId(), resultTy.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), resultTy.componentCount, state);
 	GetImageDimensions(state, resultTy, imageId, lodId, dst);
 
 	return EmitResult::Continue;
@@ -569,7 +569,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageQueryLevels(InsnIterator insn, Emi
 		UNREACHABLE("Image descriptorType: %d", int(descriptorType));
 	}
 
-	auto &dst = state->createIntermediate(insn.resultId(), 1);
+	auto &dst = createIntermediate(insn.resultId(), 1, state);
 	dst.move(0, SIMD::Int(mipLevels));
 
 	return EmitResult::Continue;
@@ -604,7 +604,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageQuerySamples(InsnIterator insn, Em
 		UNREACHABLE("Image descriptorType: %d", int(descriptorType));
 	}
 
-	auto &dst = state->createIntermediate(insn.resultId(), 1);
+	auto &dst = createIntermediate(insn.resultId(), 1, state);
 	dst.move(0, SIMD::Int(sampleCount));
 
 	return EmitResult::Continue;
@@ -748,7 +748,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 	}
 
 	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).getUniformPointer();  // vk::StorageImageDescriptor*
-	auto &dst = state->createIntermediate(instruction.resultId, resultType.componentCount);
+	auto &dst = createIntermediate(instruction.resultId, resultType.componentCount, state);
 
 	// VK_EXT_image_robustness requires replacing out-of-bounds access with zero.
 	// TODO(b/162327166): Only perform bounds checks when VK_EXT_image_robustness is enabled.
