@@ -52,6 +52,24 @@
       "parentUuid": "33391b42_783da581",
       "revId": "d25df2a67cd2331e85015457e6291324d4214cdd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ba70698_b2e6ba73",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-09T03:59:11Z",
+      "side": 1,
+      "message": "\u003e I have no ability to edit fields on that bug after I made it\n\nYes, unfortunately Buganizer doesn\u0027t allow adding all Full-Time Googlers as editors of bugs in a certain component (as far as I\u0027m aware). The only workaround I\u0027ve found is to have people join g/swiftshader. This group has edit rights.",
+      "parentUuid": "c0399b17_a988b3dd",
+      "revId": "d25df2a67cd2331e85015457e6291324d4214cdd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
