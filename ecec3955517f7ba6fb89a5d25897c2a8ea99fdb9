@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "40723f93_271d60b3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-09T19:04:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f94a92d6_19a37207",
+      "range": {
+        "startLine": 9,
+        "startChar": 51,
+        "endLine": 11,
+        "endChar": 28
+      },
+      "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "9e1b4d91_4ba8d2dd",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 10
@@ -98,6 +122,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f76cc490_7db20956",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-09T19:04:09Z",
+      "side": 1,
+      "message": "Oops, I had an off by one line error in my copy/pasting :) Done.",
+      "parentUuid": "2d6f0788_c70f0f9a",
+      "range": {
+        "startLine": 430,
+        "startChar": 4,
+        "endLine": 433,
+        "endChar": 91
+      },
+      "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4d1ed465_9006d090",
@@ -121,6 +169,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "717a50fb_c6dc7de6",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1394,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-09T19:04:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4d1ed465_9006d090",
+      "range": {
+        "startLine": 1394,
+        "startChar": 20,
+        "endLine": 1394,
+        "endChar": 23
+      },
+      "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7045b362_b60e6c64",
@@ -134,6 +206,30 @@
       "writtenOn": "2022-03-09T14:46:41Z",
       "side": 1,
       "message": "nit: either",
+      "range": {
+        "startLine": 713,
+        "startChar": 70,
+        "endLine": 713,
+        "endChar": 73
+      },
+      "revId": "ecec3955517f7ba6fb89a5d25897c2a8ea99fdb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "747f8058_cb5231cf",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 713,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-09T19:04:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7045b362_b60e6c64",
       "range": {
         "startLine": 713,
         "startChar": 70,
