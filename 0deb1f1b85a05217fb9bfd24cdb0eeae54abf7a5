@@ -16,6 +16,24 @@
       "message": "Hi again Nicolas. \n\nUnfortunately I as a non-googler can\u0027t see why the presubmit build fails. If you have the ability to provide me with some information on that, I\u0027d be happy. \n\nThanks\n\nHans-Filip",
       "revId": "0deb1f1b85a05217fb9bfd24cdb0eeae54abf7a5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87195cad_b640d83b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-09T13:36:17Z",
+      "side": 1,
+      "message": "Hi Hans-Filip, your bug description is missing a bug ID. On the line above the \"Change-Id:\" line, you need a \"Bug:\" with a valid bug ID. In this case, you\u0027d probably want to use:\n\nBug: swiftshader:168\n\nNote that the code was introduced here:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/60989\nI added a note with your findings.\n\nAlso note: the SwiftShader libGLESv2 and libEGL libraries are deprecated. We have switched to using the ANGLE libGLESv2 and libEGL libraries (https://chromium.googlesource.com/angle/angle/) on top of SwiftShader Vulkan.",
+      "parentUuid": "03c1ae59_d6f1e108",
+      "revId": "0deb1f1b85a05217fb9bfd24cdb0eeae54abf7a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
