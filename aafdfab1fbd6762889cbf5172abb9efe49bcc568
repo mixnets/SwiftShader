@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c69fe985_3680e773",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101346
+      },
+      "writtenOn": "2022-03-09T07:20:40Z",
+      "side": 1,
+      "message": "Hi Nicolas. \n\nWe at Vewd found an issue with an assert in SwiftShader. Please have a look and see if the patch provided is correct. \n\nThankful for review. \n\nHans-Filip\nVewd",
+      "revId": "aafdfab1fbd6762889cbf5172abb9efe49bcc568",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
