@@ -12,45 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef	sw_FrameBufferGDI_hpp
-#define	sw_FrameBufferGDI_hpp
+#ifndef sw_FrameBufferGDI_hpp
+#define sw_FrameBufferGDI_hpp
 
 #include "FrameBufferWin.hpp"
 
-namespace sw
+namespace sw {
+class FrameBufferGDI : public FrameBufferWin
 {
-	class FrameBufferGDI : public FrameBufferWin
-	{
-	public:
-		FrameBufferGDI(HWND windowHandle, int width, int height, bool fullscreen, bool topLeftOrigin);
+public:
+	FrameBufferGDI(HWND windowHandle, int width, int height, bool fullscreen, bool topLeftOrigin);
 
-		~FrameBufferGDI() override;
+	~FrameBufferGDI() override;
 
-		void flip(sw::Surface *source) override;
-		void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
+	void flip(sw::Surface *source) override;
+	void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
 
-		void flip(HWND windowOverride, sw::Surface *source) override;
-		void blit(HWND windowOverride, sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
+	void flip(HWND windowOverride, sw::Surface *source) override;
+	void blit(HWND windowOverride, sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
 
-		void *lock() override;
-		void unlock() override;
+	void *lock() override;
+	void unlock() override;
 
-		void setGammaRamp(GammaRamp *gammaRamp, bool calibrate) override;
-		void getGammaRamp(GammaRamp *gammaRamp) override;
+	void setGammaRamp(GammaRamp *gammaRamp, bool calibrate) override;
+	void getGammaRamp(GammaRamp *gammaRamp) override;
 
-		void screenshot(void *destBuffer) override;
-		bool getScanline(bool &inVerticalBlank, unsigned int &scanline) override;
+	void screenshot(void *destBuffer) override;
+	bool getScanline(bool &inVerticalBlank, unsigned int &scanline) override;
 
-	private:
-		void init(HWND bitmapWindow);
-		void release();
+private:
+	void init(HWND bitmapWindow);
+	void release();
 
-		HDC windowContext;
-		HDC bitmapContext;
-		HWND bitmapWindow;
+	HDC windowContext;
+	HDC bitmapContext;
+	HWND bitmapWindow;
 
-		HBITMAP bitmap;
-	};
-}
+	HBITMAP bitmap;
+};
+}  // namespace sw
 
-#endif	 //	sw_FrameBufferGDI_hpp
+#endif  //	sw_FrameBufferGDI_hpp

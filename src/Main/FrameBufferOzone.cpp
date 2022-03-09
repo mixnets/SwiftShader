@@ -14,36 +14,36 @@
 
 #include "FrameBufferOzone.hpp"
 
-namespace sw
+namespace sw {
+FrameBufferOzone::FrameBufferOzone(intptr_t display, intptr_t window, int width, int height)
+    : FrameBuffer(width, height, false, false)
 {
-	FrameBufferOzone::FrameBufferOzone(intptr_t display, intptr_t window, int width, int height) : FrameBuffer(width, height, false, false)
-	{
-		buffer = sw::Surface::create(width, height, 1, format, nullptr,
-		                             sw::Surface::pitchB(width, 0, format, true),
-		                             sw::Surface::sliceB(width, height, 0, format, true));
-	}
-
-	FrameBufferOzone::~FrameBufferOzone()
-	{
-		delete buffer;
-	}
-
-	void *FrameBufferOzone::lock()
-	{
-		framebuffer = buffer->lockInternal(0, 0, 0, sw::LOCK_READWRITE, sw::PUBLIC);
-
-		return framebuffer;
-	}
-
-	void FrameBufferOzone::unlock()
-	{
-		buffer->unlockInternal();
-
-		framebuffer = nullptr;
-	}
-
-	void FrameBufferOzone::blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
-	{
-		copy(source);
-	}
+	buffer = sw::Surface::create(width, height, 1, format, nullptr,
+	                             sw::Surface::pitchB(width, 0, format, true),
+	                             sw::Surface::sliceB(width, height, 0, format, true));
 }
+
+FrameBufferOzone::~FrameBufferOzone()
+{
+	delete buffer;
+}
+
+void *FrameBufferOzone::lock()
+{
+	framebuffer = buffer->lockInternal(0, 0, 0, sw::LOCK_READWRITE, sw::PUBLIC);
+
+	return framebuffer;
+}
+
+void FrameBufferOzone::unlock()
+{
+	buffer->unlockInternal();
+
+	framebuffer = nullptr;
+}
+
+void FrameBufferOzone::blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
+{
+	copy(source);
+}
+}  // namespace sw

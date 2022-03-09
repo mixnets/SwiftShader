@@ -30,9 +30,10 @@ struct LibX11exports
 	int (*XWidthOfScreen)(Screen *screen);
 	int (*XHeightOfScreen)(Screen *screen);
 	int (*XPlanesOfScreen)(Screen *screen);
-	GC (*XCreateGC)(Display *display, Drawable d, unsigned long valuemask, XGCValues *values);
+	GC(*XCreateGC)
+	(Display *display, Drawable d, unsigned long valuemask, XGCValues *values);
 	int (*XFreeGC)(Display *display, GC gc);
-	int (*(*XSetErrorHandler)(int (*handler)(Display*, XErrorEvent*)))(Display*, XErrorEvent*);
+	int (*(*XSetErrorHandler)(int (*handler)(Display *, XErrorEvent *)))(Display *, XErrorEvent *);
 	int (*XSync)(Display *display, Bool discard);
 	XImage *(*XCreateImage)(Display *display, Visual *visual, unsigned int depth, int format, int offset, char *data, unsigned int width, unsigned int height, int bitmap_pad, int bytes_per_line);
 	int (*XCloseDisplay)(Display *display);
@@ -62,4 +63,4 @@ private:
 
 extern LibX11 libX11;
 
-#endif   // libX11_hpp
+#endif  // libX11_hpp

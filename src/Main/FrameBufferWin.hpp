@@ -12,48 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef	sw_FrameBufferWin_hpp
-#define	sw_FrameBufferWin_hpp
+#ifndef sw_FrameBufferWin_hpp
+#define sw_FrameBufferWin_hpp
 
 #include "FrameBuffer.hpp"
 
-namespace sw
+namespace sw {
+struct GammaRamp
 {
-	struct GammaRamp
-	{
-		short red[256];
-		short green[256];
-		short blue[256];
-	};
+	short red[256];
+	short green[256];
+	short blue[256];
+};
 
-	class FrameBufferWin : public FrameBuffer
-	{
-	public:
-		FrameBufferWin(HWND windowHandle, int width, int height, bool fullscreen, bool topLeftOrigin);
+class FrameBufferWin : public FrameBuffer
+{
+public:
+	FrameBufferWin(HWND windowHandle, int width, int height, bool fullscreen, bool topLeftOrigin);
 
-		~FrameBufferWin() override;
+	~FrameBufferWin() override;
 
-		void flip(sw::Surface *source) override = 0;
-		void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override = 0;
+	void flip(sw::Surface *source) override = 0;
+	void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override = 0;
 
-		virtual void flip(HWND windowOverride, sw::Surface *source) = 0;
-		virtual void blit(HWND windowOverride, sw::Surface *source, const Rect *sourceRect, const Rect *destRect) = 0;
+	virtual void flip(HWND windowOverride, sw::Surface *source) = 0;
+	virtual void blit(HWND windowOverride, sw::Surface *source, const Rect *sourceRect, const Rect *destRect) = 0;
 
-		virtual void setGammaRamp(GammaRamp *gammaRamp, bool calibrate) = 0;
-		virtual void getGammaRamp(GammaRamp *gammaRamp) = 0;
+	virtual void setGammaRamp(GammaRamp *gammaRamp, bool calibrate) = 0;
+	virtual void getGammaRamp(GammaRamp *gammaRamp) = 0;
 
-		virtual void screenshot(void *destBuffer) = 0;
-		virtual bool getScanline(bool &inVerticalBlank, unsigned int &scanline) = 0;
+	virtual void screenshot(void *destBuffer) = 0;
+	virtual bool getScanline(bool &inVerticalBlank, unsigned int &scanline) = 0;
 
-	protected:
-		void updateBounds(HWND windowOverride);
+protected:
+	void updateBounds(HWND windowOverride);
 
-		HWND windowHandle;
-		DWORD originalWindowStyle;
-		RECT bounds;
-	};
-}
+	HWND windowHandle;
+	DWORD originalWindowStyle;
+	RECT bounds;
+};
+}  // namespace sw
 
 sw::FrameBufferWin *createFrameBufferWin(HWND windowHandle, int width, int height, bool fullscreen, bool topLeftOrigin);
 
-#endif	 //	sw_FrameBufferWin_hpp
+#endif  //	sw_FrameBufferWin_hpp

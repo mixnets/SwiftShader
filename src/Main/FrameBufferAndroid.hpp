@@ -17,34 +17,33 @@
 
 #include <cutils/native_handle.h>
 
-#include "Main/FrameBuffer.hpp"
 #include "Common/Debug.hpp"
+#include "Main/FrameBuffer.hpp"
 
 struct ANativeWindow;
 struct ANativeWindowBuffer;
 
-namespace sw
+namespace sw {
+class FrameBufferAndroid : public FrameBuffer
 {
-	class FrameBufferAndroid : public FrameBuffer
-	{
-	public:
-		FrameBufferAndroid(ANativeWindow *window, int width, int height);
+public:
+	FrameBufferAndroid(ANativeWindow *window, int width, int height);
 
-		~FrameBufferAndroid() override;
+	~FrameBufferAndroid() override;
 
-		void flip(sw::Surface *source) override {blit(source, nullptr, nullptr);}
-		void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
+	void flip(sw::Surface *source) override { blit(source, nullptr, nullptr); }
+	void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
 
-		void *lock() override;
-		void unlock() override;
+	void *lock() override;
+	void unlock() override;
 
-		bool setSwapRectangle(int l, int t, int w, int h);
+	bool setSwapRectangle(int l, int t, int w, int h);
 
-	private:
-		ANativeWindow *nativeWindow;
-		ANativeWindowBuffer *buffer;
-		buffer_handle_t bufferImportedHandle;
-	};
-}
+private:
+	ANativeWindow *nativeWindow;
+	ANativeWindowBuffer *buffer;
+	buffer_handle_t bufferImportedHandle;
+};
+}  // namespace sw
 
-#endif   // sw_FrameBufferAndroid
+#endif  // sw_FrameBufferAndroid

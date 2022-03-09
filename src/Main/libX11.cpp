@@ -18,26 +18,26 @@
 
 LibX11exports::LibX11exports(void *libX11, void *libXext)
 {
-	XOpenDisplay = (Display *(*)(char*))getProcAddress(libX11, "XOpenDisplay");
-	XGetWindowAttributes = (Status (*)(Display*, Window, XWindowAttributes*))getProcAddress(libX11, "XGetWindowAttributes");
-	XDefaultScreenOfDisplay = (Screen *(*)(Display*))getProcAddress(libX11, "XDefaultScreenOfDisplay");
-	XWidthOfScreen = (int (*)(Screen*))getProcAddress(libX11, "XWidthOfScreen");
-	XHeightOfScreen = (int (*)(Screen*))getProcAddress(libX11, "XHeightOfScreen");
-	XPlanesOfScreen = (int (*)(Screen*))getProcAddress(libX11, "XPlanesOfScreen");
-	XCreateGC = (GC (*)(Display *, Drawable, unsigned long, XGCValues *))getProcAddress(libX11, "XCreateGC");
+	XOpenDisplay = (Display * (*)(char *)) getProcAddress(libX11, "XOpenDisplay");
+	XGetWindowAttributes = (Status(*)(Display *, Window, XWindowAttributes *))getProcAddress(libX11, "XGetWindowAttributes");
+	XDefaultScreenOfDisplay = (Screen * (*)(Display *)) getProcAddress(libX11, "XDefaultScreenOfDisplay");
+	XWidthOfScreen = (int (*)(Screen *))getProcAddress(libX11, "XWidthOfScreen");
+	XHeightOfScreen = (int (*)(Screen *))getProcAddress(libX11, "XHeightOfScreen");
+	XPlanesOfScreen = (int (*)(Screen *))getProcAddress(libX11, "XPlanesOfScreen");
+	XCreateGC = (GC(*)(Display *, Drawable, unsigned long, XGCValues *))getProcAddress(libX11, "XCreateGC");
 	XFreeGC = (int (*)(Display *, GC))getProcAddress(libX11, "XFreeGC");
-	XSetErrorHandler = (int (*(*)(int (*)(Display*, XErrorEvent*)))(Display*, XErrorEvent*))getProcAddress(libX11, "XSetErrorHandler");
-	XSync = (int (*)(Display*, Bool))getProcAddress(libX11, "XSync");
-	XCreateImage = (XImage *(*)(Display*, Visual*, unsigned int, int, int, char*, unsigned int, unsigned int, int, int))getProcAddress(libX11, "XCreateImage");
-	XCloseDisplay = (int (*)(Display*))getProcAddress(libX11, "XCloseDisplay");
-	XPutImage = (int (*)(Display*, Drawable, GC, XImage*, int, int, int, int, unsigned int, unsigned int))getProcAddress(libX11, "XPutImage");
-	XDrawString = (int (*)(Display*, Drawable, GC, int, int, char*, int))getProcAddress(libX11, "XDrawString");
+	XSetErrorHandler = (int (*(*)(int (*)(Display *, XErrorEvent *)))(Display *, XErrorEvent *))getProcAddress(libX11, "XSetErrorHandler");
+	XSync = (int (*)(Display *, Bool))getProcAddress(libX11, "XSync");
+	XCreateImage = (XImage * (*)(Display *, Visual *, unsigned int, int, int, char *, unsigned int, unsigned int, int, int)) getProcAddress(libX11, "XCreateImage");
+	XCloseDisplay = (int (*)(Display *))getProcAddress(libX11, "XCloseDisplay");
+	XPutImage = (int (*)(Display *, Drawable, GC, XImage *, int, int, int, int, unsigned int, unsigned int))getProcAddress(libX11, "XPutImage");
+	XDrawString = (int (*)(Display *, Drawable, GC, int, int, char *, int))getProcAddress(libX11, "XDrawString");
 
-	XShmQueryExtension = (Bool (*)(Display*))getProcAddress(libXext, "XShmQueryExtension");
-	XShmCreateImage = (XImage *(*)(Display*, Visual*, unsigned int, int, char*, XShmSegmentInfo*, unsigned int, unsigned int))getProcAddress(libXext, "XShmCreateImage");
-	XShmAttach = (Bool (*)(Display*, XShmSegmentInfo*))getProcAddress(libXext, "XShmAttach");
-	XShmDetach = (Bool (*)(Display*, XShmSegmentInfo*))getProcAddress(libXext, "XShmDetach");
-	XShmPutImage = (int (*)(Display*, Drawable, GC, XImage*, int, int, int, int, unsigned int, unsigned int, bool))getProcAddress(libXext, "XShmPutImage");
+	XShmQueryExtension = (Bool(*)(Display *))getProcAddress(libXext, "XShmQueryExtension");
+	XShmCreateImage = (XImage * (*)(Display *, Visual *, unsigned int, int, char *, XShmSegmentInfo *, unsigned int, unsigned int)) getProcAddress(libXext, "XShmCreateImage");
+	XShmAttach = (Bool(*)(Display *, XShmSegmentInfo *))getProcAddress(libXext, "XShmAttach");
+	XShmDetach = (Bool(*)(Display *, XShmSegmentInfo *))getProcAddress(libXext, "XShmDetach");
+	XShmPutImage = (int (*)(Display *, Drawable, GC, XImage *, int, int, int, int, unsigned int, unsigned int, bool))getProcAddress(libXext, "XShmPutImage");
 }
 
 LibX11exports *LibX11::operator->()
@@ -53,10 +53,10 @@ LibX11exports *LibX11::loadExports()
 
 	if(!libX11)
 	{
-		if(getProcAddress(RTLD_DEFAULT, "XOpenDisplay"))   // Search the global scope for pre-loaded X11 library.
+		if(getProcAddress(RTLD_DEFAULT, "XOpenDisplay"))  // Search the global scope for pre-loaded X11 library.
 		{
 			libX11exports = new LibX11exports(RTLD_DEFAULT, RTLD_DEFAULT);
-			libX11 = (void*)-1;   // No need to load it.
+			libX11 = (void *)-1;  // No need to load it.
 		}
 		else
 		{
@@ -69,7 +69,7 @@ LibX11exports *LibX11::loadExports()
 			}
 			else
 			{
-				libX11 = (void*)-1;   // Don't attempt loading more than once.
+				libX11 = (void *)-1;  // Don't attempt loading more than once.
 			}
 		}
 	}

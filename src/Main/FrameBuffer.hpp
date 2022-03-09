@@ -12,97 +12,96 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef	sw_FrameBuffer_hpp
-#define	sw_FrameBuffer_hpp
+#ifndef sw_FrameBuffer_hpp
+#define sw_FrameBuffer_hpp
 
+#include "Common/Thread.hpp"
 #include "Reactor/Reactor.hpp"
 #include "Renderer/Surface.hpp"
-#include "Common/Thread.hpp"
 
-namespace sw
+namespace sw {
+using namespace rr;
+
+class Surface;
+
+struct BlitState
 {
-	using namespace rr;
+	int width;
+	int height;
+	Format destFormat;
+	Format sourceFormat;
+	int destStride;
+	int sourceStride;
+	int cursorWidth;
+	int cursorHeight;
+};
 
-	class Surface;
+class [[clang::lto_visibility_public]] FrameBuffer
+{
+public:
+	FrameBuffer(int width, int height, bool fullscreen, bool topLeftOrigin);
 
-	struct BlitState
+	virtual ~FrameBuffer() = 0;
+
+	virtual void flip(sw::Surface * source) = 0;
+	virtual void blit(sw::Surface * source, const Rect *sourceRect, const Rect *destRect) = 0;
+
+	virtual void *lock() = 0;
+	virtual void unlock() = 0;
+
+	static void setCursorImage(sw::Surface * cursor);
+	static void setCursorOrigin(int x0, int y0);
+	static void setCursorPosition(int x, int y);
+
+	static std::shared_ptr<Routine> copyRoutine(const BlitState &state);
+
+protected:
+	void copy(sw::Surface * source);
+
+	bool windowed;
+
+	void *framebuffer;  // Native window buffer.
+	int width;
+	int height;
+	int stride;
+	Format format;
+
+private:
+	void copyLocked();
+
+	static void threadFunction(void *parameters);
+
+	void *renderbuffer;  // Render target buffer.
+
+	struct Cursor
 	{
+		void *image;
+		int x;
+		int y;
 		int width;
 		int height;
-		Format destFormat;
-		Format sourceFormat;
-		int destStride;
-		int sourceStride;
-		int cursorWidth;
-		int cursorHeight;
+		int hotspotX;
+		int hotspotY;
+		int positionX;
+		int positionY;
 	};
 
-	class [[clang::lto_visibility_public]] FrameBuffer
-	{
-	public:
-		FrameBuffer(int width, int height, bool fullscreen, bool topLeftOrigin);
+	static Cursor cursor;
 
-		virtual ~FrameBuffer() = 0;
+	void (*blitFunction)(void *dst, void *src, Cursor *cursor);
+	std::shared_ptr<Routine> blitRoutine;
+	BlitState blitState;    // State of the current blitRoutine.
+	BlitState updateState;  // State of the routine to be generated.
 
-		virtual void flip(sw::Surface *source) = 0;
-		virtual void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) = 0;
+	static void blend(const BlitState &state, const Pointer<Byte> &d, const Pointer<Byte> &s, const Pointer<Byte> &c);
 
-		virtual void *lock() = 0;
-		virtual void unlock() = 0;
+	Thread *blitThread;
+	Event syncEvent;
+	Event blitEvent;
+	volatile bool terminate;
 
-		static void setCursorImage(sw::Surface *cursor);
-		static void setCursorOrigin(int x0, int y0);
-		static void setCursorPosition(int x, int y);
+	static bool topLeftOrigin;
+};
+}  // namespace sw
 
-		static std::shared_ptr<Routine> copyRoutine(const BlitState &state);
-
-	protected:
-		void copy(sw::Surface *source);
-
-		bool windowed;
-
-		void *framebuffer;   // Native window buffer.
-		int width;
-		int height;
-		int stride;
-		Format format;
-
-	private:
-		void copyLocked();
-
-		static void threadFunction(void *parameters);
-
-		void *renderbuffer;   // Render target buffer.
-
-		struct Cursor
-		{
-			void *image;
-			int x;
-			int y;
-			int width;
-			int height;
-			int hotspotX;
-			int hotspotY;
-			int positionX;
-			int positionY;
-		};
-
-		static Cursor cursor;
-
-		void (*blitFunction)(void *dst, void *src, Cursor *cursor);
-		std::shared_ptr<Routine> blitRoutine;
-		BlitState blitState;     // State of the current blitRoutine.
-		BlitState updateState;   // State of the routine to be generated.
-
-		static void blend(const BlitState &state, const Pointer<Byte> &d, const Pointer<Byte> &s, const Pointer<Byte> &c);
-
-		Thread *blitThread;
-		Event syncEvent;
-		Event blitEvent;
-		volatile bool terminate;
-
-		static bool topLeftOrigin;
-	};
-}
-
-#endif	 //	sw_FrameBuffer_hpp
+#endif  //	sw_FrameBuffer_hpp
