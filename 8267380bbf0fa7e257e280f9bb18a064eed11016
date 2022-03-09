@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "630d9f33_ac135541",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101346
+      },
+      "writtenOn": "2022-03-09T08:42:06Z",
+      "side": 1,
+      "message": "Hi again Nicolas. \n\nI had to clang-format the file I was working on inside Main as the presubmit otherwise fails. I looked a bit in clang-format-all.sh script and it did not seem to format the src folder Main - but the presubmit check did check that folder. I decided to clang format the entire folder Main in a separate commit from my patch as I thought that would make it easier to track what happens. \n\nHappy for review. \n\nHans-Filip\nVewd",
+      "revId": "8267380bbf0fa7e257e280f9bb18a064eed11016",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
