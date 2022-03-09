@@ -225,7 +225,29 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			dst.move(i, SIMD::Float(src.UInt(i)));
 			break;
 		case spv::OpBitcast:
-			dst.move(i, src.Float(i));
+			// FIXME: handle 32bit pointers
+			if(type.storageClass == spv::StorageClassPhysicalStorageBuffer)
+			{
+				ASSERT(src.componentCount > (i + 1));
+				// Casting 2 32bit integers into a 64 bit pointer
+				auto &ptr = dst.Pointer(i >> 1);
+				ptr.castFrom(src.UInt(i), src.UInt(i + 1));
+				i++;
+			}
+			else if(src.isPointer())
+			{
+				ASSERT(type.componentCount > (i + 1));
+				// Casting a 64 bit pointer into 2 32bit integers
+				auto &ptr = src.Pointer(i >> 1);
+				SIMD::UInt lowerBits, upperBits;
+				ptr.castTo(lowerBits, upperBits);
+				dst.move(i++, lowerBits);
+				dst.move(i, upperBits);
+			}
+			else
+			{
+				dst.move(i, src.Float(i));
+			}
 			break;
 		case spv::OpIsInf:
 			dst.move(i, IsInf(src.Float(i)));

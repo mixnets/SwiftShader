@@ -78,6 +78,7 @@ public:
 	Intermediate(uint32_t componentCount)
 	    : componentCount(componentCount)
 	    , scalar(new rr::Value *[componentCount])
+	    , pointers(new SIMD::Pointer[componentCount])
 	{
 		for(auto i = 0u; i < componentCount; i++) { scalar[i] = nullptr; }
 	}
@@ -93,12 +94,14 @@ public:
 	{
 		Float,
 		Int,
-		UInt
+		UInt,
+		Pointer
 	};
 
 	void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value(), TypeHint::Float); }
 	void move(uint32_t i, RValue<SIMD::Int> &&scalar) { emplace(i, scalar.value(), TypeHint::Int); }
 	void move(uint32_t i, RValue<SIMD::UInt> &&scalar) { emplace(i, scalar.value(), TypeHint::UInt); }
+	void move(uint32_t i, SIMD::Pointer scalar) { emplace(i, scalar, TypeHint::Pointer); }
 
 	void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value(), TypeHint::Float); }
 	void move(uint32_t i, const RValue<SIMD::Int> &scalar) { emplace(i, scalar.value(), TypeHint::Int); }
@@ -109,6 +112,7 @@ public:
 	{
 		ASSERT(i < componentCount);
 		ASSERT(scalar[i] != nullptr);
+		ASSERT(!isPointer());
 		return As<SIMD::Float>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::Float>(scalar)
 	}
 
@@ -116,6 +120,7 @@ public:
 	{
 		ASSERT(i < componentCount);
 		ASSERT(scalar[i] != nullptr);
+		ASSERT(!isPointer());
 		return As<SIMD::Int>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::Int>(scalar)
 	}
 
@@ -123,7 +128,18 @@ public:
 	{
 		ASSERT(i < componentCount);
 		ASSERT(scalar[i] != nullptr);
+		ASSERT(!isPointer());
 		return As<SIMD::UInt>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::UInt>(scalar)
+	}
+
+	SIMD::Pointer &Pointer(uint32_t i) const
+	{
+		return pointers[i];
+	}
+
+	bool isPointer() const
+	{
+		return typeHint == TypeHint::Pointer;
 	}
 
 	// No copy/move construction or assignment
@@ -140,14 +156,22 @@ private:
 		ASSERT(i < componentCount);
 		ASSERT(scalar[i] == nullptr);
 		scalar[i] = value;
-		RR_PRINT_ONLY(typeHint = type;)
+		typeHint = type;
+	}
+
+	void emplace(uint32_t i, SIMD::Pointer value, TypeHint type)
+	{
+		ASSERT(i < componentCount);
+		pointers[i] = value;
+		typeHint = type;
 	}
 
 	rr::Value **const scalar;
+	SIMD::Pointer *pointers;
+	TypeHint typeHint = TypeHint::Float;
 
 #ifdef ENABLE_RR_PRINT
 	friend struct rr::PrintValue::Ty<sw::Intermediate>;
-	TypeHint typeHint = TypeHint::Float;
 #endif  // ENABLE_RR_PRINT
 };
 
@@ -726,6 +750,7 @@ public:
 		bool ShaderNonUniform : 1;
 		bool RuntimeDescriptorArray : 1;
 		bool StorageBufferArrayNonUniformIndexing : 1;
+		bool PhysicalStorageBufferAddresses : 1;
 	};
 
 	const Capabilities &getUsedCapabilities() const
@@ -1148,6 +1173,24 @@ private:
 			return it->second;
 		}
 
+		bool isIntermediate(Object::ID id) const
+		{
+			return intermediates.find(id) != intermediates.end();
+		}
+
+		void assignPhysicalStoragePointer(Object::ID id, SIMD::Pointer ptr)
+		{
+			auto it = pointers.find(id);
+			if(it != pointers.end())
+			{
+				it->second = ptr;
+			}
+			else
+			{
+				createPointer(id, ptr);
+			}
+		}
+
 		void createPointer(Object::ID id, SIMD::Pointer ptr)
 		{
 			bool added = pointers.emplace(id, ptr).second;
@@ -1157,7 +1200,11 @@ private:
 		SIMD::Pointer const &getPointer(Object::ID id) const
 		{
 			auto it = pointers.find(id);
-			ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
+			if(it == pointers.end())
+			{
+				auto it2 = intermediates.find(id);
+				return it2->second.Pointer(0);
+			}
 			return it->second;
 		}
 
@@ -1218,6 +1265,21 @@ private:
 			return SIMD::UInt(constant[i]);
 		}
 
+		const SIMD::Pointer &Pointer(uint32_t i) const
+		{
+			if(intermediate)
+			{
+				return intermediate->Pointer(i);
+			}
+
+			return pointer[i];
+		}
+
+		bool isPointer() const
+		{
+			return intermediate ? intermediate->isPointer() : (pointer != nullptr);
+		}
+
 	private:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
 
@@ -1226,6 +1288,7 @@ private:
 
 		const uint32_t *constant;
 		const Intermediate *intermediate;
+		const SIMD::Pointer *pointer;
 
 	public:
 		const uint32_t componentCount;
