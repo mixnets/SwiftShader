@@ -274,6 +274,7 @@ SpirvShader::SpirvShader(
 		case spv::OpTypeRuntimeArray:
 		case spv::OpTypeStruct:
 		case spv::OpTypePointer:
+		case spv::OpTypeForwardPointer:
 		case spv::OpTypeFunction:
 			DeclareType(insn);
 			break;
@@ -303,6 +304,7 @@ SpirvShader::SpirvShader(
 
 				case spv::StorageClassUniform:
 				case spv::StorageClassStorageBuffer:
+				case spv::StorageClassPhysicalStorageBuffer:
 					object.kind = Object::Kind::DescriptorSet;
 					break;
 
@@ -444,6 +446,7 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityStencilExportEXT: capabilities.StencilExportEXT = true; break;
 				case spv::CapabilityVulkanMemoryModel: capabilities.VulkanMemoryModel = true; break;
 				case spv::CapabilityVulkanMemoryModelDeviceScope: capabilities.VulkanMemoryModelDeviceScope = true; break;
+				case spv::CapabilityPhysicalStorageBufferAddresses: capabilities.PhysicalStorageBufferAddresses = true; break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
@@ -799,6 +802,7 @@ SpirvShader::SpirvShader(
 				if(!strcmp(ext, "SPV_KHR_float_controls")) break;
 				if(!strcmp(ext, "SPV_KHR_integer_dot_product")) break;
 				if(!strcmp(ext, "SPV_KHR_non_semantic_info")) break;
+				if(!strcmp(ext, "SPV_KHR_physical_storage_buffer")) break;
 				if(!strcmp(ext, "SPV_KHR_vulkan_memory_model")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_decorate_string")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_hlsl_functionality1")) break;
@@ -838,13 +842,19 @@ void SpirvShader::DeclareType(InsnIterator insn)
 {
 	Type::ID resultId = insn.word(1);
 
+	bool usesForwardDeclaration = false;
 	auto &type = types[resultId];
 	type.definition = insn;
-	type.componentCount = ComputeTypeSize(insn);
+	type.componentCount = ComputeTypeSize(insn, usesForwardDeclaration);
+	if(usesForwardDeclaration)
+	{
+		forwardDeclaredInsns.push_back(insn);
+	}
 
 	// A structure is a builtin block if it has a builtin
 	// member. All members of such a structure are builtins.
-	switch(insn.opcode())
+	spv::Op opcode = insn.opcode();
+	switch(opcode)
 	{
 	case spv::OpTypeStruct:
 		{
@@ -863,11 +873,42 @@ void SpirvShader::DeclareType(InsnIterator insn)
 		}
 		break;
 	case spv::OpTypePointer:
+	case spv::OpTypeForwardPointer:
 		{
-			Type::ID elementTypeId = insn.word(3);
+			bool isForwardPointer = (opcode == spv::OpTypeForwardPointer);
+			Type::ID elementTypeId = insn.word(isForwardPointer ? 1 : 3);
 			type.element = elementTypeId;
 			type.isBuiltInBlock = getType(elementTypeId).isBuiltInBlock;
 			type.storageClass = static_cast<spv::StorageClass>(insn.word(2));
+
+			// Check is the current pointer was previously forward declared
+			if(!isForwardPointer && type.isForwardDeclaration)
+			{
+				type.isForwardDeclaration = false;
+
+				// Check if previously forward declared variables can be updated
+				std::vector<InsnIterator> toDelete;
+				for(auto forwardDeclaredInsn : forwardDeclaredInsns)
+				{
+					Type::ID forwardDeclaredResultId = forwardDeclaredInsn.word(1);
+					ASSERT(types.find(forwardDeclaredResultId) != types.end());
+					auto &forwardDeclaredType = types[forwardDeclaredResultId];
+					forwardDeclaredType.componentCount = ComputeTypeSize(forwardDeclaredInsn, usesForwardDeclaration);
+					if(!usesForwardDeclaration)
+					{
+						toDelete.push_back(forwardDeclaredInsn);
+					}
+				}
+
+				// Remove all properly declared variables from the list of forward declared ones
+				for(auto it : toDelete)
+				{
+					auto itBegin = forwardDeclaredInsns.begin();
+					auto itEnd = forwardDeclaredInsns.end();
+					forwardDeclaredInsns.erase(std::remove(itBegin, itEnd, it), itEnd);
+				}
+			}
+			type.isForwardDeclaration = (opcode == spv::OpTypeForwardPointer);
 		}
 		break;
 	case spv::OpTypeVector:
@@ -1056,17 +1097,19 @@ uint32_t SpirvShader::getWorkgroupSizeZ() const
 	return executionModes.useWorkgroupSizeId ? getObject(executionModes.WorkgroupSizeZ).constantValue[0] : executionModes.WorkgroupSizeZ.value();
 }
 
-uint32_t SpirvShader::ComputeTypeSize(InsnIterator insn)
+uint32_t SpirvShader::ComputeTypeSize(InsnIterator insn, bool &usesForwardDeclaration)
 {
 	// Types are always built from the bottom up (with the exception of forward ptrs, which
 	// don't appear in Vulkan shaders. Therefore, we can always assume our component parts have
 	// already been described (and so their sizes determined)
+	usesForwardDeclaration = false;
 	switch(insn.opcode())
 	{
 	case spv::OpTypeVoid:
 	case spv::OpTypeSampler:
 	case spv::OpTypeImage:
 	case spv::OpTypeSampledImage:
+	case spv::OpTypeForwardPointer:
 	case spv::OpTypeFunction:
 	case spv::OpTypeRuntimeArray:
 		// Objects that don't consume any space.
@@ -1083,14 +1126,20 @@ uint32_t SpirvShader::ComputeTypeSize(InsnIterator insn)
 
 	case spv::OpTypeVector:
 	case spv::OpTypeMatrix:
-		// Vectors and matrices both consume element count * element size.
-		return getType(insn.word(2)).componentCount * insn.word(3);
+		{
+			// Vectors and matrices both consume element count * element size.
+			auto type = getType(insn.word(2));
+			usesForwardDeclaration = type.isForwardDeclaration;
+			return type.componentCount * insn.word(3);
+		}
 
 	case spv::OpTypeArray:
 		{
 			// Element count * element size. Array sizes come from constant ids.
 			auto arraySize = GetConstScalarInt(insn.word(3));
-			return getType(insn.word(2)).componentCount * arraySize;
+			auto type = getType(insn.word(2));
+			usesForwardDeclaration = type.isForwardDeclaration;
+			return type.componentCount * arraySize;
 		}
 
 	case spv::OpTypeStruct:
@@ -1098,7 +1147,9 @@ uint32_t SpirvShader::ComputeTypeSize(InsnIterator insn)
 			uint32_t size = 0;
 			for(uint32_t i = 2u; i < insn.wordCount(); i++)
 			{
-				size += getType(insn.word(i)).componentCount;
+				auto type = getType(insn.word(i));
+				usesForwardDeclaration |= type.isForwardDeclaration;
+				size += type.componentCount;
 			}
 			return size;
 		}
@@ -1675,6 +1726,7 @@ OutOfBoundsBehavior SpirvShader::getOutOfBoundsBehavior(Object::ID pointerId, Em
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
+	case spv::StorageClassPhysicalStorageBuffer:
 		// Buffer resource access. robustBufferAccess feature applies.
 		return robustBufferAccess ? OutOfBoundsBehavior::RobustBufferAccess
 		                          : OutOfBoundsBehavior::UndefinedBehavior;
@@ -1839,6 +1891,7 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 	case spv::OpTypeMatrix:
 	case spv::OpTypeStruct:
 	case spv::OpTypePointer:
+	case spv::OpTypeForwardPointer:
 	case spv::OpTypeFunction:
 	case spv::OpTypeImage:
 	case spv::OpTypeSampledImage:
@@ -2197,7 +2250,8 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 
 	if(type.storageClass == spv::StorageClassPushConstant ||
 	   type.storageClass == spv::StorageClassUniform ||
-	   type.storageClass == spv::StorageClassStorageBuffer)
+	   type.storageClass == spv::StorageClassStorageBuffer ||
+	   type.storageClass == spv::StorageClassPhysicalStorageBuffer)
 	{
 		auto ptr = WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, state);
 		state->createPointer(resultId, ptr);

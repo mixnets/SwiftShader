@@ -314,6 +314,7 @@ public:
 		spv::StorageClass storageClass = static_cast<spv::StorageClass>(-1);
 		uint32_t componentCount = 0;
 		bool isBuiltInBlock = false;
+		bool isForwardDeclaration = false;
 
 		// Inner element type for pointers, arrays, vectors and matrices.
 		ID element;
@@ -691,6 +692,7 @@ public:
 		bool StencilExportEXT : 1;
 		bool VulkanMemoryModel : 1;
 		bool VulkanMemoryModelDeviceScope : 1;
+		bool PhysicalStorageBufferAddresses : 1;
 	};
 
 	const Capabilities &getUsedCapabilities() const
@@ -915,6 +917,8 @@ private:
 	HandleMap<Function> functions;
 	std::unordered_map<StringID, String> strings;
 
+	std::vector<InsnIterator> forwardDeclaredInsns;
+
 	std::shared_ptr<SpirvProfiler> profiler;
 
 	bool IsProfilingEnabled() const
@@ -928,7 +932,7 @@ private:
 
 	void ProcessExecutionMode(InsnIterator it);
 
-	uint32_t ComputeTypeSize(InsnIterator insn);
+	uint32_t ComputeTypeSize(InsnIterator insn, bool &usesForwardDeclaration);
 	Decorations GetDecorationsForId(TypeOrObjectID id) const;
 	void ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const;
 	void ApplyDecorationsForIdMember(Decorations *d, Type::ID id, uint32_t member) const;
