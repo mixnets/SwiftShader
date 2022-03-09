@@ -34,6 +34,24 @@
       "parentUuid": "63a4e761_8f06c2ad",
       "revId": "0587e07cb2e92d9d60fde50f7fc72016e90e3edb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a630d20_12e2585c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-09T04:14:36Z",
+      "side": 1,
+      "message": "For the records: b/223424904.\n\nBrian can you confirm that this regression only affects tests that use YUV formats? It might not be this new P010 related one but it\u0027s useful information if the legacy 8-bit ones are involved.",
+      "parentUuid": "b97cefb5_14bad240",
+      "revId": "0587e07cb2e92d9d60fde50f7fc72016e90e3edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
