@@ -452,6 +452,7 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityShaderNonUniform: capabilities.ShaderNonUniform = true; break;
 				case spv::CapabilityRuntimeDescriptorArray: capabilities.RuntimeDescriptorArray = true; break;
 				case spv::CapabilityStorageBufferArrayNonUniformIndexing: capabilities.StorageBufferArrayNonUniformIndexing = true; break;
+				case spv::CapabilityPhysicalStorageBufferAddresses: capabilities.PhysicalStorageBufferAddresses = true; break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
@@ -812,6 +813,7 @@ SpirvShader::SpirvShader(
 				if(!strcmp(ext, "SPV_KHR_float_controls")) break;
 				if(!strcmp(ext, "SPV_KHR_integer_dot_product")) break;
 				if(!strcmp(ext, "SPV_KHR_non_semantic_info")) break;
+				if(!strcmp(ext, "SPV_KHR_physical_storage_buffer")) break;
 				if(!strcmp(ext, "SPV_KHR_vulkan_memory_model")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_decorate_string")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_hlsl_functionality1")) break;
