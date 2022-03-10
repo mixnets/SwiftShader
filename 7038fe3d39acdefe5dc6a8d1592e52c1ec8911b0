@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d8bf3bc_8ec4a12a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-10T04:45:44Z",
+      "side": 1,
+      "message": "Not ready yet, still missing the bufferDeviceAddress feature.",
+      "revId": "7038fe3d39acdefe5dc6a8d1592e52c1ec8911b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
