@@ -267,6 +267,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	draw->descriptorSetObjects = inputs.getDescriptorSetObjects();
 	draw->pipelineLayout = pipelineState.getPipelineLayout();
 	draw->depthClipEnable = pipelineState.getDepthClipEnable();
+	draw->depthClipNegativeOneToOne = pipelineState.getDepthClipNegativeOneToOne();
 
 	draw->vertexRoutine = vertexRoutine;
 	draw->setupRoutine = setupRoutine;
@@ -356,6 +357,14 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 		data->slopeDepthBias = pipelineState.getSlopeDepthBias();
 		data->depthBiasClamp = pipelineState.getDepthBiasClamp();
 		data->depthClipEnable = pipelineState.getDepthClipEnable();
+		data->depthClipNegativeOneToOne = pipelineState.getDepthClipNegativeOneToOne();
+
+		// Adjust viewport transform based on the negativeOneToOne state.
+		if(pipelineState.getDepthClipNegativeOneToOne())
+		{
+			data->depthRange = Z * 0.5f;
+			data->depthNear = (F + N) * 0.5f;
+		}
 
 		const vk::Attachments attachments = pipeline->getAttachments();
 		if(attachments.depthBuffer)
