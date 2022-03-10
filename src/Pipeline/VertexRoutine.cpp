@@ -136,8 +136,9 @@ void VertexRoutine::computeClipFlags()
 		clipFlags |= minY & Clipper::CLIP_BOTTOM;
 		if(state.depthClipEnable)
 		{
+			// If depthClipNegativeOneToOne is enabled, depth values are in [-1, 1] instead of [0, 1].
 			SIMD::Int maxZ = CmpLT(posW, posZ);
-			SIMD::Int minZ = CmpNLE(0.0f, posZ);
+			SIMD::Int minZ = CmpNLE(state.depthClipNegativeOneToOne ? -posW : 0.0f, posZ);
 			clipFlags |= maxZ & Clipper::CLIP_FAR;
 			clipFlags |= minZ & Clipper::CLIP_NEAR;
 		}
@@ -598,6 +599,11 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 		pos.y = position[it->second.FirstComponent + 1];
 		pos.z = position[it->second.FirstComponent + 2];
 		pos.w = position[it->second.FirstComponent + 3];
+
+		if(state.depthClipNegativeOneToOne)
+		{
+			pos.z = (pos.z + pos.w) * 0.5f;
+		}
 
 		// Projection and viewport transform.
 		SIMD::Float w = As<SIMD::Float>(As<SIMD::Int>(pos.w) | (As<SIMD::Int>(CmpEQ(pos.w, 0.0f)) & As<SIMD::Int>(SIMD::Float(1.0f))));
