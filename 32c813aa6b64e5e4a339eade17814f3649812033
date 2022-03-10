@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8dde4429_0879efc2",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-10T17:36:23Z",
+      "side": 0,
+      "message": "I moved these to where they first get a value assigned. The non-relaxed code path on the right is semantically unchanged.",
+      "range": {
+        "startLine": 392,
+        "startChar": 1,
+        "endLine": 395,
+        "endChar": 11
+      },
+      "revId": "32c813aa6b64e5e4a339eade17814f3649812033",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
