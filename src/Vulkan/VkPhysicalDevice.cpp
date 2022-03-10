@@ -447,6 +447,11 @@ static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsF
 	features->formatA4B4G4R4 = VK_TRUE;
 }
 
+static void getPhysicalDeviceDepthClipControlFeaturesExt(VkPhysicalDeviceDepthClipControlFeaturesEXT *features)
+{
+	features->depthClipControl = VK_TRUE;
+}
+
 void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 {
 	features->features = getFeatures();
@@ -592,6 +597,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT:
 			// Workaround for a test bug (see https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3564)
 			reinterpret_cast<struct VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT *>(curExtension)->texelBufferAlignment = VK_TRUE;
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT:
+			getPhysicalDeviceDepthClipControlFeaturesExt(reinterpret_cast<struct VkPhysicalDeviceDepthClipControlFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT:
 			// TODO(b/216982034): Workaround for a test bug (see https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3879)
