@@ -179,6 +179,7 @@ struct GraphicsState
 	inline bool hasDepthRangeUnrestricted() const { return depthRangeUnrestricted; }
 	inline bool getDepthClampEnable() const { return depthClampEnable; }
 	inline bool getDepthClipEnable() const { return depthClipEnable; }
+	inline bool getDepthClipNegativeOneToOne() const { return depthClipNegativeOneToOne; }
 
 	// Pixel processor states
 	inline bool hasRasterizerDiscard() const { return rasterizerDiscard; }
@@ -284,6 +285,7 @@ private:
 	bool depthWriteEnable = false;
 	bool depthClampEnable = false;
 	bool depthClipEnable = false;
+	bool depthClipNegativeOneToOne = false;
 
 	float lineWidth = 0.0f;
 

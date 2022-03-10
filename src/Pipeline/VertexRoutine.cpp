@@ -136,7 +136,13 @@ void VertexRoutine::computeClipFlags()
 		if(state.depthClipEnable)
 		{
 			Int4 maxZ = CmpLT(posW, posZ);
-			Int4 minZ = CmpNLE(Float4(0.0f), posZ);
+			if(state.depthClipNegativeOneToOne)
+			{
+				// depth values from [-1, 1] need to be renormalized to [0, 1].
+				// Values outside that range will still be clipped as they ought to be.
+				posZ = (posZ + 1.0f) * 0.5f;
+			}
+			Int4 minZ = CmpNLE(0.0f, posZ);
 			clipFlags |= Pointer<Int>(constants + OFFSET(Constants, maxZ))[SignMask(maxZ)];
 			clipFlags |= Pointer<Int>(constants + OFFSET(Constants, minZ))[SignMask(minZ)];
 		}
