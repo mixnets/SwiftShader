@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67df0eb7_996276b5",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-10T20:49:32Z",
+      "side": 1,
+      "message": "I think Patchset 1 may have been on the right track here. The purpose of this extension is to avoid having to do arithmetic like this by ANGLE, by having the Vulkan driver use the GL clip space. After clipping the viewport transform should bring z in the [0, 1] range for both GL and Vulkan.\n\nSee also `symmetricNormalizedDepth` in the legacy code, as we used to support both Direct3D 9 and OpenGL ES.",
+      "range": {
+        "startLine": 143,
+        "startChar": 4,
+        "endLine": 143,
+        "endChar": 31
+      },
+      "revId": "0418a32a0716f6cab03b7c43c7767388546f7719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
