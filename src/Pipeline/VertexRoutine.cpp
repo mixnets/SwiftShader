@@ -137,6 +137,12 @@ void VertexRoutine::computeClipFlags()
 		if(state.depthClipEnable)
 		{
 			SIMD::Int maxZ = CmpLT(posW, posZ);
+			if(state.depthClipNegativeOneToOne)
+			{
+				// depth values from [-1, 1] need to be renormalized to [0, 1].
+				// Values outside that range will still be clipped as they ought to be.
+				posZ = (posZ + 1.0f) * 0.5f;
+			}
 			SIMD::Int minZ = CmpNLE(0.0f, posZ);
 			clipFlags |= maxZ & Clipper::CLIP_FAR;
 			clipFlags |= minZ & Clipper::CLIP_NEAR;
