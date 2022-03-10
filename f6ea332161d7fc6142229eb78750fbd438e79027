@@ -16,6 +16,24 @@
       "message": "I tested this on Patchset 2 of https://swiftshader-review.googlesource.com/c/SwiftShader/+/63892/2 but it didn\u0027t fix the expected \u0027UNSUPPORTED\u0027 `dEQP-VK.spirv_assembly.instruction.compute.function_control.*` tests. I had to manually include them in Patchset 3 to see them get tested.\n\nI\u0027m trying again with a clean cache and cherry-pick of the CL: https://swiftshader-review.googlesource.com/c/SwiftShader/+/63968",
       "revId": "f6ea332161d7fc6142229eb78750fbd438e79027",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "303a2165_47ed14f9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-10T04:09:15Z",
+      "side": 1,
+      "message": "My error was that Regres uses the ci-tests.json of the checkout. Works perfectly after rebasing https://swiftshader-review.googlesource.com/c/SwiftShader/+/63968 on top of this.",
+      "parentUuid": "6a7c7362_e2d6aac5",
+      "revId": "f6ea332161d7fc6142229eb78750fbd438e79027",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
