@@ -29,7 +29,7 @@ inline void clipEdge(sw::float4 &Vo, const sw::float4 &Vi, const sw::float4 &Vj,
 	Vo.w = (dj * Vi.w - di * Vj.w) * D;
 }
 
-void clipNear(sw::Polygon &polygon)
+void clipNear(sw::Polygon &polygon, bool depthClipNegativeOneToOne)
 {
 	const sw::float4 **V = polygon.P[polygon.i];
 	const sw::float4 **T = polygon.P[polygon.i + 1];
@@ -42,6 +42,13 @@ void clipNear(sw::Polygon &polygon)
 
 		float di = V[i]->z;
 		float dj = V[j]->z;
+
+		// When depthClipNegativeOneToOne is enabled, z is mapped to (z+w)/2
+		if(depthClipNegativeOneToOne)
+		{
+			di = (di + V[i]->w) * 0.5f;
+			dj = (dj + V[j]->w) * 0.5f;
+		}
 
 		if(di >= 0)
 		{
@@ -67,7 +74,7 @@ void clipNear(sw::Polygon &polygon)
 	polygon.i += 1;
 }
 
-void clipFar(sw::Polygon &polygon)
+void clipFar(sw::Polygon &polygon, bool depthClipNegativeOneToOne)
 {
 	const sw::float4 **V = polygon.P[polygon.i];
 	const sw::float4 **T = polygon.P[polygon.i + 1];
@@ -80,6 +87,18 @@ void clipFar(sw::Polygon &polygon)
 
 		float di = V[i]->w - V[i]->z;
 		float dj = V[j]->w - V[j]->z;
+
+		// When depthClipNegativeOneToOne is enabled, z is mapped to (z+w)/2.  We have:
+		//
+		//     w - (z+w)/2
+		//   = w - z/2 - w/2
+		//   = w/2 - z/2
+		//   = (w - z)/2
+		if(depthClipNegativeOneToOne)
+		{
+			di *= 0.5f;
+			dj *= 0.5f;
+		}
 
 		if(di >= 0)
 		{
@@ -265,10 +284,10 @@ bool Clipper::Clip(Polygon &polygon, int clipFlagsOr, const DrawCall &draw)
 {
 	if(clipFlagsOr & CLIP_FRUSTUM)
 	{
-		if(clipFlagsOr & CLIP_NEAR) clipNear(polygon);
+		if(clipFlagsOr & CLIP_NEAR) clipNear(polygon, draw.depthClipNegativeOneToOne);
 		if(polygon.n >= 3)
 		{
-			if(clipFlagsOr & CLIP_FAR) clipFar(polygon);
+			if(clipFlagsOr & CLIP_FAR) clipFar(polygon, draw.depthClipNegativeOneToOne);
 			if(polygon.n >= 3)
 			{
 				if(clipFlagsOr & CLIP_LEFT) clipLeft(polygon);
