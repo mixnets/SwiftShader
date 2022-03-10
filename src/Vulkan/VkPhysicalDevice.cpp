@@ -393,6 +393,11 @@ static void getPhysicalDeviceShaderIntegerDotProductFeatures(VkPhysicalDeviceSha
 	features->shaderIntegerDotProduct = VK_TRUE;
 }
 
+static void getPhysicalDeviceDepthClipControlFeaturesExt(VkPhysicalDeviceDepthClipControlFeaturesEXT *features)
+{
+	features->depthClipControl = VK_TRUE;
+}
+
 void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 {
 	features->features = getFeatures();
@@ -516,6 +521,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES:
 			getPhysicalDeviceShaderIntegerDotProductFeatures(reinterpret_cast<struct VkPhysicalDeviceShaderIntegerDotProductFeatures *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT:
+			getPhysicalDeviceDepthClipControlFeaturesExt(reinterpret_cast<struct VkPhysicalDeviceDepthClipControlFeaturesEXT *>(curExtension));
 			break;
 		// Unsupported extensions, but used by dEQP
 		// TODO(b/176893525): This may not be legal.
