@@ -18,10 +18,11 @@
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <immintrin.h>
 
 #include <cstdlib>
 
-using namespace sw;
+namespace sw {
 
 // Returns the whole-number ULP error of `a` relative to `x`.
 // Use the doouble-precision version below. This just illustrates the principle.
@@ -50,6 +51,12 @@ float ULP_16(float x, float a)
 	float ulp = abs(x1 - x);
 
 	return abs(a - x) / ulp;
+}
+
+// TODO(b/214591655): Also support non-x86 architectures.
+float fma(float x, float y, float z)
+{
+	return bit_cast<float>(_mm_extract_ps(_mm_fmadd_ss(_mm_set1_ps(x), _mm_set1_ps(y), _mm_set1_ps(z)), 0));
 }
 
 // lolremez --float -d 2 -r "0:2^23" "(log2(x/2^23+1)-x/2^23)/x" "1/x"
@@ -545,3 +552,5 @@ TEST(MathTest, SharedExponentExhaustive)
 		EXPECT_EQ(ref, val);
 	}
 }
+
+}  // namespace sw
