@@ -55,29 +55,34 @@ float ULP_16(float x, float a)
 
 float fma32(float x, float y, float z)
 {
-	return _mm_fmadd_ss(_mm_set1_ps(x), _mm_set1_ps(y), _mm_set1_ps(z)).m128_f32[0];
+	return bit_cast<float>(_mm_extract_ps(_mm_fmadd_ss(_mm_set1_ps(x), _mm_set1_ps(y), _mm_set1_ps(z)), 0));
 }
 
-// lolremez --float -d 2 -r "0:2^23" "(log2(x/2^23+1)-x/2^23)/x" "1/x"
-// ULP-16: 0.797363281, abs: 0.0991751999
+// lolremez --float -d 6 -r "-0.5:0.5" "(log2((x+0.5)+1)-(x+0.5))/(x+0.5)" "1/(x+0.5)"
+// ULP-32: 3.23623872, abs: 0.745737255
 float f(float x)
 {
-	float u = 2.8017103e-22f;
-	u = u * x + -8.373131e-15f;
-	return u * x + 5.0615534e-8f;
+	float u = 1.5529917e-2f;
+	u = u * x + -3.2967979e-2f;
+	u = u * x + 5.3637185e-2f;
+	u = u * x + -9.7382863e-2f;
+	u = u * x + 1.9125407e-1f;
+	u = u * x + -4.1626131e-1f;
+	return u * x + 1.6992557e-1f;
 }
 
 float Log2Relaxed(float x)
 {
 	int im = bit_cast<int>(x);
-	float q = (float)im * (1.0f / (1 << 23)) - 127.0f;
+	float q = (float)(im - (127 << 23)) * (1.0f / (1 << 23));
 
-	float y = (float)(im & 0x007FFFFF);
+	float y = (float)(im & 0x007FFFFF) * (1.0f / (1 << 23));
 
-	return q + f(y) * y;
+	return fma32(f(y - 0.5f), y, q);
+	//return q + f(y - 0.5f) * y;
 }
 
-TEST(MathTest, Log2RelaxedExhaustive)
+TEST(MathTest, Log2NoDivExhaustive)
 {
 	CPUID::setDenormalsAreZero(true);
 	CPUID::setFlushToZero(true);
@@ -90,7 +95,7 @@ TEST(MathTest, Log2RelaxedExhaustive)
 
 	float worst_abs = 0;
 
-	for(float x = 0.10f; x <= 10.0f; x = inc(x))
+	for(float x = 0.1f; x <= 10.0f; x = inc(x))
 	{
 		float val = Log2Relaxed(x);
 
@@ -102,7 +107,7 @@ TEST(MathTest, Log2RelaxedExhaustive)
 		}
 		else if(x >= 0.5f && x <= 2.0f)
 		{
-			const float tolerance = pow(2.0f, -7.0f);  // Absolute
+			const float tolerance = pow(2.0f, -21.0f);  // Absolute
 
 			float margin = abs(val - ref) / tolerance;
 
@@ -115,7 +120,7 @@ TEST(MathTest, Log2RelaxedExhaustive)
 		{
 			const float tolerance = 3;  // ULP
 
-			float ulp = (float)ULP_16(ref, (double)val);
+			float ulp = (float)ULP_32(ref, (double)val);
 			float margin = ulp / tolerance;
 
 			if(margin > worst_margin)
