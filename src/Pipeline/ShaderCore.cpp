@@ -389,19 +389,26 @@ RValue<Float4> Log2(RValue<Float4> x, bool relaxedPrecision)
 {
 	if(!relaxedPrecision)  // highp
 	{
-		Float4 x1 = As<Float4>(As<Int4>(x) & Int4(0x7F800000));
-		x1 = As<Float4>(As<UInt4>(x1) >> 8);
-		x1 = As<Float4>(As<Int4>(x1) | As<Int4>(Float4(1.0f)));
-		x1 = (x1 - 1.4960938f) * 256.0f;
-		Float4 x0 = As<Float4>((As<Int4>(x) & Int4(0x007FFFFF)) | As<Int4>(Float4(1.0f)));
+		Int4 im = As<Int4>(x);
+		//Float4 q = MulAdd(Float4(im), (1.0f / (1 << 23)), -127.0f);
+		Float4 q = Float4(im - (127 << 23)) * (1.0f / (1 << 23));
 
-		Float4 x2 = MulAdd(MulAdd(9.5428179e-2f, x0, 4.7779095e-1f), x0, 1.9782813e-1f);
-		Float4 x3 = MulAdd(MulAdd(MulAdd(1.6618466e-2f, x0, 2.0350508e-1f), x0, 2.7382900e-1f), x0, 4.0496687e-2f);
+		q = As<Float4>(As<Int4>(q) | (CmpEQ(im, 0x7F800000) & As<Int4>(Float4::infinity())));
 
-		x1 += (x0 - 1.0f) * (x2 / x3);
+		Float4 y = Float4(im & 0x007FFFFF) * (1.0f / (1 << 23));
 
-		Int4 pos_inf_x = CmpEQ(As<Int4>(x), Int4(0x7F800000));
-		return As<Float4>((pos_inf_x & As<Int4>(x)) | (~pos_inf_x & As<Int4>(x1)));
+		const Float4 a = -9.3091638e-3f;
+		const Float4 b = 5.2059003e-2f;
+		const Float4 c = -1.3752135e-1f;
+		const Float4 d = 2.4186478e-1f;
+		const Float4 e = -3.4730109e-1f;
+		const Float4 f = 4.786837e-1f;
+		const Float4 g = -7.2116581e-1f;
+		const Float4 h = 4.4268988e-1f;
+
+		Float4 z = MulAdd(MulAdd(MulAdd(MulAdd(MulAdd(MulAdd(MulAdd(a, y, b), y, c), y, d), y, e), y, f), y, g), y, h);
+
+		return MulAdd(z, y, q);
 	}
 	else  // RelaxedPrecision / mediump
 	{

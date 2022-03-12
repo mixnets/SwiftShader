@@ -59,26 +59,68 @@ float fma(float x, float y, float z)
 	return bit_cast<float>(_mm_extract_ps(_mm_fmadd_ss(_mm_set1_ps(x), _mm_set1_ps(y), _mm_set1_ps(z)), 0));
 }
 
-// lolremez --float -d 2 -r "0:2^23" "(log2(x/2^23+1)-x/2^23)/x" "1/x"
-// ULP-16: 0.797363281, abs: 0.0991751999
-float f(float x)
+// lolremez --float -d 6 -r "0:1" "(log2(x+1)-x)/x" "1/x"
+// ULP-32: 3.23623872, abs: 0.745737255
+float P(float x)
 {
-	float u = 2.8017103e-22f;
-	u = u * x + -8.373131e-15f;
-	return u * x + 5.0615534e-8f;
+	//float u = 1.5529917e-2f;
+	//u = u * x + -7.9557731e-2f;
+	//u = u * x + 1.9429432e-1f;
+	//u = u * x + -3.2590197e-1f;
+	//u = u * x + 4.7355341e-1f;
+	//u = u * x + -7.2058547e-1f;
+	//return u * x + 4.4266783e-1f;
+
+	//return fma(fma(fma(fma(fma(fma(1.5529917e-2f,
+	//                               x, -7.9557731e-2f),
+	//                           x, 1.9429432e-1f),
+	//                       x, -3.2590197e-1f),
+	//                   x, 4.7355341e-1f),
+	//               x, -7.2058547e-1f),
+	//           x, 4.4266783e-1f);
+
+	// lolremez --float -d 7 -r "0:1" "(log2(x+1)-x)/x" "1/x"
+	float u = -9.3091638e-3f;
+	u = u * x + 5.2059003e-2f;
+	u = u * x + -1.3752135e-1f;
+	u = u * x + 2.4186478e-1f;
+	u = u * x + -3.4730109e-1f;
+	u = u * x + 4.786837e-1f;
+	u = u * x + -7.2116581e-1f;
+	return u * x + 4.4268988e-1f;
+
+	// $ ./lolremez --float -d 6 -r "-0.5:0.5" "(log2(x+1.5)-(x+0.5))/(x+0.5)" "1/(x+0.5)"
+	//float u = 1.5529917e-2f;
+	//u = u * x + -3.2967979e-2f;
+	//u = u * x + 5.3637185e-2f;
+	//u = u * x + -9.7382863e-2f;
+	//u = u * x + 1.9125407e-1f;
+	//u = u * x + -4.1626131e-1f;
+	//return u * x + 1.6992557e-1f;
+
+	//return fma(fma(fma(fma(fma(fma(1.5529917e-2f,
+	//                               x, -3.2967979e-2f),
+	//                           x, 5.3637185e-2f),
+	//                       x, -9.7382863e-2f),
+	//                   x, 1.9125407e-1f),
+	//               x, -4.1626131e-1f),
+	//           x, 1.6992557e-1f);
 }
 
 float Log2Relaxed(float x)
 {
 	int im = bit_cast<int>(x);
-	float q = (float)im * (1.0f / (1 << 23)) - 127.0f;
+	float y = (float)(im - (127 << 23)) * (1.0f / (1 << 23));
 
-	float y = (float)(im & 0x007FFFFF);
+	if(im == 0x7F800000) y = INFINITY;
 
-	return q + f(y) * y;
+	float m = (float)(im & 0x007FFFFF) * (1.0f / (1 << 23));
+
+	return fma(P(m), m, y);
+	//return P(m) * m + y;
 }
 
-TEST(MathTest, Log2RelaxedExhaustive)
+TEST(MathTest, Log2NoDivExhaustive)
 {
 	CPUID::setDenormalsAreZero(true);
 	CPUID::setFlushToZero(true);
@@ -91,7 +133,7 @@ TEST(MathTest, Log2RelaxedExhaustive)
 
 	float worst_abs = 0;
 
-	for(float x = 0.10f; x <= 10.0f; x = inc(x))
+	for(float x = 0; x < 10.0f; x = inc(x))
 	{
 		float val = Log2Relaxed(x);
 
@@ -103,7 +145,7 @@ TEST(MathTest, Log2RelaxedExhaustive)
 		}
 		else if(x >= 0.5f && x <= 2.0f)
 		{
-			const float tolerance = pow(2.0f, -7.0f);  // Absolute
+			const float tolerance = pow(2.0f, -21.0f);  // Absolute
 
 			float margin = abs(val - ref) / tolerance;
 
@@ -116,8 +158,13 @@ TEST(MathTest, Log2RelaxedExhaustive)
 		{
 			const float tolerance = 3;  // ULP
 
-			float ulp = (float)ULP_16(ref, (double)val);
+			float ulp = (float)ULP_32(ref, (double)val);
 			float margin = ulp / tolerance;
+
+			if(margin >= 0.9f)
+			{
+				margin = margin;
+			}
 
 			if(margin > worst_margin)
 			{
@@ -319,7 +366,7 @@ float Exp2_legacy(float x)
 
 // lolremez --float -d 4 -r "0:1" "(2^x-x-1)/x" "1/x"
 // ULP_32: 2.14694786, Vulkan margin: 0.686957061
-float P(float x)
+float Pp(float x)
 {
 	float u = 1.8852974e-3f;
 	u = u * x + 8.9733787e-3f;
@@ -334,7 +381,7 @@ float Exp2(float x)
 	x = max(x, bit_cast<float>(0xC2FDFFFF));  // -126.999992
 
 	float f = x - floor(x);
-	float y = P(f) * f + x;
+	float y = Pp(f) * f + x;
 
 	return bit_cast<float>((int)(y * (1 << 23)) + (127 << 23));
 }
