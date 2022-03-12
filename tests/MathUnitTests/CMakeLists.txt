@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set(ROOT_PROJECT_COMPILE_OPTIONS
+set(MATH_UNIT_TESTS_COMPILE_OPTIONS
     ${SWIFTSHADER_COMPILE_OPTIONS}
 )
+
+IF(NOT MSVC)
+    list(APPEND MATH_UNIT_TESTS_COMPILE_OPTIONS "-mfma")
+ENDIF()
 
 set(ROOT_PROJECT_LINK_LIBRARIES
     ${OS_LIBS}
@@ -37,7 +41,7 @@ set_target_properties(math-unittests PROPERTIES
 
 target_compile_options(math-unittests
     PRIVATE
-        ${ROOT_PROJECT_COMPILE_OPTIONS}
+        ${MATH_UNIT_TESTS_COMPILE_OPTIONS}
 )
 
 target_link_options(math-unittests
