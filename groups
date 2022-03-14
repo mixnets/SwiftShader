@@ -6,5 +6,6 @@ cria:project-swiftshader-committers     	cria/project-swiftshader-committers
 cria:project-swiftshader-owners         	cria/project-swiftshader-owners
 cria:project-swiftshader-tryjob-access  	cria/project-swiftshader-tryjob-access
 global:Anonymous-Users                  	Anonymous Users
+mdb:chrome-git-admins                   	mdb/chrome-git-admins
 mdb:kokoro                              	mdb/kokoro
 mdb:kokoro-dedicated                    	mdb/kokoro-dedicated
