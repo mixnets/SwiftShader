@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0584b881_55830696",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-14T18:26:52Z",
+      "side": 1,
+      "message": "This is currently true and likely for some years to come. We can check that things work as expected on different architectures, when the time comes.",
+      "range": {
+        "startLine": 16,
+        "startChar": 13,
+        "endLine": 16,
+        "endChar": 51
+      },
+      "revId": "9d72fe24a1fb08f34fb6c2620b2997569fec372d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
