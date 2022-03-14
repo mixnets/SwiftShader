@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3ca4cd2_ff0443ca",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-14T20:34:27Z",
+      "side": 1,
+      "message": "Just curious: do any of these numbers/variables have any meaning/significance that a comment could highlight?",
+      "range": {
+        "startLine": 410,
+        "startChar": 0,
+        "endLine": 421,
+        "endChar": 25
+      },
+      "revId": "bf34325bd523bbae5ebbba659475a122ed62c506",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
