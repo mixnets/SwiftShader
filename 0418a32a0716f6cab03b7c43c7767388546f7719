@@ -22,6 +22,30 @@
       },
       "revId": "0418a32a0716f6cab03b7c43c7767388546f7719",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6ef7c54_09d41e81",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-03-15T17:25:05Z",
+      "side": 1,
+      "message": "The depth still gets written back by the driver in the range of [0,1]. So at some point the coordinates will have to be renormalized to the standard Vulkan range. The best place to do it is during primitive clipping so that fewer points in the code have to aware that a depth range of [-1, 1] is acceptable.",
+      "parentUuid": "67df0eb7_996276b5",
+      "range": {
+        "startLine": 143,
+        "startChar": 4,
+        "endLine": 143,
+        "endChar": 31
+      },
+      "revId": "0418a32a0716f6cab03b7c43c7767388546f7719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
