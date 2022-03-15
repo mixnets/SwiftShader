@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24d84573_6943cc35",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-15T13:44:41Z",
+      "side": 1,
+      "message": "nit: Written as b/223394608 it better distinguishes as a Buganizer issue (versus Chromium\u0027s Monorail).",
+      "range": {
+        "startLine": 9,
+        "startChar": 5,
+        "endLine": 9,
+        "endChar": 14
+      },
+      "revId": "f80677e03cf11ec2c5802a0e75b3c40670463465",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40ef1170_5e2c3e0b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-15T13:44:41Z",
+      "side": 1,
+      "message": "Thanks Joshua!",
+      "revId": "f80677e03cf11ec2c5802a0e75b3c40670463465",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f8e3fab_24b65257",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-15T13:44:41Z",
+      "side": 1,
+      "message": "I think we should test against MAX_MEMORY_ALLOCATION_SIZE here, to also catch other cases of allocating too much memory. While as far as I\u0027m aware Vulkan does not forbid that such allocations would succeed, we need it to make signed 32-bit indexing work correctly, as well as \"robustness\" bounds checking.\n\nThat said, this can land as-is and we can tighten it further in a follow up change.\n\n@sugoi could you check if this can be centralized to ensure all allocations are always no larger than MAX_MEMORY_ALLOCATION_SIZE? Perhaps as part of b/199306480 ?",
+      "range": {
+        "startLine": 112,
+        "startChar": 34,
+        "endLine": 112,
+        "endChar": 49
+      },
+      "revId": "f80677e03cf11ec2c5802a0e75b3c40670463465",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
