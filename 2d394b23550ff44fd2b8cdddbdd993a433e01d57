@@ -18,6 +18,23 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f99084b_a09adf37",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-15T03:43:48Z",
+      "side": 1,
+      "message": "Looks good! Just a few couple things:",
+      "revId": "2d394b23550ff44fd2b8cdddbdd993a433e01d57",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ece2b1fd_152fddb1",
@@ -31,6 +48,24 @@
       "writtenOn": "2022-03-15T00:33:02Z",
       "side": 1,
       "message": "I guess I\u0027ll need to adjust this to \"^rv.\" to not produce something similar to b/221883145\n\nSince I took inspiration from line 51/57 originally for both of my commits I guess those also need adjustments.",
+      "revId": "2d394b23550ff44fd2b8cdddbdd993a433e01d57",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "835c39cb_86280fdc",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-15T03:43:48Z",
+      "side": 1,
+      "message": "Thanks for pointing that out! Since * in a regex means zero or more of the previous character, let\u0027s remove it from lines 51 and 57 since otherwise they would match \"mip\" and \"pp\" while clearly they meant to match strings containing \"mips\" and \"ppc\". Probably no need to add ^ at the start since this is distinctive enough.\n\nFor RISC-V I\u0027d go with \"^rv.*\" to be sufficiently distinctive.",
+      "parentUuid": "ece2b1fd_152fddb1",
       "revId": "2d394b23550ff44fd2b8cdddbdd993a433e01d57",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
@@ -65,6 +100,24 @@
       "writtenOn": "2022-03-15T00:33:02Z",
       "side": 1,
       "message": "Here and further down I\u0027m not sure if using the preprocessor or choosing at runtime is the better option",
+      "revId": "2d394b23550ff44fd2b8cdddbdd993a433e01d57",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d24875e2_8bf86b42",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-15T03:43:48Z",
+      "side": 1,
+      "message": "What\u0027s the reason for not being able to use RTDyldObjectLinkingLayer? I wonder if we could use ObjectLinkingLayer for other architectures as well (I don\u0027t know what the difference is).\n\nNote that I\u0027m trying to make rr::Routine very lightweight. Other than the generated code itself it should basically have no overhead from LLVM objects: b/177024837\n\nThat said, I think it\u0027s acceptable to have a small amount of conditional compilation to support a new architecture, so no objections to this as-is.",
+      "parentUuid": "39fafd4e_5793cf9f",
       "revId": "2d394b23550ff44fd2b8cdddbdd993a433e01d57",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
