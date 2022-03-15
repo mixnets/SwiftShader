@@ -86,6 +86,30 @@
       },
       "revId": "f80677e03cf11ec2c5802a0e75b3c40670463465",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6eb13eb_da323a3d",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-15T17:12:01Z",
+      "side": 1,
+      "message": "Noted. We can land this as is for now, I\u0027ll look into refactoring this at a later point.",
+      "parentUuid": "0f8e3fab_24b65257",
+      "range": {
+        "startLine": 112,
+        "startChar": 34,
+        "endLine": 112,
+        "endChar": 49
+      },
+      "revId": "f80677e03cf11ec2c5802a0e75b3c40670463465",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
