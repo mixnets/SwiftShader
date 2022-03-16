@@ -34,6 +34,24 @@
       "parentUuid": "73d320b2_49342d2f",
       "revId": "6a118358e0d9a344f14a14967e73c056b9955718",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5356b74_a0a8ef99",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-16T18:01:43Z",
+      "side": 1,
+      "message": "Yes, this could affect golden images. Note this passes dEQP, which tests this implementation quite extensively (13629 data points), and this change adds a unit test which covers even more values.",
+      "parentUuid": "2e6b6540_95a26817",
+      "revId": "6a118358e0d9a344f14a14967e73c056b9955718",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
