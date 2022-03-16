@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "73d320b2_49342d2f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5316
+      },
+      "writtenOn": "2022-03-16T15:35:42Z",
+      "side": 1,
+      "message": "The relaxed precision CLs produced some gold diffs in ANGLE:\n\nhttps://chromium-review.googlesource.com/c/angle/angle/+/3528535",
+      "revId": "6a118358e0d9a344f14a14967e73c056b9955718",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
