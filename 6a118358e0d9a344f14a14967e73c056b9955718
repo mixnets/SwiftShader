@@ -70,6 +70,24 @@
       "parentUuid": "c5356b74_a0a8ef99",
       "revId": "6a118358e0d9a344f14a14967e73c056b9955718",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8dc3fc85_fbc555d6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-17T16:42:27Z",
+      "side": 1,
+      "message": "It was for working around Blink test failures: https://chromium-review.googlesource.com/c/chromium/src/+/3527191",
+      "parentUuid": "4d2d4b6b_41713a58",
+      "revId": "6a118358e0d9a344f14a14967e73c056b9955718",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
