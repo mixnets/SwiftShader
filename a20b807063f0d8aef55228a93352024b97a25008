@@ -22,6 +22,30 @@
       },
       "revId": "a20b807063f0d8aef55228a93352024b97a25008",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07b26bc5_dc61d42f",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1098,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2022-03-17T11:08:45Z",
+      "side": 1,
+      "message": "\u003e Line 1096 could be combined into this one?\n\nYou mean like:\n\nPointer\u003cByte\u003e planeEquationI \u003d planeEquation + (offset * sizeof(PlaneEquation));\n\n?",
+      "parentUuid": "57796424_d9b362e3",
+      "range": {
+        "startLine": 1098,
+        "startChar": 3,
+        "endLine": 1098,
+        "endChar": 17
+      },
+      "revId": "a20b807063f0d8aef55228a93352024b97a25008",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
