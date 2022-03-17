@@ -52,6 +52,24 @@
       "parentUuid": "2e6b6540_95a26817",
       "revId": "6a118358e0d9a344f14a14967e73c056b9955718",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d2d4b6b_41713a58",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2022-03-17T13:46:27Z",
+      "side": 1,
+      "message": "I see you added some conditional compile stuff.\n\nSorry I wasn\u0027t trying to suggest you add additional conditionality around which behaviour to use in which build environment. It\u0027s very easy to accept new golden images. I was just trying to confirm this is expected.",
+      "parentUuid": "c5356b74_a0a8ef99",
+      "revId": "6a118358e0d9a344f14a14967e73c056b9955718",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
