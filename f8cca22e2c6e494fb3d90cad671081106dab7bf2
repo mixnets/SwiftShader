@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fac024e0_2134615b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-17T18:24:01Z",
+      "side": 1,
+      "message": "Excellent, thanks!",
+      "revId": "f8cca22e2c6e494fb3d90cad671081106dab7bf2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "016bba73_7133685d",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1886,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-17T18:24:01Z",
+      "side": 1,
+      "message": "Recently we\u0027ve started to support implicit broadcasting of constants, so the code below could probably be rewritten as:\n\n```\nc.x \u003d Short4(v * static_cast\u003cfloat\u003e(0x7FFF));\n```\n\nAnyway, just an FYI. LGTM either way.",
+      "range": {
+        "startLine": 1886,
+        "startChar": 4,
+        "endLine": 1886,
+        "endChar": 11
+      },
+      "revId": "f8cca22e2c6e494fb3d90cad671081106dab7bf2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
