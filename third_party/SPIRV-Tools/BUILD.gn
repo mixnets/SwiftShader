@@ -875,7 +875,7 @@ static_library("spvtools_reduce") {
   configs += [ ":spvtools_internal_config" ]
 }
 
-if (build_with_chromium) {
+if (build_with_chromium && false) {
   # The spirv-fuzz library is only built when in a Chromium checkout
   # due to its dependency on protobuf.
 
@@ -1304,7 +1304,7 @@ group("SPIRV-Tools") {
 
 # The tests are scoped to Chromium to avoid needing to write gtest integration.
 # See Chromium's third_party/googletest/BUILD.gn for a complete integration.
-if (build_with_chromium) {
+if (build_with_chromium && false) {
   test("spvtools_test") {
     sources = [
       "test/assembly_context_test.cpp",
@@ -1413,6 +1413,7 @@ source_set("spvtools_software_version") {
   configs += [ ":spvtools_internal_config" ]
 }
 
+if(false) {
 executable("spirv-as") {
   sources = [ "tools/as/as.cpp" ]
   deps = [
@@ -1478,8 +1479,8 @@ executable("spirv-link") {
   ]
   configs += [ ":spvtools_internal_config" ]
 }
-
-if (!is_ios && !spirv_is_winuwp && build_with_chromium) {
+}
+if (!is_ios && !spirv_is_winuwp && build_with_chromium && false) {
   # iOS and UWP do not allow std::system calls which spirv-fuzz
   # requires. Additionally, spirv-fuzz is only built when in a
   # Chromium checkout due to its dependency on protobuf.
@@ -1500,7 +1501,7 @@ if (!is_ios && !spirv_is_winuwp && build_with_chromium) {
   }
 }
 
-if (!is_ios && !spirv_is_winuwp) {
+if (!is_ios && !spirv_is_winuwp && false) {
   # iOS and UWP do not allow std::system calls which spirv-reduce
   # requires.
 
@@ -1518,6 +1519,7 @@ if (!is_ios && !spirv_is_winuwp) {
   }
 }
 
+if(false){
 group("all_spirv_tools") {
   deps = [
     ":spirv-as",
@@ -1527,10 +1529,11 @@ group("all_spirv_tools") {
     ":spirv-opt",
     ":spirv-val",
   ]
-  if (!is_ios && !spirv_is_winuwp && build_with_chromium) {
+  if (!is_ios && !spirv_is_winuwp && build_with_chromium && false) {
     deps += [ ":spirv-fuzz" ]
   }
   if (!is_ios && !spirv_is_winuwp) {
     deps += [ ":spirv-reduce" ]
   }
+}
 }
