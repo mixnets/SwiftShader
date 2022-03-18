@@ -875,7 +875,7 @@ static_library("spvtools_reduce") {
   configs += [ ":spvtools_internal_config" ]
 }
 
-if (build_with_chromium) {
+if (build_with_chromium && false) {
   # The spirv-fuzz library is only built when in a Chromium checkout
   # due to its dependency on protobuf.
 
