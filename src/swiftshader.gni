@@ -25,6 +25,8 @@ declare_args() {
   # If enabled, debug builds on Windows will pop up a dialog when the
   # SwiftShader DLL gets loaded, to facilitate attaching a debugger.
   swiftshader_startup_dialog = false
+
+  build_with_chromium = false
 }
 
 configs_to_add = []
