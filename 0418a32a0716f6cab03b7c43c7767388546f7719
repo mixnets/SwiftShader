@@ -46,6 +46,30 @@
       },
       "revId": "0418a32a0716f6cab03b7c43c7767388546f7719",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "699c0245_939af0bf",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-19T08:22:39Z",
+      "side": 1,
+      "message": "For the records, me and syoussefi@ discussed whether this altered viewport transformation should be done at all, as it\u0027s not mentioned by the spec. This should get resolved at https://gitlab.khronos.org/vulkan/vulkan/-/issues/3044.",
+      "parentUuid": "c6ef7c54_09d41e81",
+      "range": {
+        "startLine": 143,
+        "startChar": 4,
+        "endLine": 143,
+        "endChar": 31
+      },
+      "revId": "0418a32a0716f6cab03b7c43c7767388546f7719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
