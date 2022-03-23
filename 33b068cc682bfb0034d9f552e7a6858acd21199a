@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2cd2f56_1a9c2c6c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-23T17:36:00Z",
+      "side": 1,
+      "message": "Is it normal that this CL deletes Android.mk?",
+      "revId": "33b068cc682bfb0034d9f552e7a6858acd21199a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
