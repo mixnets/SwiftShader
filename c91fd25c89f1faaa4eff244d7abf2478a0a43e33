@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fddfd959_7d8294d9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-23T19:48:12Z",
+      "side": 1,
+      "message": "The 3 broken tests are expected. See b/218397060 for details.",
+      "revId": "c91fd25c89f1faaa4eff244d7abf2478a0a43e33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
