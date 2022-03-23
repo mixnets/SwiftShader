@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "761a4eab_a9dfc622",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-23T04:12:53Z",
+      "side": 1,
+      "message": "Rebase after https://github.com/KhronosGroup/SPIRV-Tools/pull/4762 lands upstream and has been imported.",
+      "revId": "3078e85b1b839af14757a432cfa53d6509e1b97a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
