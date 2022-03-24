@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12a240f4_b687d63b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2022-03-24T00:02:34Z",
+      "side": 1,
+      "message": "I can\u0027t review SwiftShader CLs so we will need to wait for Alexis or Nicolas.",
+      "revId": "b7b0728cbee446c69f929a7dd7b4fa3ea17f87fa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

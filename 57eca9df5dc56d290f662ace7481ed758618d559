@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62194170_4313d57b",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2022-03-24T00:02:34Z",
+      "side": 0,
+      "message": "This comment can be removed.",
+      "range": {
+        "startLine": 565,
+        "startChar": 0,
+        "endLine": 566,
+        "endChar": 103
+      },
+      "revId": "57eca9df5dc56d290f662ace7481ed758618d559",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
