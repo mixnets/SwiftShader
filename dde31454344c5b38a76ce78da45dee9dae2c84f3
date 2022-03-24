@@ -52,6 +52,24 @@
       "parentUuid": "3efe994a_11b43a4f",
       "revId": "dde31454344c5b38a76ce78da45dee9dae2c84f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0f583ac_0eb57ea6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-24T13:29:08Z",
+      "side": 1,
+      "message": "Sorry about that, looks like I didn\u0027t take some scenarios into account. I\u0027ve reopened b/158002593.",
+      "parentUuid": "170abcc1_bb10d93b",
+      "revId": "dde31454344c5b38a76ce78da45dee9dae2c84f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
