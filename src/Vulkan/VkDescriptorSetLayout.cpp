@@ -561,10 +561,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			const vk::Buffer *buffer = vk::Cast(update->buffer);
 			bufferDescriptor[i].ptr = buffer->getOffsetPointer(update->offset);
 			bufferDescriptor[i].sizeInBytes = static_cast<int>((update->range == VK_WHOLE_SIZE) ? buffer->getSize() - update->offset : update->range);
-
-			// TODO(b/195684837): The spec states that "vertexBufferRangeSize is the byte size of the memory
-			// range bound to the vertex buffer binding", while the code below uses the full size of the buffer.
-			bufferDescriptor[i].robustnessSize = static_cast<int>(buffer->getSize() - update->offset);
+			bufferDescriptor[i].robustnessSize = bufferDescriptor[i].sizeInBytes;
 		}
 	}
 	else if(entry.descriptorType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK)

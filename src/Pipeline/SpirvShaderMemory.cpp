@@ -424,7 +424,7 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, Int arrayIndex, EmitS
 					Int offset = routine->descriptorDynamicOffsets[dynamicOffsetIndex];
 					Int robustnessSize = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
 
-					return SIMD::Pointer(data + offset, Min(size, robustnessSize - offset));
+					return SIMD::Pointer(data + offset, Min(size, robustnessSize));
 				}
 				else
 				{
