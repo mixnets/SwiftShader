@@ -16,6 +16,29 @@
       "message": "Thank you! Feel free to manually set Verified+1, and Submit.",
       "revId": "abdf2bb24cd85f1bbac2c0aa7dc951ddfd885135",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cc9312d_4f1392c3",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 564,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-24T16:29:44Z",
+      "side": 1,
+      "message": "This is incorrect, putting robustnessSize to sizeInBytes will make the check fail at:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Pipeline/SpirvShaderMemory.cpp;l\u003d427\nwhen we remove offset from robustnessSize.",
+      "range": {
+        "startLine": 564,
+        "startChar": 3,
+        "endLine": 564,
+        "endChar": 72
+      },
+      "revId": "abdf2bb24cd85f1bbac2c0aa7dc951ddfd885135",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
