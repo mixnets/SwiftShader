@@ -64,7 +64,7 @@ protected:
 	void linearToSRGB12_16(Vector4s &c);
 
 private:
-	Byte8 stencilReplaceRef(bool isBack);
+	bool stencilReplaceRef(Byte8 &output, bool isBack);
 	void stencilTest(const Pointer<Byte> &sBuffer, const Int &x, Int sMask[4], const SampleSet &samples);
 	void stencilTest(Byte8 &value, VkCompareOp stencilCompareMode, bool isBack);
 	void stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask);
@@ -74,7 +74,11 @@ private:
 	void depthBoundsTest(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, Int &cMask);
 
 	void readPixel(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &pixel);
-	enum BlendFactorModifier { None, OneMinus };
+	enum BlendFactorModifier
+	{
+		None,
+		OneMinus
+	};
 	Float blendConstant(vk::Format format, int component, BlendFactorModifier modifier = None);
 	void blendFactorRGB(Vector4f &blendFactorRGB, const Vector4f &sourceColor, const Vector4f &destColor, VkBlendFactor colorBlendFactor, vk::Format format);
 	void blendFactorAlpha(Float4 &blendFactorAlpha, const Float4 &sourceAlpha, const Float4 &destAlpha, VkBlendFactor alphaBlendFactor, vk::Format format);

@@ -869,12 +869,15 @@ void PixelRoutine::stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, c
 	}
 }
 
-Byte8 PixelRoutine::stencilReplaceRef(bool isBack)
+bool PixelRoutine::stencilReplaceRef(Byte8 &output, bool isBack)
 {
+	bool usesFragStencilRefEXT = false;
+
 	if(spirvShader)
 	{
 		auto it = spirvShader->outputBuiltins.find(spv::BuiltInFragStencilRefEXT);
-		if(it != spirvShader->outputBuiltins.end())
+		usesFragStencilRefEXT = (it != spirvShader->outputBuiltins.end());
+		if(usesFragStencilRefEXT)
 		{
 			UInt4 sRef = As<UInt4>(routine.getVariable(it->second.Id)[it->second.FirstComponent]) & UInt4(0xff);
 			// TODO (b/148295813): Could be done with a single pshufb instruction. Optimize the
@@ -885,43 +888,46 @@ Byte8 PixelRoutine::stencilReplaceRef(bool isBack)
 			UInt2 sRefDuplicated;
 			sRefDuplicated = Insert(sRefDuplicated, sRef.x, 0);
 			sRefDuplicated = Insert(sRefDuplicated, sRef.x, 1);
-			return As<Byte8>(sRefDuplicated);
+			output = As<Byte8>(sRefDuplicated);
 		}
 	}
 
-	return *Pointer<Byte8>(data + OFFSET(DrawData, stencil[isBack].referenceQ));
+	return usesFragStencilRefEXT;
 }
 
 void PixelRoutine::stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkStencilOp operation, bool isBack)
 {
-	switch(operation)
+	if(!stencilReplaceRef(output, isBack))
 	{
-	case VK_STENCIL_OP_KEEP:
-		output = bufferValue;
-		break;
-	case VK_STENCIL_OP_ZERO:
-		output = Byte8(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
-		break;
-	case VK_STENCIL_OP_REPLACE:
-		output = stencilReplaceRef(isBack);
-		break;
-	case VK_STENCIL_OP_INCREMENT_AND_CLAMP:
-		output = AddSat(bufferValue, Byte8(1, 1, 1, 1, 1, 1, 1, 1));
-		break;
-	case VK_STENCIL_OP_DECREMENT_AND_CLAMP:
-		output = SubSat(bufferValue, Byte8(1, 1, 1, 1, 1, 1, 1, 1));
-		break;
-	case VK_STENCIL_OP_INVERT:
-		output = bufferValue ^ Byte8(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
-		break;
-	case VK_STENCIL_OP_INCREMENT_AND_WRAP:
-		output = bufferValue + Byte8(1, 1, 1, 1, 1, 1, 1, 1);
-		break;
-	case VK_STENCIL_OP_DECREMENT_AND_WRAP:
-		output = bufferValue - Byte8(1, 1, 1, 1, 1, 1, 1, 1);
-		break;
-	default:
-		UNSUPPORTED("VkStencilOp: %d", int(operation));
+		switch(operation)
+		{
+		case VK_STENCIL_OP_KEEP:
+			output = bufferValue;
+			break;
+		case VK_STENCIL_OP_ZERO:
+			output = Byte8(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+			break;
+		case VK_STENCIL_OP_REPLACE:
+			output = *Pointer<Byte8>(data + OFFSET(DrawData, stencil[isBack].referenceQ));
+			break;
+		case VK_STENCIL_OP_INCREMENT_AND_CLAMP:
+			output = AddSat(bufferValue, Byte8(1, 1, 1, 1, 1, 1, 1, 1));
+			break;
+		case VK_STENCIL_OP_DECREMENT_AND_CLAMP:
+			output = SubSat(bufferValue, Byte8(1, 1, 1, 1, 1, 1, 1, 1));
+			break;
+		case VK_STENCIL_OP_INVERT:
+			output = bufferValue ^ Byte8(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+			break;
+		case VK_STENCIL_OP_INCREMENT_AND_WRAP:
+			output = bufferValue + Byte8(1, 1, 1, 1, 1, 1, 1, 1);
+			break;
+		case VK_STENCIL_OP_DECREMENT_AND_WRAP:
+			output = bufferValue - Byte8(1, 1, 1, 1, 1, 1, 1, 1);
+			break;
+		default:
+			UNSUPPORTED("VkStencilOp: %d", int(operation));
+		}
 	}
 }
 
