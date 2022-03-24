@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5c623212_c2da0ea3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2022-03-24T15:39:41Z",
+      "side": 1,
+      "message": "PTAL. Seems to be passing though Kokoro hasn\u0027t finished. Should we integrate the second diff into Yuxin\u0027s CL if all is green?",
+      "revId": "2b4d959f760726d80e3f82d781a4d0a1e6f409ea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
