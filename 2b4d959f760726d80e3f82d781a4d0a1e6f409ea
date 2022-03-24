@@ -16,6 +16,29 @@
       "message": "PTAL. Seems to be passing though Kokoro hasn\u0027t finished. Should we integrate the second diff into Yuxin\u0027s CL if all is green?",
       "revId": "2b4d959f760726d80e3f82d781a4d0a1e6f409ea",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd8cd6f3_edaef197",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-24T16:34:05Z",
+      "side": 1,
+      "message": "This means that the whole change is noop at best. Since we now have size \u003d\u003d robustnessSize, the Min call is useless, and we\u0027re no longer checking if we go OOB of the buffer memory, which can only be bad.",
+      "range": {
+        "startLine": 427,
+        "startChar": 41,
+        "endLine": 427,
+        "endChar": 66
+      },
+      "revId": "2b4d959f760726d80e3f82d781a4d0a1e6f409ea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
