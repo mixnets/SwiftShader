@@ -20,10 +20,10 @@ if (build_with_chromium) {
 }
 
 # SPIRV-Tools may be part of multiple projects in the Chromium tree.
-# Only enable building executables if this is the main copy, or standalone.
+# Only enable building executables if this is the main copy.
 abspath = get_path_info(".", "abspath")
-spvtools_chromium_third_party = (abspath == "//third_party/SPIRV-Tools/")
-spvtools_build_executables = !build_with_chromium || spvtools_chromium_third_party
+spvtools_chromium_third_party = (abspath == "//third_party/vulkan-deps/spirv-tools/src/")
+spvtools_build_executables = build_with_chromium && spvtools_chromium_third_party
 
 spirv_headers = spirv_tools_spirv_headers_dir
 spirv_is_winuwp = is_win && target_os == "winuwp"
@@ -883,7 +883,7 @@ static_library("spvtools_reduce") {
   configs += [ ":spvtools_internal_config" ]
 }
 
-if (build_with_chromium && spvtools_build_executables) {
+if (spvtools_build_executables) {
   # The spirv-fuzz library is only built when in a Chromium checkout
   # due to its dependency on protobuf.
 
@@ -1312,7 +1312,7 @@ group("SPIRV-Tools") {
 
 # The tests are scoped to Chromium to avoid needing to write gtest integration.
 # See Chromium's third_party/googletest/BUILD.gn for a complete integration.
-if (build_with_chromium && spvtools_build_executables) {
+if (spvtools_build_executables) {
   test("spvtools_test") {
     sources = [
       "test/assembly_context_test.cpp",
@@ -1489,7 +1489,7 @@ if (spvtools_build_executables) {
   }
 }
 
-if (!is_ios && !spirv_is_winuwp && build_with_chromium && spvtools_build_executables) {
+if (!is_ios && !spirv_is_winuwp && spvtools_build_executables) {
   # iOS and UWP do not allow std::system calls which spirv-fuzz
   # requires. Additionally, spirv-fuzz is only built when in a
   # Chromium checkout due to its dependency on protobuf.
@@ -1538,11 +1538,11 @@ if (spvtools_build_executables){
       ":spirv-opt",
       ":spirv-val",
     ]
-    if (!is_ios && !spirv_is_winuwp && build_with_chromium) {
-      deps += [ ":spirv-fuzz" ]
-    }
     if (!is_ios && !spirv_is_winuwp) {
-      deps += [ ":spirv-reduce" ]
+      deps += [
+        ":spirv-fuzz",
+        ":spirv-reduce",
+      ]
     }
   }
 }
