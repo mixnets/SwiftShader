@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d441ef9e_82634806",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2022-03-24T12:53:02Z",
+      "side": 1,
+      "message": "This causes issues when rolling into Dawn, but I\u0027m not sure how to fix it (apart from reverting but it seems you want to go in this direction eventually anyway)\n\nERROR at //build/config/BUILDCONFIG.gn:497:5: Duplicate output file.\n    target(_target_type, _target_name) {\n    ^-----------------------------------\nTwo or more targets generate the same output:\n  spirv-as\n\nThis is can often be fixed by changing one of the target names, or by \nsetting an output_name on one of them.\n\nCollisions:\n  //third_party/swiftshader/third_party/SPIRV-Tools:spirv-as(//build/toolchain/mac:clang_x64)\n  //third_party/vulkan-deps/spirv-tools/src:spirv-as(//build/toolchain/mac:clang_x64)\n\nSee //build/config/BUILDCONFIG.gn:497:5: Collision.\n    target(_target_type, _target_name) {\n    ^-----------------------------------",
+      "revId": "dde31454344c5b38a76ce78da45dee9dae2c84f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
