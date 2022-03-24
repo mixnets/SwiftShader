@@ -18,6 +18,7 @@
 #include "SamplerCore.hpp"
 #include "Device/Primitive.hpp"
 #include "Device/Renderer.hpp"
+#include "Vulkan/VkDevice.hpp"
 
 namespace sw {
 
@@ -95,9 +96,9 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 
 	routine.invocationsPerSubgroup = SIMD::Width;
 	routine.helperInvocation = ~maskAny(cMask, samples);
-	routine.windowSpacePosition[0] = x + SIMD::Int(0, 1, 0, 1);
-	routine.windowSpacePosition[1] = y + SIMD::Int(0, 0, 1, 1);
-	routine.viewID = *Pointer<Int>(data + OFFSET(DrawData, viewID));
+	routine.windowSpacePosition[0] = SIMD::Int(x) + SIMD::Int(0, 1, 0, 1);
+	routine.windowSpacePosition[1] = SIMD::Int(y) + SIMD::Int(0, 0, 1, 1);
+	routine.layer = *Pointer<Int>(data + OFFSET(DrawData, layer));
 
 	// PointCoord formula reference: https://www.khronos.org/registry/vulkan/specs/1.2/html/vkspec.html#primsrast-points-basic
 	// Note we don't add a 0.5 offset to x and y here (like for fragCoord) because pointCoordX/Y have 0.5 subtracted as part of the viewport transform.
@@ -107,7 +108,7 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 
 	routine.setInputBuiltin(spirvShader, spv::BuiltInViewIndex, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 1);
-		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int(routine.viewID));
+		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int(routine.layer));
 	});
 
 	routine.setInputBuiltin(spirvShader, spv::BuiltInFragCoord, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
@@ -137,10 +138,11 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 
 void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const SampleSet &samples)
 {
+	routine.device = device;
 	routine.descriptorSets = data + OFFSET(DrawData, descriptorSets);
 	routine.descriptorDynamicOffsets = data + OFFSET(DrawData, descriptorDynamicOffsets);
 	routine.pushConstants = data + OFFSET(DrawData, pushConstants);
-	routine.constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, constants));
+	routine.constants = device + OFFSET(vk::Device, constants);
 
 	auto it = spirvShader->inputBuiltins.find(spv::BuiltInFrontFacing);
 	if(it != spirvShader->inputBuiltins.end())
@@ -277,8 +279,8 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 		{
 		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
 		case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
-		case VK_FORMAT_A4R4G4B4_UNORM_PACK16_EXT:
-		case VK_FORMAT_A4B4G4R4_UNORM_PACK16_EXT:
+		case VK_FORMAT_A4R4G4B4_UNORM_PACK16:
+		case VK_FORMAT_A4B4G4R4_UNORM_PACK16:
 		case VK_FORMAT_B5G6R5_UNORM_PACK16:
 		case VK_FORMAT_R5G5B5A1_UNORM_PACK16:
 		case VK_FORMAT_B5G5R5A1_UNORM_PACK16:
@@ -297,14 +299,14 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 			for(unsigned int q : samples)
 			{
 				Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
+
+				Vector4f colorf = alphaBlend(index, buffer, c[index], x);
+
 				Vector4s color;
-
-				color.x = convertFixed16(c[index].x, false);
-				color.y = convertFixed16(c[index].y, false);
-				color.z = convertFixed16(c[index].z, false);
-				color.w = convertFixed16(c[index].w, false);
-
-				alphaBlend(index, buffer, color, x);
+				color.x = convertFixed16(colorf.x, true);
+				color.y = convertFixed16(colorf.y, true);
+				color.z = convertFixed16(colorf.z, true);
+				color.w = convertFixed16(colorf.w, true);
 				writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 			}
 			break;
@@ -373,8 +375,8 @@ void PixelProgram::clampColor(Vector4f color[MAX_COLOR_BUFFERS])
 			break;
 		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
 		case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
-		case VK_FORMAT_A4R4G4B4_UNORM_PACK16_EXT:
-		case VK_FORMAT_A4B4G4R4_UNORM_PACK16_EXT:
+		case VK_FORMAT_A4R4G4B4_UNORM_PACK16:
+		case VK_FORMAT_A4B4G4R4_UNORM_PACK16:
 		case VK_FORMAT_B5G6R5_UNORM_PACK16:
 		case VK_FORMAT_R5G5B5A1_UNORM_PACK16:
 		case VK_FORMAT_B5G5R5A1_UNORM_PACK16:

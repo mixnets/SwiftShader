@@ -20,7 +20,6 @@
 #include "System/Debug.hpp"
 #include "System/Half.hpp"
 #include "System/Memory.hpp"
-#include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkImage.hpp"
 #include "Vulkan/VkImageView.hpp"
 
@@ -55,7 +54,7 @@ Blitter::~Blitter()
 {
 }
 
-void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
+void Blitter::clear(const void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
 {
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask);
 	vk::Format dstFormat = viewFormat.getAspectFormat(aspect);
@@ -64,20 +63,16 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		return;
 	}
 
-	float *pPixel = static_cast<float *>(pixel);
-	if(viewFormat.isUnsignedNormalized() || viewFormat.isSRGBformat())
+	VkClearColorValue clampedPixel;
+	if(viewFormat.isSignedNormalized() || viewFormat.isUnsignedNormalized())
 	{
-		pPixel[0] = sw::clamp(pPixel[0], 0.0f, 1.0f);
-		pPixel[1] = sw::clamp(pPixel[1], 0.0f, 1.0f);
-		pPixel[2] = sw::clamp(pPixel[2], 0.0f, 1.0f);
-		pPixel[3] = sw::clamp(pPixel[3], 0.0f, 1.0f);
-	}
-	else if(viewFormat.isSignedNormalized())
-	{
-		pPixel[0] = sw::clamp(pPixel[0], -1.0f, 1.0f);
-		pPixel[1] = sw::clamp(pPixel[1], -1.0f, 1.0f);
-		pPixel[2] = sw::clamp(pPixel[2], -1.0f, 1.0f);
-		pPixel[3] = sw::clamp(pPixel[3], -1.0f, 1.0f);
+		const float minValue = viewFormat.isSignedNormalized() ? -1.0f : 0.0f;
+		memcpy(clampedPixel.float32, pixel, sizeof(VkClearColorValue));
+		clampedPixel.float32[0] = sw::clamp(clampedPixel.float32[0], minValue, 1.0f);
+		clampedPixel.float32[1] = sw::clamp(clampedPixel.float32[1], minValue, 1.0f);
+		clampedPixel.float32[2] = sw::clamp(clampedPixel.float32[2], minValue, 1.0f);
+		clampedPixel.float32[3] = sw::clamp(clampedPixel.float32[3], minValue, 1.0f);
+		pixel = clampedPixel.float32;
 	}
 
 	if(fastClear(pixel, format, dest, dstFormat, subresourceRange, renderArea))
@@ -120,10 +115,10 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		BlitData data = {
 			pixel, nullptr,  // source, dest
 
-			format.bytes(),                                  // sPitchB
-			dest->rowPitchBytes(aspect, subres.mipLevel),    // dPitchB
-			0,                                               // sSliceB (unused in clear operations)
-			dest->slicePitchBytes(aspect, subres.mipLevel),  // dSliceB
+			assert_cast<uint32_t>(format.bytes()),                                  // sPitchB
+			assert_cast<uint32_t>(dest->rowPitchBytes(aspect, subres.mipLevel)),    // dPitchB
+			0,                                                                      // sSliceB (unused in clear operations)
+			assert_cast<uint32_t>(dest->slicePitchBytes(aspect, subres.mipLevel)),  // dSliceB
 
 			0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f,  // x0, y0, z0, w, h, d
 
@@ -162,7 +157,7 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 	dest->contentsChanged(subresourceRange);
 }
 
-bool Blitter::fastClear(void *clearValue, vk::Format clearFormat, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
+bool Blitter::fastClear(const void *clearValue, vk::Format clearFormat, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
 {
 	if(clearFormat != VK_FORMAT_R32G32B32A32_SFLOAT &&
 	   clearFormat != VK_FORMAT_D32_SFLOAT &&
@@ -189,7 +184,7 @@ bool Blitter::fastClear(void *clearValue, vk::Format clearFormat, vk::Image *des
 		uint32_t s;
 	};
 
-	ClearValue &c = *reinterpret_cast<ClearValue *>(clearValue);
+	const ClearValue &c = *reinterpret_cast<const ClearValue *>(clearValue);
 
 	uint32_t packed = 0;
 
@@ -472,13 +467,13 @@ Float4 Blitter::readFloat4(Pointer<Byte> element, const State &state)
 		c.z = Float(Int((*Pointer<UShort>(element) & UShort(0x00F0)) >> UShort(4)));
 		c.w = Float(Int(*Pointer<UShort>(element) & UShort(0x000F)));
 		break;
-	case VK_FORMAT_A4B4G4R4_UNORM_PACK16_EXT:
+	case VK_FORMAT_A4B4G4R4_UNORM_PACK16:
 		c.w = Float(Int((*Pointer<UShort>(element) & UShort(0xF000)) >> UShort(12)));
 		c.z = Float(Int((*Pointer<UShort>(element) & UShort(0x0F00)) >> UShort(8)));
 		c.y = Float(Int((*Pointer<UShort>(element) & UShort(0x00F0)) >> UShort(4)));
 		c.x = Float(Int(*Pointer<UShort>(element) & UShort(0x000F)));
 		break;
-	case VK_FORMAT_A4R4G4B4_UNORM_PACK16_EXT:
+	case VK_FORMAT_A4R4G4B4_UNORM_PACK16:
 		c.w = Float(Int((*Pointer<UShort>(element) & UShort(0xF000)) >> UShort(12)));
 		c.x = Float(Int((*Pointer<UShort>(element) & UShort(0x0F00)) >> UShort(8)));
 		c.y = Float(Int((*Pointer<UShort>(element) & UShort(0x00F0)) >> UShort(4)));
@@ -607,7 +602,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			                            (UShort(PackFields(RoundInt(c) & Int4(0xF), { 4, 8, 12, 0 })) & UShort(mask));
 		}
 		break;
-	case VK_FORMAT_A4R4G4B4_UNORM_PACK16_EXT:
+	case VK_FORMAT_A4R4G4B4_UNORM_PACK16:
 		if(writeRGBA)
 		{
 			*Pointer<UShort>(element) = UShort(PackFields(RoundInt(c) & Int4(0xF), { 8, 4, 0, 12 }));
@@ -623,7 +618,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			                            (UShort(PackFields(RoundInt(c) & Int4(0xF), { 8, 4, 0, 12 })) & UShort(mask));
 		}
 		break;
-	case VK_FORMAT_A4B4G4R4_UNORM_PACK16_EXT:
+	case VK_FORMAT_A4B4G4R4_UNORM_PACK16:
 		if(writeRGBA)
 		{
 			*Pointer<UShort>(element) = UShort(PackFields(RoundInt(c) & Int4(0xF), { 0, 4, 8, 12 }));
@@ -1183,6 +1178,8 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 	bool writeA = state.writeAlpha;
 	bool writeRGBA = writeR && writeG && writeB && writeA;
 
+	ASSERT(state.sourceFormat.isUnsigned() == state.destFormat.isUnsigned());
+
 	switch(state.destFormat)
 	{
 	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
@@ -1471,8 +1468,7 @@ void Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool preScal
 		                          state.destFormat.isUnsignedComponent(3) ? 0.0f : -scale.w));
 	}
 
-	// TODO(b/203068380): create proper functions to check for signedness
-	if(!state.sourceFormat.isUnsignedComponent(0) && state.destFormat.isUnsignedComponent(0))
+	if(!state.sourceFormat.isUnsigned() && state.destFormat.isUnsigned())
 	{
 		value = Max(value, Float4(0.0f));
 	}
@@ -1490,8 +1486,8 @@ Int Blitter::ComputeOffset(Int &x, Int &y, Int &z, Int &sliceB, Int &pitchB, int
 
 Float4 Blitter::LinearToSRGB(const Float4 &c)
 {
-	Float4 lc = Min(c, Float4(0.0031308f)) * Float4(12.92f);
-	Float4 ec = Float4(1.055f) * power(c, Float4(1.0f / 2.4f)) - Float4(0.055f);
+	Float4 lc = Min(c, 0.0031308f) * 12.92f;
+	Float4 ec = Float4(1.055f) * Pow<Mediump>(c, (1.0f / 2.4f)) - 0.055f;  // TODO(b/149574741): Use a custom approximation.
 
 	Float4 s = c;
 	s.xyz = Max(lc, ec);
@@ -1501,10 +1497,10 @@ Float4 Blitter::LinearToSRGB(const Float4 &c)
 
 Float4 Blitter::sRGBtoLinear(const Float4 &c)
 {
-	Float4 lc = c * Float4(1.0f / 12.92f);
-	Float4 ec = power((c + Float4(0.055f)) * Float4(1.0f / 1.055f), Float4(2.4f));
+	Float4 lc = c * (1.0f / 12.92f);
+	Float4 ec = Pow<Mediump>((c + 0.055f) * (1.0f / 1.055f), 2.4f);  // TODO(b/149574741): Use a custom approximation.
 
-	Int4 linear = CmpLT(c, Float4(0.04045f));
+	Int4 linear = CmpLT(c, 0.04045f);
 
 	Float4 s = c;
 	s.xyz = As<Float4>((linear & As<Int4>(lc)) | (~linear & As<Int4>(ec)));  // TODO: IfThenElse()
@@ -1835,7 +1831,7 @@ Blitter::CornerUpdateRoutineType Blitter::getCornerUpdateRoutine(const State &st
 	return cornerUpdateRoutine;
 }
 
-void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter)
+void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit2KHR region, VkFilter filter)
 {
 	ASSERT(src->getFormat() != VK_FORMAT_UNDEFINED);
 	ASSERT(dst->getFormat() != VK_FORMAT_UNDEFINED);
@@ -1904,12 +1900,12 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	}
 
 	BlitData data = {
-		nullptr,                                                          // source
-		nullptr,                                                          // dest
-		src->rowPitchBytes(srcAspect, region.srcSubresource.mipLevel),    // sPitchB
-		dst->rowPitchBytes(dstAspect, region.dstSubresource.mipLevel),    // dPitchB
-		src->slicePitchBytes(srcAspect, region.srcSubresource.mipLevel),  // sSliceB
-		dst->slicePitchBytes(dstAspect, region.dstSubresource.mipLevel),  // dSliceB
+		nullptr,                                                                                 // source
+		nullptr,                                                                                 // dest
+		assert_cast<uint32_t>(src->rowPitchBytes(srcAspect, region.srcSubresource.mipLevel)),    // sPitchB
+		assert_cast<uint32_t>(dst->rowPitchBytes(dstAspect, region.dstSubresource.mipLevel)),    // dPitchB
+		assert_cast<uint32_t>(src->slicePitchBytes(srcAspect, region.srcSubresource.mipLevel)),  // sSliceB
+		assert_cast<uint32_t>(dst->slicePitchBytes(dstAspect, region.dstSubresource.mipLevel)),  // dSliceB
 
 		x0,
 		y0,
@@ -1968,9 +1964,9 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	dst->contentsChanged(dstSubresRange);
 }
 
-static void resolveDepth(const vk::ImageView *src, vk::ImageView *dst, const VkSubpassDescriptionDepthStencilResolve &dsrDesc)
+static void resolveDepth(const vk::ImageView *src, vk::ImageView *dst, const VkResolveModeFlagBits depthResolveMode)
 {
-	if(dsrDesc.depthResolveMode == VK_RESOLVE_MODE_NONE)
+	if(depthResolveMode == VK_RESOLVE_MODE_NONE)
 	{
 		return;
 	}
@@ -1988,7 +1984,7 @@ static void resolveDepth(const vk::ImageView *src, vk::ImageView *dst, const VkS
 
 	size_t formatSize = format.bytes();
 	// TODO(b/167558951) support other resolve modes.
-	ASSERT(dsrDesc.depthResolveMode == VK_RESOLVE_MODE_SAMPLE_ZERO_BIT);
+	ASSERT(depthResolveMode == VK_RESOLVE_MODE_SAMPLE_ZERO_BIT);
 	for(int y = 0; y < height; y++)
 	{
 		memcpy(dest, source, formatSize * width);
@@ -2000,9 +1996,9 @@ static void resolveDepth(const vk::ImageView *src, vk::ImageView *dst, const VkS
 	dst->contentsChanged(vk::Image::DIRECT_MEMORY_ACCESS);
 }
 
-static void resolveStencil(const vk::ImageView *src, vk::ImageView *dst, const VkSubpassDescriptionDepthStencilResolve &dsrDesc)
+static void resolveStencil(const vk::ImageView *src, vk::ImageView *dst, const VkResolveModeFlagBits stencilResolveMode)
 {
-	if(dsrDesc.stencilResolveMode == VK_RESOLVE_MODE_NONE)
+	if(stencilResolveMode == VK_RESOLVE_MODE_NONE)
 	{
 		return;
 	}
@@ -2018,7 +2014,7 @@ static void resolveStencil(const vk::ImageView *src, vk::ImageView *dst, const V
 	uint8_t *dest = reinterpret_cast<uint8_t *>(dst->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_STENCIL_BIT, 0, 0));
 
 	// TODO(b/167558951) support other resolve modes.
-	ASSERT(dsrDesc.stencilResolveMode == VK_RESOLVE_MODE_SAMPLE_ZERO_BIT);
+	ASSERT(stencilResolveMode == VK_RESOLVE_MODE_SAMPLE_ZERO_BIT);
 	for(int y = 0; y < height; y++)
 	{
 		// Stencil is always 8 bits, so the width of the resource we're resolving is
@@ -2032,7 +2028,7 @@ static void resolveStencil(const vk::ImageView *src, vk::ImageView *dst, const V
 	dst->contentsChanged(vk::Image::DIRECT_MEMORY_ACCESS);
 }
 
-void Blitter::resolveDepthStencil(const vk::ImageView *src, vk::ImageView *dst, const VkSubpassDescriptionDepthStencilResolve &dsrDesc)
+void Blitter::resolveDepthStencil(const vk::ImageView *src, vk::ImageView *dst, VkResolveModeFlagBits depthResolveMode, VkResolveModeFlagBits stencilResolveMode)
 {
 	VkImageSubresourceRange srcRange = src->getSubresourceRange();
 	VkImageSubresourceRange dstRange = src->getSubresourceRange();
@@ -2042,15 +2038,15 @@ void Blitter::resolveDepthStencil(const vk::ImageView *src, vk::ImageView *dst, 
 
 	if(srcRange.aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT)
 	{
-		resolveDepth(src, dst, dsrDesc);
+		resolveDepth(src, dst, depthResolveMode);
 	}
 	if(srcRange.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT)
 	{
-		resolveStencil(src, dst, dsrDesc);
+		resolveStencil(src, dst, stencilResolveMode);
 	}
 }
 
-void Blitter::resolve(const vk::Image *src, vk::Image *dst, VkImageResolve region)
+void Blitter::resolve(const vk::Image *src, vk::Image *dst, VkImageResolve2KHR region)
 {
 	// "The aspectMask member of srcSubresource and dstSubresource must only contain VK_IMAGE_ASPECT_COLOR_BIT"
 	ASSERT(region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT);
@@ -2069,7 +2065,9 @@ void Blitter::resolve(const vk::Image *src, vk::Image *dst, VkImageResolve regio
 	}
 
 	// Fall back to a generic blit which performs the resolve.
-	VkImageBlit blitRegion;
+	VkImageBlit2KHR blitRegion;
+	blitRegion.sType = VK_STRUCTURE_TYPE_IMAGE_BLIT_2_KHR;
+	blitRegion.pNext = nullptr;
 
 	blitRegion.srcOffsets[0] = blitRegion.srcOffsets[1] = region.srcOffset;
 	blitRegion.srcOffsets[1].x += region.extent.width;
@@ -2092,7 +2090,7 @@ static inline uint32_t averageByte4(uint32_t x, uint32_t y)
 	return (x & y) + (((x ^ y) >> 1) & 0x7F7F7F7F) + ((x ^ y) & 0x01010101);
 }
 
-bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve region)
+bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve2KHR region)
 {
 	if(region.dstOffset != VkOffset3D{ 0, 0, 0 })
 	{
@@ -2355,8 +2353,8 @@ void Blitter::updateBorders(const vk::Image *image, const VkImageSubresource &su
 	VkExtent3D extent = image->getMipLevelExtent(aspect, subresource.mipLevel);
 	CubeBorderData data = {
 		image->getTexelPointer({ 0, 0, 0 }, posX),
-		image->rowPitchBytes(aspect, subresource.mipLevel),
-		static_cast<uint32_t>(image->getLayerSize(aspect)),
+		assert_cast<uint32_t>(image->rowPitchBytes(aspect, subresource.mipLevel)),
+		assert_cast<uint32_t>(image->getLayerSize(aspect)),
 		extent.width
 	};
 	cornerUpdateRoutine(&data);

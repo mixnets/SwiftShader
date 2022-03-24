@@ -29,7 +29,6 @@ namespace vk {
 
 class Image;
 class ImageView;
-class Buffer;
 
 }  // namespace vk
 
@@ -102,12 +101,12 @@ class Blitter
 
 	struct BlitData
 	{
-		void *source;
+		const void *source;
 		void *dest;
-		int sPitchB;
-		int dPitchB;
-		int sSliceB;
-		int dSliceB;
+		uint32_t sPitchB;
+		uint32_t dPitchB;
+		uint32_t sSliceB;
+		uint32_t dSliceB;
 
 		float x0;
 		float y0;
@@ -133,7 +132,7 @@ class Blitter
 	struct CubeBorderData
 	{
 		void *layers;
-		int pitchB;
+		uint32_t pitchB;
 		uint32_t layerSize;
 		uint32_t dim;
 	};
@@ -142,11 +141,11 @@ public:
 	Blitter();
 	virtual ~Blitter();
 
-	void clear(void *clearValue, vk::Format clearFormat, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea = nullptr);
+	void clear(const void *clearValue, vk::Format clearFormat, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea = nullptr);
 
-	void blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter);
-	void resolve(const vk::Image *src, vk::Image *dst, VkImageResolve region);
-	void resolveDepthStencil(const vk::ImageView *src, vk::ImageView *dst, const VkSubpassDescriptionDepthStencilResolve &dsrDesc);
+	void blit(const vk::Image *src, vk::Image *dst, VkImageBlit2KHR region, VkFilter filter);
+	void resolve(const vk::Image *src, vk::Image *dst, VkImageResolve2KHR region);
+	void resolveDepthStencil(const vk::ImageView *src, vk::ImageView *dst, VkResolveModeFlagBits depthResolveMode, VkResolveModeFlagBits stencilResolveMode);
 	void copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch);
 
 	void updateBorders(const vk::Image *image, const VkImageSubresource &subresource);
@@ -160,8 +159,8 @@ private:
 		LEFT
 	};
 
-	bool fastClear(void *clearValue, vk::Format clearFormat, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea);
-	bool fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve region);
+	bool fastClear(const void *clearValue, vk::Format clearFormat, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea);
+	bool fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve2KHR region);
 
 	Float4 readFloat4(Pointer<Byte> element, const State &state);
 	void write(Float4 &color, Pointer<Byte> element, const State &state);

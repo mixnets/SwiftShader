@@ -19,6 +19,7 @@
 #include "VkDeviceMemory.hpp"
 #include "VkImageView.hpp"
 #include "VkStringify.hpp"
+#include "VkStructConversion.hpp"
 #include "Device/ASTC_Decoder.hpp"
 #include "Device/BC_Decoder.hpp"
 #include "Device/Blitter.hpp"
@@ -129,7 +130,9 @@ VkFormat GetImageFormat(const VkImageCreateInfo *pCreateInfo)
 	auto nextInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
 	while(nextInfo)
 	{
-		switch(nextInfo->sType)
+		// Casting to an int since some structures, such as VK_STRUCTURE_TYPE_NATIVE_BUFFER_ANDROID and
+		// VK_STRUCTURE_TYPE_SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID, are not enumerated in the official Vulkan headers.
+		switch((int)(nextInfo->sType))
 		{
 #ifdef __ANDROID__
 		case VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_ANDROID:
@@ -146,6 +149,10 @@ VkFormat GetImageFormat(const VkImageCreateInfo *pCreateInfo)
 				ASSERT(pCreateInfo->format == VK_FORMAT_UNDEFINED || pCreateInfo->format == correspondingVkFormat);
 				return correspondingVkFormat;
 			}
+			break;
+		case VK_STRUCTURE_TYPE_NATIVE_BUFFER_ANDROID:
+			break;
+		case VK_STRUCTURE_TYPE_SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID:
 			break;
 #endif
 		// We support these extensions, but they don't affect the image format.
@@ -223,6 +230,37 @@ const VkMemoryRequirements Image::getMemoryRequirements() const
 	memoryRequirements.size = getStorageSize(format.getAspects()) +
 	                          (decompressedImage ? decompressedImage->getStorageSize(decompressedImage->format.getAspects()) : 0);
 	return memoryRequirements;
+}
+
+void Image::getMemoryRequirements(VkMemoryRequirements2 *pMemoryRequirements) const
+{
+	VkBaseOutStructure *extensionRequirements = reinterpret_cast<VkBaseOutStructure *>(pMemoryRequirements->pNext);
+	while(extensionRequirements)
+	{
+		switch(extensionRequirements->sType)
+		{
+		case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS:
+			{
+				auto requirements = reinterpret_cast<VkMemoryDedicatedRequirements *>(extensionRequirements);
+				device->getRequirements(requirements);
+#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+				if(getSupportedExternalMemoryHandleTypes() == VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID)
+				{
+					requirements->prefersDedicatedAllocation = VK_TRUE;
+					requirements->requiresDedicatedAllocation = VK_TRUE;
+				}
+#endif
+			}
+			break;
+		default:
+			UNSUPPORTED("pMemoryRequirements->pNext sType = %s", vk::Stringify(extensionRequirements->sType).c_str());
+			break;
+		}
+
+		extensionRequirements = extensionRequirements->pNext;
+	}
+
+	pMemoryRequirements->memoryRequirements = getMemoryRequirements();
 }
 
 size_t Image::getSizeInBytes(const VkImageSubresourceRange &subresourceRange) const
@@ -347,14 +385,14 @@ void Image::getSubresourceLayout(const VkImageSubresource *pSubresource, VkSubre
 	}
 
 	auto aspect = static_cast<VkImageAspectFlagBits>(pSubresource->aspectMask);
-	pLayout->offset = getMemoryOffset(aspect, pSubresource->mipLevel, pSubresource->arrayLayer);
+	pLayout->offset = getSubresourceOffset(aspect, pSubresource->mipLevel, pSubresource->arrayLayer);
 	pLayout->size = getMultiSampledLevelSize(aspect, pSubresource->mipLevel);
 	pLayout->rowPitch = rowPitchBytes(aspect, pSubresource->mipLevel);
 	pLayout->depthPitch = slicePitchBytes(aspect, pSubresource->mipLevel);
 	pLayout->arrayPitch = getLayerSize(aspect);
 }
 
-void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
+void Image::copyTo(Image *dstImage, const VkImageCopy2KHR &region) const
 {
 	static constexpr VkImageAspectFlags CombinedDepthStencilAspects =
 	    VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
@@ -362,7 +400,7 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	   (region.dstSubresource.aspectMask == CombinedDepthStencilAspects))
 	{
 		// Depth and stencil can be specified together, copy each separately
-		VkImageCopy singleAspectRegion = region;
+		VkImageCopy2KHR singleAspectRegion = region;
 		singleAspectRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 		singleAspectRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 		copySingleAspectTo(dstImage, singleAspectRegion);
@@ -375,7 +413,7 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	copySingleAspectTo(dstImage, region);
 }
 
-void Image::copySingleAspectTo(Image *dstImage, const VkImageCopy &region) const
+void Image::copySingleAspectTo(Image *dstImage, const VkImageCopy2KHR &region) const
 {
 	// Image copy does not perform any conversion, it simply copies memory from
 	// an image to another image that has the same number of bytes per pixel.
@@ -467,8 +505,8 @@ void Image::copySingleAspectTo(Image *dstImage, const VkImageCopy &region) const
 	                     (copyExtent.height == dstExtent.height) &&
 	                     (srcDepthPitch == dstDepthPitch);
 
-	const uint8_t *srcLayer = static_cast<const uint8_t *>(getTexelPointer(region.srcOffset, { region.srcSubresource.aspectMask, region.srcSubresource.mipLevel, region.srcSubresource.baseArrayLayer }));
-	uint8_t *dstLayer = static_cast<uint8_t *>(dstImage->getTexelPointer(region.dstOffset, { region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, region.dstSubresource.baseArrayLayer }));
+	const uint8_t *srcLayer = static_cast<const uint8_t *>(getTexelPointer(region.srcOffset, ImageSubresource(region.srcSubresource)));
+	uint8_t *dstLayer = static_cast<uint8_t *>(dstImage->getTexelPointer(region.dstOffset, ImageSubresource(region.dstSubresource)));
 
 	for(uint32_t layer = 0; layer < layerCount; layer++)
 	{
@@ -541,11 +579,10 @@ void Image::copySingleAspectTo(Image *dstImage, const VkImageCopy &region) const
 		dstLayer += dstLayerPitch;
 	}
 
-	dstImage->contentsChanged({ region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, 1,
-	                            region.dstSubresource.baseArrayLayer, region.dstSubresource.layerCount });
+	dstImage->contentsChanged(ImageSubresourceRange(region.dstSubresource));
 }
 
-void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsSource)
+void Image::copy(Buffer *buffer, const VkBufferImageCopy2KHR &region, bool bufferIsSource)
 {
 	switch(region.imageSubresource.aspectMask)
 	{
@@ -571,14 +608,14 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 		return;
 	}
 
-	VkExtent2D bufferExtent = bufferExtentInBlocks({ imageExtent.width, imageExtent.height }, region);
+	VkExtent2D bufferExtent = bufferExtentInBlocks(Extent2D(imageExtent), region);
 	int bytesPerBlock = copyFormat.bytesPerBlock();
 	int bufferRowPitchBytes = bufferExtent.width * bytesPerBlock;
 	int bufferSlicePitchBytes = bufferExtent.height * bufferRowPitchBytes;
 	ASSERT(samples == 1);
 
 	uint8_t *bufferMemory = static_cast<uint8_t *>(buffer->getOffsetPointer(region.bufferOffset));
-	uint8_t *imageMemory = static_cast<uint8_t *>(getTexelPointer(region.imageOffset, { region.imageSubresource.aspectMask, region.imageSubresource.mipLevel, region.imageSubresource.baseArrayLayer }));
+	uint8_t *imageMemory = static_cast<uint8_t *>(getTexelPointer(region.imageOffset, ImageSubresource(region.imageSubresource)));
 	uint8_t *srcMemory = bufferIsSource ? bufferMemory : imageMemory;
 	uint8_t *dstMemory = bufferIsSource ? imageMemory : bufferMemory;
 	int imageRowPitchBytes = rowPitchBytes(aspect, region.imageSubresource.mipLevel);
@@ -671,17 +708,16 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 
 	if(bufferIsSource)
 	{
-		contentsChanged({ region.imageSubresource.aspectMask, region.imageSubresource.mipLevel, 1,
-		                  region.imageSubresource.baseArrayLayer, region.imageSubresource.layerCount });
+		contentsChanged(ImageSubresourceRange(region.imageSubresource));
 	}
 }
 
-void Image::copyTo(Buffer *dstBuffer, const VkBufferImageCopy &region)
+void Image::copyTo(Buffer *dstBuffer, const VkBufferImageCopy2KHR &region)
 {
 	copy(dstBuffer, region, false);
 }
 
-void Image::copyFrom(Buffer *srcBuffer, const VkBufferImageCopy &region)
+void Image::copyFrom(Buffer *srcBuffer, const VkBufferImageCopy2KHR &region)
 {
 	copy(srcBuffer, region, true);
 }
@@ -689,8 +725,9 @@ void Image::copyFrom(Buffer *srcBuffer, const VkBufferImageCopy &region)
 void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresource &subresource) const
 {
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresource.aspectMask);
-	return deviceMemory->getOffsetPointer(texelOffsetBytesInStorage(offset, subresource) +
-	                                      getMemoryOffset(aspect, subresource.mipLevel, subresource.arrayLayer));
+	return deviceMemory->getOffsetPointer(getMemoryOffset(aspect) +
+	                                      texelOffsetBytesInStorage(offset, subresource) +
+	                                      getSubresourceOffset(aspect, subresource.mipLevel, subresource.arrayLayer));
 }
 
 VkExtent3D Image::imageExtentInBlocks(const VkExtent3D &extent, VkImageAspectFlagBits aspect) const
@@ -728,7 +765,7 @@ VkOffset3D Image::imageOffsetInBlocks(const VkOffset3D &offset, VkImageAspectFla
 	return adjustedOffset;
 }
 
-VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferImageCopy &region) const
+VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferImageCopy2KHR &region) const
 {
 	VkExtent2D adjustedExtent = extent;
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(region.imageSubresource.aspectMask);
@@ -801,6 +838,7 @@ VkExtent3D Image::getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLe
 		{
 		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+		case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
 			ASSERT(mipLevelExtent.width % 2 == 0 && mipLevelExtent.height % 2 == 0);  // Vulkan 1.1: "Images in this format must be defined with a width and height that is a multiple of two."
 			// Vulkan 1.1 Table 31. Plane Format Compatibility Table:
 			// Half-resolution U and V planes.
@@ -818,9 +856,9 @@ VkExtent3D Image::getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLe
 	return mipLevelExtent;
 }
 
-int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
+size_t Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 {
-	if(deviceMemory && deviceMemory->hasExternalImageProperties())
+	if(deviceMemory && deviceMemory->hasExternalImagePlanes())
 	{
 		return deviceMemory->externalImageRowPitchBytes(aspect);
 	}
@@ -840,7 +878,7 @@ int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 	return usedFormat.pitchB(mipLevelExtent.width, borderSize());
 }
 
-int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
+size_t Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 {
 	// Depth and Stencil slice should be computed separately
 	ASSERT((aspect & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) !=
@@ -878,11 +916,16 @@ uint8_t *Image::end() const
 
 VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect) const
 {
-	if(deviceMemory && deviceMemory->hasExternalImageProperties())
+	if(deviceMemory && deviceMemory->hasExternalImagePlanes())
 	{
 		return deviceMemory->externalImageMemoryOffset(aspect);
 	}
 
+	return memoryOffset;
+}
+
+VkDeviceSize Image::getAspectOffset(VkImageAspectFlagBits aspect) const
+{
 	switch(format)
 	{
 	case VK_FORMAT_D16_UNORM_S8_UINT:
@@ -891,26 +934,27 @@ VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect) const
 		if(aspect == VK_IMAGE_ASPECT_STENCIL_BIT)
 		{
 			// Offset by depth buffer to get to stencil buffer
-			return memoryOffset + getStorageSize(VK_IMAGE_ASPECT_DEPTH_BIT);
+			return getStorageSize(VK_IMAGE_ASPECT_DEPTH_BIT);
 		}
 		break;
 
 	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 		if(aspect == VK_IMAGE_ASPECT_PLANE_2_BIT)
 		{
-			return memoryOffset + getStorageSize(VK_IMAGE_ASPECT_PLANE_1_BIT) + getStorageSize(VK_IMAGE_ASPECT_PLANE_0_BIT);
+			return getStorageSize(VK_IMAGE_ASPECT_PLANE_1_BIT) + getStorageSize(VK_IMAGE_ASPECT_PLANE_0_BIT);
 		}
 		// Fall through to 2PLANE case:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+	case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
 		if(aspect == VK_IMAGE_ASPECT_PLANE_1_BIT)
 		{
-			return memoryOffset + getStorageSize(VK_IMAGE_ASPECT_PLANE_0_BIT);
+			return getStorageSize(VK_IMAGE_ASPECT_PLANE_0_BIT);
 		}
 		else
 		{
 			ASSERT(aspect == VK_IMAGE_ASPECT_PLANE_0_BIT);
 
-			return memoryOffset;
+			return 0;
 		}
 		break;
 
@@ -918,28 +962,28 @@ VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect) const
 		break;
 	}
 
-	return memoryOffset;
+	return 0;
 }
 
-VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
+VkDeviceSize Image::getSubresourceOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer) const
 {
-	VkDeviceSize offset = getMemoryOffset(aspect);
-	for(uint32_t i = 0; i < mipLevel; ++i)
+	// "If the image is disjoint, then the offset is relative to the base address of the plane.
+	//  If the image is non-disjoint, then the offset is relative to the base address of the image."
+	// Multi-plane external images are essentially disjoint.
+	bool disjoint = (flags & VK_IMAGE_CREATE_DISJOINT_BIT) || (deviceMemory && deviceMemory->hasExternalImagePlanes());
+	VkDeviceSize offset = !disjoint ? getAspectOffset(aspect) : 0;
+
+	for(uint32_t i = 0; i < mipLevel; i++)
 	{
 		offset += getMultiSampledLevelSize(aspect, i);
 	}
-	return offset;
-}
 
-VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer) const
-{
-	return layer * getLayerOffset(aspect, mipLevel) + getMemoryOffset(aspect, mipLevel);
+	return offset + layer * getLayerOffset(aspect, mipLevel);
 }
 
 VkDeviceSize Image::getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 {
-	return static_cast<VkDeviceSize>(slicePitchBytes(aspect, mipLevel)) *
-	       getMipLevelExtent(aspect, mipLevel).depth;
+	return slicePitchBytes(aspect, mipLevel) * getMipLevelExtent(aspect, mipLevel).depth;
 }
 
 VkDeviceSize Image::getMultiSampledLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
@@ -1016,10 +1060,9 @@ const Image *Image::getSampledImage(const vk::Format &imageViewFormat) const
 	return (decompressedImage && isImageViewCompressed) ? decompressedImage : this;
 }
 
-void Image::blitTo(Image *dstImage, const VkImageBlit &region, VkFilter filter) const
+void Image::blitTo(Image *dstImage, const VkImageBlit2KHR &region, VkFilter filter) const
 {
-	prepareForSampling({ region.srcSubresource.aspectMask, region.srcSubresource.mipLevel, 1,
-	                     region.srcSubresource.baseArrayLayer, region.srcSubresource.layerCount });
+	prepareForSampling(ImageSubresourceRange(region.srcSubresource));
 	device->getBlitter()->blit(decompressedImage ? decompressedImage : this, dstImage, region, filter);
 }
 
@@ -1028,30 +1071,14 @@ void Image::copyTo(uint8_t *dst, unsigned int dstPitch) const
 	device->getBlitter()->copy(this, dst, dstPitch);
 }
 
-void Image::resolveTo(Image *dstImage, const VkImageResolve &region) const
+void Image::resolveTo(Image *dstImage, const VkImageResolve2KHR &region) const
 {
 	device->getBlitter()->resolve(this, dstImage, region);
 }
 
-void Image::resolveDepthStencilTo(const ImageView *src, ImageView *dst, const VkSubpassDescriptionDepthStencilResolve &dsResolve) const
+void Image::resolveDepthStencilTo(const ImageView *src, ImageView *dst, VkResolveModeFlagBits depthResolveMode, VkResolveModeFlagBits stencilResolveMode) const
 {
-	device->getBlitter()->resolveDepthStencil(src, dst, dsResolve);
-}
-
-VkFormat Image::getClearFormat() const
-{
-	// Set the proper format for the clear value, as described here:
-	// https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#clears-values
-	if(format.isSignedUnnormalizedInteger())
-	{
-		return VK_FORMAT_R32G32B32A32_SINT;
-	}
-	else if(format.isUnsignedUnnormalizedInteger())
-	{
-		return VK_FORMAT_R32G32B32A32_UINT;
-	}
-
-	return VK_FORMAT_R32G32B32A32_SFLOAT;
+	device->getBlitter()->resolveDepthStencil(src, dst, depthResolveMode, stencilResolveMode);
 }
 
 uint32_t Image::getLastLayerIndex(const VkImageSubresourceRange &subresourceRange) const
@@ -1064,16 +1091,16 @@ uint32_t Image::getLastMipLevel(const VkImageSubresourceRange &subresourceRange)
 	return ((subresourceRange.levelCount == VK_REMAINING_MIP_LEVELS) ? mipLevels : (subresourceRange.baseMipLevel + subresourceRange.levelCount)) - 1;
 }
 
-void Image::clear(void *pixelData, VkFormat pixelFormat, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D &renderArea)
+void Image::clear(const void *pixelData, VkFormat pixelFormat, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
 {
-	device->getBlitter()->clear(pixelData, pixelFormat, this, viewFormat, subresourceRange, &renderArea);
+	device->getBlitter()->clear(pixelData, pixelFormat, this, viewFormat, subresourceRange, renderArea);
 }
 
 void Image::clear(const VkClearColorValue &color, const VkImageSubresourceRange &subresourceRange)
 {
 	ASSERT(subresourceRange.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT);
 
-	device->getBlitter()->clear((void *)color.float32, getClearFormat(), this, format, subresourceRange);
+	clear(color.float32, format.getClearFormat(), format, subresourceRange, nullptr);
 }
 
 void Image::clear(const VkClearDepthStencilValue &color, const VkImageSubresourceRange &subresourceRange)
@@ -1085,14 +1112,14 @@ void Image::clear(const VkClearDepthStencilValue &color, const VkImageSubresourc
 	{
 		VkImageSubresourceRange depthSubresourceRange = subresourceRange;
 		depthSubresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-		device->getBlitter()->clear((void *)(&color.depth), VK_FORMAT_D32_SFLOAT, this, format, depthSubresourceRange);
+		clear(&color.depth, VK_FORMAT_D32_SFLOAT, format, depthSubresourceRange, nullptr);
 	}
 
 	if(subresourceRange.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT)
 	{
 		VkImageSubresourceRange stencilSubresourceRange = subresourceRange;
 		stencilSubresourceRange.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
-		device->getBlitter()->clear((void *)(&color.stencil), VK_FORMAT_S8_UINT, this, format, stencilSubresourceRange);
+		clear(&color.stencil, VK_FORMAT_S8_UINT, format, stencilSubresourceRange, nullptr);
 	}
 }
 
@@ -1104,7 +1131,7 @@ void Image::clear(const VkClearValue &clearValue, const vk::Format &viewFormat, 
 
 	if(subresourceRange.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT)
 	{
-		clear((void *)(clearValue.color.float32), getClearFormat(), viewFormat, subresourceRange, renderArea);
+		clear(clearValue.color.float32, viewFormat.getClearFormat(), viewFormat, subresourceRange, &renderArea);
 	}
 	else
 	{
@@ -1112,14 +1139,14 @@ void Image::clear(const VkClearValue &clearValue, const vk::Format &viewFormat, 
 		{
 			VkImageSubresourceRange depthSubresourceRange = subresourceRange;
 			depthSubresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-			clear((void *)(&clearValue.depthStencil.depth), VK_FORMAT_D32_SFLOAT, viewFormat, depthSubresourceRange, renderArea);
+			clear(&clearValue.depthStencil.depth, VK_FORMAT_D32_SFLOAT, viewFormat, depthSubresourceRange, &renderArea);
 		}
 
 		if(subresourceRange.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT)
 		{
 			VkImageSubresourceRange stencilSubresourceRange = subresourceRange;
 			stencilSubresourceRange.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
-			clear((void *)(&clearValue.depthStencil.stencil), VK_FORMAT_S8_UINT, viewFormat, stencilSubresourceRange, renderArea);
+			clear(&clearValue.depthStencil.stencil, VK_FORMAT_S8_UINT, viewFormat, stencilSubresourceRange, &renderArea);
 		}
 	}
 }

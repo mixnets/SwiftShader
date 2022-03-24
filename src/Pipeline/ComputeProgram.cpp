@@ -13,9 +13,10 @@
 // limitations under the License.
 
 #include "ComputeProgram.hpp"
-#include "Constants.hpp"
 
+#include "Constants.hpp"
 #include "System/Debug.hpp"
+#include "Vulkan/VkDevice.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 
 #include "marl/defer.h"
@@ -171,18 +172,20 @@ void ComputeProgram::setSubgroupBuiltins(Pointer<Byte> data, SpirvRoutine *routi
 
 void ComputeProgram::emit(SpirvRoutine *routine)
 {
-	Pointer<Byte> data = Arg<0>();
-	Int workgroupX = Arg<1>();
-	Int workgroupY = Arg<2>();
-	Int workgroupZ = Arg<3>();
-	Pointer<Byte> workgroupMemory = Arg<4>();
-	Int firstSubgroup = Arg<5>();
-	Int subgroupCount = Arg<6>();
+	Pointer<Byte> device = Arg<0>();
+	Pointer<Byte> data = Arg<1>();
+	Int workgroupX = Arg<2>();
+	Int workgroupY = Arg<3>();
+	Int workgroupZ = Arg<4>();
+	Pointer<Byte> workgroupMemory = Arg<5>();
+	Int firstSubgroup = Arg<6>();
+	Int subgroupCount = Arg<7>();
 
+	routine->device = device;
 	routine->descriptorSets = data + OFFSET(Data, descriptorSets);
 	routine->descriptorDynamicOffsets = data + OFFSET(Data, descriptorDynamicOffsets);
 	routine->pushConstants = data + OFFSET(Data, pushConstants);
-	routine->constants = *Pointer<Pointer<Byte>>(data + OFFSET(Data, constants));
+	routine->constants = device + OFFSET(vk::Device, constants);
 	routine->workgroupMemory = workgroupMemory;
 
 	Int invocationsPerWorkgroup = *Pointer<Int>(data + OFFSET(Data, invocationsPerWorkgroup));
@@ -214,10 +217,12 @@ void ComputeProgram::run(
     uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ,
     uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ)
 {
-	auto &executionModes = shader->getExecutionModes();
+	uint32_t workgroupSizeX = shader->getWorkgroupSizeX();
+	uint32_t workgroupSizeY = shader->getWorkgroupSizeY();
+	uint32_t workgroupSizeZ = shader->getWorkgroupSizeZ();
 
 	auto invocationsPerSubgroup = SIMD::Width;
-	auto invocationsPerWorkgroup = executionModes.WorkgroupSizeX * executionModes.WorkgroupSizeY * executionModes.WorkgroupSizeZ;
+	auto invocationsPerWorkgroup = workgroupSizeX * workgroupSizeY * workgroupSizeZ;
 	auto subgroupsPerWorkgroup = (invocationsPerWorkgroup + invocationsPerSubgroup - 1) / invocationsPerSubgroup;
 
 	Data data;
@@ -227,15 +232,14 @@ void ComputeProgram::run(
 	data.numWorkgroups[Y] = groupCountY;
 	data.numWorkgroups[Z] = groupCountZ;
 	data.numWorkgroups[3] = 0;
-	data.workgroupSize[X] = executionModes.WorkgroupSizeX;
-	data.workgroupSize[Y] = executionModes.WorkgroupSizeY;
-	data.workgroupSize[Z] = executionModes.WorkgroupSizeZ;
+	data.workgroupSize[X] = workgroupSizeX;
+	data.workgroupSize[Y] = workgroupSizeY;
+	data.workgroupSize[Z] = workgroupSizeZ;
 	data.workgroupSize[3] = 0;
 	data.invocationsPerSubgroup = invocationsPerSubgroup;
 	data.invocationsPerWorkgroup = invocationsPerWorkgroup;
 	data.subgroupsPerWorkgroup = subgroupsPerWorkgroup;
 	data.pushConstants = pushConstants;
-	data.constants = &sw::Constants::Get();
 
 	marl::WaitGroup wg;
 	const uint32_t batchCount = 16;
@@ -271,15 +275,15 @@ void ComputeProgram::run(
 					// Make a function call per subgroup so each subgroup
 					// can yield, bringing all subgroups to the barrier
 					// together.
-					for(int subgroupIndex = 0; subgroupIndex < subgroupsPerWorkgroup; subgroupIndex++)
+					for(uint32_t subgroupIndex = 0; subgroupIndex < subgroupsPerWorkgroup; subgroupIndex++)
 					{
-						auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), subgroupIndex, 1);
+						auto coroutine = (*this)(device, &data, groupX, groupY, groupZ, workgroupMemory.data(), subgroupIndex, 1);
 						coroutines.push(std::move(coroutine));
 					}
 				}
 				else
 				{
-					auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), 0, subgroupsPerWorkgroup);
+					auto coroutine = (*this)(device, &data, groupX, groupY, groupZ, workgroupMemory.data(), 0, subgroupsPerWorkgroup);
 					coroutines.push(std::move(coroutine));
 				}
 

@@ -119,9 +119,8 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
     : physicalDevice(physicalDevice)
     , queues(reinterpret_cast<Queue *>(mem))
     , enabledExtensionCount(pCreateInfo->enabledExtensionCount)
-    , enabledFeatures(enabledFeatures ? *enabledFeatures : VkPhysicalDeviceFeatures{})
-    ,  // "Setting pEnabledFeatures to NULL and not including a VkPhysicalDeviceFeatures2 in the pNext member of VkDeviceCreateInfo is equivalent to setting all members of the structure to VK_FALSE."
-    scheduler(scheduler)
+    , enabledFeatures(enabledFeatures ? *enabledFeatures : VkPhysicalDeviceFeatures{})  // "Setting pEnabledFeatures to NULL and not including a VkPhysicalDeviceFeatures2 in the pNext member of VkDeviceCreateInfo is equivalent to setting all members of the structure to VK_FALSE."
+    , scheduler(scheduler)
 {
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
@@ -470,6 +469,41 @@ void Device::contentsChanged(ImageView *imageView, Image::ContentsChangedContext
 			imageView->contentsChanged(context);
 		}
 	}
+}
+
+VkResult Device::setPrivateData(VkObjectType objectType, uint64_t objectHandle, const PrivateData *privateDataSlot, uint64_t data)
+{
+	marl::lock lock(privateDataMutex);
+
+	auto &privateDataSlotMap = privateData[privateDataSlot];
+	const PrivateDataObject privateDataObject = { objectType, objectHandle };
+	privateDataSlotMap[privateDataObject] = data;
+	return VK_SUCCESS;
+}
+
+void Device::getPrivateData(VkObjectType objectType, uint64_t objectHandle, const PrivateData *privateDataSlot, uint64_t *data)
+{
+	marl::lock lock(privateDataMutex);
+
+	*data = 0;
+	auto it = privateData.find(privateDataSlot);
+	if(it != privateData.end())
+	{
+		auto &privateDataSlotMap = it->second;
+		const PrivateDataObject privateDataObject = { objectType, objectHandle };
+		auto it2 = privateDataSlotMap.find(privateDataObject);
+		if(it2 != privateDataSlotMap.end())
+		{
+			*data = it2->second;
+		}
+	}
+}
+
+void Device::removePrivateDataSlot(const PrivateData *privateDataSlot)
+{
+	marl::lock lock(privateDataMutex);
+
+	privateData.erase(privateDataSlot);
 }
 
 #ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
