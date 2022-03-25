@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef80803a_06a7a9bd",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-25T15:44:13Z",
+      "side": 1,
+      "message": "bikeshed: We may want to rename this to avoid confusing this with OpKill. I think \"Discard\" would work well. Despite GLSL\u0027s `discard` keyword having the meaning of terminating the fragment progressing, it\u0027s a \"softer\" word than \"kill\" or \"terminate\" but could still mean either that or demotion to helper invocation.\n\nIn other words I like HLSL\u0027s nomenclature here and since SPIR-V isn\u0027t tightly bound to GLSL I think it shouldn\u0027t cause much confusion (at least less than Kill). Anyway, this can be a follow-up change.",
+      "range": {
+        "startLine": 261,
+        "startChar": 20,
+        "endLine": 261,
+        "endChar": 24
+      },
+      "revId": "54f8e9a813e10a3524d6a232f5cbf5968eda5c54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8bc48aa4_dec47b38",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 756,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-25T15:44:13Z",
+      "side": 1,
+      "message": "Is there a non-EXT enum for this? OpDemoteToHelperInvocation doesn\u0027t have it.",
+      "range": {
+        "startLine": 756,
+        "startChar": 32,
+        "endLine": 756,
+        "endChar": 35
+      },
+      "revId": "54f8e9a813e10a3524d6a232f5cbf5968eda5c54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
