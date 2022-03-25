@@ -106,6 +106,23 @@
       "parentUuid": "be02e69f_6fc765bd",
       "revId": "dde31454344c5b38a76ce78da45dee9dae2c84f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9cf3689_91e69346",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101377
+      },
+      "writtenOn": "2022-03-25T04:06:36Z",
+      "side": 1,
+      "message": "In this build size report, I see many more targets being build in Chromium. e.g. third_party/swiftshader/third_party/SPIRV-Tools/source/spirv_endian.cpp and third_party/vulkan-deps/spirv-tools/src/source/spirv_endian.cpp. Is there some duplication going on here? Can it be avoided?\n\n[1] https://commondatastorage.googleapis.com/chromium-browser-clang/chrome_includes_2022-03-24_220812.html",
+      "revId": "dde31454344c5b38a76ce78da45dee9dae2c84f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
