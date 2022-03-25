@@ -39,6 +39,24 @@
       "message": "I think it\u0027s reasonable to update these all at once since indeed we have no direct code dependency on them. We\u0027ve just kept these limits low to promote \u0027Core\u0027 Vulkan 1.1 compatibility, but it\u0027s time to advance that to the 2022 roadmap profile.\n\nSince it will likely affect ANGLE and Dawn I\u0027ve CC\u0027d a few people to be aware of us starting making changes towards this profile.\n\nAlexis can you think of a reason this change should be split into more granular changes?",
       "revId": "249be6afbb98a9403e3862df7e2dc90d71f90a43",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af98cea6_f743fc7c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-25T17:34:45Z",
+      "side": 1,
+      "message": "Not really. It\u0027s likely that none of the projects depending on SwiftShader Vulkan were hitting any of these limits and we can easily revert them one at a time if needed.",
+      "parentUuid": "5d81c3aa_97dec261",
+      "revId": "249be6afbb98a9403e3862df7e2dc90d71f90a43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
