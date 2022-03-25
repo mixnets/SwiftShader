@@ -123,6 +123,24 @@
       "message": "In this build size report, I see many more targets being build in Chromium. e.g. third_party/swiftshader/third_party/SPIRV-Tools/source/spirv_endian.cpp and third_party/vulkan-deps/spirv-tools/src/source/spirv_endian.cpp. Is there some duplication going on here? Can it be avoided?\n\n[1] https://commondatastorage.googleapis.com/chromium-browser-clang/chrome_includes_2022-03-24_220812.html",
       "revId": "dde31454344c5b38a76ce78da45dee9dae2c84f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93fb2d90_db2e5c4c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-25T16:53:07Z",
+      "side": 1,
+      "message": "Hi Lei, thanks for the heads up! This change decouples SwiftShader\u0027s usage of SPIRV-Tools, from Chromium\u0027s, so some duplicate or near-duplicate source file builds are expected for the time being. Fortunately it should not result in any binary size increase, since SwiftShader (a DLL) previously linked in Chromium\u0027s build of SPIRV-Tools. Also, we can now move forward with plans to trim down SPIRV-Tools into parts useful for a graphics driver (SwiftShader), and parts useful for the application-side\u0027s usage of the graphics API (Chromium).\n\nAlso note we will soon stop building the \u0027legacy\u0027 SwiftShader DLL. While orthogonal to this change, it will reduce compile time and binary size.",
+      "parentUuid": "c9cf3689_91e69346",
+      "revId": "dde31454344c5b38a76ce78da45dee9dae2c84f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
