@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3703c4fc_09223058",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 874,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-25T18:30:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5f95a3cd_82b3a3f9",
+      "range": {
+        "startLine": 874,
+        "startChar": 24,
+        "endLine": 874,
+        "endChar": 27
+      },
+      "revId": "5e946c22c54506001ca50b8fb3a367882fa82d24",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1568c7b5_a948142a",
@@ -64,6 +88,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "40dcb306_b59a8415",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 900,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-25T18:30:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1568c7b5_a948142a",
+      "range": {
+        "startLine": 900,
+        "startChar": 1,
+        "endLine": 900,
+        "endChar": 39
+      },
+      "revId": "5e946c22c54506001ca50b8fb3a367882fa82d24",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d5ea64a2_4d80b390",
@@ -77,6 +125,30 @@
       "writtenOn": "2022-03-25T15:58:59Z",
       "side": 1,
       "message": "I assume clang-format changed this? Can we add `AllowShortEnumsOnASingleLine\u003dtrue` to .clang-format to prevent this?",
+      "range": {
+        "startLine": 78,
+        "startChar": 1,
+        "endLine": 78,
+        "endChar": 2
+      },
+      "revId": "5e946c22c54506001ca50b8fb3a367882fa82d24",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "619d2360_4ded6182",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-25T18:30:57Z",
+      "side": 1,
+      "message": "This isn\u0027t recognized locally by my version of clang-format, from depot-tools. I\u0027ll revert the format change from my CL and we can look into this separately.",
+      "parentUuid": "d5ea64a2_4d80b390",
       "range": {
         "startLine": 78,
         "startChar": 1,
