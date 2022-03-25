@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eed03845_d16b98eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-25T15:58:59Z",
+      "side": 1,
+      "message": "Nice find! Just some nits:",
+      "revId": "5e946c22c54506001ca50b8fb3a367882fa82d24",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f95a3cd_82b3a3f9",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 874,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-25T15:58:59Z",
+      "side": 1,
+      "message": "nit: I don\u0027t think this needs the EXT suffix.",
+      "range": {
+        "startLine": 874,
+        "startChar": 24,
+        "endLine": 874,
+        "endChar": 27
+      },
+      "revId": "5e946c22c54506001ca50b8fb3a367882fa82d24",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1568c7b5_a948142a",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 900,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-25T15:58:59Z",
+      "side": 1,
+      "message": "This control flow can be a bit confusing. I suggest adding a `hasStencilReplaceRef()` helper function so this becomes:\n\n```\nif(hasStencilReplaceRef())\n{\n    output \u003d stencilReplaceRef(isBack);\n}\nelse\n{\n    switch(...\n```",
+      "range": {
+        "startLine": 900,
+        "startChar": 1,
+        "endLine": 900,
+        "endChar": 39
+      },
+      "revId": "5e946c22c54506001ca50b8fb3a367882fa82d24",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5ea64a2_4d80b390",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-03-25T15:58:59Z",
+      "side": 1,
+      "message": "I assume clang-format changed this? Can we add `AllowShortEnumsOnASingleLine\u003dtrue` to .clang-format to prevent this?",
+      "range": {
+        "startLine": 78,
+        "startChar": 1,
+        "endLine": 78,
+        "endChar": 2
+      },
+      "revId": "5e946c22c54506001ca50b8fb3a367882fa82d24",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
