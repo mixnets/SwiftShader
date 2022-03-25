@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "68f3ce67_19926787",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-25T16:52:24Z",
+      "side": 1,
+      "message": "Ack, will follow-up on it.",
+      "parentUuid": "ef80803a_06a7a9bd",
+      "range": {
+        "startLine": 261,
+        "startChar": 20,
+        "endLine": 261,
+        "endChar": 24
+      },
+      "revId": "54f8e9a813e10a3524d6a232f5cbf5968eda5c54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8bc48aa4_dec47b38",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-03-25T15:44:13Z",
       "side": 1,
       "message": "Is there a non-EXT enum for this? OpDemoteToHelperInvocation doesn\u0027t have it.",
+      "range": {
+        "startLine": 756,
+        "startChar": 32,
+        "endLine": 756,
+        "endChar": 35
+      },
+      "revId": "54f8e9a813e10a3524d6a232f5cbf5968eda5c54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b43d1445_9b23fd31",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 756,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-25T16:52:24Z",
+      "side": 1,
+      "message": "No, this only exists as part of SPV_EXT_demote_to_helper_invocation, so there isn\u0027t a non EXT version of this enum.",
+      "parentUuid": "8bc48aa4_dec47b38",
       "range": {
         "startLine": 756,
         "startChar": 32,
