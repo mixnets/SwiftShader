@@ -16,8 +16,9 @@
 #define VK_FORMAT_HPP_
 
 #include "System/Types.hpp"
-
 #include "Vulkan/VulkanPlatform.hpp"
+
+#include <vector>
 
 namespace vk {
 
@@ -47,6 +48,8 @@ public:
 	bool isYcbcrFormat() const;
 
 	bool isCompatible(const Format &other) const;
+	std::vector<Format> compatibleFormats() const;
+
 	bool isCompressed() const;
 	VkFormat getDecompressedFormat() const;
 	int blockWidth() const;
