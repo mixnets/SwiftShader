@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf8bc9aa_87bcc427",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-29T02:19:41Z",
+      "side": 1,
+      "message": "Wouldn\u0027t it be more readable and easy to modify later on if all formats included in the returned vector below were also used in case statements?",
+      "range": {
+        "startLine": 655,
+        "startChar": 6,
+        "endLine": 655,
+        "endChar": 24
+      },
+      "revId": "4d3a74e78c3687ff269d5121fc3b9242992a06fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
