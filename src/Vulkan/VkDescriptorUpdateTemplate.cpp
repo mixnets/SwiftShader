@@ -42,8 +42,23 @@ void DescriptorUpdateTemplate::updateDescriptorSet(Device *device, VkDescriptorS
 
 	for(uint32_t i = 0; i < descriptorUpdateEntryCount; i++)
 	{
-		DescriptorSetLayout::WriteDescriptorSet(device, descriptorSet, descriptorUpdateEntries[i],
-		                                        reinterpret_cast<char const *>(pData));
+		VkDescriptorUpdateTemplateEntry e = descriptorUpdateEntries[i];
+		const char *data = reinterpret_cast<const char *>(pData);
+		VkWriteDescriptorSetInlineUniformBlock blockData;
+		if(e.descriptorType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK)
+		{
+			blockData = {
+				VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK,
+				nullptr,
+				e.descriptorCount,
+				data + e.offset
+			};
+			e.descriptorCount = 1;
+			e.stride = 1;
+			e.offset = 0;
+			data = reinterpret_cast<const char *>(&blockData);
+		}
+		DescriptorSetLayout::WriteDescriptorSet(device, descriptorSet, e, data);
 	}
 }
 

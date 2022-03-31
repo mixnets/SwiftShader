@@ -570,6 +570,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 	else if(entry.descriptorType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK)
 	{
 		auto update = reinterpret_cast<const VkWriteDescriptorSetInlineUniformBlock *>(src);
+		ASSERT(update->sType == VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK);
 		memcpy(memToWrite, static_cast<const uint8_t *>(update->pData), update->dataSize);
 	}
 }
