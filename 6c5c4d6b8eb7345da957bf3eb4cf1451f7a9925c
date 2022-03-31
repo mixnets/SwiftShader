@@ -39,6 +39,30 @@
       },
       "revId": "6c5c4d6b8eb7345da957bf3eb4cf1451f7a9925c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14af9138_54fa2ca7",
+        "filename": "src/Vulkan/VkDescriptorUpdateTemplate.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-31T22:10:36Z",
+      "side": 1,
+      "message": "Done. I tried to simplify the solution as much as I could.",
+      "parentUuid": "781c7510_a0da0cfc",
+      "range": {
+        "startLine": 45,
+        "startChar": 2,
+        "endLine": 60,
+        "endChar": 3
+      },
+      "revId": "6c5c4d6b8eb7345da957bf3eb4cf1451f7a9925c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
