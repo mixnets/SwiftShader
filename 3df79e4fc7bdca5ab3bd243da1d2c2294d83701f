@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf7f518b_56f5020a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-31T21:20:47Z",
+      "side": 1,
+      "message": "Note: dEQP-VK.ycbcr.plane_view.image_view.g10x6_b10x6r10x6_2plane_420_unorm_3pack16_plane_1_compatible_format_r32_uint currently fails with SwiftShader. I opened an issue here:\nhttps://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3601",
+      "revId": "3df79e4fc7bdca5ab3bd243da1d2c2294d83701f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
