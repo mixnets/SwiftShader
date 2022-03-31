@@ -70,6 +70,30 @@
       },
       "revId": "db9704c95cbcbac746e163006d3fbe451a11663c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8712ade_76afef00",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-03-31T22:16:19Z",
+      "side": 1,
+      "message": "So I took a look at this and it isn\u0027t clear to me that it would be safe to remove calls to getAspectFormat() in any of the locations where it\u0027s called. We could try as a follow-up, but I don\u0027t think there\u0027s an obviously safe way of making that change.",
+      "parentUuid": "626b3fe5_b1986c2b",
+      "range": {
+        "startLine": 219,
+        "startChar": 2,
+        "endLine": 222,
+        "endChar": 17
+      },
+      "revId": "db9704c95cbcbac746e163006d3fbe451a11663c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
