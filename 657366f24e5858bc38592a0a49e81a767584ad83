@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8aa7ed26_ade17fc9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-01T12:10:16Z",
+      "side": 1,
+      "message": "All new passing tests are from:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/64628",
+      "revId": "657366f24e5858bc38592a0a49e81a767584ad83",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
