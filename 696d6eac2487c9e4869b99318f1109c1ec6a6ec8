@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9225afc8_1b9a249c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-02T23:16:06Z",
+      "side": 1,
+      "message": "You can add \"Bug: b/217573066\" to satisfy Kokoro\u0027s check for a bug reference.",
+      "revId": "696d6eac2487c9e4869b99318f1109c1ec6a6ec8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ad817985_02cad07f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-02T23:16:06Z",
+      "side": 1,
+      "message": "Thanks Rebecca, this looks great!",
+      "revId": "696d6eac2487c9e4869b99318f1109c1ec6a6ec8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
