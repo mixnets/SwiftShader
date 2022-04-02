@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e95c6a68_e38b4d1c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-02T23:18:43Z",
+      "side": 1,
+      "message": "Bug: b/217573066",
+      "revId": "0d026b88efef884be161cf5548bc109d5518a74b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
