@@ -46,6 +46,30 @@
       },
       "revId": "4d3a74e78c3687ff269d5121fc3b9242992a06fc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2cff174f_9e039b48",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-04T12:16:44Z",
+      "side": 1,
+      "message": "Ack. Good enough for now.",
+      "parentUuid": "55b2f60e_0bb888a4",
+      "range": {
+        "startLine": 655,
+        "startChar": 6,
+        "endLine": 655,
+        "endChar": 24
+      },
+      "revId": "4d3a74e78c3687ff269d5121fc3b9242992a06fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
