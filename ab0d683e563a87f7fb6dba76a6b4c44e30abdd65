@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c20e5fc7_1b5c853a",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1211,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-04T12:24:14Z",
+      "side": 1,
+      "message": "nit: this can be:\n  for(auto indexId : indexIds)\n\nand replace all \"indexIds[i]\" with \"indexId\" below.",
+      "range": {
+        "startLine": 1211,
+        "startChar": 1,
+        "endLine": 1211,
+        "endChar": 43
+      },
+      "revId": "ab0d683e563a87f7fb6dba76a6b4c44e30abdd65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "950923f7_a0a64c88",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1367,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-04T12:24:14Z",
+      "side": 1,
+      "message": "nit: this can be:\n  for(auto indexId : indexIds)\n\nand replace all \"indexIds[i]\" with \"indexId\" below.",
+      "range": {
+        "startLine": 1367,
+        "startChar": 1,
+        "endLine": 1367,
+        "endChar": 43
+      },
+      "revId": "ab0d683e563a87f7fb6dba76a6b4c44e30abdd65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69cb3905_bc4111b8",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1444,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-04T12:24:14Z",
+      "side": 1,
+      "message": "nit: this can be:\n  for(auto index : indexes)\n\nand replace all \"indexes[i]\" with \"index\" below.",
+      "range": {
+        "startLine": 1444,
+        "startChar": 1,
+        "endLine": 1444,
+        "endChar": 42
+      },
+      "revId": "ab0d683e563a87f7fb6dba76a6b4c44e30abdd65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
