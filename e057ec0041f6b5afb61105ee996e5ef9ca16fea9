@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f60b63b6_8522a959",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101381
+      },
+      "writtenOn": "2022-04-04T01:06:30Z",
+      "side": 1,
+      "message": "Thanks, updated with Bug ID.",
+      "revId": "e057ec0041f6b5afb61105ee996e5ef9ca16fea9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
