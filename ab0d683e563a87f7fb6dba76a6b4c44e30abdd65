@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "762c45ec_018bb221",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1211,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-04T15:26:00Z",
+      "side": 1,
+      "message": "I think that\u0027s best left for a follow-up refactoring, if deemed advantageous.\n\nNote that it would require adding `begin()` and `end()` methods to `Span`. In this change I was hoping to keep things minimal and just get the desired bounds checking.\n\nThe rest of this file also uses lots of regular `for` loops (mostly out of necessity), so it would be a bit of a style break. Also, while the C++ spec guarantees iterating sequentially from begin to end, I find range-based `for` loops to be much less clear about that, and these \u0027access chain\u0027 functions need sequential handling of the indices. I think they\u0027re best reserved for when we don\u0027t care about the iteration method and just want to visit every element in a container.",
+      "parentUuid": "c20e5fc7_1b5c853a",
+      "range": {
+        "startLine": 1211,
+        "startChar": 1,
+        "endLine": 1211,
+        "endChar": 43
+      },
+      "revId": "ab0d683e563a87f7fb6dba76a6b4c44e30abdd65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "950923f7_a0a64c88",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 2
