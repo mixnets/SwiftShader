@@ -22,6 +22,30 @@
       },
       "revId": "4d3a74e78c3687ff269d5121fc3b9242992a06fc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55b2f60e_0bb888a4",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-04T04:13:29Z",
+      "side": 1,
+      "message": "That would indeed have a certain readability advantage, but also a few disadvantages:\n- We (or someone else) would be more likely to update this function without also updating `getCompatibilityClassRepresentative()`.\n- The function would be over 100 lines longer, which decreases readability.\n- It would be non-trivial to ensure every format in each vector has a case label, and in the right place (copy-paste errors are easy to make).\n- The assert at line 1005 actually prevents using the wrong \u0027representative\u0027 of the format class. We wouldn\u0027t be able to have such a check with expanded case labels.\n\nI\u0027ve considered the alternative of rewriting `getCompatibilityClassRepresentative()` or even just `isCompatible()` in terms of `getCompatibleFormats()` by checking the first element of the vector, but that might not be the most \u0027representative\u0027 format and would add the overhead of constructing the vector where we previously didn\u0027t need to. C++20 would enable static constexpr vectors so we can compare them by pointer without atexit destructors, bu that\u0027s not universally available yet...\n\nSo, I think this is a reasonable compromise for now.",
+      "parentUuid": "cf8bc9aa_87bcc427",
+      "range": {
+        "startLine": 655,
+        "startChar": 6,
+        "endLine": 655,
+        "endChar": 24
+      },
+      "revId": "4d3a74e78c3687ff269d5121fc3b9242992a06fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
