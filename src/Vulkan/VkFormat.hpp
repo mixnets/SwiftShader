@@ -31,33 +31,32 @@ public:
 	{}
 	inline operator VkFormat() const { return format; }
 
-	bool isUnsignedNormalized() const;
-	bool isSignedNormalized() const;
-	bool isSignedUnnormalizedInteger() const;
-	bool isUnsignedUnnormalizedInteger() const;
-	bool isUnnormalizedInteger() const;
+	bool isUNORM() const;
+	bool isSNORM() const;
+	bool isSINT() const;
+	bool isUINT() const;
+	bool isINT() const;
+	bool isFLOAT() const;
+	bool isSRGB() const;
+
 	bool isUnsigned() const;
+	bool isStencil() const;
+	bool isDepth() const;
+	bool isYcbcr() const;
+	bool isCompressed() const;
 
 	VkImageAspectFlags getAspects() const;
 	Format getAspectFormat(VkImageAspectFlags aspect) const;
 	VkFormat getClearFormat() const;
-	bool isStencil() const;
-	bool isDepth() const;
-	bool isSRGBformat() const;
-	bool isFloatFormat() const;
-	bool isYcbcrFormat() const;
-
 	bool isCompatible(Format other) const;
 	std::vector<Format> getCompatibleFormats() const;
 
-	bool isCompressed() const;
 	VkFormat getDecompressedFormat() const;
+
 	int blockWidth() const;
 	int blockHeight() const;
 	int bytesPerBlock() const;
-
 	int componentCount() const;
-	bool isUnsignedComponent(int component) const;
 
 	size_t bytes() const;
 	size_t pitchB(int width, int border) const;
