@@ -70,6 +70,30 @@
       },
       "revId": "3695e05ed937364f81c3be5a920e0e7c6a9df05c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be90d529_9231190e",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 582,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-05T18:29:34Z",
+      "side": 1,
+      "message": "Seems kinda overkill to tag them all.",
+      "parentUuid": "7acf2af1_c6feb041",
+      "range": {
+        "startLine": 582,
+        "startChar": 39,
+        "endLine": 582,
+        "endChar": 81
+      },
+      "revId": "3695e05ed937364f81c3be5a920e0e7c6a9df05c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
