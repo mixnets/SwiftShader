@@ -418,7 +418,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 
 			auto &subresourceRange = imageView->getSubresourceRange();
 
-			if(format.isYcbcrFormat())
+			if(format.isYcbcr())
 			{
 				ASSERT(subresourceRange.levelCount == 1);
 

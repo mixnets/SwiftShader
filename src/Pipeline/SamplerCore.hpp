@@ -99,7 +99,7 @@ private:
 	bool hasNormalizedFormat() const;
 	bool hasFloatTexture() const;
 	bool hasUnnormalizedIntegerTexture() const;
-	bool hasUnsignedTextureComponent(int component) const;
+	bool hasUnsignedTexture() const;
 	int textureComponentCount() const;
 	bool has16bitPackedTextureFormat() const;
 	bool has8bitTextureComponents() const;

@@ -937,7 +937,7 @@ void PixelRoutine::stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkS
 
 bool PixelRoutine::isSRGB(int index) const
 {
-	return vk::Format(state.colorFormat[index]).isSRGBformat();
+	return vk::Format(state.colorFormat[index]).isSRGB();
 }
 
 void PixelRoutine::readPixel(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &pixel)
@@ -1808,19 +1808,19 @@ Float PixelRoutine::blendConstant(vk::Format format, int component, BlendFactorM
 {
 	bool inverse = (modifier == OneMinus);
 
-	if(format.isUnsignedNormalized())
+	if(format.isUNORM())
 	{
 		return inverse ? *Pointer<Float>(data + OFFSET(DrawData, factor.invBlendConstantU[component]))
 		               : *Pointer<Float>(data + OFFSET(DrawData, factor.blendConstantU[component]));
 	}
-	else if(format.isSignedNormalized())
+	else if(format.isSNORM())
 	{
 		return inverse ? *Pointer<Float>(data + OFFSET(DrawData, factor.invBlendConstantS[component]))
 		               : *Pointer<Float>(data + OFFSET(DrawData, factor.blendConstantS[component]));
 	}
 	else  // Floating-point format
 	{
-		ASSERT(format.isFloatFormat());
+		ASSERT(format.isFLOAT());
 		return inverse ? *Pointer<Float>(data + OFFSET(DrawData, factor.invBlendConstantF[component]))
 		               : *Pointer<Float>(data + OFFSET(DrawData, factor.blendConstantF[component]));
 	}
@@ -1916,13 +1916,13 @@ void PixelRoutine::blendFactorRGB(Vector4f &blendFactor, const Vector4f &sourceC
 	//  operations. If the color attachment is floating-point, no clamping occurs."
 	if(blendFactorCanExceedFormatRange(colorBlendFactor, format))
 	{
-		if(format.isUnsignedNormalized())
+		if(format.isUNORM())
 		{
 			blendFactor.x = Min(Max(blendFactor.x, 0.0f), 1.0f);
 			blendFactor.y = Min(Max(blendFactor.y, 0.0f), 1.0f);
 			blendFactor.z = Min(Max(blendFactor.z, 0.0f), 1.0f);
 		}
-		else if(format.isSignedNormalized())
+		else if(format.isSNORM())
 		{
 			blendFactor.x = Min(Max(blendFactor.x, -1.0f), 1.0f);
 			blendFactor.y = Min(Max(blendFactor.y, -1.0f), 1.0f);
@@ -1985,11 +1985,11 @@ void PixelRoutine::blendFactorAlpha(Float4 &blendFactorAlpha, const Float4 &sour
 	//  operations. If the color attachment is floating-point, no clamping occurs."
 	if(blendFactorCanExceedFormatRange(alphaBlendFactor, format))
 	{
-		if(format.isUnsignedNormalized())
+		if(format.isUNORM())
 		{
 			blendFactorAlpha = Min(Max(blendFactorAlpha, 0.0f), 1.0f);
 		}
-		else if(format.isSignedNormalized())
+		else if(format.isSNORM())
 		{
 			blendFactorAlpha = Min(Max(blendFactorAlpha, -1.0f), 1.0f);
 		}
@@ -2238,7 +2238,7 @@ bool PixelRoutine::blendFactorCanExceedFormatRange(VkBlendFactor blendFactor, vk
 	case VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR:
 	case VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA:
 		// For signed formats, negative values cause the result to exceed 1.0.
-		return format.isSignedNormalized();
+		return format.isSNORM();
 	case VK_BLEND_FACTOR_SRC_ALPHA_SATURATE:
 		// min(As, 1 - Ad)
 		return false;
@@ -2571,14 +2571,14 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		break;
 	default:
 		// TODO(b/204560089): Omit clamp if redundant
-		if(format.isUnsignedNormalized())
+		if(format.isUNORM())
 		{
 			color.x = Min(Max(color.x, 0.0f), 1.0f);
 			color.y = Min(Max(color.y, 0.0f), 1.0f);
 			color.z = Min(Max(color.z, 0.0f), 1.0f);
 			color.w = Min(Max(color.w, 0.0f), 1.0f);
 		}
-		else if(format.isSignedNormalized())
+		else if(format.isSNORM())
 		{
 			color.x = Min(Max(color.x, -1.0f), 1.0f);
 			color.y = Min(Max(color.y, -1.0f), 1.0f);

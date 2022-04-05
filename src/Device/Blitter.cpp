@@ -64,9 +64,9 @@ void Blitter::clear(const void *pixel, vk::Format format, vk::Image *dest, const
 	}
 
 	VkClearColorValue clampedPixel;
-	if(viewFormat.isSignedNormalized() || viewFormat.isUnsignedNormalized())
+	if(viewFormat.isSNORM() || viewFormat.isUNORM())
 	{
-		const float minValue = viewFormat.isSignedNormalized() ? -1.0f : 0.0f;
+		const float minValue = viewFormat.isSNORM() ? -1.0f : 0.0f;
 		memcpy(clampedPixel.float32, pixel, sizeof(VkClearColorValue));
 		clampedPixel.float32[0] = sw::clamp(clampedPixel.float32[0], minValue, 1.0f);
 		clampedPixel.float32[1] = sw::clamp(clampedPixel.float32[1], minValue, 1.0f);
@@ -1419,8 +1419,8 @@ void Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool preScal
 	float4 scale{}, unscale{};
 
 	if(state.clearOperation &&
-	   state.sourceFormat.isUnnormalizedInteger() &&
-	   !state.destFormat.isUnnormalizedInteger())
+	   state.sourceFormat.isINT() &&
+	   !state.destFormat.isINT())
 	{
 		// If we're clearing a buffer from an int or uint color into a normalized color,
 		// then the whole range of the int or uint color must be scaled between 0 and 1.
@@ -1443,8 +1443,8 @@ void Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool preScal
 
 	scale = state.destFormat.getScale();
 
-	bool srcSRGB = state.sourceFormat.isSRGBformat();
-	bool dstSRGB = state.destFormat.isSRGBformat();
+	bool srcSRGB = state.sourceFormat.isSRGB();
+	bool dstSRGB = state.destFormat.isSRGB();
 
 	if(state.allowSRGBConversion && ((srcSRGB && !preScaled) || dstSRGB))  // One of the formats is sRGB encoded.
 	{
@@ -1458,14 +1458,14 @@ void Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool preScal
 		value *= Float4(scale.x / unscale.x, scale.y / unscale.y, scale.z / unscale.z, scale.w / unscale.w);
 	}
 
-	if(state.sourceFormat.isFloatFormat() && !state.destFormat.isFloatFormat())
+	if(state.sourceFormat.isFLOAT() && !state.destFormat.isFLOAT())
 	{
 		value = Min(value, Float4(scale.x, scale.y, scale.z, scale.w));
 
-		value = Max(value, Float4(state.destFormat.isUnsignedComponent(0) ? 0.0f : -scale.x,
-		                          state.destFormat.isUnsignedComponent(1) ? 0.0f : -scale.y,
-		                          state.destFormat.isUnsignedComponent(2) ? 0.0f : -scale.z,
-		                          state.destFormat.isUnsignedComponent(3) ? 0.0f : -scale.w));
+		value = Max(value, Float4(state.destFormat.isUnsigned() ? 0.0f : -scale.x,
+		                          state.destFormat.isUnsigned() ? 0.0f : -scale.y,
+		                          state.destFormat.isUnsigned() ? 0.0f : -scale.z,
+		                          state.destFormat.isUnsigned() ? 0.0f : -scale.w));
 	}
 
 	if(!state.sourceFormat.isUnsigned() && state.destFormat.isUnsigned())
@@ -1512,7 +1512,7 @@ Float4 Blitter::sample(Pointer<Byte> &source, Float &x, Float &y, Float &z,
                        Int &sWidth, Int &sHeight, Int &sDepth,
                        Int &sSliceB, Int &sPitchB, const State &state)
 {
-	bool intSrc = state.sourceFormat.isUnnormalizedInteger();
+	bool intSrc = state.sourceFormat.isINT();
 	int srcBytes = state.sourceFormat.bytes();
 
 	Float4 color;
@@ -1537,7 +1537,7 @@ Float4 Blitter::sample(Pointer<Byte> &source, Float &x, Float &y, Float &z,
 
 		if(state.srcSamples > 1)  // Resolve multisampled source
 		{
-			if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat())  // sRGB -> RGB
+			if(state.allowSRGBConversion && state.sourceFormat.isSRGB())  // sRGB -> RGB
 			{
 				ApplyScaleAndClamp(color, state);
 				preScaled = true;
@@ -1548,7 +1548,7 @@ Float4 Blitter::sample(Pointer<Byte> &source, Float &x, Float &y, Float &z,
 				s += sSliceB;
 				color = readFloat4(s, state);
 
-				if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat())  // sRGB -> RGB
+				if(state.allowSRGBConversion && state.sourceFormat.isSRGB())  // sRGB -> RGB
 				{
 					ApplyScaleAndClamp(color, state);
 					preScaled = true;
@@ -1607,7 +1607,7 @@ Float4 Blitter::sample(Pointer<Byte> &source, Float &x, Float &y, Float &z,
 			Float4 c101 = readFloat4(s101, state);
 			Float4 c111 = readFloat4(s111, state);
 
-			if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat())  // sRGB -> RGB
+			if(state.allowSRGBConversion && state.sourceFormat.isSRGB())  // sRGB -> RGB
 			{
 				ApplyScaleAndClamp(c000, state);
 				ApplyScaleAndClamp(c010, state);
@@ -1646,7 +1646,7 @@ Float4 Blitter::sample(Pointer<Byte> &source, Float &x, Float &y, Float &z,
 			Float4 c10 = readFloat4(s10, state);
 			Float4 c11 = readFloat4(s11, state);
 
-			if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat())  // sRGB -> RGB
+			if(state.allowSRGBConversion && state.sourceFormat.isSRGB())  // sRGB -> RGB
 			{
 				ApplyScaleAndClamp(c00, state);
 				ApplyScaleAndClamp(c01, state);
@@ -1701,8 +1701,8 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 		Int sHeight = *Pointer<Int>(blit + OFFSET(BlitData, sHeight));
 		Int sDepth = *Pointer<Int>(blit + OFFSET(BlitData, sDepth));
 
-		bool intSrc = state.sourceFormat.isUnnormalizedInteger();
-		bool intDst = state.destFormat.isUnnormalizedInteger();
+		bool intSrc = state.sourceFormat.isINT();
+		bool intDst = state.destFormat.isINT();
 		bool intBoth = intSrc && intDst;
 		int srcBytes = state.sourceFormat.bytes();
 		int dstBytes = state.destFormat.bytes();
@@ -1881,7 +1881,7 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit2KHR region,
 	bool allowSRGBConversion =
 	    doFilter ||
 	    (src->getSampleCountFlagBits() > 1) ||
-	    (srcFormat.isSRGBformat() != dstFormat.isSRGBformat());
+	    (srcFormat.isSRGB() != dstFormat.isSRGB());
 
 	State state(srcFormat, dstFormat, src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
 	            Options{ doFilter, allowSRGBConversion });

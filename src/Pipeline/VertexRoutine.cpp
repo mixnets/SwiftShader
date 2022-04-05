@@ -205,7 +205,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 	}
 
 	int componentCount = format.componentCount();
-	bool normalized = !format.isUnnormalizedInteger();
+	bool normalized = !format.isINT();
 	bool isNativeFloatAttrib = (stream.attribType == SpirvShader::ATTRIBTYPE_FLOAT) || normalized;
 	bool bgra = false;
 

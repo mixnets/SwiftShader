@@ -1426,7 +1426,7 @@ void Image::decodeASTC(const VkImageSubresource &subresource) const
 	int xBlockSize = format.blockWidth();
 	int yBlockSize = format.blockHeight();
 	int zBlockSize = 1;
-	bool isUnsigned = format.isUnsignedComponent(0);
+	bool isUnsigned = format.isUnsigned();
 
 	int bytes = decompressedImage->format.bytes();
 

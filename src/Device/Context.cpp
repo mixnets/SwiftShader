@@ -1023,7 +1023,7 @@ VkBlendOp GraphicsState::blendOperation(VkBlendOp blendOperation, VkBlendFactor 
 			{
 				return VK_BLEND_OP_ZERO_EXT;
 			}
-			else if(format.isUnsignedNormalized())
+			else if(format.isUNORM())
 			{
 				return VK_BLEND_OP_ZERO_EXT;  // Negative, clamped to zero
 			}
@@ -1050,7 +1050,7 @@ VkBlendOp GraphicsState::blendOperation(VkBlendOp blendOperation, VkBlendFactor 
 		}
 		else
 		{
-			if(destBlendFactor == VK_BLEND_FACTOR_ZERO && format.isUnsignedNormalized())
+			if(destBlendFactor == VK_BLEND_FACTOR_ZERO && format.isUNORM())
 			{
 				return VK_BLEND_OP_ZERO_EXT;  // Negative, clamped to zero
 			}

@@ -155,7 +155,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 
 		for(int component = 0; component < numComponents; component++)
 		{
-			if(hasUnsignedTextureComponent(component))
+			if(hasUnsignedTexture())
 			{
 				c[component] = Float4(As<UShort4>(cs[component]));
 			}
@@ -177,7 +177,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 		}
 	}
 
-	if(state.textureFormat.isSignedNormalized())
+	if(state.textureFormat.isSNORM())
 	{
 		for(int component = 0; component < numComponents; component++)
 		{
@@ -299,52 +299,28 @@ Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 		UShort4 utri = UShort4(Float4(lod));  // TODO: Optimize
 		Short4 stri = utri >> 1;              // TODO: Optimize
 
-		if(hasUnsignedTextureComponent(0))
-			cc.x = MulHigh(As<UShort4>(cc.x), utri);
-		else
-			cc.x = MulHigh(cc.x, stri);
-		if(hasUnsignedTextureComponent(1))
-			cc.y = MulHigh(As<UShort4>(cc.y), utri);
-		else
-			cc.y = MulHigh(cc.y, stri);
-		if(hasUnsignedTextureComponent(2))
-			cc.z = MulHigh(As<UShort4>(cc.z), utri);
-		else
-			cc.z = MulHigh(cc.z, stri);
-		if(hasUnsignedTextureComponent(3))
-			cc.w = MulHigh(As<UShort4>(cc.w), utri);
-		else
-			cc.w = MulHigh(cc.w, stri);
+		cc.x = hasUnsignedTexture() ? As<Short4>(MulHigh(As<UShort4>(cc.x), utri)) : MulHigh(cc.x, stri);
+		cc.y = hasUnsignedTexture() ? As<Short4>(MulHigh(As<UShort4>(cc.y), utri)) : MulHigh(cc.y, stri);
+		cc.z = hasUnsignedTexture() ? As<Short4>(MulHigh(As<UShort4>(cc.z), utri)) : MulHigh(cc.z, stri);
+		cc.w = hasUnsignedTexture() ? As<Short4>(MulHigh(As<UShort4>(cc.w), utri)) : MulHigh(cc.w, stri);
 
 		utri = ~utri;
 		stri = Short4(0x7FFF) - stri;
 
-		if(hasUnsignedTextureComponent(0))
-			c.x = MulHigh(As<UShort4>(c.x), utri);
-		else
-			c.x = MulHigh(c.x, stri);
-		if(hasUnsignedTextureComponent(1))
-			c.y = MulHigh(As<UShort4>(c.y), utri);
-		else
-			c.y = MulHigh(c.y, stri);
-		if(hasUnsignedTextureComponent(2))
-			c.z = MulHigh(As<UShort4>(c.z), utri);
-		else
-			c.z = MulHigh(c.z, stri);
-		if(hasUnsignedTextureComponent(3))
-			c.w = MulHigh(As<UShort4>(c.w), utri);
-		else
-			c.w = MulHigh(c.w, stri);
+		c.x = hasUnsignedTexture() ? As<Short4>(MulHigh(As<UShort4>(c.x), utri)) : MulHigh(cc.x, stri);
+		c.y = hasUnsignedTexture() ? As<Short4>(MulHigh(As<UShort4>(c.y), utri)) : MulHigh(cc.y, stri);
+		c.z = hasUnsignedTexture() ? As<Short4>(MulHigh(As<UShort4>(c.z), utri)) : MulHigh(cc.z, stri);
+		c.w = hasUnsignedTexture() ? As<Short4>(MulHigh(As<UShort4>(c.w), utri)) : MulHigh(cc.w, stri);
 
 		c.x += cc.x;
 		c.y += cc.y;
 		c.z += cc.z;
 		c.w += cc.w;
 
-		if(!hasUnsignedTextureComponent(0)) c.x += c.x;
-		if(!hasUnsignedTextureComponent(1)) c.y += c.y;
-		if(!hasUnsignedTextureComponent(2)) c.z += c.z;
-		if(!hasUnsignedTextureComponent(3)) c.w += c.w;
+		if(!hasUnsignedTexture()) c.x += c.x;
+		if(!hasUnsignedTexture()) c.y += c.y;
+		if(!hasUnsignedTexture()) c.z += c.z;
+		if(!hasUnsignedTexture()) c.w += c.w;
 	}
 
 	return c;
@@ -392,19 +368,19 @@ Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, 
 			u0 += du;
 			v0 += dv;
 
-			if(hasUnsignedTextureComponent(0))
+			if(hasUnsignedTexture())
 				cSum.x += As<Short4>(MulHigh(As<UShort4>(c.x), cw));
 			else
 				cSum.x += MulHigh(c.x, sw);
-			if(hasUnsignedTextureComponent(1))
+			if(hasUnsignedTexture())
 				cSum.y += As<Short4>(MulHigh(As<UShort4>(c.y), cw));
 			else
 				cSum.y += MulHigh(c.y, sw);
-			if(hasUnsignedTextureComponent(2))
+			if(hasUnsignedTexture())
 				cSum.z += As<Short4>(MulHigh(As<UShort4>(c.z), cw));
 			else
 				cSum.z += MulHigh(c.z, sw);
-			if(hasUnsignedTextureComponent(3))
+			if(hasUnsignedTexture())
 				cSum.w += As<Short4>(MulHigh(As<UShort4>(c.w), cw));
 			else
 				cSum.w += MulHigh(c.w, sw);
@@ -413,19 +389,19 @@ Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, 
 		}
 		Until(i >= N);
 
-		if(hasUnsignedTextureComponent(0))
+		if(hasUnsignedTexture())
 			c.x = cSum.x;
 		else
 			c.x = AddSat(cSum.x, cSum.x);
-		if(hasUnsignedTextureComponent(1))
+		if(hasUnsignedTexture())
 			c.y = cSum.y;
 		else
 			c.y = AddSat(cSum.y, cSum.y);
-		if(hasUnsignedTextureComponent(2))
+		if(hasUnsignedTexture())
 			c.z = cSum.z;
 		else
 			c.z = AddSat(cSum.z, cSum.z);
-		if(hasUnsignedTextureComponent(3))
+		if(hasUnsignedTexture())
 			c.w = cSum.w;
 		else
 			c.w = AddSat(cSum.w, cSum.w);
@@ -497,7 +473,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 			Short4 f1u0vs;
 			Short4 f0u0vs;
 
-			if(!hasUnsignedTextureComponent(0) || !hasUnsignedTextureComponent(1) || !hasUnsignedTextureComponent(2) || !hasUnsignedTextureComponent(3))
+			if(!hasUnsignedTexture())
 			{
 				f1u1vs = f1u1v >> 1;
 				f0u1vs = f0u1v >> 1;
@@ -508,7 +484,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 			// Bilinear interpolation
 			if(componentCount >= 1)
 			{
-				if(has16bitTextureComponents() && hasUnsignedTextureComponent(0))
+				if(has16bitTextureComponents() && hasUnsignedTexture())
 				{
 					c00.x = As<UShort4>(c00.x) - MulHigh(As<UShort4>(c00.x), f0u) + MulHigh(As<UShort4>(c10.x), f0u);
 					c01.x = As<UShort4>(c01.x) - MulHigh(As<UShort4>(c01.x), f0u) + MulHigh(As<UShort4>(c11.x), f0u);
@@ -516,7 +492,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 				}
 				else
 				{
-					if(hasUnsignedTextureComponent(0))
+					if(hasUnsignedTexture())
 					{
 						c00.x = MulHigh(As<UShort4>(c00.x), f1u1v);
 						c10.x = MulHigh(As<UShort4>(c10.x), f0u1v);
@@ -532,13 +508,13 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 					}
 
 					c.x = (c00.x + c10.x) + (c01.x + c11.x);
-					if(!hasUnsignedTextureComponent(0)) c.x = AddSat(c.x, c.x);  // Correct for signed fractions
+					if(!hasUnsignedTexture()) c.x = AddSat(c.x, c.x);  // Correct for signed fractions
 				}
 			}
 
 			if(componentCount >= 2)
 			{
-				if(has16bitTextureComponents() && hasUnsignedTextureComponent(1))
+				if(has16bitTextureComponents() && hasUnsignedTexture())
 				{
 					c00.y = As<UShort4>(c00.y) - MulHigh(As<UShort4>(c00.y), f0u) + MulHigh(As<UShort4>(c10.y), f0u);
 					c01.y = As<UShort4>(c01.y) - MulHigh(As<UShort4>(c01.y), f0u) + MulHigh(As<UShort4>(c11.y), f0u);
@@ -546,7 +522,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 				}
 				else
 				{
-					if(hasUnsignedTextureComponent(1))
+					if(hasUnsignedTexture())
 					{
 						c00.y = MulHigh(As<UShort4>(c00.y), f1u1v);
 						c10.y = MulHigh(As<UShort4>(c10.y), f0u1v);
@@ -562,13 +538,13 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 					}
 
 					c.y = (c00.y + c10.y) + (c01.y + c11.y);
-					if(!hasUnsignedTextureComponent(1)) c.y = AddSat(c.y, c.y);  // Correct for signed fractions
+					if(!hasUnsignedTexture()) c.y = AddSat(c.y, c.y);  // Correct for signed fractions
 				}
 			}
 
 			if(componentCount >= 3)
 			{
-				if(has16bitTextureComponents() && hasUnsignedTextureComponent(2))
+				if(has16bitTextureComponents() && hasUnsignedTexture())
 				{
 					c00.z = As<UShort4>(c00.z) - MulHigh(As<UShort4>(c00.z), f0u) + MulHigh(As<UShort4>(c10.z), f0u);
 					c01.z = As<UShort4>(c01.z) - MulHigh(As<UShort4>(c01.z), f0u) + MulHigh(As<UShort4>(c11.z), f0u);
@@ -576,7 +552,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 				}
 				else
 				{
-					if(hasUnsignedTextureComponent(2))
+					if(hasUnsignedTexture())
 					{
 						c00.z = MulHigh(As<UShort4>(c00.z), f1u1v);
 						c10.z = MulHigh(As<UShort4>(c10.z), f0u1v);
@@ -592,13 +568,13 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 					}
 
 					c.z = (c00.z + c10.z) + (c01.z + c11.z);
-					if(!hasUnsignedTextureComponent(2)) c.z = AddSat(c.z, c.z);  // Correct for signed fractions
+					if(!hasUnsignedTexture()) c.z = AddSat(c.z, c.z);  // Correct for signed fractions
 				}
 			}
 
 			if(componentCount >= 4)
 			{
-				if(has16bitTextureComponents() && hasUnsignedTextureComponent(3))
+				if(has16bitTextureComponents() && hasUnsignedTexture())
 				{
 					c00.w = As<UShort4>(c00.w) - MulHigh(As<UShort4>(c00.w), f0u) + MulHigh(As<UShort4>(c10.w), f0u);
 					c01.w = As<UShort4>(c01.w) - MulHigh(As<UShort4>(c01.w), f0u) + MulHigh(As<UShort4>(c11.w), f0u);
@@ -606,7 +582,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 				}
 				else
 				{
-					if(hasUnsignedTextureComponent(3))
+					if(hasUnsignedTexture())
 					{
 						c00.w = MulHigh(As<UShort4>(c00.w), f1u1v);
 						c10.w = MulHigh(As<UShort4>(c10.w), f0u1v);
@@ -622,7 +598,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 					}
 
 					c.w = (c00.w + c10.w) + (c01.w + c11.w);
-					if(!hasUnsignedTextureComponent(3)) c.w = AddSat(c.w, c.w);  // Correct for signed fractions
+					if(!hasUnsignedTexture()) c.w = AddSat(c.w, c.w);  // Correct for signed fractions
 				}
 			}
 		}
@@ -717,7 +693,7 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 		f[0][0][0] = MulHigh(f[0][0][0], f0s);
 
 		// Signed fractions
-		if(!hasUnsignedTextureComponent(0) || !hasUnsignedTextureComponent(1) || !hasUnsignedTextureComponent(2) || !hasUnsignedTextureComponent(3))
+		if(!hasUnsignedTexture() || !hasUnsignedTexture() || !hasUnsignedTexture() || !hasUnsignedTexture())
 		{
 			fs[0][0][0] = f[0][0][0] >> 1;
 			fs[0][0][1] = f[0][0][1] >> 1;
@@ -739,28 +715,28 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 
 					if(componentCount >= 1)
 					{
-						if(hasUnsignedTextureComponent(0))
+						if(hasUnsignedTexture())
 							c[i][j][k].x = MulHigh(As<UShort4>(c[i][j][k].x), f[1 - i][1 - j][1 - k]);
 						else
 							c[i][j][k].x = MulHigh(c[i][j][k].x, fs[1 - i][1 - j][1 - k]);
 					}
 					if(componentCount >= 2)
 					{
-						if(hasUnsignedTextureComponent(1))
+						if(hasUnsignedTexture())
 							c[i][j][k].y = MulHigh(As<UShort4>(c[i][j][k].y), f[1 - i][1 - j][1 - k]);
 						else
 							c[i][j][k].y = MulHigh(c[i][j][k].y, fs[1 - i][1 - j][1 - k]);
 					}
 					if(componentCount >= 3)
 					{
-						if(hasUnsignedTextureComponent(2))
+						if(hasUnsignedTexture())
 							c[i][j][k].z = MulHigh(As<UShort4>(c[i][j][k].z), f[1 - i][1 - j][1 - k]);
 						else
 							c[i][j][k].z = MulHigh(c[i][j][k].z, fs[1 - i][1 - j][1 - k]);
 					}
 					if(componentCount >= 4)
 					{
-						if(hasUnsignedTextureComponent(3))
+						if(hasUnsignedTexture())
 							c[i][j][k].w = MulHigh(As<UShort4>(c[i][j][k].w), f[1 - i][1 - j][1 - k]);
 						else
 							c[i][j][k].w = MulHigh(c[i][j][k].w, fs[1 - i][1 - j][1 - k]);
@@ -784,13 +760,13 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 
 		// Correct for signed fractions
 		if(componentCount >= 1)
-			if(!hasUnsignedTextureComponent(0)) c_.x = AddSat(c_.x, c_.x);
+			if(!hasUnsignedTexture()) c_.x = AddSat(c_.x, c_.x);
 		if(componentCount >= 2)
-			if(!hasUnsignedTextureComponent(1)) c_.y = AddSat(c_.y, c_.y);
+			if(!hasUnsignedTexture()) c_.y = AddSat(c_.y, c_.y);
 		if(componentCount >= 3)
-			if(!hasUnsignedTextureComponent(2)) c_.z = AddSat(c_.z, c_.z);
+			if(!hasUnsignedTexture()) c_.z = AddSat(c_.z, c_.z);
 		if(componentCount >= 4)
-			if(!hasUnsignedTextureComponent(3)) c_.w = AddSat(c_.w, c_.w);
+			if(!hasUnsignedTexture()) c_.w = AddSat(c_.w, c_.w);
 	}
 
 	return c_;
@@ -1701,7 +1677,7 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 	else
 		ASSERT(false);
 
-	if(state.textureFormat.isSRGBformat())
+	if(state.textureFormat.isSRGB())
 	{
 		for(int i = 0; i < textureComponentCount(); i++)
 		{
@@ -2068,11 +2044,11 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 
 		Vector4s cs = sampleTexel(index, buffer);
 
-		bool isInteger = state.textureFormat.isUnnormalizedInteger();
+		bool isInteger = state.textureFormat.isINT();
 		int componentCount = textureComponentCount();
 		for(int n = 0; n < componentCount; n++)
 		{
-			if(hasUnsignedTextureComponent(n))
+			if(hasUnsignedTexture())
 			{
 				if(isInteger)
 				{
@@ -2565,22 +2541,22 @@ void SamplerCore::sRGBtoLinearFF00(Short4 &c)
 
 bool SamplerCore::hasNormalizedFormat() const
 {
-	return state.textureFormat.isSignedNormalized() || state.textureFormat.isUnsignedNormalized();
+	return state.textureFormat.isSNORM() || state.textureFormat.isUNORM();
 }
 
 bool SamplerCore::hasFloatTexture() const
 {
-	return state.textureFormat.isFloatFormat();
+	return state.textureFormat.isFLOAT();
 }
 
 bool SamplerCore::hasUnnormalizedIntegerTexture() const
 {
-	return state.textureFormat.isUnnormalizedInteger();
+	return state.textureFormat.isINT();
 }
 
-bool SamplerCore::hasUnsignedTextureComponent(int component) const
+bool SamplerCore::hasUnsignedTexture() const
 {
-	return state.textureFormat.isUnsignedComponent(component);
+	return state.textureFormat.isUnsigned();
 }
 
 int SamplerCore::textureComponentCount() const
@@ -2610,7 +2586,7 @@ bool SamplerCore::has32bitIntegerTextureComponents() const
 
 bool SamplerCore::isYcbcrFormat() const
 {
-	return state.textureFormat.isYcbcrFormat();
+	return state.textureFormat.isYcbcr();
 }
 
 bool SamplerCore::isRGBComponent(int component) const

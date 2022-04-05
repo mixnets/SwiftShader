@@ -64,7 +64,7 @@ SetupProcessor::State SetupProcessor::update(const vk::GraphicsState &pipelineSt
 	state.isDrawPoint = pipelineState.isDrawPoint(true);
 	state.isDrawLine = pipelineState.isDrawLine(true);
 	state.isDrawTriangle = pipelineState.isDrawTriangle(true);
-	state.fixedPointDepthBuffer = attachments.depthBuffer && !attachments.depthBuffer->getFormat(VK_IMAGE_ASPECT_DEPTH_BIT).isFloatFormat();
+	state.fixedPointDepthBuffer = attachments.depthBuffer && !attachments.depthBuffer->getFormat(VK_IMAGE_ASPECT_DEPTH_BIT).isFLOAT();
 	state.applyConstantDepthBias = pipelineState.isDrawTriangle(false) && (pipelineState.getConstantDepthBias() != 0.0f);
 	state.applySlopeDepthBias = pipelineState.isDrawTriangle(false) && (pipelineState.getSlopeDepthBias() != 0.0f);
 	state.applyDepthBiasClamp = pipelineState.isDrawTriangle(false) && (pipelineState.getDepthBiasClamp() != 0.0f);

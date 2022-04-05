@@ -3931,7 +3931,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 
 	// "Images created with a format from one of those listed in Formats requiring sampler Y'CBCR conversion for VK_IMAGE_ASPECT_COLOR_BIT image views
 	//  have further restrictions on their limits and capabilities compared to images created with other formats."
-	if(vk::Format(format).isYcbcrFormat())
+	if(vk::Format(format).isYcbcr())
 	{
 		if(type != VK_IMAGE_TYPE_2D)
 		{

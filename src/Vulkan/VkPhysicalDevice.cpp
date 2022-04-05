@@ -2086,7 +2086,7 @@ void PhysicalDevice::getImageFormatProperties(Format format, VkImageType type, V
 
 	// "Images created with a format from one of those listed in Formats requiring sampler Y'CbCr conversion for VK_IMAGE_ASPECT_COLOR_BIT image views
 	//  have further restrictions on their limits and capabilities compared to images created with other formats."
-	if(format.isYcbcrFormat())
+	if(format.isYcbcr())
 	{
 		pImageFormatProperties->maxMipLevels = 1;  // TODO(b/151263485): This is relied on by the sampler to disable mipmapping for Y'CbCr image sampling.
 		pImageFormatProperties->maxArrayLayers = 1;
