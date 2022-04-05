@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00094d59_5a996d21",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-05T05:02:59Z",
+      "side": 1,
+      "message": "I believe https://swiftshader-review.googlesource.com/c/SwiftShader/+/64730 is the last bit to replace this patch.",
+      "revId": "76caeb03a97efeeee9bffe8ccea89a21190911e8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
