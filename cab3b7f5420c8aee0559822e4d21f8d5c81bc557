@@ -46,6 +46,30 @@
       },
       "revId": "cab3b7f5420c8aee0559822e4d21f8d5c81bc557",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "080c86f9_46a7c5f2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-06T14:55:00Z",
+      "side": 1,
+      "message": "No, they\u0027re not expected. All the failures are cubemap related, so I\u0027m guessing this change causes the border pixels to not be copied. This should\u0027ve taken care of recomputing them, though:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/64828/1/src/Vulkan/VkImage.cpp#711\nLet\u0027s see if this also causes dEQP Vulkan failures, those would be easier to debug.",
+      "parentUuid": "9ca0b7ab_dcebc7b4",
+      "range": {
+        "startLine": 12,
+        "startChar": 24,
+        "endLine": 13,
+        "endChar": 11
+      },
+      "revId": "cab3b7f5420c8aee0559822e4d21f8d5c81bc557",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
