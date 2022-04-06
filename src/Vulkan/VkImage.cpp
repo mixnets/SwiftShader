@@ -630,7 +630,7 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy2KHR &region, bool buffe
 	bool isSingleSlice = (imageExtent.depth == 1);
 	bool isSingleRow = (imageExtent.height == 1) && isSingleSlice;
 	bool isEntireRow = (imageExtent.width == mipLevelExtent.width) &&
-	                   (imageRowPitchBytes == bufferRowPitchBytes);
+	                   (imageExtent.width * bytesPerBlock == bufferRowPitchBytes);
 	bool isEntireSlice = isEntireRow && (imageExtent.height == mipLevelExtent.height) &&
 	                     (imageSlicePitchBytes == bufferSlicePitchBytes);
 
