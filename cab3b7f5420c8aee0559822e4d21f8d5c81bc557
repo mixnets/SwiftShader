@@ -94,6 +94,23 @@
       },
       "revId": "cab3b7f5420c8aee0559822e4d21f8d5c81bc557",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bde63777_b066bdda",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-06T15:13:17Z",
+      "side": 1,
+      "message": "Please also reference b/161888255.",
+      "revId": "cab3b7f5420c8aee0559822e4d21f8d5c81bc557",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
