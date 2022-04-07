@@ -50,6 +50,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "f059a1a5_7fb0c849",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-07T15:54:40Z",
+      "side": 1,
+      "message": "Thanks for opening that issue!",
+      "parentUuid": "21942ec5_1b748b9d",
+      "range": {
+        "startLine": 10,
+        "startChar": 30,
+        "endLine": 11,
+        "endChar": 13
+      },
+      "revId": "bddbfca3028761c2a9935a4edc0b294cd4dea468",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "f82448d1_4181a15c",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -97,6 +121,24 @@
       "side": 1,
       "message": "Weird that your Gerrit instance doesn\u0027t require it. You could change the config make it so: https://dawn.googlesource.com/dawn/+/refs/meta/config/project.config#12",
       "parentUuid": "689a3d23_048e91d8",
+      "revId": "bddbfca3028761c2a9935a4edc0b294cd4dea468",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea15bea9_b9fb5413",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-07T15:54:40Z",
+      "side": 1,
+      "message": "Thanks for pointing out how to enforce it!",
+      "parentUuid": "2f073897_203ce4ac",
       "revId": "bddbfca3028761c2a9935a4edc0b294cd4dea468",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
