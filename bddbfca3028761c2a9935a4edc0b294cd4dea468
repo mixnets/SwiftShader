@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "21942ec5_1b748b9d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2022-04-07T07:12:25Z",
+      "side": 1,
+      "message": "This is because the behavior is surprising, and not called out explicitly in the Vulkan spec (which is scarce in details for copy commands and only explains how the buffer is addressed). Also because we see no other implementation of graphics APIs that has that behavior, across all of the APIs we test against, and across all the GPUs we test against.\n\nIn any case, I opened a spec issue to clarify that https://github.com/KhronosGroup/Vulkan-Docs/issues/1822",
+      "parentUuid": "91a421f5_7787911c",
+      "range": {
+        "startLine": 10,
+        "startChar": 30,
+        "endLine": 11,
+        "endChar": 13
+      },
+      "revId": "bddbfca3028761c2a9935a4edc0b294cd4dea468",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "f82448d1_4181a15c",
@@ -55,6 +79,24 @@
       "side": 1,
       "message": "It\u0027s missing a Change-Id line in the commit message.",
       "parentUuid": "f82448d1_4181a15c",
+      "revId": "bddbfca3028761c2a9935a4edc0b294cd4dea468",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f073897_203ce4ac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2022-04-07T07:12:25Z",
+      "side": 1,
+      "message": "Weird that your Gerrit instance doesn\u0027t require it. You could change the config make it so: https://dawn.googlesource.com/dawn/+/refs/meta/config/project.config#12",
+      "parentUuid": "689a3d23_048e91d8",
       "revId": "bddbfca3028761c2a9935a4edc0b294cd4dea468",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
