@@ -16,6 +16,29 @@
       "message": "The 43938 unsupported tests were fixed by:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/64870",
       "revId": "a15ac9bc2babc111f3b3fea3f6cfc6d080a60cc0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "324f321a_b73e7e83",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-07T13:01:55Z",
+      "side": 1,
+      "message": "b/200826740",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 43
+      },
+      "revId": "a15ac9bc2babc111f3b3fea3f6cfc6d080a60cc0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
