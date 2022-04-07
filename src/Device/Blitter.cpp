@@ -1881,7 +1881,7 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit2KHR region,
 	bool allowSRGBConversion =
 	    doFilter ||
 	    (src->getSampleCountFlagBits() > 1) ||
-	    (srcFormat.isSRGBformat() != dstFormat.isSRGBformat());
+	    (srcFormat.isSRGBformat() != dstFormat.isSRGBformat());  /////////////////// weird "allow"
 
 	State state(srcFormat, dstFormat, src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
 	            Options{ doFilter, allowSRGBConversion });

@@ -1238,6 +1238,7 @@ void SpirvShader::WriteImage(ImageInstructionSignature instruction, Pointer<Byte
 		            ((SIMD::UInt(Round(Min(Max(As<SIMD::Float>(texel[3]), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 24);
 		break;
 	case VK_FORMAT_B8G8R8A8_UNORM:
+	case VK_FORMAT_B8G8R8A8_SRGB:
 		packed[0] = (SIMD::UInt(Round(Min(Max(As<SIMD::Float>(texel[2]), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) |
 		            ((SIMD::UInt(Round(Min(Max(As<SIMD::Float>(texel[1]), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 8) |
 		            ((SIMD::UInt(Round(Min(Max(As<SIMD::Float>(texel[0]), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 16) |
