@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "317d12a6_c1f02085",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-07T12:14:58Z",
+      "side": 0,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/64848",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 82
+      },
+      "revId": "d09282e5c609528f81ebd3452f80e841ed3bf88b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
