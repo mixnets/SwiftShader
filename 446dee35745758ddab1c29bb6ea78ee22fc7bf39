@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ab30d2c_26340a31",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-08T19:58:27Z",
+      "side": 1,
+      "message": "Maybe in ANGLE, but they\u0027d only be using SwiftShader Vulkan. I don\u0027t know who else would build legacy SwiftShader using GN. Do you know of anyone in google3 doing that?",
+      "parentUuid": "f2b68cbf_eafdc9be",
+      "range": {
+        "startLine": 7,
+        "startChar": 39,
+        "endLine": 7,
+        "endChar": 47
+      },
+      "revId": "446dee35745758ddab1c29bb6ea78ee22fc7bf39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "27d23cf0_4cf3c8df",
@@ -41,6 +65,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f34c1d1_d4d97de6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-08T19:58:27Z",
+      "side": 1,
+      "message": "Yeah, I have no intention of landing this for a little while 😞",
+      "parentUuid": "27d23cf0_4cf3c8df",
+      "revId": "446dee35745758ddab1c29bb6ea78ee22fc7bf39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dde6f783_f902be78",
@@ -54,6 +96,30 @@
       "writtenOn": "2022-04-08T19:30:52Z",
       "side": 1,
       "message": "Can this just be left empty? Also please add a comment that it should be deleted once no longer referenced by Chromium.",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 88,
+        "endChar": 39
+      },
+      "revId": "446dee35745758ddab1c29bb6ea78ee22fc7bf39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2bc2023f_b0611f9c",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-08T19:58:27Z",
+      "side": 1,
+      "message": "I thought of using it in Chromium to simplify some deps in Chromium, like here:\nhttps://source.chromium.org/chromium/chromium/src/+/main:ui/gl/BUILD.gn;l\u003d463",
+      "parentUuid": "dde6f783_f902be78",
       "range": {
         "startLine": 87,
         "startChar": 0,
