@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2b68cbf_eafdc9be",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-08T19:30:52Z",
+      "side": 1,
+      "message": "Do you know of anyone using the GN build in standalone fashion, outside of Chromium?",
+      "range": {
+        "startLine": 7,
+        "startChar": 39,
+        "endLine": 7,
+        "endChar": 47
+      },
+      "revId": "446dee35745758ddab1c29bb6ea78ee22fc7bf39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27d23cf0_4cf3c8df",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-08T19:30:52Z",
+      "side": 1,
+      "message": "LGTM but make sure all fires are under control before making it harder to revert (if we absolutely had to).",
+      "revId": "446dee35745758ddab1c29bb6ea78ee22fc7bf39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dde6f783_f902be78",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-08T19:30:52Z",
+      "side": 1,
+      "message": "Can this just be left empty? Also please add a comment that it should be deleted once no longer referenced by Chromium.",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 88,
+        "endChar": 39
+      },
+      "revId": "446dee35745758ddab1c29bb6ea78ee22fc7bf39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
