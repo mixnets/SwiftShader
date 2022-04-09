@@ -79,6 +79,11 @@ struct alignas(16) BufferDescriptor
 	void *ptr;
 	int sizeInBytes;     // intended size of the bound region -- slides along with dynamic offsets
 	int robustnessSize;  // total accessible size from static offset -- does not move with dynamic offset
+	// ((uint8_t *)base) + offset = ptr. This allows SIMD::Pointers to reference multiple BufferDescriptors
+	// in the same binding. It's maintained in addition to ptr as loading ptr is faster in cases with dynamically
+	// uniform descriptor indexing.
+	void *base;
+	int offset;
 };
 
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>

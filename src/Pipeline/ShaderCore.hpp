@@ -362,7 +362,7 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 		{
 			If(Extract(mask, i) != 0)
 			{
-				auto el = rr::Load(rr::Pointer<EL>(&pointers[i]), alignment, atomic, order);
+				auto el = rr::Load(rr::Pointer<EL>(pointers[i]), alignment, atomic, order);
 				out = Insert(out, el, i);
 			}
 		}
@@ -478,12 +478,11 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 
 	if(!isBasePlusOffset)
 	{
-		// Divergent offsets or masked lanes.
 		for(int i = 0; i < SIMD::Width; i++)
 		{
 			If(Extract(mask, i) != 0)
 			{
-				rr::Store(Extract(val, i), rr::Pointer<EL>(&pointers[i]), alignment, atomic, order);
+				rr::Store(Extract(val, i), rr::Pointer<EL>(pointers[i]), alignment, atomic, order);
 			}
 		}
 		return;
@@ -606,12 +605,12 @@ inline void SIMD::Pointer::offsetBase(Int4 offset)
 {
 	if(isBasePlusOffset)
 	{
-		isBasePlusOffset = false;
 		auto offs = offsets() + offset;
 		for(int i = 0; i < SIMD::Width; i++)
 		{
 			pointers[i] = base + Extract(offs, i);
 		}
+		isBasePlusOffset = false;
 	}
 	else
 	{
