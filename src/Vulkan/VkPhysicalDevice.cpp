@@ -248,7 +248,7 @@ static void getPhysicalDeviceDescriptorIndexingFeatures(T *features)
 	features->shaderStorageTexelBufferArrayDynamicIndexing = VK_FALSE;
 	features->shaderUniformBufferArrayNonUniformIndexing = VK_FALSE;
 	features->shaderSampledImageArrayNonUniformIndexing = VK_FALSE;
-	features->shaderStorageBufferArrayNonUniformIndexing = VK_FALSE;
+	features->shaderStorageBufferArrayNonUniformIndexing = VK_TRUE;
 	features->shaderStorageImageArrayNonUniformIndexing = VK_FALSE;
 	features->shaderInputAttachmentArrayNonUniformIndexing = VK_FALSE;
 	features->shaderUniformTexelBufferArrayNonUniformIndexing = VK_FALSE;
@@ -256,13 +256,13 @@ static void getPhysicalDeviceDescriptorIndexingFeatures(T *features)
 	features->descriptorBindingUniformBufferUpdateAfterBind = VK_FALSE;
 	features->descriptorBindingSampledImageUpdateAfterBind = VK_FALSE;
 	features->descriptorBindingStorageImageUpdateAfterBind = VK_FALSE;
-	features->descriptorBindingStorageBufferUpdateAfterBind = VK_FALSE;
+	features->descriptorBindingStorageBufferUpdateAfterBind = VK_TRUE;
 	features->descriptorBindingUniformTexelBufferUpdateAfterBind = VK_FALSE;
 	features->descriptorBindingStorageTexelBufferUpdateAfterBind = VK_FALSE;
-	features->descriptorBindingUpdateUnusedWhilePending = VK_FALSE;
-	features->descriptorBindingPartiallyBound = VK_FALSE;
+	features->descriptorBindingUpdateUnusedWhilePending = VK_TRUE;
+	features->descriptorBindingPartiallyBound = VK_TRUE;
 	features->descriptorBindingVariableDescriptorCount = VK_FALSE;
-	features->runtimeDescriptorArray = VK_FALSE;
+	features->runtimeDescriptorArray = VK_TRUE;
 }
 
 template<typename T>
@@ -377,7 +377,7 @@ static void getPhysicalDeviceVulkan12Features(T *features)
 	getPhysicalDevice8BitStorageFeaturesKHR(features);
 	getPhysicalDeviceShaderAtomicInt64Features(features);
 	getPhysicalDeviceShaderFloat16Int8Features(features);
-	features->descriptorIndexing = VK_FALSE;
+	features->descriptorIndexing = VK_TRUE;
 	getPhysicalDeviceDescriptorIndexingFeatures(features);
 	features->samplerFilterMinmax = VK_FALSE;
 	getPhysicalDeviceScalarBlockLayoutFeatures(features);
