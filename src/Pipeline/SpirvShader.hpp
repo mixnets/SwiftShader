@@ -723,6 +723,9 @@ public:
 		bool StencilExportEXT : 1;
 		bool VulkanMemoryModel : 1;
 		bool VulkanMemoryModelDeviceScope : 1;
+		bool ShaderNonUniform : 1;
+		bool RuntimeDescriptorArray : 1;
+		bool StorageBufferArrayNonUniformIndexing : 1;
 	};
 
 	const Capabilities &getUsedCapabilities() const
@@ -805,6 +808,7 @@ public:
 		bool RelaxedPrecision : 1;
 		bool RowMajor : 1;      // RowMajor if true; ColMajor if false
 		bool InsideMatrix : 1;  // pseudo-decoration for whether we're inside a matrix.
+		bool NonUniform : 1;
 
 		Decorations()
 		    : Location{ -1 }
@@ -828,6 +832,7 @@ public:
 		    , RelaxedPrecision{ false }
 		    , RowMajor{ false }
 		    , InsideMatrix{ false }
+		    , NonUniform{ false }
 		{
 		}
 
@@ -1280,11 +1285,11 @@ private:
 	//  - Pointer
 	//  - InterfaceVariable
 	// Calling GetPointerToData with objects of any other kind will assert.
-	SIMD::Pointer GetPointerToData(Object::ID id, Int arrayIndex, EmitState const *state) const;
+	SIMD::Pointer GetPointerToData(Object::ID id, SIMD::Int arrayIndex, EmitState const *state, bool nonUniform) const;
 
 	OutOfBoundsBehavior getOutOfBoundsBehavior(Object::ID pointerId, EmitState const *state) const;
 
-	SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, const Span &indexIds, const EmitState *state) const;
+	SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, const Span &indexIds, const EmitState *state, bool nonUniform) const;
 	SIMD::Pointer WalkAccessChain(Object::ID id, const Span &indexIds, const EmitState *state) const;
 
 	// Returns the *component* offset in the literal for the given access chain.
@@ -1568,9 +1573,9 @@ public:
 	std::array<SIMD::Float, 4> fragCoord;
 	std::array<SIMD::Float, 4> pointCoord;
 	SIMD::Int helperInvocation;
-	Int4 numWorkgroups;
-	Int4 workgroupID;
-	Int4 workgroupSize;
+	SIMD::Int numWorkgroups;
+	SIMD::Int workgroupID;
+	SIMD::Int workgroupSize;
 	Int subgroupsPerWorkgroup;
 	Int invocationsPerSubgroup;
 	Int subgroupIndex;
