@@ -692,6 +692,9 @@ public:
 		bool StencilExportEXT : 1;
 		bool VulkanMemoryModel : 1;
 		bool VulkanMemoryModelDeviceScope : 1;
+		bool ShaderNonUniform : 1;
+		bool RuntimeDescriptorArray : 1;
+		bool StorageBufferArrayNonUniformIndexing : 1;
 	};
 
 	const Capabilities &getUsedCapabilities() const
@@ -774,6 +777,7 @@ public:
 		bool RelaxedPrecision : 1;
 		bool RowMajor : 1;      // RowMajor if true; ColMajor if false
 		bool InsideMatrix : 1;  // pseudo-decoration for whether we're inside a matrix.
+		bool NonUniform : 1;
 
 		Decorations()
 		    : Location{ -1 }
@@ -1250,9 +1254,11 @@ private:
 	//  - InterfaceVariable
 	// Calling GetPointerToData with objects of any other kind will assert.
 	SIMD::Pointer GetPointerToData(Object::ID id, Int arrayIndex, EmitState const *state) const;
+	SIMD::Pointer GetNonUniformPointerToData(Object::ID id, Int4 arrayIndex, EmitState const *state) const;
 
 	OutOfBoundsBehavior getOutOfBoundsBehavior(Object::ID pointerId, EmitState const *state) const;
 
+	SIMD::Pointer WalkNonUniformAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
 	SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
 	SIMD::Pointer WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
 

@@ -447,6 +447,9 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityStencilExportEXT: capabilities.StencilExportEXT = true; break;
 				case spv::CapabilityVulkanMemoryModel: capabilities.VulkanMemoryModel = true; break;
 				case spv::CapabilityVulkanMemoryModelDeviceScope: capabilities.VulkanMemoryModelDeviceScope = true; break;
+				case spv::CapabilityShaderNonUniform: capabilities.ShaderNonUniform = true; break;
+				case spv::CapabilityRuntimeDescriptorArray: capabilities.RuntimeDescriptorArray = true; break;
+				case spv::CapabilityStorageBufferArrayNonUniformIndexing: capabilities.StorageBufferArrayNonUniformIndexing = true; break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
@@ -809,6 +812,7 @@ SpirvShader::SpirvShader(
 				if(!strcmp(ext, "SPV_GOOGLE_decorate_string")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_hlsl_functionality1")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_user_type")) break;
+				if(!strcmp(ext, "SPV_EXT_descriptor_indexing")) break;
 				UNSUPPORTED("SPIR-V Extension: %s", ext);
 			}
 			break;
@@ -1249,6 +1253,8 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 	auto &baseObject = getObject(baseId);
 	Type::ID typeId = getType(baseObject).element;
 	Decorations d = GetDecorationsForId(baseObject.typeId());
+	bool nonuniform = false;
+	Int4 nonUniformArrayIdx;
 
 	Int arrayIndex = 0;
 	if(baseObject.kind == Object::Kind::DescriptorSet)
@@ -1264,8 +1270,16 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 			}
 			else
 			{
-				// Note: the value of indexIds[0] must be dynamically uniform.
-				arrayIndex = Extract(state->getIntermediate(indexIds[0]).Int(0), 0);
+				Decorations dIndex = GetDecorationsForId(indexIds[0]);
+				if(dIndex.NonUniform)
+				{
+					nonuniform = true;
+					nonUniformArrayIdx = state->getIntermediate(indexIds[0]).Int(0);
+				}
+				else
+				{
+					arrayIndex = Extract(state->getIntermediate(indexIds[0]).Int(0), 0);
+				}
 			}
 
 			numIndexes--;
@@ -1274,7 +1288,7 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 		}
 	}
 
-	auto ptr = GetPointerToData(baseId, arrayIndex, state);
+	SIMD::Pointer ptr = nonuniform ? GetNonUniformPointerToData(baseId, nonUniformArrayIdx, state) : GetPointerToData(baseId, arrayIndex, state);
 
 	int constantOffset = 0;
 
@@ -1532,6 +1546,10 @@ void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
 	case spv::DecorationColMajor:
 		HasRowMajor = true;
 		RowMajor = false;
+		break;
+	case spv::DecorationNonUniform:
+		NonUniform = true;
+		break;
 	default:
 		// Intentionally partial, there are many decorations we just don't care about.
 		break;
@@ -1590,6 +1608,7 @@ void SpirvShader::Decorations::Apply(const sw::SpirvShader::Decorations &src)
 	BufferBlock |= src.BufferBlock;
 	RelaxedPrecision |= src.RelaxedPrecision;
 	InsideMatrix |= src.InsideMatrix;
+	NonUniform |= src.NonUniform;
 }
 
 void SpirvShader::DescriptorDecorations::Apply(const sw::SpirvShader::DescriptorDecorations &src)
