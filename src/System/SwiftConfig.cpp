@@ -136,7 +136,7 @@ marl::Scheduler::Config getSchedulerConfiguration(const Configuration &config)
 	                                                 : config.threadCount;
 	auto affinity = getAffinityFromMask(config.affinityMask);
 	auto affinityPolicy = getAffinityPolicy(std::move(affinity), config.affinityPolicy);
-
+	threadCount = 0;
 	marl::Scheduler::Config cfg;
 	cfg.setWorkerThreadCount(threadCount);
 	cfg.setWorkerThreadAffinityPolicy(affinityPolicy);
