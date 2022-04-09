@@ -378,6 +378,65 @@ void SpirvShader::VisitMemoryObject(Object::ID id, const MemoryVisitor &f) const
 	}
 }
 
+SIMD::Pointer SpirvShader::GetPointerToNonUniformData(Object::ID id, Int4 arrayIndex, EmitState const *state) const
+{
+	auto routine = state->routine;
+	auto &object = getObject(id);
+	switch(object.kind)
+	{
+	case Object::Kind::DescriptorSet:
+		{
+			const auto &d = descriptorDecorations.at(id);
+			ASSERT(d.DescriptorSet >= 0 && static_cast<uint32_t>(d.DescriptorSet) < vk::MAX_BOUND_DESCRIPTOR_SETS);
+			ASSERT(d.Binding >= 0);
+			ASSERT(routine->pipelineLayout->getDescriptorCount(d.DescriptorSet, d.Binding) != 0);  // "If descriptorCount is zero this binding entry is reserved and the resource must not be accessed from any stage via this binding within any pipeline using the set layout."
+
+			uint32_t bindingOffset = routine->pipelineLayout->getBindingOffset(d.DescriptorSet, d.Binding);
+			uint32_t descriptorSize = routine->pipelineLayout->getDescriptorSize(d.DescriptorSet, d.Binding);
+			Int4 descriptorOffset = bindingOffset + descriptorSize * arrayIndex;
+
+			const SIMD::Pointer &descriptorSet = state->getPointer(id);
+			auto robustness = getOutOfBoundsBehavior(id, state);
+			ASSERT(routine->pipelineLayout->getDescriptorType(d.DescriptorSet, d.Binding) != VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT);
+
+			std::array<Pointer<Byte>, SIMD::Width> pointers;
+			if(!descriptorSet.isBasePlusOffset)
+			{
+				auto setPointers = descriptorSet.getPointers();
+				for(int i = 0; i < SIMD::Width; i++)
+				{
+					pointers[i] = *Pointer<Pointer<Byte>>(setPointers[i] + Extract(descriptorOffset, i) + OFFSET(vk::BufferDescriptor, ptr));
+				}
+			}
+			else
+			{
+				auto base = descriptorSet.getBase();
+				Assert(base != Pointer<Byte>(nullptr));
+
+				for(int i = 0; i < SIMD::Width; i++)
+				{
+					pointers[i] = *Pointer<Pointer<Byte>>(base + Extract(descriptorOffset, i) + OFFSET(vk::BufferDescriptor, ptr));
+				}
+			}
+
+			SIMD::Pointer ptr(pointers);
+
+			if(routine->pipelineLayout->isDescriptorDynamic(d.DescriptorSet, d.Binding))
+			{
+				Int4 dynamicOffsetIndex = Int4(routine->pipelineLayout->getDynamicOffsetIndex(d.DescriptorSet, d.Binding) + arrayIndex);
+				SIMD::Pointer routineDynamicOffsets = SIMD::Pointer(routine->descriptorDynamicOffsets, 0, sizeof(int) * dynamicOffsetIndex);
+				Int4 dynamicOffsets = routineDynamicOffsets.Load<Int4>(robustness, state->activeLaneMask());
+				ptr += dynamicOffsets;
+			}
+			return ptr;
+		}
+
+	default:
+		UNREACHABLE("Invalid pointer kind %d", int(object.kind));
+		return SIMD::Pointer(Pointer<Byte>(), 0);
+	}
+}
+
 SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, Int arrayIndex, EmitState const *state) const
 {
 	auto routine = state->routine;
