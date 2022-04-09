@@ -447,6 +447,9 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityStencilExportEXT: capabilities.StencilExportEXT = true; break;
 				case spv::CapabilityVulkanMemoryModel: capabilities.VulkanMemoryModel = true; break;
 				case spv::CapabilityVulkanMemoryModelDeviceScope: capabilities.VulkanMemoryModelDeviceScope = true; break;
+				case spv::CapabilityShaderNonUniform: capabilities.ShaderNonUniform = true; break;
+				case spv::CapabilityRuntimeDescriptorArray: capabilities.RuntimeDescriptorArray = true; break;
+				case spv::CapabilityStorageBufferArrayNonUniformIndexing: capabilities.StorageBufferArrayNonUniformIndexing = true; break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
@@ -809,6 +812,7 @@ SpirvShader::SpirvShader(
 				if(!strcmp(ext, "SPV_GOOGLE_decorate_string")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_hlsl_functionality1")) break;
 				if(!strcmp(ext, "SPV_GOOGLE_user_type")) break;
+				if(!strcmp(ext, "SPV_EXT_descriptor_indexing")) break;
 				UNSUPPORTED("SPIR-V Extension: %s", ext);
 			}
 			break;
@@ -1242,13 +1246,15 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 	}
 }
 
-SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, const Span &indexIds, const EmitState *state) const
+SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, const Span &indexIds, const EmitState *state, const Decorations dResult) const
 {
 	// Produce a offset into external memory in sizeof(float) units
 
 	auto &baseObject = getObject(baseId);
 	Type::ID typeId = getType(baseObject).element;
 	Decorations d = GetDecorationsForId(baseObject.typeId());
+	bool nonuniform = false;
+	Int4 nonUniformArrayIdx;
 
 	Int arrayIndex = 0;
 	uint32_t start = 0;
@@ -1265,8 +1271,16 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, cons
 			}
 			else
 			{
-				// Note: the value of indexIds[0] must be dynamically uniform.
-				arrayIndex = Extract(state->getIntermediate(indexIds[0]).Int(0), 0);
+				Decorations dIndex = GetDecorationsForId(indexIds[0]);
+				if(dIndex.NonUniform || dResult.NonUniform)
+				{
+					nonuniform = true;
+					nonUniformArrayIdx = state->getIntermediate(indexIds[0]).Int(0);
+				}
+				else
+				{
+					arrayIndex = Extract(state->getIntermediate(indexIds[0]).Int(0), 0);
+				}
 			}
 
 			start = 1;
@@ -1274,8 +1288,7 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, cons
 		}
 	}
 
-	auto ptr = GetPointerToData(baseId, arrayIndex, state);
-
+	SIMD::Pointer ptr = nonuniform ? GetPointerToNonUniformData(baseId, nonUniformArrayIdx, state) : GetPointerToData(baseId, arrayIndex, state);
 	int constantOffset = 0;
 
 	for(uint32_t i = start; i < indexIds.size(); i++)
@@ -1532,6 +1545,10 @@ void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
 	case spv::DecorationColMajor:
 		HasRowMajor = true;
 		RowMajor = false;
+		break;
+	case spv::DecorationNonUniform:
+		NonUniform = true;
+		break;
 	default:
 		// Intentionally partial, there are many decorations we just don't care about.
 		break;
@@ -1590,6 +1607,7 @@ void SpirvShader::Decorations::Apply(const sw::SpirvShader::Decorations &src)
 	BufferBlock |= src.BufferBlock;
 	RelaxedPrecision |= src.RelaxedPrecision;
 	InsideMatrix |= src.InsideMatrix;
+	NonUniform |= src.NonUniform;
 }
 
 void SpirvShader::DescriptorDecorations::Apply(const sw::SpirvShader::DescriptorDecorations &src)
@@ -2201,6 +2219,7 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 {
 	Type::ID typeId = insn.word(1);
 	Object::ID resultId = insn.word(2);
+	Decorations dResult = GetDecorationsForId(resultId);
 	Object::ID baseId = insn.word(3);
 	auto &type = getType(typeId);
 	ASSERT(type.componentCount == 1);
@@ -2210,7 +2229,7 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 	   type.storageClass == spv::StorageClassUniform ||
 	   type.storageClass == spv::StorageClassStorageBuffer)
 	{
-		auto ptr = WalkExplicitLayoutAccessChain(baseId, Span(insn, 4, insn.wordCount() - 4), state);
+		auto ptr = WalkExplicitLayoutAccessChain(baseId, Span(insn, 4, insn.wordCount() - 4), state, dResult);
 		state->createPointer(resultId, ptr);
 	}
 	else
