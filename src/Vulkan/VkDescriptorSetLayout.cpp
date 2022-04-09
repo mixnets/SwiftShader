@@ -560,6 +560,9 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			const VkDescriptorBufferInfo *update = reinterpret_cast<const VkDescriptorBufferInfo *>(src + entry.offset + entry.stride * i);
 			const vk::Buffer *buffer = vk::Cast(update->buffer);
 			bufferDescriptor[i].ptr = buffer->getOffsetPointer(update->offset);
+			bufferDescriptor[i].base = buffer->getOffsetPointer(0);
+			ASSERT(update->offset < (uint64_t)0xFFFFFFFF);
+			bufferDescriptor[i].offset = static_cast<uint32_t>(update->offset);
 			bufferDescriptor[i].sizeInBytes = static_cast<int>((update->range == VK_WHOLE_SIZE) ? buffer->getSize() - update->offset : update->range);
 
 			// TODO(b/195684837): The spec states that "vertexBufferRangeSize is the byte size of the memory

@@ -1087,6 +1087,7 @@ Pointer Pointer::operator*(int i)
 
 SIMD::Int Pointer::offsets() const
 {
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	static_assert(SIMD::Width == 4, "Expects SIMD::Width to be 4");
 	return dynamicOffsets + SIMD::Int(staticOffsets[0], staticOffsets[1], staticOffsets[2], staticOffsets[3]);
 }
@@ -1159,6 +1160,7 @@ rr::Int Pointer::limit() const
 // (N+0*step, N+1*step, N+2*step, N+3*step)
 rr::Bool Pointer::hasSequentialOffsets(unsigned int step) const
 {
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	if(hasDynamicOffsets)
 	{
 		auto o = offsets();
@@ -1172,6 +1174,7 @@ rr::Bool Pointer::hasSequentialOffsets(unsigned int step) const
 // sequential (N+0*step, N+1*step, N+2*step, N+3*step)
 bool Pointer::hasStaticSequentialOffsets(unsigned int step) const
 {
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	if(hasDynamicOffsets)
 	{
 		return false;
@@ -1186,6 +1189,7 @@ bool Pointer::hasStaticSequentialOffsets(unsigned int step) const
 // Returns true if all offsets are equal (N, N, N, N)
 rr::Bool Pointer::hasEqualOffsets() const
 {
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	if(hasDynamicOffsets)
 	{
 		auto o = offsets();
@@ -1199,6 +1203,7 @@ rr::Bool Pointer::hasEqualOffsets() const
 // (N, N, N, N)
 bool Pointer::hasStaticEqualOffsets() const
 {
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	if(hasDynamicOffsets)
 	{
 		return false;
