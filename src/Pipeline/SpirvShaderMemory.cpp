@@ -378,6 +378,80 @@ void SpirvShader::VisitMemoryObject(Object::ID id, const MemoryVisitor &f) const
 	}
 }
 
+SIMD::Pointer SpirvShader::GetNonUniformPointerToData(Object::ID id, Int4 arrayIndex, EmitState const *state) const
+{
+	auto routine = state->routine;
+	auto &object = getObject(id);
+	switch(object.kind)
+	{
+	case Object::Kind::DescriptorSet:
+		{
+			const auto &d = descriptorDecorations.at(id);
+			ASSERT(d.DescriptorSet >= 0 && static_cast<uint32_t>(d.DescriptorSet) < vk::MAX_BOUND_DESCRIPTOR_SETS);
+			ASSERT(d.Binding >= 0);
+			ASSERT(routine->pipelineLayout->getDescriptorCount(d.DescriptorSet, d.Binding) != 0);  // "If descriptorCount is zero this binding entry is reserved and the resource must not be accessed from any stage via this binding within any pipeline using the set layout."
+
+			uint32_t bindingOffset = routine->pipelineLayout->getBindingOffset(d.DescriptorSet, d.Binding);
+			uint32_t descriptorSize = routine->pipelineLayout->getDescriptorSize(d.DescriptorSet, d.Binding);
+			Int4 descriptorOffset = bindingOffset + descriptorSize * arrayIndex;
+
+			const SIMD::Pointer &set = state->getPointer(id);
+			Assert(set.base != Pointer<Byte>(nullptr));
+			SIMD::Pointer descriptor = set;  // BufferDescriptor* or inline uniform block
+			descriptor.hasDynamicOffsets = true;
+			descriptor.dynamicOffsets = descriptorOffset;
+
+			auto descriptorType = routine->pipelineLayout->getDescriptorType(d.DescriptorSet, d.Binding);
+			if(descriptorType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT)
+			{
+				// Note: there is no bounds checking for inline uniform blocks.
+				// MAX_INLINE_UNIFORM_BLOCK_SIZE represents the maximum size of
+				// an inline uniform block, but this value should remain unused.
+				descriptor.staticLimit = vk::MAX_INLINE_UNIFORM_BLOCK_SIZE;
+				return descriptor;
+			}
+			else
+			{
+				Int4 dynamicOffsetIndex =
+				    routine->pipelineLayout->getDynamicOffsetIndex(d.DescriptorSet, d.Binding) +
+				    arrayIndex;
+				Int4 offsets;
+				Int limit;
+				for(int i = 0; i < SIMD::Width; i++)
+				{
+					Pointer<Byte> curDescriptor = descriptor.base + Extract(descriptor.dynamicOffsets, i);
+					// Load data and base as integers so we can do pointer arithmetic on them
+					Int dataAsInt = *Pointer<Int>(curDescriptor + OFFSET(vk::BufferDescriptor, ptr));  // void *
+					Int baseAsInt = *Pointer<Int>(&descriptor.base);
+					Int offset = dataAsInt - baseAsInt;
+					Int size = *Pointer<Int>(curDescriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
+					if(routine->pipelineLayout->isDescriptorDynamic(d.DescriptorSet, d.Binding))
+					{
+						Int4 dynamicOffsetIndex =
+						    routine->pipelineLayout->getDynamicOffsetIndex(d.DescriptorSet, d.Binding) +
+						    arrayIndex;
+						Int dynamicOffset = routine->descriptorDynamicOffsets[Extract(dynamicOffsetIndex, i)];
+						Int robustnessSize = *Pointer<Int>(curDescriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
+						offsets = Insert(offsets, offset, i);
+						limit = Max(limit, offset + Min(size, robustnessSize - dynamicOffset));
+					}
+					else
+					{
+						offsets = Insert(offsets, offset, i);
+						limit = Max(limit, offset + size);
+					}
+				}
+
+				return SIMD::Pointer(descriptor.base, limit, offsets);
+			}
+		}
+
+	default:
+		UNREACHABLE("Invalid pointer kind %d", int(object.kind));
+		return SIMD::Pointer(Pointer<Byte>(), 0);
+	}
+}
+
 SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, Int arrayIndex, EmitState const *state) const
 {
 	auto routine = state->routine;
