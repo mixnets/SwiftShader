@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7cf9b5f7_b98f6136",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1278,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-11T18:47:26Z",
+      "side": 1,
+      "message": "Nit: this is repeated in the if and else statement, so I would put it in a variable above.",
+      "range": {
+        "startLine": 1278,
+        "startChar": 26,
+        "endLine": 1278,
+        "endChar": 68
+      },
+      "revId": "e4d5e91cbb7dd7da027f49dd289c3c64c9d9b143",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "679031c4_ea2397ed",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-11T18:47:26Z",
+      "side": 1,
+      "message": "Explain this please. \nIIUC, base is a potentially 64b value (a pointer) which you store in an Int (32b value). I don\u0027t think it fits.\nThe base is already included in the \"descriptor\" variable. From this point, you should only be affecting offsets and the base pointer shouldn\u0027t appear anywhere else in the logic.",
+      "range": {
+        "startLine": 405,
+        "startChar": 3,
+        "endLine": 405,
+        "endChar": 58
+      },
+      "revId": "e4d5e91cbb7dd7da027f49dd289c3c64c9d9b143",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
