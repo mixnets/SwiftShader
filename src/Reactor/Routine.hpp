@@ -67,10 +67,11 @@ public:
 	template<typename... Args>
 	Return operator()(Args... args) const
 	{
-#if __has_feature(memory_sanitizer)
-		// TODO(b/228253151): Fix support for detecting uninitialized parameters.
-		__msan_unpoison_param(sizeof...(args));
-#endif
+		if(__has_feature(memory_sanitizer) && jit->msanInstrumentation)
+		{
+			// TODO(b/228253151): Fix support for detecting uninitialized parameters.
+			__msan_unpoison_param(sizeof...(args));
+		}
 
 		return function(args...);
 	}
