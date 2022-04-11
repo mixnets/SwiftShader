@@ -45,6 +45,30 @@
       },
       "revId": "e4d5e91cbb7dd7da027f49dd289c3c64c9d9b143",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30f99362_52f9a5da",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-04-11T19:31:18Z",
+      "side": 1,
+      "message": "The problem I\u0027m trying to solve is that I have an unknown number of active vk::BufferDescriptor.ptr objects that I need to turn into a single SIMD::Pointer. So I need to turn 4 potential bases into 1 base + 4 offsets. \n\nSince there\u0027s no pointer arithmetic in Reactor, I convert the pointers into integers to do this.\n\nI\u0027m not sure how else to create a single SIMD::Pointer from 4 rr::Pointers. Perhaps I should solve this by changing BufferDescriptor to use base + offset? I believe all valid BufferDescriptors within a binding of the same descriptor set index into the same buffer, right?",
+      "parentUuid": "679031c4_ea2397ed",
+      "range": {
+        "startLine": 405,
+        "startChar": 3,
+        "endLine": 405,
+        "endChar": 58
+      },
+      "revId": "e4d5e91cbb7dd7da027f49dd289c3c64c9d9b143",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
