@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0f6d098_84635019",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-12T14:30:00Z",
+      "side": 1,
+      "message": "No change in test results since https://gerrit.khronos.org/c/vk-gl-cts/+/8951 hasn\u0027t landed yet, but it will allow Siru or others to test it.",
+      "revId": "6847133794751a9e19f519a372518947813e0452",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
