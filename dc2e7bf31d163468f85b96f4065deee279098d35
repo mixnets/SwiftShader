@@ -16,6 +16,75 @@
       "message": "Some issues we\u0027ll have to follow up on (I\u0027ll file bugs), but this can land.",
       "revId": "dc2e7bf31d163468f85b96f4065deee279098d35",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e61ae1c_2e1fc007",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-13T19:35:42Z",
+      "side": 1,
+      "message": "https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3631",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 58
+      },
+      "revId": "dc2e7bf31d163468f85b96f4065deee279098d35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "547cc10f_a0fdda20",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-13T19:35:42Z",
+      "side": 1,
+      "message": "b/221280933",
+      "range": {
+        "startLine": 3,
+        "startChar": 31,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "dc2e7bf31d163468f85b96f4065deee279098d35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb6d806d_abf285ba",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-13T19:35:42Z",
+      "side": 1,
+      "message": "Also appears to be https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3631.",
+      "range": {
+        "startLine": 3,
+        "startChar": 53,
+        "endLine": 3,
+        "endChar": 56
+      },
+      "revId": "dc2e7bf31d163468f85b96f4065deee279098d35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
