@@ -16,6 +16,24 @@
       "message": "I believe https://swiftshader-review.googlesource.com/c/SwiftShader/+/64730 is the last bit to replace this patch.",
       "revId": "76caeb03a97efeeee9bffe8ccea89a21190911e8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "372d7571_05b57d68",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-14T16:52:59Z",
+      "side": 1,
+      "message": "Also required https://swiftshader-review.googlesource.com/c/SwiftShader/+/64950, but I think this patch can be dropped now?",
+      "parentUuid": "00094d59_5a996d21",
+      "revId": "76caeb03a97efeeee9bffe8ccea89a21190911e8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
