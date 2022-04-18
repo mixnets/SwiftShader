@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2df806b_f6cac1b8",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-18T04:51:51Z",
+      "side": 1,
+      "message": "Handle arrays",
+      "range": {
+        "startLine": 114,
+        "startChar": 8,
+        "endLine": 114,
+        "endChar": 13
+      },
+      "revId": "e696595449d3caeb86d2137d2e828a1ff2830dac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
