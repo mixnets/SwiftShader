@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "258daeb7_36c42e7a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101406
+      },
+      "writtenOn": "2022-04-18T16:33:56Z",
+      "side": 1,
+      "message": "I don\u0027t have permissions to submit this - would someone from the SwiftShader team do this for me? Thanks!",
+      "revId": "34c43b0921e9f4c9a2030c3835e18d9cabf28346",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
