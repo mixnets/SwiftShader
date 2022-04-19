@@ -34,6 +34,47 @@
       "parentUuid": "a0319fc7_1b964676",
       "revId": "ba1591a88f3d7dc210c78bda0a6b6d888a443388",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "39779b8a_a91fee24",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 100526
+      },
+      "writtenOn": "2022-04-19T20:57:53Z",
+      "side": 1,
+      "message": "there were missing features prior to turning it on by default, so yeah I\u0027d still use the legacy pass manager for older versions",
+      "parentUuid": "1461639b_89856cc7",
+      "revId": "ba1591a88f3d7dc210c78bda0a6b6d888a443388",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3144eff9_734fe1c3",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 628,
+      "author": {
+        "id": 100526
+      },
+      "writtenOn": "2022-04-19T20:57:53Z",
+      "side": 1,
+      "message": "I think this should work for all LLVM versions",
+      "range": {
+        "startLine": 628,
+        "startChar": 0,
+        "endLine": 628,
+        "endChar": 3
+      },
+      "revId": "ba1591a88f3d7dc210c78bda0a6b6d888a443388",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
