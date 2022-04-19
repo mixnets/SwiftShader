@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0319fc7_1b964676",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-19T20:11:13Z",
+      "side": 1,
+      "message": "IIUC, the new pass manager has existed for a while (before version 13), so why not use it by default on older versions (where it also exists) too?",
+      "revId": "ba1591a88f3d7dc210c78bda0a6b6d888a443388",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
