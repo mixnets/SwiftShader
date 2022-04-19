@@ -16,6 +16,24 @@
       "message": "IIUC, the new pass manager has existed for a while (before version 13), so why not use it by default on older versions (where it also exists) too?",
       "revId": "ba1591a88f3d7dc210c78bda0a6b6d888a443388",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1461639b_89856cc7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-19T20:35:13Z",
+      "side": 1,
+      "message": "When we upgrade to a newer version of LLVM it\u0027s going to be at least 13, so I don\u0027t think it matters much. I just chose 13 here since that\u0027s when the legacy pass manager officially became deprecated.\n\nAlso note it doesn\u0027t build with LLVM 10, and I don\u0027t want to figure out if it builds with LLVM 11 or 12 if we don\u0027t have to.",
+      "parentUuid": "a0319fc7_1b964676",
+      "revId": "ba1591a88f3d7dc210c78bda0a6b6d888a443388",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
