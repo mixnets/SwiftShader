@@ -341,7 +341,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(const ImageInstruction &ins
 
 void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, const ImageInstruction &instruction, EmitState *state) const
 {
-	Pointer<Byte> imageDescriptor = state->getPointer(instruction.imageId).base;  // vk::SampledImageDescriptor*
+	Pointer<Byte> imageDescriptor = state->getPointer(instruction.imageId).getBase();  // vk::SampledImageDescriptor*
 
 	Pointer<Byte> samplerFunction = lookupSamplerFunction(imageDescriptor, instruction, state);
 
@@ -354,7 +354,7 @@ Pointer<Byte> SpirvShader::lookupSamplerFunction(Pointer<Byte> imageDescriptor, 
 
 	if(instruction.samplerId != 0)
 	{
-		Pointer<Byte> samplerDescriptor = state->getPointer(instruction.samplerId).base;  // vk::SampledImageDescriptor*
+		Pointer<Byte> samplerDescriptor = state->getPointer(instruction.samplerId).getBase();  // vk::SampledImageDescriptor*
 
 		samplerId = *Pointer<rr::Int>(samplerDescriptor + OFFSET(vk::SampledImageDescriptor, samplerId));  // vk::Sampler::id
 	}
@@ -497,7 +497,7 @@ void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultT
 	const DescriptorDecorations &d = descriptorDecorations.at(imageId);
 	auto descriptorType = routine->pipelineLayout->getDescriptorType(d.DescriptorSet, d.Binding);
 
-	Pointer<Byte> descriptor = state->getPointer(imageId).base;
+	Pointer<Byte> descriptor = state->getPointer(imageId).getBase();
 
 	Int width;
 	Int height;
@@ -556,7 +556,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageQueryLevels(InsnIterator insn, Emi
 	const DescriptorDecorations &d = descriptorDecorations.at(imageId);
 	auto descriptorType = state->routine->pipelineLayout->getDescriptorType(d.DescriptorSet, d.Binding);
 
-	Pointer<Byte> descriptor = state->getPointer(imageId).base;
+	Pointer<Byte> descriptor = state->getPointer(imageId).getBase();
 	Int mipLevels = 0;
 	switch(descriptorType)
 	{
@@ -588,7 +588,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageQuerySamples(InsnIterator insn, Em
 	const DescriptorDecorations &d = descriptorDecorations.at(imageId);
 	auto descriptorType = state->routine->pipelineLayout->getDescriptorType(d.DescriptorSet, d.Binding);
 
-	Pointer<Byte> descriptor = state->getPointer(imageId).base;
+	Pointer<Byte> descriptor = state->getPointer(imageId).getBase();
 	Int sampleCount = 0;
 	switch(descriptorType)
 	{
@@ -747,7 +747,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 		imageFormat = VK_FORMAT_S8_UINT;
 	}
 
-	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).base;  // vk::StorageImageDescriptor*
+	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).getBase();  // vk::StorageImageDescriptor*
 	auto &dst = state->createIntermediate(instruction.resultId, resultType.componentCount);
 
 	// VK_EXT_image_robustness requires replacing out-of-bounds access with zero.
@@ -791,7 +791,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 		{
 			If(Extract(mask, i) != 0)
 			{
-				packed[0] = Insert(packed[0], Int(*Pointer<Short>(texelPtr.base + Extract(offsets, i))), i);
+				packed[0] = Insert(packed[0], Int(*Pointer<Short>(texelPtr.getBase() + Extract(offsets, i))), i);
 			}
 		}
 	}
@@ -804,7 +804,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 		{
 			If(Extract(mask, i) != 0)
 			{
-				packed[0] = Insert(packed[0], Int(*Pointer<Byte>(texelPtr.base + Extract(offsets, i))), i);
+				packed[0] = Insert(packed[0], Int(*Pointer<Byte>(texelPtr.getBase() + Extract(offsets, i))), i);
 			}
 		}
 	}
@@ -1171,7 +1171,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 	texelAndMask[3] = texel.Int(3);
 	texelAndMask[4] = state->activeStoresAndAtomicsMask();
 
-	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).base;  // vk::StorageImageDescriptor*
+	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).getBase();  // vk::StorageImageDescriptor*
 
 	vk::Format imageFormat = SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(instruction.imageFormat));
 
@@ -1400,7 +1400,7 @@ void SpirvShader::WriteImage(ImageInstructionSignature instruction, Pointer<Byte
 		{
 			If(Extract(mask, i) != 0)
 			{
-				*Pointer<Short>(texelPtr.base + Extract(offsets, i)) = Short(Extract(packed[0], i));
+				*Pointer<Short>(texelPtr.getBase() + Extract(offsets, i)) = Short(Extract(packed[0], i));
 			}
 		}
 	}
@@ -1413,7 +1413,7 @@ void SpirvShader::WriteImage(ImageInstructionSignature instruction, Pointer<Byte
 		{
 			If(Extract(mask, i) != 0)
 			{
-				*Pointer<Byte>(texelPtr.base + Extract(offsets, i)) = Byte(Extract(packed[0], i));
+				*Pointer<Byte>(texelPtr.getBase() + Extract(offsets, i)) = Byte(Extract(packed[0], i));
 			}
 		}
 	}
@@ -1425,7 +1425,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageTexelPointer(const ImageInstructio
 {
 	auto coordinate = Operand(this, state, instruction.coordinateId);
 
-	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).base;  // vk::StorageImageDescriptor*
+	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).getBase();  // vk::StorageImageDescriptor*
 
 	// VK_EXT_image_robustness requires checking for out-of-bounds accesses.
 	// TODO(b/162327166): Only perform bounds checks when VK_EXT_image_robustness is enabled.
