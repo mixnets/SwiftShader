@@ -102,6 +102,7 @@ struct Pointer
 	Pointer(rr::Pointer<Byte> base, unsigned int limit);
 	Pointer(rr::Pointer<Byte> base, rr::Int limit, SIMD::Int offset);
 	Pointer(rr::Pointer<Byte> base, unsigned int limit, SIMD::Int offset);
+	Pointer(rr::Pointer<Byte> p0, rr::Pointer<Byte> p1, rr::Pointer<Byte> p2, rr::Pointer<Byte> p3);
 
 	Pointer &operator+=(Int i);
 	Pointer &operator*=(Int i);
@@ -160,6 +161,9 @@ struct Pointer
 
 	bool hasDynamicLimit;    // True if dynamicLimit is non-zero.
 	bool hasDynamicOffsets;  // True if any dynamicOffsets are non-zero.
+	bool isBasePlusOffset;   // True if this uses base+offset. False if this is a collection of rr::Pointers
+
+	std::array<rr::Pointer<Byte>, SIMD::Width> pointers;
 };
 
 template<typename T>
@@ -342,6 +346,20 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 {
 	using EL = typename Element<T>::type;
 
+	if(!isBasePlusOffset)
+	{
+		T out = T(0);
+		for(int i = 0; i < SIMD::Width; i++)
+		{
+			If(Extract(mask, i) != 0)
+			{
+				auto el = rr::Load(rr::Pointer<EL>(&pointers[i]), alignment, atomic, order);
+				out = Insert(out, el, i);
+			}
+		}
+		return out;
+	}
+
 	if(isStaticallyInBounds(sizeof(float), robustness))
 	{
 		// All elements are statically known to be in-bounds.
@@ -448,8 +466,21 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 {
 	using EL = typename Element<T>::type;
 	constexpr size_t alignment = sizeof(float);
-	auto offs = offsets();
 
+	if(!isBasePlusOffset)
+	{
+		// Divergent offsets or masked lanes.
+		for(int i = 0; i < SIMD::Width; i++)
+		{
+			If(Extract(mask, i) != 0)
+			{
+				rr::Store(Extract(val, i), rr::Pointer<EL>(&pointers[i]), alignment, atomic, order);
+			}
+		}
+		return;
+	}
+
+	auto offs = offsets();
 	switch(robustness)
 	{
 	case OutOfBoundsBehavior::Nullify:

@@ -969,6 +969,7 @@ Pointer::Pointer(rr::Pointer<Byte> base, rr::Int limit)
     , staticOffsets{}
     , hasDynamicLimit(true)
     , hasDynamicOffsets(false)
+    , isBasePlusOffset(true)
 {}
 
 Pointer::Pointer(rr::Pointer<Byte> base, unsigned int limit)
@@ -979,6 +980,7 @@ Pointer::Pointer(rr::Pointer<Byte> base, unsigned int limit)
     , staticOffsets{}
     , hasDynamicLimit(false)
     , hasDynamicOffsets(false)
+    , isBasePlusOffset(true)
 {}
 
 Pointer::Pointer(rr::Pointer<Byte> base, rr::Int limit, SIMD::Int offset)
@@ -989,6 +991,7 @@ Pointer::Pointer(rr::Pointer<Byte> base, rr::Int limit, SIMD::Int offset)
     , staticOffsets{}
     , hasDynamicLimit(true)
     , hasDynamicOffsets(true)
+    , isBasePlusOffset(true)
 {}
 
 Pointer::Pointer(rr::Pointer<Byte> base, unsigned int limit, SIMD::Int offset)
@@ -999,17 +1002,33 @@ Pointer::Pointer(rr::Pointer<Byte> base, unsigned int limit, SIMD::Int offset)
     , staticOffsets{}
     , hasDynamicLimit(false)
     , hasDynamicOffsets(true)
+    , isBasePlusOffset(true)
 {}
+
+Pointer::Pointer(rr::Pointer<Byte> p0, rr::Pointer<Byte> p1, rr::Pointer<Byte> p2, rr::Pointer<Byte> p3)
+    : isBasePlusOffset(false)
+    , pointers({ { p0, p1, p2, p3 } })
+{
+	static_assert(SIMD::Width == 4, "Expects SIMD::Width to be 4");
+}
 
 Pointer &Pointer::operator+=(Int i)
 {
-	dynamicOffsets += i;
-	hasDynamicOffsets = true;
+	if(isBasePlusOffset)
+	{
+		dynamicOffsets += i;
+		hasDynamicOffsets = true;
+	}
+	else
+	{
+		for(int el = 0; el < SIMD::Width; el++) { pointers[el] += Extract(i, el); }
+	}
 	return *this;
 }
 
 Pointer &Pointer::operator*=(Int i)
 {
+	ASSERT_MSG(isBasePlusOffset, "No offset to multiply for this type of pointer");
 	dynamicOffsets = offsets() * i;
 	staticOffsets = {};
 	hasDynamicOffsets = true;
@@ -1031,12 +1050,20 @@ Pointer Pointer::operator*(SIMD::Int i)
 
 Pointer &Pointer::operator+=(int i)
 {
-	for(int el = 0; el < SIMD::Width; el++) { staticOffsets[el] += i; }
+	if(isBasePlusOffset)
+	{
+		for(int el = 0; el < SIMD::Width; el++) { staticOffsets[el] += i; }
+	}
+	else
+	{
+		for(int el = 0; el < SIMD::Width; el++) { pointers[el] += i; }
+	}
 	return *this;
 }
 
 Pointer &Pointer::operator*=(int i)
 {
+	ASSERT_MSG(isBasePlusOffset, "No offset to multiply for this type of pointer");
 	for(int el = 0; el < SIMD::Width; el++) { staticOffsets[el] *= i; }
 	if(hasDynamicOffsets)
 	{
