@@ -1183,6 +1183,40 @@ bool Pointer::hasStaticEqualOffsets() const
 	return true;
 }
 
+Pointer64::Pointer64(rr::Pointer<Byte> p0, rr::Pointer<Byte> p1, rr::Pointer<Byte> p2, rr::Pointer<Byte> p3)
+    : pointers({ p0, p1, p2, p3 })
+{
+	static_assert(SIMD::Width == 4, "Assumes there are 4 lanes");
+}
+
+Pointer64 &Pointer64::operator+=(SIMD::Int i)
+{
+	Pointer64 p = *this;
+
+	for(int el = 0; el < SIMD::Width; el++) { pointers[el] += Extract(i, el); }
+	return *this;
+}
+
+Pointer64 Pointer64::operator+(SIMD::Int i)
+{
+	Pointer64 p = *this;
+	p += i;
+	return p;
+}
+
+Pointer64 &Pointer64::operator+=(int i)
+{
+	for(int el = 0; el < SIMD::Width; el++) { pointers[el] += i; }
+	return *this;
+}
+
+Pointer64 Pointer64::operator+(int i)
+{
+	Pointer64 p = *this;
+	p += i;
+	return p;
+}
+
 }  // namespace SIMD
 
 }  // namespace sw

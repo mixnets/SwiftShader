@@ -162,6 +162,28 @@ struct Pointer
 	bool hasDynamicOffsets;  // True if any dynamicOffsets are non-zero.
 };
 
+// A pointer type with SIMD::Width addressable pointers.
+struct Pointer64
+{
+	Pointer64(rr::Pointer<Byte> p0, rr::Pointer<Byte> p1, rr::Pointer<Byte> p2, rr::Pointer<Byte> p3);
+
+	template<typename T>
+	inline T Load(OutOfBoundsBehavior robustness, Int mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed, int alignment = sizeof(float));
+
+	template<typename T>
+	inline void Store(T val, OutOfBoundsBehavior robustness, Int mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed);
+
+	template<typename T>
+	inline void Store(RValue<T> val, OutOfBoundsBehavior robustness, Int mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed);
+
+	Pointer64 &operator+=(SIMD::Int i);
+	Pointer64 operator+(SIMD::Int i);
+	Pointer64 &operator+=(int i);
+	Pointer64 operator+(int i);
+
+	std::array<rr::Pointer<Byte>, SIMD::Width> pointers;
+};
+
 template<typename T>
 struct Element
 {};
@@ -520,6 +542,41 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 
 template<typename T>
 inline void SIMD::Pointer::Store(RValue<T> val, OutOfBoundsBehavior robustness, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */)
+{
+	Store(T(val), robustness, mask, atomic, order);
+}
+
+template<typename T>
+inline T SIMD::Pointer64::Load(OutOfBoundsBehavior robustness, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */, int alignment /* = sizeof(float) */)
+{
+	T out;
+	// TODO(b/???): Make this perform parallel loads.
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		If(Extract(mask, i) != 0)
+		{
+			auto el = rr::Load(pointers[i], alignment, atomic, order);
+			out = Insert(out, el, i);
+		}
+	}
+	return out;
+}
+
+template<typename T>
+inline void SIMD::Pointer64::Store(T val, OutOfBoundsBehavior robustness, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */)
+{
+	constexpr size_t alignment = sizeof(float);
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		If(Extract(mask, i) != 0)
+		{
+			rr::Store(Extract(val, i), pointers[i], alignment, atomic, order);
+		}
+	}
+}
+
+template<typename T>
+inline void SIMD::Pointer64::Store(RValue<T> val, OutOfBoundsBehavior robustness, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */)
 {
 	Store(T(val), robustness, mask, atomic, order);
 }
