@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9cf10d3d_dd0a748c",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 938,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-20T13:33:03Z",
+      "side": 1,
+      "message": "Just clang-format.",
+      "range": {
+        "startLine": 938,
+        "startChar": 3,
+        "endLine": 938,
+        "endChar": 7
+      },
+      "revId": "0c4751ca329edf4508a6023aae45beb8157bb19a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
