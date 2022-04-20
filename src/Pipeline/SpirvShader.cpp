@@ -1400,12 +1400,12 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, const Span &indexI
 					auto &obj = getObject(indexIds[i]);
 					if(obj.kind == Object::Kind::Constant)
 					{
-						ptr.base += descriptorSize * GetConstScalarInt(indexIds[i]);
+						ptr.offsetBase(descriptorSize * GetConstScalarInt(indexIds[i]));
 					}
 					else
 					{
 						// Note: the value of indexIds[i] must be dynamically uniform.
-						ptr.base += descriptorSize * Extract(state->getIntermediate(indexIds[i]).Int(0), 0);
+						ptr.offsetBase(Int(descriptorSize * Extract(state->getIntermediate(indexIds[i]).Int(0), 0)));
 					}
 				}
 				else
@@ -2457,35 +2457,35 @@ SpirvShader::EmitResult SpirvShader::EmitAtomicOp(InsnIterator insn, EmitState *
 			{
 			case spv::OpAtomicIAdd:
 			case spv::OpAtomicIIncrement:
-				v = AddAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
+				v = AddAtomic(Pointer<UInt>(&ptr.getBase()[offset]), laneValue, memoryOrder);
 				break;
 			case spv::OpAtomicISub:
 			case spv::OpAtomicIDecrement:
-				v = SubAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
+				v = SubAtomic(Pointer<UInt>(&ptr.getBase()[offset]), laneValue, memoryOrder);
 				break;
 			case spv::OpAtomicAnd:
-				v = AndAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
+				v = AndAtomic(Pointer<UInt>(&ptr.getBase()[offset]), laneValue, memoryOrder);
 				break;
 			case spv::OpAtomicOr:
-				v = OrAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
+				v = OrAtomic(Pointer<UInt>(&ptr.getBase()[offset]), laneValue, memoryOrder);
 				break;
 			case spv::OpAtomicXor:
-				v = XorAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
+				v = XorAtomic(Pointer<UInt>(&ptr.getBase()[offset]), laneValue, memoryOrder);
 				break;
 			case spv::OpAtomicSMin:
-				v = As<UInt>(MinAtomic(Pointer<Int>(&ptr.base[offset]), As<Int>(laneValue), memoryOrder));
+				v = As<UInt>(MinAtomic(Pointer<Int>(&ptr.getBase()[offset]), As<Int>(laneValue), memoryOrder));
 				break;
 			case spv::OpAtomicSMax:
-				v = As<UInt>(MaxAtomic(Pointer<Int>(&ptr.base[offset]), As<Int>(laneValue), memoryOrder));
+				v = As<UInt>(MaxAtomic(Pointer<Int>(&ptr.getBase()[offset]), As<Int>(laneValue), memoryOrder));
 				break;
 			case spv::OpAtomicUMin:
-				v = MinAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
+				v = MinAtomic(Pointer<UInt>(&ptr.getBase()[offset]), laneValue, memoryOrder);
 				break;
 			case spv::OpAtomicUMax:
-				v = MaxAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
+				v = MaxAtomic(Pointer<UInt>(&ptr.getBase()[offset]), laneValue, memoryOrder);
 				break;
 			case spv::OpAtomicExchange:
-				v = ExchangeAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
+				v = ExchangeAtomic(Pointer<UInt>(&ptr.getBase()[offset]), laneValue, memoryOrder);
 				break;
 			default:
 				UNREACHABLE("%s", OpcodeName(insn.opcode()));
@@ -2525,7 +2525,7 @@ SpirvShader::EmitResult SpirvShader::EmitAtomicCompareExchange(InsnIterator insn
 			auto offset = Extract(ptrOffsets, j);
 			auto laneValue = Extract(value.UInt(0), j);
 			auto laneComparator = Extract(comparator.UInt(0), j);
-			UInt v = CompareExchangeAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, laneComparator, memoryOrderEqual, memoryOrderUnequal);
+			UInt v = CompareExchangeAtomic(Pointer<UInt>(&ptr.getBase()[offset]), laneValue, laneComparator, memoryOrderEqual, memoryOrderUnequal);
 			x = Insert(x, v, j);
 		}
 	}
