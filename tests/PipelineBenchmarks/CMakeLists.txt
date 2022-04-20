@@ -47,7 +47,7 @@ target_link_options(PipelineBenchmarks
 target_link_libraries(PipelineBenchmarks
     PRIVATE
         benchmark::benchmark
-        Reactor
         vk_pipeline
+        Reactor
         ${ROOT_PROJECT_LINK_LIBRARIES}
 )
