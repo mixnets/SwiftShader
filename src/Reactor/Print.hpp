@@ -324,6 +324,18 @@ struct PrintValue::Ty<Pointer<T>>
 	static std::string fmt(const RValue<Pointer<T>> &v) { return "%p"; }
 	static std::vector<Value *> val(const RValue<Pointer<T>> &v) { return { v.value() }; }
 };
+template<>
+struct PrintValue::Ty<Pointer4>
+{
+	static std::string fmt(const Pointer4 &v)
+	{
+		return v.isBasePlusOffset ? "{%p + [%d, %d, %d, %d]}" : "{%p, %p, %p, %p}";
+	}
+	static std::vector<rr::Value *> val(const Pointer4 &v)
+	{
+		return v.getValues();
+	}
+};
 template<typename T>
 struct PrintValue::Ty<Reference<T>>
 {
