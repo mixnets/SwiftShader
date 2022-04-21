@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fee28cab_662b5bdb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-21T14:31:47Z",
+      "side": 1,
+      "message": "No regressions with Subzero.",
+      "revId": "c220f3bb486c77ffefd3aa45cdc29b38278e8a40",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b0c49e3_08871c70",
+        "filename": "tests/regres/testlists/vk-master-TIMEOUT.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-21T14:31:47Z",
+      "side": 1,
+      "message": "b/229968910",
+      "range": {
+        "startLine": 1,
+        "startChar": 16,
+        "endLine": 1,
+        "endChar": 48
+      },
+      "revId": "c220f3bb486c77ffefd3aa45cdc29b38278e8a40",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
