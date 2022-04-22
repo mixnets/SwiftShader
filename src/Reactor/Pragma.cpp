@@ -59,7 +59,7 @@ CLANG_NO_SANITIZE_MEMORY PragmaState &getPragmaState()
 
 namespace rr {
 
-void Pragma(PragmaBooleanOption option, bool enable)
+void Pragma(BooleanPragmaOption option, bool enable)
 {
 	PragmaState &state = ::getPragmaState();
 
@@ -73,7 +73,7 @@ void Pragma(PragmaBooleanOption option, bool enable)
 	}
 }
 
-bool getPragmaState(PragmaBooleanOption option)
+bool getPragmaState(BooleanPragmaOption option)
 {
 	PragmaState &state = ::getPragmaState();
 
@@ -84,6 +84,21 @@ bool getPragmaState(PragmaBooleanOption option)
 	default:
 		UNSUPPORTED("Unknown pragma %d", int(option));
 		return false;
+	}
+}
+
+ScopedPragma::ScopedPragma(BooleanPragmaOption option, bool enable)
+{
+	oldState = BooleanPragma{ option, getPragmaState(option) };
+	Pragma(option, enable);
+}
+
+ScopedPragma::~ScopedPragma()
+{
+	if(std::holds_alternative<BooleanPragma>(oldState))
+	{
+		auto &restore = std::get<BooleanPragma>(oldState);
+		Pragma(restore.option, restore.enable);
 	}
 }
 
