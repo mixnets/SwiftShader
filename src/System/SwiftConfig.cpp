@@ -147,10 +147,4 @@ marl::Scheduler::Config getSchedulerConfiguration(const Configuration &config)
 	return cfg;
 }
 
-rr::DebugConfig getReactorDebugConfig(const Configuration &config)
-{
-	rr::DebugConfig debugCfg;
-	debugCfg.asmEmitDir = config.asmEmitDir;
-	return debugCfg;
-}
 }  // namespace sw
