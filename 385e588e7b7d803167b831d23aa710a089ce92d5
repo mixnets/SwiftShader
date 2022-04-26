@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "441ecd35_8caf3e2a",
+        "filename": "src/System/SwiftConfig.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-26T15:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c77583b0_a49417f1",
+      "range": {
+        "startLine": 95,
+        "startChar": 77,
+        "endLine": 95,
+        "endChar": 95
+      },
+      "revId": "385e588e7b7d803167b831d23aa710a089ce92d5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f823e7fe_a522ed77",
@@ -47,6 +71,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7976e5b0_23db2a22",
+        "filename": "src/System/SwiftConfig.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-26T15:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f823e7fe_a522ed77",
+      "range": {
+        "startLine": 99,
+        "startChar": 24,
+        "endLine": 99,
+        "endChar": 42
+      },
+      "revId": "385e588e7b7d803167b831d23aa710a089ce92d5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "03b4f9c7_1376a8d1",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-04-26T13:58:50Z",
       "side": 1,
       "message": "Nit: end with \"u\"?",
+      "range": {
+        "startLine": 41,
+        "startChar": 25,
+        "endLine": 41,
+        "endChar": 43
+      },
+      "revId": "385e588e7b7d803167b831d23aa710a089ce92d5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03bee947_ab1180f4",
+        "filename": "src/System/SwiftConfig.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-26T15:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "03b4f9c7_1376a8d1",
       "range": {
         "startLine": 41,
         "startChar": 25,
