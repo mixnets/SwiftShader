@@ -46,6 +46,29 @@
       },
       "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ae0a691_79c509bc",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-27T12:33:19Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be something like:\n\n  sw::align(pCreateInfo-\u003emaxSets, 16)\n\n?",
+      "range": {
+        "startLine": 67,
+        "startChar": 10,
+        "endLine": 67,
+        "endChar": 12
+      },
+      "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
