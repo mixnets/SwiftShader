@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb2b5e7f_e9533e4e",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 878,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-27T16:02:26Z",
+      "side": 1,
+      "message": "Nit: Why isn\u0027t this closer to line 923?",
+      "range": {
+        "startLine": 871,
+        "startChar": 0,
+        "endLine": 878,
+        "endChar": 31
+      },
+      "revId": "8c93b6a0c6d80c01a3b45c323207c092bbf236b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
