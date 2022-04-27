@@ -61,6 +61,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dafe775c_2191ed76",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-27T15:49:35Z",
+      "side": 1,
+      "message": "Ah, thanks, so the real issue is the existence of this `data[1]` member, which makes it invalid to do placement new using memory which only has room for the `DescriptorSetHeader`.\n\nIt could be addressed by making the memory allocation larger (like this change), or by getting rid of this `data` member. It looks like it\u0027s only used in a handful of places, and most of them could be replaced by having a method which returns a pointer which points at the byte right past the `DescriptorSet`.\n\nI think I prefer the latter since there would be no wasted memory, no edge case handling in the allocation logic, and no remnant of the `data[]` member which could cause other issues.",
+      "parentUuid": "cab226bc_f3080ee1",
+      "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0b9a5924_bde1aa7a",
         "filename": "src/Vulkan/VkDescriptorPool.cpp",
         "patchSetId": 1
