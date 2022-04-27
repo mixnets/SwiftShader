@@ -118,13 +118,20 @@ protected:
 
 private:
   template <typename UseT> // UseT == 'Use' or 'const Use'
-  class use_iterator_impl
-      : public std::iterator<std::forward_iterator_tag, UseT *> {
-    UseT *U;
-    explicit use_iterator_impl(UseT *u) : U(u) {}
+  class use_iterator_impl {
     friend class Value;
 
+    UseT *U;
+
+    explicit use_iterator_impl(UseT *u) : U(u) {}
+
   public:
+    using iterator_category = std::forward_iterator_tag;
+    using value_type = UseT *;
+    using difference_type = std::ptrdiff_t;
+    using pointer = value_type *;
+    using reference = value_type &;
+
     use_iterator_impl() : U() {}
 
     bool operator==(const use_iterator_impl &x) const { return U == x.U; }
@@ -155,19 +162,24 @@ private:
   };
 
   template <typename UserTy> // UserTy == 'User' or 'const User'
-  class user_iterator_impl
-      : public std::iterator<std::forward_iterator_tag, UserTy *> {
+  class user_iterator_impl {
     use_iterator_impl<Use> UI;
     explicit user_iterator_impl(Use *U) : UI(U) {}
     friend class Value;
 
   public:
+    using iterator_category = std::forward_iterator_tag;
+    using value_type = UserTy *;
+    using difference_type = std::ptrdiff_t;
+    using pointer = value_type *;
+    using reference = value_type &;
+
     user_iterator_impl() = default;
 
     bool operator==(const user_iterator_impl &x) const { return UI == x.UI; }
     bool operator!=(const user_iterator_impl &x) const { return !operator==(x); }
 
-    /// \brief Returns true if this iterator is equal to user_end() on the value.
+    /// Returns true if this iterator is equal to user_end() on the value.
     bool atEnd() const { return *this == user_iterator_impl(); }
 
     user_iterator_impl &operator++() { // Preincrement

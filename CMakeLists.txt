@@ -19,7 +19,7 @@ project(SwiftShader C CXX ASM)
 set(CMAKE_CXX_STANDARD 17)
 set(CXX_STANDARD_REQUIRED ON)
 # MSVC doesn't define __cplusplus by default
-if(MSVC)
+if(MSVC) 
     string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
 endif()
 

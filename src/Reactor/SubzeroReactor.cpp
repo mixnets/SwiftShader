@@ -108,11 +108,11 @@ Ice::Variable *allocateStackVariable(Ice::Cfg *function, Ice::Type type, int arr
 	// Zero-initialize local variables.
 	if(true)
 	{
-		Ice::Variable *value = function->makeVariable(type);
-		Ice::InstArithmetic *xor = Ice::InstArithmetic::create(function, Ice::InstArithmetic::Xor, value, value, value);
-		insts.push_front(xor);
+		Ice::Variable *zero = function->makeVariable(type);
+		Ice::InstArithmetic *XOR = Ice::InstArithmetic::create(function, Ice::InstArithmetic::Xor, zero, zero, zero);
+		insts.push_front(XOR);
 
-		auto *store = Ice::InstStore::create(function, value, address, typeSize);
+		auto *store = Ice::InstStore::create(function, zero, address, typeSize);
 		insts.push_front(store);
 	}
 

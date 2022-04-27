@@ -378,6 +378,11 @@ static void atomicStore(void *ptr, void *val, llvm::AtomicOrdering ordering)
 	std::atomic_store_explicit<T>(reinterpret_cast<std::atomic<T> *>(ptr), *reinterpret_cast<T *>(val), rr::atomicOrdering(ordering));
 }
 
+static void bzero(void *s, size_t n)
+{
+	memset(s, 0, n);
+}
+
 #ifdef __ANDROID__
 template<typename F>
 static uint32_t sync_fetch_and_op(uint32_t volatile *ptr, uint32_t val, F f)
@@ -531,6 +536,7 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("coroutine_free_frame", reinterpret_cast<void *>(coroutine_free_frame));
 
 			functions.try_emplace("memset", reinterpret_cast<void *>(memset));
+			functions.try_emplace("bzero", reinterpret_cast<void *>(bzero));
 
 #ifdef __APPLE__
 			functions.try_emplace("sincosf_stret", reinterpret_cast<void *>(__sincosf_stret));
