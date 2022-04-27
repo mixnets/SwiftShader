@@ -43,6 +43,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cab226bc_f3080ee1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2022-04-27T14:39:36Z",
+      "side": 1,
+      "message": "\u003e Thanks Ari for taking this on! I\u0027m curious why a zero size leads to an invalid pointer being passed to free(). It seems like there could be another issue here that needs addressing.\n\nI think free is getting proper pointer, but the guards are overwritten. In fact my debugger says the heap is corrupted. There was 64 byte buffer being allocated and then a DescriptorSet object was being allocated from that memory:\n\n```pDescriptorSets[i] \u003d *(new(memory) DescriptorSet())```\n\nHowever sizeof(DescriptorSet) is 80, because it includes the placeholder for data:\n\n```\n\tDescriptorSetHeader header;\n\talignas(16) uint8_t data[1];\n```\n\nNormally the descriptor data gets written at the start of \u0027data\u0027 and the allocation takes the descriptor data size into account, but with no descriptors the one byte sized data[1] is what gets written past the allocated size.",
+      "parentUuid": "d31c515f_d67d3675",
+      "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0b9a5924_bde1aa7a",
         "filename": "src/Vulkan/VkDescriptorPool.cpp",
         "patchSetId": 1
