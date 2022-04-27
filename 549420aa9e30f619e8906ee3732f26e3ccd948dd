@@ -3,6 +3,46 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "58441b23_6773ff83",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-27T14:11:48Z",
+      "side": 1,
+      "message": "pools?",
+      "range": {
+        "startLine": 7,
+        "startChar": 41,
+        "endLine": 7,
+        "endChar": 45
+      },
+      "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d31c515f_d67d3675",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-27T14:11:48Z",
+      "side": 1,
+      "message": "Thanks Ari for taking this on! I\u0027m curious why a zero size leads to an invalid pointer being passed to free(). It seems like there could be another issue here that needs addressing.",
+      "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0b9a5924_bde1aa7a",
         "filename": "src/Vulkan/VkDescriptorPool.cpp",
         "patchSetId": 1
