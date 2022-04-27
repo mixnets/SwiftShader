@@ -22,6 +22,30 @@
       },
       "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cca827af_bacd6b66",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-27T12:28:47Z",
+      "side": 1,
+      "message": "Oh, this is in an upcoming \"spec fix\"\nhttps://gitlab.khronos.org/vulkan/vulkan/-/merge_requests/5144",
+      "parentUuid": "0b9a5924_bde1aa7a",
+      "range": {
+        "startLine": 66,
+        "startChar": 1,
+        "endLine": 66,
+        "endChar": 36
+      },
+      "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
