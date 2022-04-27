@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b9a5924_bde1aa7a",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-27T12:25:12Z",
+      "side": 1,
+      "message": "This is illegal according to the spec:\n\n  VUID-VkDescriptorPoolCreateInfo-poolSizeCount-arraylength\n  poolSizeCount must be greater than 0\n\nIf this is happening in a test, this is a test bug.",
+      "range": {
+        "startLine": 66,
+        "startChar": 1,
+        "endLine": 66,
+        "endChar": 36
+      },
+      "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
