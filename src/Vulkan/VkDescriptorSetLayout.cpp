@@ -146,7 +146,9 @@ bool DescriptorSetLayout::IsDescriptorDynamic(VkDescriptorType type)
 size_t DescriptorSetLayout::getDescriptorSetAllocationSize() const
 {
 	// vk::DescriptorSet has a header with a pointer to the layout.
-	return sw::align<alignof(DescriptorSet)>(OFFSET(DescriptorSet, data) + getDescriptorSetDataSize());
+	// Descriptor set object contains a single byte placeholder for data which
+	// need to be taken into account when no space is to be allocated for descriptors.
+	return sw::align<alignof(DescriptorSet)>(OFFSET(DescriptorSet, data) + std::max(getDescriptorSetDataSize(), sizeof(uint8_t)));
 }
 
 size_t DescriptorSetLayout::getDescriptorSetDataSize() const

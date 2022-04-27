@@ -61,6 +61,11 @@ size_t DescriptorPool::ComputeRequiredAllocationSize(const VkDescriptorPoolCreat
 		}
 	}
 
+	// Descriptor set object contains a single byte placeholder for data which
+	// need to be taken into account when no space is to be allocated for descriptors.
+	if(pCreateInfo->poolSizeCount == 0)
+		size += 16;
+
 	return size;
 }
 
