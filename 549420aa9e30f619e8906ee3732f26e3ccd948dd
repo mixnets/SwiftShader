@@ -79,6 +79,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "15acf7c7_bdae9d56",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2022-04-28T04:51:05Z",
+      "side": 1,
+      "message": "\u003e I think I prefer the latter since there would be no wasted memory, no edge case handling in the allocation logic, and no remnant of the `data[]` member which could cause other issues.\n\nI agree. Let me try fixing the issue using that approach.",
+      "parentUuid": "dafe775c_2191ed76",
+      "revId": "549420aa9e30f619e8906ee3732f26e3ccd948dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0b9a5924_bde1aa7a",
         "filename": "src/Vulkan/VkDescriptorPool.cpp",
         "patchSetId": 1
