@@ -16,6 +16,8 @@
 #define VK_DESCRIPTOR_SET_HPP_
 
 #include "VkObject.hpp"
+#include "Reactor/Reactor.hpp"
+#include "System/Math.hpp"
 #include "marl/mutex.h"
 
 #include <array>
@@ -43,9 +45,9 @@ public:
 
 	static void ContentsChanged(const Array &descriptorSets, const PipelineLayout *layout, Device *device);
 	static void PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout, Device *device);
+	uint8_t *GetDataAddress();
 
 	DescriptorSetHeader header;
-	alignas(16) uint8_t data[1];
 
 private:
 	enum NotificationType
