@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f0289c8_b162db73",
+        "filename": "third_party/llvm-10.0/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1211,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-04-28T12:06:10Z",
+      "side": 1,
+      "message": "Not new to this CL, but since we removed one of these recently, can we do the same thing here?",
+      "range": {
+        "startLine": 1211,
+        "startChar": 12,
+        "endLine": 1211,
+        "endChar": 20
+      },
+      "revId": "1fbef55508d6846e0ec42fc397d19fa009dede71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
