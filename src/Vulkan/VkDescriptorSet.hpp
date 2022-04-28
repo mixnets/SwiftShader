@@ -16,6 +16,8 @@
 #define VK_DESCRIPTOR_SET_HPP_
 
 #include "VkObject.hpp"
+#include "Reactor/Reactor.hpp"
+#include "System/Math.hpp"
 #include "marl/mutex.h"
 
 #include <array>
@@ -45,7 +47,6 @@ public:
 	static void PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout, Device *device);
 
 	DescriptorSetHeader header;
-	alignas(16) uint8_t data[1];
 
 private:
 	enum NotificationType
@@ -59,6 +60,16 @@ private:
 inline DescriptorSet *Cast(VkDescriptorSet object)
 {
 	return DescriptorSet::Cast(object);
+}
+
+inline size_t GetDescriptorSetDataOffset()
+{
+	return sw::align(OFFSET(DescriptorSet, header) + sizeof(DescriptorSetHeader), 16);
+}
+
+inline uint8_t *GetDescriptorSetDataAddress(DescriptorSet *set)
+{
+	return (uint8_t *)(((size_t)set + GetDescriptorSetDataOffset()));
 }
 
 }  // namespace vk
