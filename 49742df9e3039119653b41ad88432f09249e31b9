@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17f36708_5f4aa26b",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1789,
+      "author": {
+        "id": 78381
+      },
+      "writtenOn": "2022-04-28T12:20:43Z",
+      "side": 1,
+      "message": "This line got modified by src/clang-format-all.sh",
+      "revId": "49742df9e3039119653b41ad88432f09249e31b9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
