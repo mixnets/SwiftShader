@@ -75,7 +75,7 @@ public:
 
 	void signal();
 
-#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD || SWIFTSHADER_EXTERNAL_SEMAPHORE_SYNC_FD
 	VkResult importFd(int fd, bool temporaryImport);
 	VkResult exportFd(int *pFd);
 #endif

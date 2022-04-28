@@ -69,7 +69,7 @@ public:
 
 }  // namespace vk
 
-#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD || SWIFTSHADER_EXTERNAL_SEMAPHORE_SYNC_FD
 #	if defined(__linux__) || defined(__ANDROID__)
 #		include "VkSemaphoreExternalLinux.hpp"
 #	else
@@ -85,6 +85,9 @@ namespace vk {
 static const VkExternalSemaphoreHandleTypeFlags kSupportedTypes =
 #if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
     VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT |
+#endif
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_SYNC_FD
+    VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT |
 #endif
 #if VK_USE_PLATFORM_FUCHSIA
     VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_ZIRCON_EVENT_BIT_FUCHSIA |
@@ -295,7 +298,7 @@ VkResult BinarySemaphore::exportPayload(ALLOC_FUNC alloc_func, EXPORT_FUNC expor
 	return export_func(external);
 }
 
-#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD || SWIFTSHADER_EXTERNAL_SEMAPHORE_SYNC_FD
 VkResult BinarySemaphore::importFd(int fd, bool temporaryImport)
 {
 	return importPayload(

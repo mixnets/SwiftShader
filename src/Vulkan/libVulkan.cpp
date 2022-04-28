@@ -362,7 +362,7 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 #if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
 	{ { VK_ANDROID_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER_EXTENSION_NAME, VK_ANDROID_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER_SPEC_VERSION } },
 #endif
-#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD || SWIFTSHADER_EXTERNAL_SEMAPHORE_SYNC_FD
 	{ { VK_KHR_EXTERNAL_SEMAPHORE_FD_EXTENSION_NAME, VK_KHR_EXTERNAL_SEMAPHORE_FD_SPEC_VERSION } },
 #endif
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
@@ -1572,13 +1572,14 @@ VKAPI_ATTR void VKAPI_CALL vkDestroySemaphore(VkDevice device, VkSemaphore semap
 	vk::destroy(semaphore, pAllocator);
 }
 
-#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD || SWIFTSHADER_EXTERNAL_SEMAPHORE_SYNC_FD
 VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreFdKHR(VkDevice device, const VkSemaphoreGetFdInfoKHR *pGetFdInfo, int *pFd)
 {
 	TRACE("(VkDevice device = %p, const VkSemaphoreGetFdInfoKHR* pGetFdInfo = %p, int* pFd = %p)",
 	      device, static_cast<const void *>(pGetFdInfo), static_cast<void *>(pFd));
 
-	if(pGetFdInfo->handleType != VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT)
+	if(pGetFdInfo->handleType != VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT ||
+	   pGetFdInfo->handleType != VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT)
 	{
 		UNSUPPORTED("pGetFdInfo->handleType %d", int(pGetFdInfo->handleType));
 	}
