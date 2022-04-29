@@ -16,12 +16,12 @@
 
 #include "Constants.hpp"
 #include "SamplerCore.hpp"
+#include "API/VkStringify.hpp"
 #include "Device/Primitive.hpp"
 #include "Device/QuadRasterizer.hpp"
 #include "Device/Renderer.hpp"
 #include "System/Debug.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
-#include "Vulkan/VkStringify.hpp"
 
 namespace sw {
 

@@ -17,9 +17,9 @@
 #include "VkCommandBuffer.hpp"
 #include "VkFence.hpp"
 #include "VkSemaphore.hpp"
-#include "VkStringify.hpp"
-#include "VkStructConversion.hpp"
 #include "VkTimelineSemaphore.hpp"
+#include "API/VkStringify.hpp"
+#include "API/VkStructConversion.hpp"
 #include "Device/Renderer.hpp"
 #include "WSI/VkSwapchainKHR.hpp"
 

@@ -68,7 +68,7 @@
 // VK_EXT_tooling_info
 // VK_EXT_ycbcr_2plane_444_formats (no functions in this extension)
 
-#include "Vulkan/VulkanPlatform.hpp"
+#include "API/VulkanPlatform.hpp"
 
 extern "C" {
 

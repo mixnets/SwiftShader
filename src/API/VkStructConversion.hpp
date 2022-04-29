@@ -15,8 +15,11 @@
 #ifndef VK_STRUCT_CONVERSION_HPP_
 #define VK_STRUCT_CONVERSION_HPP_
 
-#include "VkMemory.hpp"
 #include "VkStringify.hpp"
+#include "System/Debug.hpp"
+#include "Vulkan/VkConfig.hpp"
+#include "Vulkan/VkMemory.hpp"
+
 #include <cstring>
 #include <vector>
 

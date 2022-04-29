@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "VkGetProcAddress.hpp"
-#include "VkDevice.hpp"
+#include "Vulkan/VkDevice.hpp"
 
 #include <string>
 #include <unordered_map>

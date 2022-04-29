@@ -15,8 +15,8 @@
 #ifndef VK_FORMAT_HPP_
 #define VK_FORMAT_HPP_
 
+#include "API/VulkanPlatform.hpp"
 #include "System/Types.hpp"
-#include "Vulkan/VulkanPlatform.hpp"
 
 #include <vector>
 

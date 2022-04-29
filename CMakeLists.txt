@@ -847,11 +847,12 @@ else()
     message(FATAL_ERROR "Platform does not support Vulkan yet")
 endif()
 
+add_subdirectory(src/API) # Add vk_swiftshader target
 add_subdirectory(src/System) # Add vk_system target
 add_subdirectory(src/Pipeline) # Add vk_pipeline target
 add_subdirectory(src/WSI) # Add vk_wsi target
 add_subdirectory(src/Device) # Add vk_device target
-add_subdirectory(src/Vulkan) # Add vk_swiftshader target
+add_subdirectory(src/Vulkan) # Add vk_vulkan target
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND # turbo-cov is only useful for clang coverage info
     SWIFTSHADER_EMIT_COVERAGE)

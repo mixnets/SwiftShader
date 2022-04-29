@@ -15,7 +15,7 @@
 #include "VkImageView.hpp"
 
 #include "VkImage.hpp"
-#include "VkStructConversion.hpp"
+#include "API/VkStructConversion.hpp"
 #include "System/Math.hpp"
 #include "System/Types.hpp"
 

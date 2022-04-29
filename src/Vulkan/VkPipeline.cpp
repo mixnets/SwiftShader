@@ -20,7 +20,7 @@
 #include "VkPipelineLayout.hpp"
 #include "VkRenderPass.hpp"
 #include "VkShaderModule.hpp"
-#include "VkStringify.hpp"
+#include "API/VkStringify.hpp"
 #include "Pipeline/ComputeProgram.hpp"
 #include "Pipeline/SpirvShader.hpp"
 

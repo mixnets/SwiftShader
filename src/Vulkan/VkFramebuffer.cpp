@@ -16,7 +16,7 @@
 
 #include "VkImageView.hpp"
 #include "VkRenderPass.hpp"
-#include "VkStringify.hpp"
+#include "API/VkStringify.hpp"
 
 #include <memory.h>
 #include <algorithm>
