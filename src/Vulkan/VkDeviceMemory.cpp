@@ -20,7 +20,7 @@
 #include "VkDevice.hpp"
 #include "VkImage.hpp"
 #include "VkMemory.hpp"
-#include "VkStringify.hpp"
+#include "API/VkStringify.hpp"
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 

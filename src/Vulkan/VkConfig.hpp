@@ -15,9 +15,9 @@
 #ifndef VK_CONFIG_HPP_
 #define VK_CONFIG_HPP_
 
-#include "Version.hpp"
+#include "API/Version.hpp"
+#include "API/VulkanPlatform.hpp"
 #include "Device/Config.hpp"
-#include "Vulkan/VulkanPlatform.hpp"
 #include "spirv-tools/libspirv.h"
 
 namespace vk {

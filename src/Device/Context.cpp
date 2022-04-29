@@ -14,11 +14,11 @@
 
 #include "Context.hpp"
 
+#include "API/VkStringify.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkDevice.hpp"
 #include "Vulkan/VkImageView.hpp"
 #include "Vulkan/VkRenderPass.hpp"
-#include "Vulkan/VkStringify.hpp"
 
 namespace {
 

@@ -13,7 +13,7 @@
       "variables": [
         {
           "name": "REACTOR_BACKEND",
-          "value": "Subzero",
+          "value": "LLVM-Submodule",
           "type": "STRING"
         }
       ]

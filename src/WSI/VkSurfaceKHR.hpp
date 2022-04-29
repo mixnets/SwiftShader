@@ -15,9 +15,9 @@
 #ifndef SWIFTSHADER_VKSURFACEKHR_HPP_
 #define SWIFTSHADER_VKSURFACEKHR_HPP_
 
+#include "API/VulkanPlatform.hpp"
 #include "Vulkan/VkImage.hpp"
 #include "Vulkan/VkObject.hpp"
-#include "Vulkan/VulkanPlatform.hpp"
 
 #include <vector>
 
@@ -87,7 +87,7 @@ public:
 
 	VkResult getPresentRectangles(uint32_t *pRectCount, VkRect2D *pRects) const;
 
-	virtual void* allocateImageMemory(PresentImage *image, const VkMemoryAllocateInfo &allocateInfo) { return nullptr; }
+	virtual void *allocateImageMemory(PresentImage *image, const VkMemoryAllocateInfo &allocateInfo) { return nullptr; }
 	virtual void releaseImageMemory(PresentImage *image) {}
 	virtual void attachImage(PresentImage *image) = 0;
 	virtual void detachImage(PresentImage *image) = 0;

@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #include "VkRenderPass.hpp"
-#include "VkStringify.hpp"
+
+#include "API/VkStringify.hpp"
+
 #include <cstring>
 
 namespace {

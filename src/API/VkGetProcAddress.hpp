@@ -15,7 +15,7 @@
 #ifndef VK_UTILS_HPP_
 #define VK_UTILS_HPP_
 
-#include "Vulkan/VulkanPlatform.hpp"
+#include "API/VulkanPlatform.hpp"
 
 namespace vk {
 

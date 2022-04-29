@@ -15,8 +15,8 @@
 #include "VkSemaphore.hpp"
 
 #include "VkConfig.hpp"
-#include "VkStringify.hpp"
 #include "VkTimelineSemaphore.hpp"
+#include "API/VkStringify.hpp"
 
 #include "marl/blockingcall.h"
 #include "marl/conditionvariable.h"

@@ -847,6 +847,7 @@ else()
     message(FATAL_ERROR "Platform does not support Vulkan yet")
 endif()
 
+add_subdirectory(src/API) # Add vk_api target
 add_subdirectory(src/System) # Add vk_system target
 add_subdirectory(src/Pipeline) # Add vk_pipeline target
 add_subdirectory(src/WSI) # Add vk_wsi target
