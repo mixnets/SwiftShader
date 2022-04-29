@@ -16,6 +16,23 @@
       "message": "Looks great. Thanks Ari!",
       "revId": "72da3b0e197d7ba6be6944981046682c009e14da",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5c3f2cc_07130b62",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-04-29T13:38:51Z",
+      "side": 1,
+      "message": "Please wait for the \u0027Regres report\u0027 to confirm there are no regressions, before setting Verified+1 and submitting.",
+      "revId": "72da3b0e197d7ba6be6944981046682c009e14da",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
