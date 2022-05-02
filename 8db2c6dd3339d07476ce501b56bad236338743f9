@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a91e99ce_f33bc884",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-02T19:00:34Z",
+      "side": 1,
+      "message": "Approving now, please land after the vertex routine one has been rolled into Chromium for ~1 day or if it gets reverted.",
+      "revId": "8db2c6dd3339d07476ce501b56bad236338743f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
