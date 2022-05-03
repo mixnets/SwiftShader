@@ -450,6 +450,7 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityShaderNonUniform: capabilities.ShaderNonUniform = true; break;
 				case spv::CapabilityRuntimeDescriptorArray: capabilities.RuntimeDescriptorArray = true; break;
 				case spv::CapabilityStorageBufferArrayNonUniformIndexing: capabilities.StorageBufferArrayNonUniformIndexing = true; break;
+				case spv::CapabilityStorageTexelBufferArrayNonUniformIndexing: capabilities.StorageTexelBufferArrayNonUniformIndexing = true; break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
@@ -1356,7 +1357,7 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, cons
 	return ptr;
 }
 
-SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, const Span &indexIds, EmitState const *state) const
+SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, const Span &indexIds, EmitState const *state, bool nonUniform) const
 {
 	// TODO: avoid doing per-lane work in some cases if we can?
 	auto routine = state->routine;
@@ -1407,8 +1408,16 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, const Span &indexI
 					}
 					else
 					{
-						// Note: the value of indexIds[i] must be dynamically uniform.
-						ptr.offsetBase(Int(descriptorSize * Extract(state->getIntermediate(indexIds[i]).Int(0), 0)));
+						nonUniform |= GetDecorationsForId(indexIds[i]).NonUniform;
+						SIMD::Int intermediate = state->getIntermediate(indexIds[i]).Int(0);
+						if(nonUniform)
+						{
+							ptr.offsetBase(SIMD::Int(descriptorSize * intermediate));
+						}
+						else
+						{
+							ptr.offsetBase(Int(descriptorSize * Extract(intermediate, 0)));
+						}
 					}
 				}
 				else
@@ -2215,6 +2224,19 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 	ASSERT(type.componentCount == 1);
 	ASSERT(getObject(resultId).kind == Object::Kind::Pointer);
 
+	for(auto it = insn; it != end(); it++)
+	{
+		if(it.opcode() == spv::OpLoad)
+		{
+			Object::ID pointerId = it.word(3);
+			if(pointerId.value() == resultId.value())
+			{
+				nonUniform |= GetDecorationsForId(it.word(2)).NonUniform;
+				break;
+			}
+		}
+	}
+
 	if(type.storageClass == spv::StorageClassPushConstant ||
 	   type.storageClass == spv::StorageClassUniform ||
 	   type.storageClass == spv::StorageClassStorageBuffer)
@@ -2224,7 +2246,7 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 	}
 	else
 	{
-		auto ptr = WalkAccessChain(baseId, Span(insn, 4, insn.wordCount() - 4), state);
+		auto ptr = WalkAccessChain(baseId, Span(insn, 4, insn.wordCount() - 4), state, nonUniform);
 		state->createPointer(resultId, ptr);
 	}
 
