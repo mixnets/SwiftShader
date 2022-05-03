@@ -3042,6 +3042,26 @@ struct MemorySanitizerVisitor : public InstVisitor<MemorySanitizerVisitor> {
     SOC.Done(&I);
   }
 
+  // Instrument _mm_*_ss intrinsics
+  void handleUnarySsIntrinsic(IntrinsicInst &I) {
+    IRBuilder<> IRB(&I);
+    Value *First = getShadow(&I, 0);
+    Value *Second = getShadow(&I, 1);
+    // High word of first operand, low word of second
+
+    SmallVector<Constant *, 4> Mask;
+    Mask.push_back(ConstantInt::get(IRB.getInt32Ty(), 4));
+    Mask.push_back(ConstantInt::get(IRB.getInt32Ty(), 1));
+    Mask.push_back(ConstantInt::get(IRB.getInt32Ty(), 2));
+    Mask.push_back(ConstantInt::get(IRB.getInt32Ty(), 3));
+
+    Value *Shadow =
+        IRB.CreateShuffleVector(First, Second, ConstantVector::get(Mask));
+
+    setShadow(&I, Shadow);
+    setOriginForNaryOp(I);
+  }
+
   void visitIntrinsicInst(IntrinsicInst &I) {
     switch (I.getIntrinsicID()) {
     case Intrinsic::lifetime_start:
@@ -3279,6 +3299,12 @@ struct MemorySanitizerVisitor : public InstVisitor<MemorySanitizerVisitor> {
     case Intrinsic::x86_pclmulqdq_256:
     case Intrinsic::x86_pclmulqdq_512:
       handlePclmulIntrinsic(I);
+      break;
+
+    case Intrinsic::x86_sse41_round_ss:
+    case Intrinsic::x86_sse_rcp_ss:
+    case Intrinsic::x86_sse_rsqrt_ss:
+      handleUnarySsIntrinsic(I);
       break;
 
     case Intrinsic::is_constant:
