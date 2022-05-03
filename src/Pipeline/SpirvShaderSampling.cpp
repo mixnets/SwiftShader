@@ -26,6 +26,7 @@
 #include <spirv/unified1/spirv.hpp>
 
 #include <climits>
+#include <iostream>
 #include <mutex>
 
 namespace sw {
@@ -38,9 +39,9 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(const vk::Device *device
 
 	vk::Device::SamplingRoutineCache::Key key = { signature, samplerId, imageViewId };
 
-	auto createSamplingRoutine = [device](const vk::Device::SamplingRoutineCache::Key &key) {
+	auto createSamplingRoutine = [device, imageViewId, samplerId](const vk::Device::SamplingRoutineCache::Key &key) {
 		ScopedPragma msan(MemorySanitizerInstrumentation, true);
-
+		std::cerr << "createSamplingRoutine " << imageViewId << " " << samplerId << "\n";
 		ImageInstructionSignature instruction(key.instruction);
 		const vk::Identifier::State imageViewState = vk::Identifier(key.imageView).getState();
 		const vk::SamplerState *vkSamplerState = (key.sampler != 0) ? device->findSampler(key.sampler) : nullptr;
@@ -207,7 +208,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstructionSig
 		// For explicit-lod instructions the LOD can be different per SIMD lane. SamplerCore currently assumes
 		// a single LOD per four elements, so we sample the image again for each LOD separately.
 		// TODO(b/133868964) Pass down 4 component lodOrBias, dsx, and dsy to sampleTexture
-		if(samplerFunction.method == Lod || samplerFunction.method == Grad ||
+		/*if(samplerFunction.method == Lod || samplerFunction.method == Grad ||
 		   samplerFunction.method == Bias || samplerFunction.method == Fetch)
 		{
 			// Only perform per-lane sampling if LOD diverges or we're doing Grad sampling.
@@ -249,7 +250,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstructionSig
 			}
 			Until(i == SIMD::Width);
 		}
-		else
+		else*/
 		{
 			Vector4f sample = s.sampleTexture(texture, uvwa, dRef, lodOrBias.x, (dsx.x), (dsy.x), offset, sampleId);
 

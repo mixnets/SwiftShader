@@ -19,6 +19,60 @@
 #include "System/Debug.hpp"
 #include "Vulkan/VkSampler.hpp"
 
+#include <iostream>
+
+#include <sanitizer/msan_interface.h>
+
+[[maybe_unused]] static void check(sw::Texture *texture)
+{
+	__msan_print_shadow(&texture->widthWidthHeightHeight, sizeof(texture->widthWidthHeightHeight));
+}
+
+[[maybe_unused]] static void here1()
+{
+	std::cerr << "here 1\n";
+}
+
+static void here2()
+{
+	std::cerr << "here 2\n";
+}
+
+static void here3()
+{
+	std::cerr << "here 3\n";
+}
+
+static void here4()
+{
+	std::cerr << "here 4\n";
+}
+
+static void here5()
+{
+	std::cerr << "here 5\n";
+}
+
+[[maybe_unused]] static void here6()
+{
+	std::cerr << "here 6\n";
+}
+
+[[maybe_unused]] static void here7()
+{
+	std::cerr << "here 7\n";
+}
+
+[[maybe_unused]] static void here8()
+{
+	std::cerr << "here 8\n";
+}
+
+[[maybe_unused]] static void here9()
+{
+	std::cerr << "here 9\n";
+}
+
 namespace sw {
 
 SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler &state, SamplerFunction function)
@@ -27,6 +81,7 @@ SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler &state, Sampler
     , function(function)
 {
 }
+
 Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &dRef, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample)
 {
 	Vector4f c;
@@ -74,6 +129,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 		else if(state.is2D())
 		{
 			computeLod2D(texture, lod, anisotropy, uDelta, vDelta, u, v, dsx, dsy);
+			//lod = 0;
 		}
 		else if(state.isCube())
 		{
@@ -217,7 +273,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 			c.x = c.y = c.z = c.w = integer ? As<Float4>(Int4(1)) : RValue<Float4>(Float4(1.0f));
 		}
 	}
-
+	//Call(here7);
 	return c;
 }
 
@@ -283,6 +339,7 @@ Short4 SamplerCore::offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOff
 
 Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta)
 {
+	//Call(here1);
 	Vector4s c = sampleAniso(texture, u, v, w, a, offset, sample, lod, anisotropy, uDelta, vDelta, false);
 
 	if(function == Fetch)
@@ -292,6 +349,7 @@ Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 
 	if(state.mipmapFilter == MIPMAP_LINEAR)
 	{
+		Call(here2);
 		Vector4s cc = sampleAniso(texture, u, v, w, a, offset, sample, lod, anisotropy, uDelta, vDelta, true);
 
 		lod *= Float(1 << 16);
@@ -798,6 +856,7 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 
 Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta)
 {
+	Call(here3);
 	Vector4f c = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod, anisotropy, uDelta, vDelta, false);
 
 	if(function == Fetch)
@@ -807,10 +866,12 @@ Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float
 
 	if(state.mipmapFilter == MIPMAP_LINEAR)
 	{
+		Call(here4);
 		Vector4f cc = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod, anisotropy, uDelta, vDelta, true);
+		Call(here5);
 
 		Float4 lod4 = Float4(Frac(lod));
-
+		Call(here6);
 		c.x = (cc.x - c.x) * lod4 + c.x;
 		c.y = (cc.y - c.y) * lod4 + c.y;
 		c.z = (cc.z - c.z) * lod4 + c.z;
@@ -1124,6 +1185,7 @@ void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisot
 	}
 
 	// Scale by texture dimensions.
+	Call(check, texture);
 	Float4 dUVdxy = duvdxy * *Pointer<Float4>(texture + OFFSET(Texture, widthWidthHeightHeight));
 
 	Float4 dUV2dxy = dUVdxy * dUVdxy;

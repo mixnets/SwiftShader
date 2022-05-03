@@ -26,7 +26,7 @@ void *allocateDeviceMemory(size_t bytes, size_t alignment)
 	return sw::allocateZero(bytes, alignment);
 #else
 	// TODO(b/140991626): Use allocateUninitialized() instead of allocateZeroOrPoison() to improve startup peformance.
-	return sw::allocateZeroOrPoison(bytes, alignment);
+	return sw::allocateZero(bytes, alignment);
 #endif
 }
 
@@ -44,7 +44,7 @@ void *allocateHostMemory(size_t bytes, size_t alignment, const VkAllocationCallb
 	else
 	{
 		// TODO(b/140991626): Use allocateUninitialized() instead of allocateZeroOrPoison() to improve startup peformance.
-		return sw::allocateZeroOrPoison(bytes, alignment);
+		return sw::allocateZero(bytes, alignment);
 	}
 }
 

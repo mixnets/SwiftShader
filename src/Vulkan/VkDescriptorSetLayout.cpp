@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstring>
+#include <iostream>
 
 namespace vk {
 
@@ -284,7 +285,7 @@ uint8_t *DescriptorSetLayout::getDescriptorPointer(DescriptorSet *descriptorSet,
 
 static void WriteTextureLevelInfo(sw::Texture *texture, uint32_t level, uint32_t width, uint32_t height, uint32_t depth, uint32_t pitchP, uint32_t sliceP, uint32_t samplePitchP, uint32_t sampleMax)
 {
-	if(level == 0)
+	//if(level == 0)
 	{
 		texture->widthWidthHeightHeight[0] = static_cast<float>(width);
 		texture->widthWidthHeightHeight[1] = static_cast<float>(width);
@@ -335,6 +336,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 
 	if(entry.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER)
 	{
+		std::cerr << "sampler\n";
 		SampledImageDescriptor *sampledImage = reinterpret_cast<SampledImageDescriptor *>(memToWrite);
 
 		for(uint32_t i = 0; i < entry.descriptorCount; i++)
@@ -351,6 +353,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 	}
 	else if(entry.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER)
 	{
+		std::cerr << "tbuffer\n";
 		SampledImageDescriptor *sampledImage = reinterpret_cast<SampledImageDescriptor *>(memToWrite);
 
 		for(uint32_t i = 0; i < entry.descriptorCount; i++)
@@ -385,7 +388,10 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 	else if(entry.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
 	        entry.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
 	{
+		std::cerr << "sampledimage\n";
 		SampledImageDescriptor *sampledImage = reinterpret_cast<SampledImageDescriptor *>(memToWrite);
+
+		memset(sampledImage, 0, sizeof(SampledImageDescriptor));
 
 		for(uint32_t i = 0; i < entry.descriptorCount; i++)
 		{
@@ -407,7 +413,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			}
 
 			const auto &extent = imageView->getMipLevelExtent(0);
-
+			std::cerr << "imageViewId " << imageView->id << "\n";
 			sampledImage[i].imageViewId = imageView->id;
 			sampledImage[i].width = extent.width;
 			sampledImage[i].height = extent.height;
@@ -418,81 +424,50 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 
 			auto &subresourceRange = imageView->getSubresourceRange();
 
-			if(format.isYcbcrFormat())
+			for(int mipmapLevel = 0; mipmapLevel < sw::MIPMAP_LEVELS; mipmapLevel++)
 			{
-				ASSERT(subresourceRange.levelCount == 1);
+				int level = sw::clamp(mipmapLevel, 0, (int)subresourceRange.levelCount - 1);  // Level within the image view
 
-				// YCbCr images can only have one level, so we can store parameters for the
-				// different planes in the descriptor's mipmap levels instead.
+				VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(imageView->getSubresourceRange().aspectMask);
+				sw::Mipmap &mipmap = texture->mipmap[mipmapLevel];
 
-				const int level = 0;
-				VkOffset3D offset = { 0, 0, 0 };
-				texture->mipmap[0].buffer = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_0_BIT, level, 0, ImageView::SAMPLING);
-				texture->mipmap[1].buffer = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_1_BIT, level, 0, ImageView::SAMPLING);
-				if(format.getAspects() & VK_IMAGE_ASPECT_PLANE_2_BIT)
+				if((imageView->getType() == VK_IMAGE_VIEW_TYPE_CUBE) ||
+				   (imageView->getType() == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY))
 				{
-					texture->mipmap[2].buffer = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_2_BIT, level, 0, ImageView::SAMPLING);
+					// Obtain the pointer to the corner of the level including the border, for seamless sampling.
+					// This is taken into account in the sampling routine, which can't handle negative texel coordinates.
+					VkOffset3D offset = { -1, -1, 0 };
+					mipmap.buffer = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING);
+				}
+				else
+				{
+					VkOffset3D offset = { 0, 0, 0 };
+					mipmap.buffer = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING);
 				}
 
-				VkExtent2D extent = imageView->getMipLevelExtent(0);
+				VkExtent2D extent = imageView->getMipLevelExtent(level);
 
 				uint32_t width = extent.width;
 				uint32_t height = extent.height;
-				uint32_t pitchP0 = imageView->rowPitchBytes(VK_IMAGE_ASPECT_PLANE_0_BIT, level, ImageView::SAMPLING) /
-				                   imageView->getFormat(VK_IMAGE_ASPECT_PLANE_0_BIT).bytes();
+				uint32_t layerCount = imageView->getSubresourceRange().layerCount;
+				uint32_t depth = imageView->getDepthOrLayerCount(level);
+				uint32_t bytes = format.bytes();
+				uint32_t pitchP = imageView->rowPitchBytes(aspect, level, ImageView::SAMPLING) / bytes;
+				uint32_t sliceP = (layerCount > 1 ? imageView->layerPitchBytes(aspect, ImageView::SAMPLING) : imageView->slicePitchBytes(aspect, level, ImageView::SAMPLING)) / bytes;
+				uint32_t samplePitchP = imageView->getMipLevelSize(aspect, level, ImageView::SAMPLING) / bytes;
+				uint32_t sampleMax = imageView->getSampleCount() - 1;
 
-				// Write plane 0 parameters to mipmap level 0.
-				WriteTextureLevelInfo(texture, 0, width, height, 1, pitchP0, 0, 0, 0);
-
-				// Plane 2, if present, has equal parameters to plane 1, so we use mipmap level 1 for both.
-				uint32_t pitchP1 = imageView->rowPitchBytes(VK_IMAGE_ASPECT_PLANE_1_BIT, level, ImageView::SAMPLING) /
-				                   imageView->getFormat(VK_IMAGE_ASPECT_PLANE_1_BIT).bytes();
-
-				WriteTextureLevelInfo(texture, 1, width / 2, height / 2, 1, pitchP1, 0, 0, 0);
+				WriteTextureLevelInfo(texture, mipmapLevel, width, height, depth, pitchP, sliceP, samplePitchP, sampleMax);
 			}
-			else
-			{
-				for(int mipmapLevel = 0; mipmapLevel < sw::MIPMAP_LEVELS; mipmapLevel++)
-				{
-					int level = sw::clamp(mipmapLevel, 0, (int)subresourceRange.levelCount - 1);  // Level within the image view
 
-					VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(imageView->getSubresourceRange().aspectMask);
-					sw::Mipmap &mipmap = texture->mipmap[mipmapLevel];
-
-					if((imageView->getType() == VK_IMAGE_VIEW_TYPE_CUBE) ||
-					   (imageView->getType() == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY))
-					{
-						// Obtain the pointer to the corner of the level including the border, for seamless sampling.
-						// This is taken into account in the sampling routine, which can't handle negative texel coordinates.
-						VkOffset3D offset = { -1, -1, 0 };
-						mipmap.buffer = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING);
-					}
-					else
-					{
-						VkOffset3D offset = { 0, 0, 0 };
-						mipmap.buffer = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING);
-					}
-
-					VkExtent2D extent = imageView->getMipLevelExtent(level);
-
-					uint32_t width = extent.width;
-					uint32_t height = extent.height;
-					uint32_t layerCount = imageView->getSubresourceRange().layerCount;
-					uint32_t depth = imageView->getDepthOrLayerCount(level);
-					uint32_t bytes = format.bytes();
-					uint32_t pitchP = imageView->rowPitchBytes(aspect, level, ImageView::SAMPLING) / bytes;
-					uint32_t sliceP = (layerCount > 1 ? imageView->layerPitchBytes(aspect, ImageView::SAMPLING) : imageView->slicePitchBytes(aspect, level, ImageView::SAMPLING)) / bytes;
-					uint32_t samplePitchP = imageView->getMipLevelSize(aspect, level, ImageView::SAMPLING) / bytes;
-					uint32_t sampleMax = imageView->getSampleCount() - 1;
-
-					WriteTextureLevelInfo(texture, mipmapLevel, width, height, depth, pitchP, sliceP, samplePitchP, sampleMax);
-				}
-			}
+			std::cerr << "widthWidthHeightHeight " << &texture->widthWidthHeightHeight << " " << texture->widthWidthHeightHeight[0] << " " << texture->widthWidthHeightHeight[1] << " " << texture->widthWidthHeightHeight[2] << " " << texture->widthWidthHeightHeight[3] << " "
+			          << "\n";
 		}
 	}
 	else if(entry.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
 	        entry.descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT)
 	{
+		std::cerr << "storage image\n";
 		StorageImageDescriptor *storageImage = reinterpret_cast<StorageImageDescriptor *>(memToWrite);
 
 		for(uint32_t i = 0; i < entry.descriptorCount; i++)
@@ -529,6 +504,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 	}
 	else if(entry.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER)
 	{
+		std::cerr << "storage buffer\n";
 		StorageImageDescriptor *storageImage = reinterpret_cast<StorageImageDescriptor *>(memToWrite);
 
 		for(uint32_t i = 0; i < entry.descriptorCount; i++)
@@ -553,6 +529,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 	        entry.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
 	        entry.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC)
 	{
+		std::cerr << "buffer\n";
 		BufferDescriptor *bufferDescriptor = reinterpret_cast<BufferDescriptor *>(memToWrite);
 
 		for(uint32_t i = 0; i < entry.descriptorCount; i++)
@@ -569,6 +546,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 	}
 	else if(entry.descriptorType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK)
 	{
+		std::cerr << "inline\n";
 		memcpy(memToWrite, src + entry.offset, entry.descriptorCount);
 	}
 }

@@ -199,6 +199,8 @@
 #include <string>
 #include <tuple>
 
+#include <iostream>
+
 using namespace llvm;
 
 #define DEBUG_TYPE "msan"
@@ -2566,6 +2568,7 @@ struct MemorySanitizerVisitor : public InstVisitor<MemorySanitizerVisitor> {
         return true;
 
     // FIXME: detect and handle SSE maskstore/maskload
+    std::cerr << "boop" << I.getIntrinsicID() << "\n";
     return false;
   }
 
@@ -3797,7 +3800,22 @@ struct MemorySanitizerVisitor : public InstVisitor<MemorySanitizerVisitor> {
     for (size_t i = 0, n = I.getNumOperands(); i < n; i++) {
       Value *Operand = I.getOperand(i);
       if (Operand->getType()->isSized())
-        insertShadowCheck(Operand, &I);
+      {
+        
+        if(!isa<IntrinsicInst>(I) ||
+        (cast<IntrinsicInst>(I).getIntrinsicID() != 7349)
+        || (i != 1))
+        {
+          insertShadowCheck(Operand, &I);
+        }
+        else
+        {
+
+          std::cerr << "size[" << i << "]: " << Operand->getType()->getPrimitiveSizeInBits() << "\n";
+
+          insertShadowCheck(Operand, &I);
+        }
+      }
     }
     setShadow(&I, getCleanShadow(&I));
     setOrigin(&I, getCleanOrigin());

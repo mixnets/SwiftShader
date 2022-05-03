@@ -931,15 +931,15 @@ void JITBuilder::runPasses()
 		passManager.add(llvm::createCoroCleanupLegacyPass());
 	}
 
+	if(__has_feature(memory_sanitizer) && msanInstrumentation)
+	{
+		passManager.add(llvm::createMemorySanitizerLegacyPassPass());
+	}
+
 	if(optimizationLevel > 0)
 	{
 		passManager.add(llvm::createSROAPass());
 		passManager.add(llvm::createInstructionCombiningPass());
-	}
-
-	if(__has_feature(memory_sanitizer) && msanInstrumentation)
-	{
-		passManager.add(llvm::createMemorySanitizerLegacyPassPass());
 	}
 
 	passManager.run(*module);

@@ -57,6 +57,8 @@ using FixedVectorType = VectorType;
 }  // namespace llvm
 #endif
 
+#include <sanitizer/msan_interface.h>
+
 namespace {
 
 // Used to automatically invoke llvm_shutdown() when driver is unloaded
@@ -65,6 +67,41 @@ llvm::llvm_shutdown_obj llvmShutdownObj;
 // This has to be a raw pointer because glibc 2.17 doesn't support __cxa_thread_atexit_impl
 // for destructing objects at exit. See crbug.com/1074222
 thread_local rr::JITBuilder *jit = nullptr;
+
+[[maybe_unused]] static void there1()
+{
+	std::cerr << "there 1\n";
+}
+
+[[maybe_unused]] static void there2()
+{
+	std::cerr << "there 2\n";
+}
+
+[[maybe_unused]] static void there3()
+{
+	std::cerr << "there 3\n";
+}
+
+[[maybe_unused]] static void there4()
+{
+	std::cerr << "there 4\n";
+}
+
+[[maybe_unused]] static void check(float x)
+{
+	std::cerr << "check in\n";
+
+	int z;
+	__msan_print_shadow(&z, sizeof(z));
+
+	int y = 0;
+	__msan_print_shadow(&y, sizeof(y));
+
+	__msan_print_shadow(&x, sizeof(x));
+
+	std::cerr << "check out\n";
+}
 
 llvm::Value *lowerPAVG(llvm::Value *x, llvm::Value *y)
 {
@@ -2991,6 +3028,7 @@ RValue<Float> Frac(RValue<Float> x)
 #if defined(__i386__) || defined(__x86_64__)
 	if(CPUID::supportsSSE4_1())
 	{
+		//::abort();
 		return x - x86::floorss(x);
 	}
 	else
@@ -3669,12 +3707,17 @@ RValue<Float> roundss(RValue<Float> val, unsigned char imm)
 	// Use zero-initialized values instead.
 	if(__has_feature(memory_sanitizer))
 	{
+		//std::cerr << "undef\n";
+		//::abort();
 		undef = Float4(0).loadValue();
 	}
-
+	Call(there1);
 	Value *vector = Nucleus::createInsertElement(undef, val.value(), 0);
-
-	return RValue<Float>(Nucleus::createExtractElement(V(jit->builder->CreateCall(roundss, { V(undef), V(vector), V(Nucleus::createConstantInt(imm)) })), Float::type(), 0));
+	Call(there2);
+	//	Call(check, val);
+	auto x = V(jit->builder->CreateCall(roundss, { V(undef), V(vector), V(Nucleus::createConstantInt(imm)) }));
+	Call(there3);
+	return RValue<Float>(Nucleus::createExtractElement(x, Float::type(), 0));
 }
 
 RValue<Float> floorss(RValue<Float> val)

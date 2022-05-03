@@ -83,7 +83,7 @@ static void *allocate(size_t bytes, size_t alignment, bool clearToZero)
 
 	if(block)
 	{
-		if(clearToZero)
+		//if(clearToZero)
 		{
 			memset(block, 0, size);
 		}
