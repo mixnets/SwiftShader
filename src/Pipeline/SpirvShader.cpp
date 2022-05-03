@@ -450,6 +450,7 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityShaderNonUniform: capabilities.ShaderNonUniform = true; break;
 				case spv::CapabilityRuntimeDescriptorArray: capabilities.RuntimeDescriptorArray = true; break;
 				case spv::CapabilityStorageBufferArrayNonUniformIndexing: capabilities.StorageBufferArrayNonUniformIndexing = true; break;
+				case spv::CapabilityStorageTexelBufferArrayNonUniformIndexing: capabilities.StorageTexelBufferArrayNonUniformIndexing = true; break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
@@ -1418,8 +1419,16 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, const Span &indexI
 					}
 					else
 					{
-						// Note: the value of indexIds[i] must be dynamically uniform.
-						ptr.offsetBase(Int(descriptorSize * Extract(state->getIntermediate(indexIds[i]).Int(0), 0)));
+						Decorations dIndex = GetDecorationsForId(indexIds[i]);
+						if(dIndex.NonUniform)
+						{
+							ptr.offsetBase(Int4(descriptorSize * state->getIntermediate(indexIds[i]).Int(0)));
+						}
+						else
+						{
+							// Note: the value of indexIds[i] must be dynamically uniform.
+							ptr.offsetBase(Int(descriptorSize * Extract(state->getIntermediate(indexIds[i]).Int(0), 0)));
+						}
 					}
 				}
 				else
