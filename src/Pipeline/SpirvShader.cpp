@@ -450,6 +450,7 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityShaderNonUniform: capabilities.ShaderNonUniform = true; break;
 				case spv::CapabilityRuntimeDescriptorArray: capabilities.RuntimeDescriptorArray = true; break;
 				case spv::CapabilityStorageBufferArrayNonUniformIndexing: capabilities.StorageBufferArrayNonUniformIndexing = true; break;
+				case spv::CapabilityStorageTexelBufferArrayNonUniformIndexing: capabilities.StorageTexelBufferArrayNonUniformIndexing = true; break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
@@ -1366,7 +1367,7 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, cons
 	return ptr;
 }
 
-SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, const Span &indexIds, EmitState const *state) const
+SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, const Span &indexIds, EmitState const *state, const Decorations dResult) const
 {
 	// TODO: avoid doing per-lane work in some cases if we can?
 	auto routine = state->routine;
@@ -1417,8 +1418,15 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, const Span &indexI
 					}
 					else
 					{
-						// Note: the value of indexIds[i] must be dynamically uniform.
-						ptr.offsetBase(Int(descriptorSize * Extract(state->getIntermediate(indexIds[i]).Int(0), 0)));
+						Decorations dIndex = GetDecorationsForId(indexIds[i]);
+						if(dIndex.NonUniform || dResult.NonUniform)
+						{
+							ptr.offsetBase(Int4(descriptorSize * state->getIntermediate(indexIds[i]).Int(0)));
+						}
+						else
+						{
+							ptr.offsetBase(Int(descriptorSize * Extract(state->getIntermediate(indexIds[i]).Int(0), 0)));
+						}
 					}
 				}
 				else
@@ -2234,7 +2242,7 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 	}
 	else
 	{
-		auto ptr = WalkAccessChain(baseId, Span(insn, 4, insn.wordCount() - 4), state);
+		auto ptr = WalkAccessChain(baseId, Span(insn, 4, insn.wordCount() - 4), state, dResult);
 		state->createPointer(resultId, ptr);
 	}
 
