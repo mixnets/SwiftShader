@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd3cf598_55e242a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-03T20:47:08Z",
+      "side": 1,
+      "message": "Ready for review. Once https://swiftshader-review.googlesource.com/c/SwiftShader/+/65569 successfully rolls into Chromium, I\u0027ll remove my own -1 and land this.",
+      "revId": "82ef790cdf6dea04d95ae9e6a347472d27cb797e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
