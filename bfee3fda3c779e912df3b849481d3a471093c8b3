@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ad37e5e_6b5cc165",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-04T22:00:04Z",
+      "side": 1,
+      "message": "Looks like there\u0027s a build issue: ..\\third_party\\SPIRV-Tools\\source\\val\\validate_builtins.cpp(4188): error C2065: \u0027SpvBuiltInCullMaskKHR\u0027: undeclared identifier\n\nProbably needs SPIRV-Headers to be updated first.",
+      "revId": "bfee3fda3c779e912df3b849481d3a471093c8b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
