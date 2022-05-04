@@ -2671,7 +2671,7 @@ RValue<Int4> Min(RValue<Int4> x, RValue<Int4> y)
 RValue<Int4> RoundInt(RValue<Float4> cast)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
+#if(defined(__i386__) || defined(__x86_64__)) && !__has_feature(memory_sanitizer)
 	return x86::cvtps2dq(cast);
 #else
 	return As<Int4>(V(lowerRoundInt(V(cast.value()), T(Int4::type()))));
@@ -2683,7 +2683,7 @@ RValue<Int4> RoundIntClamped(RValue<Float4> cast)
 	RR_DEBUG_INFO_UPDATE_LOC();
 
 // TODO(b/165000222): Check if fptosi_sat produces optimal code for x86 and ARM.
-#if defined(__i386__) || defined(__x86_64__)
+#if(defined(__i386__) || defined(__x86_64__)) && !__has_feature(memory_sanitizer)
 	// cvtps2dq produces 0x80000000, a negative value, for input larger than
 	// 2147483520.0, so clamp to 2147483520. Values less than -2147483520.0
 	// saturate to 0x80000000.
@@ -3591,6 +3591,8 @@ RValue<Int> cvtss2si(RValue<Float> val)
 
 RValue<Int4> cvtps2dq(RValue<Float4> val)
 {
+	ASSERT(!__has_feature(memory_sanitizer));  // TODO(b/172238865): Not correctly instrumented by MemorySanitizer.
+
 	return RValue<Int4>(createInstruction(llvm::Intrinsic::x86_sse2_cvtps2dq, val.value()));
 }
 
