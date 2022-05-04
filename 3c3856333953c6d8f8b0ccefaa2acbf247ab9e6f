@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f82061a_0e96162c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-04T20:36:37Z",
+      "side": 1,
+      "message": "Thanks Peter! Tested extensively by https://swiftshader-review.googlesource.com/c/SwiftShader/+/61408 (the timeouts are known: b/229968910).\n\nFeel free to manually set Verified+1 and Submit.",
+      "revId": "3c3856333953c6d8f8b0ccefaa2acbf247ab9e6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
