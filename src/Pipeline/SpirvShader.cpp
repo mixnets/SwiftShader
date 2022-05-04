@@ -24,7 +24,23 @@
 #include "marl/defer.h"
 
 #include <spirv/unified1/spirv.hpp>
+#include <iostream>
+extern bool zerozero;
 
+namespace spvtools {
+
+// Function implemented in third_party/SPIRV-Tools/source/disassemble.cpp
+// but with no public header.
+// This is a C++ function, so the name is mangled, and signature changes will
+// result in a linker error instead of runtime signature mismatches.
+extern std::string spvInstructionBinaryToText(const spv_target_env env,
+                                              const uint32_t *inst_binary,
+                                              const size_t inst_word_count,
+                                              const uint32_t *binary,
+                                              const size_t word_count,
+                                              const uint32_t options);
+
+}  // namespace spvtools
 namespace sw {
 
 SpirvShader::SpirvShader(
@@ -69,9 +85,23 @@ SpirvShader::SpirvShader(
 	Function::ID currentFunction;
 	Block::ID currentBlock;
 	InsnIterator blockStart;
-
+	std::cerr << "=======================================================================\n";
+	std::cerr << "=======================================================================\n";
 	for(auto insn : *this)
 	{
+		{
+			std::string text = spvtools::spvInstructionBinaryToText(
+			    vk::SPIRV_VERSION,
+			    insn.data(),
+			    insn.wordCount(),
+			    insns.data(),
+			    insns.size(),
+			    SPV_BINARY_TO_TEXT_OPTION_NO_HEADER);
+			// SPIRV_SHADER_DBG("{0}", text);
+
+			std::cerr << text << "\n";
+		}
+
 		spv::Op opcode = insn.opcode();
 
 		switch(opcode)
@@ -1784,9 +1814,10 @@ void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLan
 		}
 		EmitInstruction(insn, &state);
 	}
-
+	zerozero = true;
 	// Emit all the blocks starting from entryPoint.
 	EmitBlocks(getFunction(entryPoint).entry, &state);
+	zerozero = false;
 }
 
 void SpirvShader::EmitInstructions(InsnIterator begin, InsnIterator end, EmitState *state) const
@@ -1820,18 +1851,21 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 		AddAtomic(Pointer<Long>(ConstantPointer(counter)), 1);
 	}
 
-#if SPIRV_SHADER_ENABLE_DBG
+	// #if SPIRV_SHADER_ENABLE_DBG
+	if(false)
 	{
-		auto text = spvtools::spvInstructionBinaryToText(
+		std::string text = spvtools::spvInstructionBinaryToText(
 		    vk::SPIRV_VERSION,
 		    insn.data(),
 		    insn.wordCount(),
 		    insns.data(),
 		    insns.size(),
 		    SPV_BINARY_TO_TEXT_OPTION_NO_HEADER);
-		SPIRV_SHADER_DBG("{0}", text);
+		// SPIRV_SHADER_DBG("{0}", text);
+
+		std::cerr << text << "\n";
 	}
-#endif  // ENABLE_DBG_MSGS
+	// #endif  // ENABLE_DBG_MSGS
 
 	switch(opcode)
 	{

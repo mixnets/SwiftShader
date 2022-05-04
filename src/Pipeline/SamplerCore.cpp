@@ -360,6 +360,7 @@ Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, 
 	}
 	else
 	{
+		::abort();
 		Int N = RoundInt(anisotropy);
 
 		Vector4s cSum;
@@ -830,6 +831,7 @@ Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4
 	}
 	else
 	{
+		::abort();
 		Int N = RoundInt(anisotropy);
 
 		Vector4f cSum;
@@ -2292,7 +2294,7 @@ Short4 SamplerCore::computeLayerIndex16(const Float4 &a, Pointer<Byte> &mipmap)
 	}
 
 	Int4 layers = *Pointer<Int4>(mipmap + OFFSET(Mipmap, depth));
-
+	::abort();
 	return Short4(Min(Max(RoundInt(a), Int4(0)), layers - Int4(1)));
 }
 
@@ -2547,6 +2549,7 @@ Int4 SamplerCore::computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap)
 	}
 	else
 	{
+		::abort();
 		return Min(Max(RoundInt(a), Int4(0)), maxLayer);
 	}
 }

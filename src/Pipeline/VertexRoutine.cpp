@@ -22,6 +22,8 @@
 #include "System/Half.hpp"
 #include "Vulkan/VkDevice.hpp"
 
+extern bool zerozero;
+
 namespace sw {
 
 VertexRoutine::VertexRoutine(
@@ -41,6 +43,7 @@ VertexRoutine::~VertexRoutine()
 
 void VertexRoutine::generate()
 {
+
 	Pointer<Byte> cache = task + OFFSET(VertexTask, vertexCache);
 	Pointer<Byte> vertexCache = cache + OFFSET(VertexCache, vertex);
 	Pointer<UInt> tagCache = Pointer<UInt>(cache + OFFSET(VertexCache, tag));
@@ -60,8 +63,11 @@ void VertexRoutine::generate()
 
 		If(tagCache[cacheIndex] != index)
 		{
+
 			readInput(batch);
+
 			program(batch, vertexCount);
+
 			computeClipFlags();
 			computeCullMask();
 
@@ -172,6 +178,10 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
                                    bool robustBufferAccess, UInt &robustnessSize, Int baseVertex)
 {
 	Vector4f v;
+	v.x = 0;
+	v.y = 0;
+	v.z = 0;
+	v.w = 0;
 	// Because of the following rule in the Vulkan spec, we do not care if a very large negative
 	// baseVertex would overflow all the way back into a valid region of the index buffer:
 	// "Out-of-bounds buffer loads will return any of the following values :

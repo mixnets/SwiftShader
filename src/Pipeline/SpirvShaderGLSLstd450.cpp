@@ -780,6 +780,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
+				//::abort();
 				dst.move(i, sw::Exp2(val.Float(i), d.RelaxedPrecision));
 			}
 		}

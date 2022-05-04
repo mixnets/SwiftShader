@@ -23,6 +23,7 @@
 #include "Vulkan/VkImage.hpp"
 #include "Vulkan/VkImageView.hpp"
 
+#include <iostream>
 #include <utility>
 
 #if defined(__i386__) || defined(__x86_64__)
@@ -545,7 +546,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 	bool writeB = state.writeBlue;
 	bool writeA = state.writeAlpha;
 	bool writeRGBA = writeR && writeG && writeB && writeA;
-
+	std::cerr << "write: " << state.destFormat << "\n";
 	switch(state.destFormat)
 	{
 	case VK_FORMAT_R4G4_UNORM_PACK8:
@@ -636,11 +637,13 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 	case VK_FORMAT_B8G8R8A8_UNORM:
 		if(writeRGBA)
 		{
+			::abort();
 			Short4 c0 = RoundShort4(c.zyxw);
 			*Pointer<Byte4>(element) = Byte4(PackUnsigned(c0, c0));
 		}
 		else
 		{
+			::abort();
 			if(writeB) { *Pointer<Byte>(element + 0) = Byte(RoundInt(Float(c.z))); }
 			if(writeG) { *Pointer<Byte>(element + 1) = Byte(RoundInt(Float(c.y))); }
 			if(writeR) { *Pointer<Byte>(element + 2) = Byte(RoundInt(Float(c.x))); }
@@ -654,6 +657,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		break;
 	case VK_FORMAT_B8G8R8_UNORM:
 	case VK_FORMAT_B8G8R8_SRGB:
+		::abort();
 		if(writeB) { *Pointer<Byte>(element + 0) = Byte(RoundInt(Float(c.z))); }
 		if(writeG) { *Pointer<Byte>(element + 1) = Byte(RoundInt(Float(c.y))); }
 		if(writeR) { *Pointer<Byte>(element + 2) = Byte(RoundInt(Float(c.x))); }
@@ -668,11 +672,13 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 	case VK_FORMAT_A8B8G8R8_USCALED_PACK32:
 		if(writeRGBA)
 		{
+			::abort();
 			Short4 c0 = RoundShort4(c);
 			*Pointer<Byte4>(element) = Byte4(PackUnsigned(c0, c0));
 		}
 		else
 		{
+			::abort();
 			if(writeR) { *Pointer<Byte>(element + 0) = Byte(RoundInt(Float(c.x))); }
 			if(writeG) { *Pointer<Byte>(element + 1) = Byte(RoundInt(Float(c.y))); }
 			if(writeB) { *Pointer<Byte>(element + 2) = Byte(RoundInt(Float(c.z))); }

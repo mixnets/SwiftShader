@@ -101,16 +101,26 @@ extern __thread unsigned long long __msan_param_tls[];
 extern __thread unsigned long long __msan_retval_tls[];
 extern __thread unsigned long long __msan_va_arg_tls[];
 extern __thread unsigned long long __msan_va_arg_overflow_size_tls;
+// extern __thread unsigned int __msan_va_arg_origin_tls[];
+extern __thread unsigned int __msan_param_origin_tls[];
+extern __thread unsigned int __msan_retval_origin_tls;
+extern __thread unsigned int __msan_origin_tls;
 
 namespace rr {
 
 enum class MSanTLS
 {
-	param = 1,            // __msan_param_tls
-	retval,               // __msan_retval_tls
-	va_arg,               // __msan_va_arg_tls
-	va_arg_overflow_size  // __msan_va_arg_overflow_size_tls
+	param = 1,             // __msan_param_tls
+	retval,                // __msan_retval_tls
+	va_arg,                // __msan_va_arg_tls
+	va_arg_overflow_size,  // __msan_va_arg_overflow_size_tls
+	param_origin,          //__msan_param_origin_tls
+	retval_origin,         //__msan_retval_origin_tls
+	origin,                //__msan_origin_tls
 };
+
+// JIT session error: Symbols not found: [ __emutls_v.__msan_param_origin_tls, __emutls_v.__msan_origin_tls ]
+// JIT session error: Symbols not found: [ __emutls_v.__msan_retval_origin_tls, __emutls_v.__msan_origin_tls, __emutls_v.__msan_param_origin_tls ]
 
 static void *getTLSAddress(void *control)
 {
@@ -122,6 +132,10 @@ static void *getTLSAddress(void *control)
 	case MSanTLS::retval: return reinterpret_cast<void *>(&__msan_retval_tls);
 	case MSanTLS::va_arg: return reinterpret_cast<void *>(&__msan_va_arg_tls);
 	case MSanTLS::va_arg_overflow_size: return reinterpret_cast<void *>(&__msan_va_arg_overflow_size_tls);
+	case MSanTLS::param_origin: return reinterpret_cast<void *>(&__msan_param_origin_tls);
+	case MSanTLS::retval_origin: return reinterpret_cast<void *>(&__msan_retval_origin_tls);
+	case MSanTLS::origin: return reinterpret_cast<void *>(&__msan_origin_tls);
+
 	default:
 		UNSUPPORTED("MemorySanitizer used an unrecognized TLS variable: %d", tlsIndex);
 		return nullptr;
@@ -573,6 +587,9 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("emutls_v.__msan_param_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(rr::MSanTLS::param)));
 			functions.try_emplace("emutls_v.__msan_va_arg_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(rr::MSanTLS::va_arg)));
 			functions.try_emplace("emutls_v.__msan_va_arg_overflow_size_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(rr::MSanTLS::va_arg_overflow_size)));
+			functions.try_emplace("emutls_v.__msan_retval_origin_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(rr::MSanTLS::retval_origin)));
+			functions.try_emplace("emutls_v.__msan_param_origin_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(rr::MSanTLS::param_origin)));
+			functions.try_emplace("emutls_v.__msan_origin_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(rr::MSanTLS::origin)));
 
 			// TODO(b/155148722): Remove when we no longer unpoison any writes.
 			functions.try_emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));
@@ -933,13 +950,14 @@ void JITBuilder::runPasses()
 
 	if(optimizationLevel > 0)
 	{
-		passManager.add(llvm::createSROAPass());
-		passManager.add(llvm::createInstructionCombiningPass());
+		//	passManager.add(llvm::createSROAPass());
+		//	passManager.add(llvm::createInstructionCombiningPass());
 	}
 
 	if(__has_feature(memory_sanitizer) && msanInstrumentation)
 	{
-		passManager.add(llvm::createMemorySanitizerLegacyPassPass());
+		llvm::MemorySanitizerOptions msanOpts(2 /* TrackOrigins */, false /* Recover */, false /* Kernel */);
+		passManager.add(llvm::createMemorySanitizerLegacyPassPass(msanOpts));
 	}
 
 	passManager.run(*module);

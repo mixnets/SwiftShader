@@ -34,9 +34,13 @@
 #include <thread>
 #include <unordered_map>
 
+#include <sanitizer/msan_interface.h>
+
 #if defined(__i386__) || defined(__x86_64__)
 #	include <xmmintrin.h>
 #endif
+
+bool zerozero = false;
 
 #include <math.h>
 
@@ -630,6 +634,19 @@ Value *Nucleus::allocateStackVariable(Type *type, int arraySize)
 	}
 
 	entryBlock.getInstList().push_front(declaration);
+
+	// Zero - initialize local variables.
+	if(zerozero)
+	{
+		llvm::Type *i8PtrTy = llvm::Type::getInt8Ty(*jit->context)->getPointerTo();
+		llvm::Type *i32Ty = llvm::Type::getInt32Ty(*jit->context);
+		llvm::Function *memset = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::memset, { i8PtrTy, i32Ty });
+
+		jit->builder->CreateCall(memset, { jit->builder->CreatePointerCast(declaration, i8PtrTy),
+		                                   V(Nucleus::createConstantByte((unsigned char)0)),
+		                                   V(Nucleus::createConstantInt((int)typeSize(type) * (arraySize ? arraySize : 1))),
+		                                   V(Nucleus::createConstantBool(false)) });
+	}
 
 	return V(declaration);
 }
@@ -1878,11 +1895,11 @@ RValue<Int> SignMask(RValue<Byte8> x)
 
 //	RValue<Byte8> CmpGT(RValue<Byte8> x, RValue<Byte8> y)
 //	{
-//#if defined(__i386__) || defined(__x86_64__)
+// #if defined(__i386__) || defined(__x86_64__)
 //		return x86::pcmpgtb(x, y);   // FIXME: Signedness
-//#else
+// #else
 //		return As<Byte8>(V(lowerPCMP(llvm::ICmpInst::ICMP_SGT, V(x.value()), V(y.value()), T(Byte8::type()))));
-//#endif
+// #endif
 //	}
 
 RValue<Byte8> CmpEQ(RValue<Byte8> x, RValue<Byte8> y)
@@ -2427,11 +2444,11 @@ const UInt &operator--(UInt &val)  // Pre-decrement
 
 //	RValue<UInt> RoundUInt(RValue<Float> cast)
 //	{
-//#if defined(__i386__) || defined(__x86_64__)
+// #if defined(__i386__) || defined(__x86_64__)
 //		return x86::cvtss2si(val);   // FIXME: Unsigned
-//#else
+// #else
 //		return IfThenElse(cast > 0.0f, Int(cast + 0.5f), Int(cast - 0.5f));
-//#endif
+// #endif
 //	}
 
 Type *UInt::type()
@@ -2668,10 +2685,20 @@ RValue<Int4> Min(RValue<Int4> x, RValue<Int4> y)
 	}
 }
 
+[[maybe_unused]] static void check(float x, float y, float z, float w)
+{
+	float v[4] = { x, y, z, w };
+
+	__msan_print_shadow(&v, sizeof(v));
+}
+
 RValue<Int4> RoundInt(RValue<Float4> cast)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
+#if 1
+	// Float4 v = cast;
+	// Call(check, Float(v.x), Float(v.y), Float(v.z), Float(v.w));
+
 	return x86::cvtps2dq(cast);
 #else
 	return As<Int4>(V(lowerRoundInt(V(cast.value()), T(Int4::type()))));
@@ -2954,6 +2981,7 @@ RValue<Float> Sqrt(RValue<Float> x)
 RValue<Float> Round(RValue<Float> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
+	::abort();
 #if defined(__i386__) || defined(__x86_64__)
 	if(CPUID::supportsSSE4_1())
 	{
@@ -3210,7 +3238,7 @@ RValue<Int4> CmpUNLE(RValue<Float4> x, RValue<Float4> y)
 RValue<Float4> Round(RValue<Float4> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
+#if 0
 	if(CPUID::supportsSSE4_1())
 	{
 		return x86::roundps(x, 0);

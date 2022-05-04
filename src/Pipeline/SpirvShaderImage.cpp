@@ -1197,7 +1197,7 @@ void SpirvShader::WriteImage(ImageInstructionSignature instruction, Pointer<Byte
 	texel[2] = texelAndMask[2];
 	texel[3] = texelAndMask[3];
 	SIMD::Int mask = texelAndMask[4];
-
+	::abort();
 	SIMD::Int packed[4];
 	switch(imageFormat)
 	{

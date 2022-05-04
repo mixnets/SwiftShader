@@ -1945,6 +1945,7 @@ RValue<Short4> operator~(RValue<Short4> val)
 
 RValue<Short4> RoundShort4(RValue<Float4> cast)
 {
+	::abort();
 	RValue<Int4> int4 = RoundInt(cast);
 	return As<Short4>(PackSigned(int4, int4));
 }
@@ -4621,7 +4622,7 @@ int DebugPrintf(const char *format, ...)
 {
 	// Uncomment this to make it so that we do not print, but the call to this function is emitted.
 	// Useful when debugging emitted code to see the Reactor source location.
-	//#	define RR_PRINT_OUTPUT_TYPE_STUB
+	// #	define RR_PRINT_OUTPUT_TYPE_STUB
 
 #	if defined(RR_PRINT_OUTPUT_TYPE_STUB)
 	return 0;

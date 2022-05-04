@@ -341,6 +341,7 @@ RValue<Float4> Exp2(RValue<Float4> x, bool relaxedPrecision)
 
 	if(SWIFTSHADER_LEGACY_PRECISION)  // TODO(chromium:1299047)
 	{
+		//::abort();
 		return Exp2_legacy(x0);
 	}
 
@@ -470,6 +471,7 @@ RValue<Float4> Log(RValue<Float4> x, bool relaxedPrecision)
 
 RValue<Float4> Pow(RValue<Float4> x, RValue<Float4> y, bool relaxedPrecision)
 {
+	::abort();
 	Float4 log = sw::Log2(x, relaxedPrecision);
 	log *= y;
 	return sw::Exp2(log, relaxedPrecision);

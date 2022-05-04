@@ -2568,6 +2568,7 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 	case VK_FORMAT_R16_UNORM:
 		color.x = Min(Max(color.x, 0.0f), 1.0f);  // TODO(b/204560089): Omit clamp if redundant
 		color.x = As<Float4>(RoundInt(color.x * 0xFFFF));
+		::abort();
 		break;
 	default:
 		// TODO(b/204560089): Omit clamp if redundant

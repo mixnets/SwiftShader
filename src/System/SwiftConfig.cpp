@@ -131,7 +131,7 @@ marl::Scheduler::Config getSchedulerConfiguration(const Configuration &config)
 	auto affinityPolicy = getAffinityPolicy(std::move(affinity), config.affinityPolicy);
 
 	marl::Scheduler::Config cfg;
-	cfg.setWorkerThreadCount(threadCount);
+	cfg.setWorkerThreadCount(1);
 	cfg.setWorkerThreadAffinityPolicy(affinityPolicy);
 	cfg.setWorkerThreadInitializer([](int) {
 		sw::CPUID::setFlushToZero(true);
