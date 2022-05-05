@@ -484,6 +484,7 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("printf", reinterpret_cast<void *>(printf));
 			functions.try_emplace("puts", reinterpret_cast<void *>(puts));
 			functions.try_emplace("fmodf", reinterpret_cast<void *>(fmodf));
+			functions.try_emplace("lroundf", reinterpret_cast<void *>(lroundf));
 
 			functions.try_emplace("sinf", reinterpret_cast<void *>(sinf));
 			functions.try_emplace("cosf", reinterpret_cast<void *>(cosf));

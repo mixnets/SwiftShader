@@ -108,9 +108,12 @@ llvm::Value *lowerPCMP(llvm::ICmpInst::Predicate pred, llvm::Value *x,
 	return jit->builder->CreateCall(nearbyint, { x });
 }
 
-[[maybe_unused]] llvm::Value *lowerRoundInt(llvm::Value *x, llvm::Type *ty)
+[[maybe_unused]] llvm::Value *lowerRoundInt(llvm::Value *x)
 {
-	return jit->builder->CreateFPToSI(lowerRound(x), ty);
+	// TODO(b/172238865): Only supports scalars.
+	llvm::Function *lround = llvm::Intrinsic::getDeclaration(
+	    jit->module.get(), llvm::Intrinsic::lround, { llvm::Type::getInt32Ty(*jit->context), x->getType() });
+	return jit->builder->CreateCall(lround, { x });
 }
 
 [[maybe_unused]] llvm::Value *lowerFloor(llvm::Value *x)
@@ -2364,7 +2367,7 @@ RValue<Int> RoundInt(RValue<Float> cast)
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::cvtss2si(cast);
 #else
-	return RValue<Int>(V(lowerRoundInt(V(cast.value()), T(Int::type()))));
+	return RValue<Int>(V(lowerRoundInt(V(cast.value()))));
 #endif
 }
 
@@ -2674,7 +2677,12 @@ RValue<Int4> RoundInt(RValue<Float4> cast)
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::cvtps2dq(cast);
 #else
-	return As<Int4>(V(lowerRoundInt(V(cast.value()), T(Int4::type()))));
+	Int4 result;
+	result.x = RoundInt(Extract(cast, 0));
+	result.y = RoundInt(Extract(cast, 1));
+	result.z = RoundInt(Extract(cast, 2));
+	result.w = RoundInt(Extract(cast, 3));
+	return result;
 #endif
 }
 
@@ -2690,8 +2698,8 @@ RValue<Int4> RoundIntClamped(RValue<Float4> cast)
 	return x86::cvtps2dq(Min(cast, Float4(0x7FFFFF80)));
 #elif defined(__arm__) || defined(__aarch64__)
 	// ARM saturates to the largest positive or negative integer. Unit tests
-	// verify that lowerRoundInt() behaves as desired.
-	return As<Int4>(V(lowerRoundInt(V(cast.value()), T(Int4::type()))));
+	// verify that RoundInt() behaves as desired.
+	return RoundInt(cast);
 #elif LLVM_VERSION_MAJOR >= 14
 	llvm::Value *rounded = lowerRound(V(cast.value()));
 	llvm::Function *fptosi_sat = llvm::Intrinsic::getDeclaration(
@@ -2699,7 +2707,7 @@ RValue<Int4> RoundIntClamped(RValue<Float4> cast)
 	return RValue<Int4>(V(jit->builder->CreateCall(fptosi_sat, { rounded })));
 #else
 	RValue<Float4> clamped = Max(Min(cast, Float4(0x7FFFFF80)), Float4(0x80000000));
-	return As<Int4>(V(lowerRoundInt(V(clamped.value()), T(Int4::type()))));
+	return RoundInt(clamped);
 #endif
 }
 
