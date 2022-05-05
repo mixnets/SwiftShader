@@ -713,6 +713,7 @@ set(MARL_THIRD_PARTY_DIR ${THIRD_PARTY_DIR})
 add_subdirectory(${THIRD_PARTY_DIR}/marl)
 set_target_properties(marl PROPERTIES FOLDER "third_party")
 
+<<<<<<< HEAD   (5c5afa Update SPIR-V Tools to 7014be600)
 if(MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-Wthread-safety")
 endif()
@@ -895,6 +896,17 @@ if(SWIFTSHADER_BUILD_PVR)
         VulkanNavigation2D
         VulkanParticleSystem
         VulkanSkinning
+=======
+    include(CMakePackageConfigHelpers)
+
+    if (NOT CMAKE_VERSION VERSION_LESS 3.14)
+        set(arch_independent_str ARCH_INDEPENDENT)
+    endif()
+    write_basic_package_version_file(
+        "${version_config}"
+        COMPATIBILITY SameMajorVersion
+        ${arch_independent_str}
+>>>>>>> BRANCH (d2bd48 Squashed 'third_party/SPIRV-Headers/' changes from 6a55fade6)
     )
 
     set(PVR_VULKAN_TARGET_OTHER
