@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe2f13f4_578f8c8f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-05T12:45:59Z",
+      "side": 1,
+      "message": "Ready for review. Will be landed after fixing known msan issues.",
+      "revId": "a728e8c907d8eed299e398d0ff9605bac39f6abe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
