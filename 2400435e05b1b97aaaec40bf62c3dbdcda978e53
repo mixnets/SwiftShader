@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb139e88_d6a34872",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2022-05-05T15:28:31Z",
+      "side": 1,
+      "message": "This should pass Kokoro",
+      "revId": "2400435e05b1b97aaaec40bf62c3dbdcda978e53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
