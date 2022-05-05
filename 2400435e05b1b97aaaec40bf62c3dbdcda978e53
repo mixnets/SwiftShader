@@ -33,6 +33,24 @@
       "message": "Regres had the following compilation error:\n\n/5c5afa87dc2db380c43e9d89241c846e65006f69/third_party/SPIRV-Tools/source/val/validate_builtins.cpp:4188:10: error: use of undeclared identifier \u0027SpvBuiltInCullMaskKHR\u0027",
       "revId": "2400435e05b1b97aaaec40bf62c3dbdcda978e53",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "96658c1c_678135dd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-05T16:25:30Z",
+      "side": 1,
+      "message": "Oh, it\u0027s because the parent change doesn\u0027t build. That\u0027s fine!",
+      "parentUuid": "bc3ea85c_af7548ec",
+      "revId": "2400435e05b1b97aaaec40bf62c3dbdcda978e53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
