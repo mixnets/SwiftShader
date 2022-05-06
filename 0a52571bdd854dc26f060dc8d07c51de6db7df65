@@ -16,6 +16,24 @@
       "message": "LGTM to match https://github.com/KhronosGroup/SPIRV-Tools/pull/4780",
       "revId": "0a52571bdd854dc26f060dc8d07c51de6db7df65",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10a39a3b_c1c929f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-06T14:07:50Z",
+      "side": 1,
+      "message": "Thanks Natalie!",
+      "parentUuid": "af829cbb_cda661fc",
+      "revId": "0a52571bdd854dc26f060dc8d07c51de6db7df65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ],
   "submitRequirementResults": [
