@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af829cbb_cda661fc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101431
+      },
+      "writtenOn": "2022-05-06T13:30:02Z",
+      "side": 1,
+      "message": "LGTM to match https://github.com/KhronosGroup/SPIRV-Tools/pull/4780",
+      "revId": "0a52571bdd854dc26f060dc8d07c51de6db7df65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
