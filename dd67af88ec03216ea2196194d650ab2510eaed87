@@ -16,6 +16,23 @@
       "message": "ANGLE is failing tests when switching to dynamic state, which this fixes.\n\nWould you please open a CTS issue to add coverage for this in the Vulkan CTS?",
       "revId": "dd67af88ec03216ea2196194d650ab2510eaed87",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf2d66c6_797974d8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-10T17:18:57Z",
+      "side": 1,
+      "message": "Wait, I\u0027m not sure this is the right fix, why does setting it to 1.0 here matters if it\u0027s dynamic? Wouldn\u0027t this value be unused if it\u0027s dynamic?",
+      "revId": "dd67af88ec03216ea2196194d650ab2510eaed87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
