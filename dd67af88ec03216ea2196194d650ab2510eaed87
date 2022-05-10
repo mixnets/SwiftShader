@@ -33,6 +33,46 @@
       "message": "Wait, I\u0027m not sure this is the right fix, why does setting it to 1.0 here matters if it\u0027s dynamic? Wouldn\u0027t this value be unused if it\u0027s dynamic?",
       "revId": "dd67af88ec03216ea2196194d650ab2510eaed87",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e5c1247_4e88ab8a",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-10T17:33:21Z",
+      "side": 1,
+      "message": "This should be:\n\n  if(!dynamicStateFlags.dynamicLineWidth)\n  {\n      lineWidth \u003d rasterizationState-\u003elineWidth;\n  }",
+      "range": {
+        "startLine": 430,
+        "startChar": 1,
+        "endLine": 430,
+        "endChar": 86
+      },
+      "revId": "dd67af88ec03216ea2196194d650ab2510eaed87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "61178bb6_04843021",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 781,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-10T17:33:21Z",
+      "side": 1,
+      "message": "Inside this function, you\u0027d need to add something like:\n\n\tif(dynamicStateFlags.dynamicLineWidth)\n\t{\n\t\tcombinedState.lineWidth \u003d dynamicState.lineWidth;\n\t}\n\t\nYou then need to add a \"lineWidth\" member to DynamicState, and you need to properly set it in CommandBuffer::setLineWidth(), while keeping the assert there.",
+      "revId": "dd67af88ec03216ea2196194d650ab2510eaed87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
