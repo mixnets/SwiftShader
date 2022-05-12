@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0fa35772_c740bf83",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 1256,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:19:18Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 1256,
+        "startChar": 1,
+        "endLine": 1256,
+        "endChar": 6
+      },
+      "revId": "3c874126f937dff8da23965d47bf1c2519d17f18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f87d8e5_ac1062de",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 1282,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:19:18Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 1282,
+        "startChar": 47,
+        "endLine": 1282,
+        "endChar": 52
+      },
+      "revId": "3c874126f937dff8da23965d47bf1c2519d17f18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f12ea3d_bb549dc7",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:19:18Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 381,
+        "startChar": 59,
+        "endLine": 381,
+        "endChar": 64
+      },
+      "revId": "3c874126f937dff8da23965d47bf1c2519d17f18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d832ebf_93c48865",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:19:18Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 440,
+        "startChar": 4,
+        "endLine": 440,
+        "endChar": 9
+      },
+      "revId": "3c874126f937dff8da23965d47bf1c2519d17f18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4000ec23_f29d0f25",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 467,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:19:18Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 467,
+        "startChar": 31,
+        "endLine": 467,
+        "endChar": 35
+      },
+      "revId": "3c874126f937dff8da23965d47bf1c2519d17f18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "955b9c68_185f4773",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 467,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:19:18Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 467,
+        "startChar": 5,
+        "endLine": 467,
+        "endChar": 10
+      },
+      "revId": "3c874126f937dff8da23965d47bf1c2519d17f18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0918237c_dc9d6939",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:19:18Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 469,
+        "startChar": 54,
+        "endLine": 469,
+        "endChar": 58
+      },
+      "revId": "3c874126f937dff8da23965d47bf1c2519d17f18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21123680_8644b7cc",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:19:18Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 469,
+        "startChar": 5,
+        "endLine": 469,
+        "endChar": 9
+      },
+      "revId": "3c874126f937dff8da23965d47bf1c2519d17f18",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
