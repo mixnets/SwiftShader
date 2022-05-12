@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fda1c802_5a3cebe6",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1278,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-12T11:12:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7cf9b5f7_b98f6136",
+      "range": {
+        "startLine": 1278,
+        "startChar": 26,
+        "endLine": 1278,
+        "endChar": 68
+      },
+      "revId": "e4d5e91cbb7dd7da027f49dd289c3c64c9d9b143",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "679031c4_ea2397ed",
@@ -61,6 +85,30 @@
       "side": 1,
       "message": "The problem I\u0027m trying to solve is that I have an unknown number of active vk::BufferDescriptor.ptr objects that I need to turn into a single SIMD::Pointer. So I need to turn 4 potential bases into 1 base + 4 offsets. \n\nSince there\u0027s no pointer arithmetic in Reactor, I convert the pointers into integers to do this.\n\nI\u0027m not sure how else to create a single SIMD::Pointer from 4 rr::Pointers. Perhaps I should solve this by changing BufferDescriptor to use base + offset? I believe all valid BufferDescriptors within a binding of the same descriptor set index into the same buffer, right?",
       "parentUuid": "679031c4_ea2397ed",
+      "range": {
+        "startLine": 405,
+        "startChar": 3,
+        "endLine": 405,
+        "endChar": 58
+      },
+      "revId": "e4d5e91cbb7dd7da027f49dd289c3c64c9d9b143",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8451323_85dc21f6",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-12T11:12:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30f99362_52f9a5da",
       "range": {
         "startLine": 405,
         "startChar": 3,
