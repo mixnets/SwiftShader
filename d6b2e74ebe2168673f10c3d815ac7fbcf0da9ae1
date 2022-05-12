@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b98fb3a_b3f0216d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-12T11:58:07Z",
+      "side": 1,
+      "message": "I looked into merging GetNonUniformTexelAddress into GetTexelAddress, however there are multiple call sites for GetTexelAddress that only have an rr::Pointer and not a SIMD::Pointer for the descriptor. So merging the two functions would involve  extensive changes to several places unrelated to descriptor indexing. I think it\u0027s best to leave them as separate functions for now.",
+      "revId": "d6b2e74ebe2168673f10c3d815ac7fbcf0da9ae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
