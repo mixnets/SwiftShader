@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9cd5e3d_c52c8a3c",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:16:50Z",
+      "side": 1,
+      "message": "I think this should be \"SIMD::Int\", since you use it with SIMD::Width",
+      "range": {
+        "startLine": 156,
+        "startChar": 24,
+        "endLine": 156,
+        "endChar": 32
+      },
+      "revId": "84e38c3d69987c6fe831be33442ee80061bc920b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1126ed7_09e05bb0",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:16:50Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 600,
+        "startChar": 13,
+        "endLine": 600,
+        "endChar": 17
+      },
+      "revId": "84e38c3d69987c6fe831be33442ee80061bc920b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "033a530c_48c9fa5f",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 604,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-12T20:16:50Z",
+      "side": 1,
+      "message": "SIMD::Int",
+      "range": {
+        "startLine": 604,
+        "startChar": 38,
+        "endLine": 604,
+        "endChar": 43
+      },
+      "revId": "84e38c3d69987c6fe831be33442ee80061bc920b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
