@@ -64,6 +64,54 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9fdea64_30d87cb1",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1414,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-13T14:04:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f97b5cb2_b464c9c5",
+      "range": {
+        "startLine": 1414,
+        "startChar": 44,
+        "endLine": 1414,
+        "endChar": 86
+      },
+      "revId": "d6b2e74ebe2168673f10c3d815ac7fbcf0da9ae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ce06775_5f687167",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1414,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-13T14:04:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c60194d_3bc6bf75",
+      "range": {
+        "startLine": 1414,
+        "startChar": 22,
+        "endLine": 1414,
+        "endChar": 26
+      },
+      "revId": "d6b2e74ebe2168673f10c3d815ac7fbcf0da9ae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d3aafcc5_215fef8b",
@@ -77,6 +125,30 @@
       "writtenOn": "2022-05-12T20:27:08Z",
       "side": 1,
       "message": "SIMD::Int",
+      "range": {
+        "startLine": 1311,
+        "startChar": 3,
+        "endLine": 1311,
+        "endChar": 8
+      },
+      "revId": "d6b2e74ebe2168673f10c3d815ac7fbcf0da9ae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd5c3076_423c082b",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1311,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-13T14:04:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3aafcc5_215fef8b",
       "range": {
         "startLine": 1311,
         "startChar": 3,
