@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f12103b_f2875d5f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1415,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-13T15:08:44Z",
+      "side": 1,
+      "message": "Is this cast still necessary?",
+      "range": {
+        "startLine": 1415,
+        "startChar": 22,
+        "endLine": 1415,
+        "endChar": 31
+      },
+      "revId": "4f249b460fd51ed9a766c17c7f5c4e5e2450880b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
