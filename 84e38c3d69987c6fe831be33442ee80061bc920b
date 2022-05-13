@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab64d7d5_b5b5a5f6",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-13T14:09:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9cd5e3d_c52c8a3c",
+      "range": {
+        "startLine": 156,
+        "startChar": 24,
+        "endLine": 156,
+        "endChar": 32
+      },
+      "revId": "84e38c3d69987c6fe831be33442ee80061bc920b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f1126ed7_09e05bb0",
@@ -47,6 +71,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "007886b0_3cacf223",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-13T14:09:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f1126ed7_09e05bb0",
+      "range": {
+        "startLine": 600,
+        "startChar": 13,
+        "endLine": 600,
+        "endChar": 17
+      },
+      "revId": "84e38c3d69987c6fe831be33442ee80061bc920b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "033a530c_48c9fa5f",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-05-12T20:16:50Z",
       "side": 1,
       "message": "SIMD::Int",
+      "range": {
+        "startLine": 604,
+        "startChar": 38,
+        "endLine": 604,
+        "endChar": 43
+      },
+      "revId": "84e38c3d69987c6fe831be33442ee80061bc920b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "32ed9d8a_39f22d79",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 604,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-13T14:09:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "033a530c_48c9fa5f",
       "range": {
         "startLine": 604,
         "startChar": 38,
