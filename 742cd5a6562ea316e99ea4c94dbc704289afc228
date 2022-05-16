@@ -45,6 +45,23 @@
       },
       "revId": "742cd5a6562ea316e99ea4c94dbc704289afc228",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c4db477_dee6f187",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-16T17:35:41Z",
+      "side": 1,
+      "message": "The use-of-uninitialized-value error comes from getBlendConstants(), and those members are initialized here:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Device/Context.hpp;l\u003d302\nso I\u0027m not sure how else they could be uninitialized.",
+      "revId": "742cd5a6562ea316e99ea4c94dbc704289afc228",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
