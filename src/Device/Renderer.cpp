@@ -196,7 +196,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	}
 	draw->id = id;
 
-	const vk::GraphicsState &pipelineState = pipeline->getState(dynamicState);
+	const vk::GraphicsState pipelineState = pipeline->getState(dynamicState);
 	pixelProcessor.setBlendConstant(pipelineState.getBlendConstants());
 
 	const vk::Inputs &inputs = pipeline->getInputs();
