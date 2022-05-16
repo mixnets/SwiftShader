@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c32ca67d_6773c7c9",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-16T16:20:02Z",
+      "side": 1,
+      "message": "I think this name is confusing because it doesn\u0027t always just offset the base pointer. Something like `addOffset()` would be clearer.\n\nAlso we already had similar `operator+\u003d` methods. Do we really need these new ones?",
+      "range": {
+        "startLine": 154,
+        "startChar": 13,
+        "endLine": 154,
+        "endChar": 23
+      },
+      "revId": "6e20ec28fe93467fe51a5f533e37d53da1ecd57d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
