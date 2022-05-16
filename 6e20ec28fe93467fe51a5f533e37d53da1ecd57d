@@ -22,6 +22,30 @@
       },
       "revId": "6e20ec28fe93467fe51a5f533e37d53da1ecd57d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17152c21_6bf1b207",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-16T21:54:36Z",
+      "side": 1,
+      "message": "operator+\u003d modifies the offsets of a base+offset pointer and the values of an array pointer.\n\nHowever, there are places in the codebase that care about modifying the base of a base+offset pointer instead of the offsets. It\u0027s possible for these places to encounter a non-uniform SIMD::Int with descriptor indexing, so I used the name `offsetBase()` to try to tie what these points in the code were originally doing to an outcome that might turn the pointer into an array pointer.\n\nI think `addOffset()` is ambiguous since a base+offset pointer has an offset that the function would not touch. Perhaps `addToBaseOrArrays()` would be more clear?",
+      "parentUuid": "c32ca67d_6773c7c9",
+      "range": {
+        "startLine": 154,
+        "startChar": 13,
+        "endLine": 154,
+        "endChar": 23
+      },
+      "revId": "6e20ec28fe93467fe51a5f533e37d53da1ecd57d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
