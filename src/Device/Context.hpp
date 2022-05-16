@@ -121,9 +121,9 @@ struct BlendState : sw::Memset<BlendState>
 
 struct DynamicState
 {
-	VkViewport viewport;
-	VkRect2D scissor;
-	sw::float4 blendConstants;
+	VkViewport viewport = {};
+	VkRect2D scissor = {};
+	sw::float4 blendConstants = {};
 	float depthBiasConstantFactor = 0.0f;
 	float depthBiasClamp = 0.0f;
 	float depthBiasSlopeFactor = 0.0f;
