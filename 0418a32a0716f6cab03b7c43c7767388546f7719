@@ -70,6 +70,30 @@
       },
       "revId": "0418a32a0716f6cab03b7c43c7767388546f7719",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c333be2a_cc63dff1",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-17T17:29:47Z",
+      "side": 1,
+      "message": "https://gitlab.khronos.org/vulkan/vulkan/-/merge_requests/5156 landed and states that the Vulkan implementation must adjust the viewport transform\u0027s depth range.\n\nHere in `computeClipFlags()` we should just account for the difference in near plane position.",
+      "parentUuid": "699c0245_939af0bf",
+      "range": {
+        "startLine": 143,
+        "startChar": 4,
+        "endLine": 143,
+        "endChar": 31
+      },
+      "revId": "0418a32a0716f6cab03b7c43c7767388546f7719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
