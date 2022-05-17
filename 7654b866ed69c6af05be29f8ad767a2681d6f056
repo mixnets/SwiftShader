@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "667045a5_da0fff40",
+        "filename": "tests/regres/testlists/vk-master-ASSERT.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-17T19:22:23Z",
+      "side": 0,
+      "message": "b/214957976 / https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3523",
+      "range": {
+        "startLine": 1,
+        "startChar": 14,
+        "endLine": 1,
+        "endChar": 46
+      },
+      "revId": "7654b866ed69c6af05be29f8ad767a2681d6f056",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94af825d_bcc02112",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-17T19:22:23Z",
+      "side": 0,
+      "message": "b/167582422",
+      "range": {
+        "startLine": 19,
+        "startChar": 27,
+        "endLine": 19,
+        "endChar": 45
+      },
+      "revId": "7654b866ed69c6af05be29f8ad767a2681d6f056",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
