@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2beafc85_1a875234",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1034,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-17T19:58:45Z",
+      "side": 1,
+      "message": "Multiplying a pointer by an integer doesn\u0027t make a lot of sense (even for the base+offsets variant), and doesn\u0027t appear to be used. Please remove this and operator*.\n\nFYI, `rr::Pointer\u003cT\u003e` supports pointee types other than `Byte`, and multiplies by their size when adding an integer. `SIMD::Pointer` at this point only supports `Byte`, but should probably in the future also support other types.",
+      "range": {
+        "startLine": 1034,
+        "startChar": 26,
+        "endLine": 1034,
+        "endChar": 27
+      },
+      "revId": "6e20ec28fe93467fe51a5f533e37d53da1ecd57d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c32ca67d_6773c7c9",
         "filename": "src/Pipeline/ShaderCore.hpp",
         "patchSetId": 7
@@ -38,6 +61,30 @@
       "side": 1,
       "message": "operator+\u003d modifies the offsets of a base+offset pointer and the values of an array pointer.\n\nHowever, there are places in the codebase that care about modifying the base of a base+offset pointer instead of the offsets. It\u0027s possible for these places to encounter a non-uniform SIMD::Int with descriptor indexing, so I used the name `offsetBase()` to try to tie what these points in the code were originally doing to an outcome that might turn the pointer into an array pointer.\n\nI think `addOffset()` is ambiguous since a base+offset pointer has an offset that the function would not touch. Perhaps `addToBaseOrArrays()` would be more clear?",
       "parentUuid": "c32ca67d_6773c7c9",
+      "range": {
+        "startLine": 154,
+        "startChar": 13,
+        "endLine": 154,
+        "endChar": 23
+      },
+      "revId": "6e20ec28fe93467fe51a5f533e37d53da1ecd57d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "887424c6_7490d8d2",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-17T19:58:45Z",
+      "side": 1,
+      "message": "\u003e there are places in the codebase that care about modifying the base of a base+offset pointer instead of the offsets\n\nAh, I think we need better encapsulation here. Users of SIMD::Pointer shouldn\u0027t have to worry about how it\u0027s implemented. So let\u0027s get rid of `getBase()` and `offsets()`. Instead we need `getPointerForLane(int)` and `getUniformPointer()` which both return a scalar pointer. `getUniformPointer()` can be implemented as `getPointerForLane(0)` but should assert that if there are offsets they are equal for each lane (use `Assert()` for dynamic offsets).\n\nThat way we should be able to handle all pointer arithmetic inside the addition operators.",
+      "parentUuid": "17152c21_6bf1b207",
       "range": {
         "startLine": 154,
         "startChar": 13,
