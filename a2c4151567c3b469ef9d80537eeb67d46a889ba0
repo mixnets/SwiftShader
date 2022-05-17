@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "91e7c74b_d6f8df9f",
+        "filename": "tests/regres/testlists/vk-master-QUALITY_WARNING.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-17T13:35:33Z",
+      "side": 1,
+      "message": "Likely just a timeout. Let\u0027s keep an eye on this.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 98
+      },
+      "revId": "a2c4151567c3b469ef9d80537eeb67d46a889ba0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
