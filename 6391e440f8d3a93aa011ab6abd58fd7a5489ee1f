@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c22b399a_20cd2373",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-17T21:08:03Z",
+      "side": 1,
+      "message": "Let\u0027s see how quickly https://github.com/KhronosGroup/VK-GL-CTS/pull/321 gets accepted.",
+      "revId": "6391e440f8d3a93aa011ab6abd58fd7a5489ee1f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
