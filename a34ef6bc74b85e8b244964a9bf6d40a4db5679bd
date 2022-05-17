@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7e414aa_9f18f386",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-05-17T16:36:14Z",
+      "side": 1,
+      "message": "Kokoro failure seems like a presubmit issue",
+      "revId": "a34ef6bc74b85e8b244964a9bf6d40a4db5679bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
