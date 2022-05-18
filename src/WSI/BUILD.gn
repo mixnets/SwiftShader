@@ -21,6 +21,12 @@ config("WSI_metal_weak_framework") {
       "Metal",
     ]
   }
+  if (is_linux) {
+    import("//build/config/linux/pkg_config.gni")
+    pkg_config("x11-xcb") {
+      packages = [ "x11-xcb" ]
+    }
+  }
 }
 
 swiftshader_source_set("WSI") {
@@ -75,4 +81,8 @@ swiftshader_source_set("WSI") {
   ]
 
   configs = [ "../Vulkan:swiftshader_libvulkan_private_config" ]
+
+  if (is_linux) {
+    configs += [ ":x11-xcb" ]
+  }
 }
