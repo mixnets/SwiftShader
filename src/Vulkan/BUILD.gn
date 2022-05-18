@@ -58,6 +58,13 @@ config("swiftshader_libvulkan_private_config") {
      "SWIFTSHADER_ENABLE_ASTC",  # TODO(b/150130101)
      "SWIFTSHADER_LEGACY_PRECISION=true",  # TODO(chromium:1299047)
   ]
+
+  if (is_linux) {
+    import("//build/config/linux/pkg_config.gni")
+    pkg_config("x11-xcb") {
+      packages = [ "x11-xcb" ]
+    }
+  }
 }
 
 swiftshader_source_set("swiftshader_libvulkan_headers") {
@@ -214,6 +221,10 @@ swiftshader_shared_library("swiftshader_libvulkan") {
   public_deps = [
     ":swiftshader_libvulkan_headers",
   ]
+
+  if (is_linux) {
+    configs += [ ":x11-xcb" ]
+  }
 }
 
 # Generates an ICD JSON file that can be used by all targets in this GN build
