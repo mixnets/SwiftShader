@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0eda0ef6_e5b8aa30",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-19T20:40:52Z",
+      "side": 1,
+      "message": "b/233251131",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 57
+      },
+      "revId": "8c1bb07d6f3506d947e9f27ad69b3f0150a49e43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
