@@ -171,14 +171,18 @@ VkImageAspectFlags Format::getAspects() const
 	return aspects;
 }
 
-Format Format::getAspectFormat(VkImageAspectFlags aspect) const
+Format Format::getAspectFormat1(VkImageAspectFlags aspect) const
 {
 	switch(aspect)
 	{
 	case VK_IMAGE_ASPECT_COLOR_BIT:
-	case(VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT):
-	case(VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT):
-	case(VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT):
+		return format;
+	case VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT:
+		ASSERT(false);
 		return format;
 
 	case VK_IMAGE_ASPECT_DEPTH_BIT:
@@ -199,6 +203,147 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 		break;
 
 	case VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_S8_UINT:
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_S8_UINT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	// YCbCr formats
+	// Vulkan 1.1 section 32.1.1. Compatible formats of planes of multi-planar formats
+	case VK_IMAGE_ASPECT_PLANE_0_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			return VK_FORMAT_R10X6_UNORM_PACK16;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+		// 16-bit compatibility class
+		// Compatible formats with VK_FORMAT_R8G8_UNORM, VK_FORMAT_R10X6_UNORM_PACK16, VK_FORMAT_R12X4_UNORM_PACK16 and VK_FORMAT_R16_UNORM
+		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+		case VK_FORMAT_R8G8_UNORM:
+		case VK_FORMAT_R8G8_UINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_1_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8G8_UNORM;
+		case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			return VK_FORMAT_R10X6G10X6_UNORM_2PACK16;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+		// 16-bit compatibility class
+		// Compatible formats with VK_FORMAT_R8G8_UNORM, VK_FORMAT_R10X6_UNORM_PACK16, VK_FORMAT_R12X4_UNORM_PACK16 and VK_FORMAT_R16_UNORM
+		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+		case VK_FORMAT_R8G8_UNORM:
+		case VK_FORMAT_R8G8_UINT:
+		case VK_FORMAT_R8G8_SINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SINT:
+		// 32-bit compatibility class
+		// Compatible formats for VK_FORMAT_R10X6G10X6_UNORM_2PACK16, VK_FORMAT_R12X4G12X4_UNORM_2PACK16 and VK_FORMAT_R16G16_UNORM
+		case VK_FORMAT_R8G8B8A8_UNORM:
+		case VK_FORMAT_R8G8B8A8_UINT:
+		case VK_FORMAT_R16G16_UNORM:
+		case VK_FORMAT_R32_UINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_2_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	default:
+		UNSUPPORTED("aspect %x", int(aspect));
+		break;
+	}
+
+	return format;
+}
+
+Format Format::getAspectFormat2(VkImageAspectFlags aspect) const
+{
+	switch(aspect)
+	{
+	case VK_IMAGE_ASPECT_COLOR_BIT:
+		return format;
+	case VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT:
+		ASSERT(false);
+		return format;
+
+	case VK_IMAGE_ASPECT_DEPTH_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_D16_UNORM:
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+			return VK_FORMAT_D16_UNORM;
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+			return VK_FORMAT_X8_D24_UNORM_PACK32;
+		case VK_FORMAT_D32_SFLOAT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_D32_SFLOAT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
 		switch(format)
 		{
 		case VK_FORMAT_S8_UINT:
@@ -279,6 +424,425 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 		break;
 
 	case VK_IMAGE_ASPECT_PLANE_2_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	default:
+		UNSUPPORTED("aspect %x", int(aspect));
+		break;
+	}
+
+	return format;
+}
+
+Format Format::getAspectFormat3(VkImageAspectFlags aspect) const
+{
+	switch(aspect)
+	{
+	case VK_IMAGE_ASPECT_COLOR_BIT:
+		return format;
+	case VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT:
+		ASSERT(false);
+		return format;
+
+	case VK_IMAGE_ASPECT_DEPTH_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_D16_UNORM:
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+			return VK_FORMAT_D16_UNORM;
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+			return VK_FORMAT_X8_D24_UNORM_PACK32;
+		case VK_FORMAT_D32_SFLOAT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_D32_SFLOAT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_S8_UINT:
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_S8_UINT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	// YCbCr formats
+	// Vulkan 1.1 section 32.1.1. Compatible formats of planes of multi-planar formats
+	case VK_IMAGE_ASPECT_PLANE_0_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			return VK_FORMAT_R10X6_UNORM_PACK16;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+		// 16-bit compatibility class
+		// Compatible formats with VK_FORMAT_R8G8_UNORM, VK_FORMAT_R10X6_UNORM_PACK16, VK_FORMAT_R12X4_UNORM_PACK16 and VK_FORMAT_R16_UNORM
+		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+		case VK_FORMAT_R8G8_UNORM:
+		case VK_FORMAT_R8G8_UINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_1_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8G8_UNORM;
+		case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			return VK_FORMAT_R10X6G10X6_UNORM_2PACK16;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+		// 16-bit compatibility class
+		// Compatible formats with VK_FORMAT_R8G8_UNORM, VK_FORMAT_R10X6_UNORM_PACK16, VK_FORMAT_R12X4_UNORM_PACK16 and VK_FORMAT_R16_UNORM
+		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+		case VK_FORMAT_R8G8_UNORM:
+		case VK_FORMAT_R8G8_UINT:
+		case VK_FORMAT_R8G8_SINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SINT:
+		// 32-bit compatibility class
+		// Compatible formats for VK_FORMAT_R10X6G10X6_UNORM_2PACK16, VK_FORMAT_R12X4G12X4_UNORM_2PACK16 and VK_FORMAT_R16G16_UNORM
+		case VK_FORMAT_R8G8B8A8_UNORM:
+		case VK_FORMAT_R8G8B8A8_UINT:
+		case VK_FORMAT_R16G16_UNORM:
+		case VK_FORMAT_R32_UINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_2_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	default:
+		UNSUPPORTED("aspect %x", int(aspect));
+		break;
+	}
+
+	return format;
+}
+
+Format Format::getAspectFormat4(VkImageAspectFlags aspect) const
+{
+	switch(aspect)
+	{
+	case VK_IMAGE_ASPECT_COLOR_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT:
+		ASSERT(false);
+		return format;
+
+	case VK_IMAGE_ASPECT_DEPTH_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_D16_UNORM:
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+			return VK_FORMAT_D16_UNORM;
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+			return VK_FORMAT_X8_D24_UNORM_PACK32;
+		case VK_FORMAT_D32_SFLOAT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_D32_SFLOAT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_S8_UINT:
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_S8_UINT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	// YCbCr formats
+	// Vulkan 1.1 section 32.1.1. Compatible formats of planes of multi-planar formats
+	case VK_IMAGE_ASPECT_PLANE_0_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			return VK_FORMAT_R10X6_UNORM_PACK16;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+		// 16-bit compatibility class
+		// Compatible formats with VK_FORMAT_R8G8_UNORM, VK_FORMAT_R10X6_UNORM_PACK16, VK_FORMAT_R12X4_UNORM_PACK16 and VK_FORMAT_R16_UNORM
+		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+		case VK_FORMAT_R8G8_UNORM:
+		case VK_FORMAT_R8G8_UINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_1_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8G8_UNORM;
+		case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			return VK_FORMAT_R10X6G10X6_UNORM_2PACK16;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+		// 16-bit compatibility class
+		// Compatible formats with VK_FORMAT_R8G8_UNORM, VK_FORMAT_R10X6_UNORM_PACK16, VK_FORMAT_R12X4_UNORM_PACK16 and VK_FORMAT_R16_UNORM
+		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+		case VK_FORMAT_R8G8_UNORM:
+		case VK_FORMAT_R8G8_UINT:
+		case VK_FORMAT_R8G8_SINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SINT:
+		// 32-bit compatibility class
+		// Compatible formats for VK_FORMAT_R10X6G10X6_UNORM_2PACK16, VK_FORMAT_R12X4G12X4_UNORM_2PACK16 and VK_FORMAT_R16G16_UNORM
+		case VK_FORMAT_R8G8B8A8_UNORM:
+		case VK_FORMAT_R8G8B8A8_UINT:
+		case VK_FORMAT_R16G16_UNORM:
+		case VK_FORMAT_R32_UINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_2_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	default:
+		UNSUPPORTED("aspect %x", int(aspect));
+		break;
+	}
+
+	return format;
+}
+
+Format Format::getAspectFormat5(VkImageAspectFlags aspect) const
+{
+	switch(aspect)
+	{
+	case VK_IMAGE_ASPECT_COLOR_BIT:
+		return format;
+	case VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT:
+		ASSERT(false);
+	case VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT:
+		ASSERT(false);
+		return format;
+
+	case VK_IMAGE_ASPECT_DEPTH_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_D16_UNORM:
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+			return VK_FORMAT_D16_UNORM;
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+			return VK_FORMAT_X8_D24_UNORM_PACK32;
+		case VK_FORMAT_D32_SFLOAT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_D32_SFLOAT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_STENCIL_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_S8_UINT:
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_S8_UINT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	// YCbCr formats
+	// Vulkan 1.1 section 32.1.1. Compatible formats of planes of multi-planar formats
+	case VK_IMAGE_ASPECT_PLANE_0_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			return VK_FORMAT_R10X6_UNORM_PACK16;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+		// 16-bit compatibility class
+		// Compatible formats with VK_FORMAT_R8G8_UNORM, VK_FORMAT_R10X6_UNORM_PACK16, VK_FORMAT_R12X4_UNORM_PACK16 and VK_FORMAT_R16_UNORM
+		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+		case VK_FORMAT_R8G8_UNORM:
+		case VK_FORMAT_R8G8_UINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_1_BIT:
+		ASSERT(false);
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8G8_UNORM;
+		case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			return VK_FORMAT_R10X6G10X6_UNORM_2PACK16;
+		// 8-bit compatibility class
+		// Compatible format for VK_FORMAT_R8_UNORM
+		case VK_FORMAT_R8_UNORM:
+		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_R8_SINT:
+		// 16-bit compatibility class
+		// Compatible formats with VK_FORMAT_R8G8_UNORM, VK_FORMAT_R10X6_UNORM_PACK16, VK_FORMAT_R12X4_UNORM_PACK16 and VK_FORMAT_R16_UNORM
+		case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+		case VK_FORMAT_R8G8_UNORM:
+		case VK_FORMAT_R8G8_UINT:
+		case VK_FORMAT_R8G8_SINT:
+		case VK_FORMAT_R16_UNORM:
+		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SINT:
+		// 32-bit compatibility class
+		// Compatible formats for VK_FORMAT_R10X6G10X6_UNORM_2PACK16, VK_FORMAT_R12X4G12X4_UNORM_2PACK16 and VK_FORMAT_R16G16_UNORM
+		case VK_FORMAT_R8G8B8A8_UNORM:
+		case VK_FORMAT_R8G8B8A8_UINT:
+		case VK_FORMAT_R16G16_UNORM:
+		case VK_FORMAT_R32_UINT:
+			return format;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_2_BIT:
+		ASSERT(false);
 		switch(format)
 		{
 		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:

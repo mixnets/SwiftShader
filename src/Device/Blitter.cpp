@@ -57,7 +57,7 @@ Blitter::~Blitter()
 void Blitter::clear(const void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
 {
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask);
-	vk::Format dstFormat = viewFormat.getAspectFormat(aspect);
+	vk::Format dstFormat = viewFormat.getAspectFormat1(aspect);
 	if(dstFormat == VK_FORMAT_UNDEFINED)
 	{
 		return;

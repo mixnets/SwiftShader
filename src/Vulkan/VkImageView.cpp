@@ -22,23 +22,20 @@
 #include <climits>
 
 namespace vk {
-namespace {
 
-Format GetImageViewFormat(const VkImageViewCreateInfo *pCreateInfo)
+static Format GetImageViewFormat(const VkImageViewCreateInfo *pCreateInfo)
 {
 	// VkImageViewCreateInfo: "If image has an external format, format must be VK_FORMAT_UNDEFINED"
 	// In that case, obtain the format from the underlying image.
 	if(pCreateInfo->format != VK_FORMAT_UNDEFINED)
 	{
-		return Format(pCreateInfo->format);
+		return pCreateInfo->format;
 	}
 
 	return vk::Cast(pCreateInfo->image)->getFormat();
 }
 
-}  // anonymous namespace
-
-VkComponentMapping ResolveIdentityMapping(VkComponentMapping mapping)
+static VkComponentMapping ResolveIdentityMapping(VkComponentMapping mapping)
 {
 	return {
 		(mapping.r == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_R : mapping.r,
@@ -48,7 +45,7 @@ VkComponentMapping ResolveIdentityMapping(VkComponentMapping mapping)
 	};
 }
 
-VkComponentMapping ResolveComponentMapping(VkComponentMapping mapping, vk::Format format)
+static VkComponentMapping ResolveComponentMapping(VkComponentMapping mapping, vk::Format format)
 {
 	mapping = vk::ResolveIdentityMapping(mapping);
 
@@ -69,7 +66,7 @@ VkComponentMapping ResolveComponentMapping(VkComponentMapping mapping, vk::Forma
 	return { table[mapping.r], table[mapping.g], table[mapping.b], table[mapping.a] };
 }
 
-VkImageSubresourceRange ResolveRemainingLevelsLayers(VkImageSubresourceRange range, const vk::Image *image)
+static VkImageSubresourceRange ResolveRemainingLevelsLayers(VkImageSubresourceRange range, const vk::Image *image)
 {
 	return {
 		range.aspectMask,
@@ -85,10 +82,10 @@ Identifier::Identifier(const VkImageViewCreateInfo *pCreateInfo)
 	const Image *image = vk::Cast(pCreateInfo->image);
 
 	VkImageSubresourceRange subresource = ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image);
-	vk::Format viewFormat = GetImageViewFormat(pCreateInfo).getAspectFormat(subresource.aspectMask);
+	vk::Format viewFormat = GetImageViewFormat(pCreateInfo).getAspectFormat3(subresource.aspectMask);
 	const Image *sampledImage = image->getSampledImage(viewFormat);
 
-	vk::Format samplingFormat = (image == sampledImage) ? viewFormat : sampledImage->getFormat().getAspectFormat(subresource.aspectMask);
+	vk::Format samplingFormat = (image == sampledImage) ? viewFormat : sampledImage->getFormat().getAspectFormat4(subresource.aspectMask);
 	pack({ pCreateInfo->viewType, samplingFormat, ResolveComponentMapping(pCreateInfo->components, viewFormat), subresource.levelCount <= 1u });
 }
 
@@ -355,7 +352,7 @@ const Image *ImageView::getImage(Usage usage) const
 Format ImageView::getFormat(Usage usage) const
 {
 	Format imageFormat = ((usage == RAW) || (getImage(usage) == image)) ? format : getImage(usage)->getFormat();
-	return imageFormat.getAspectFormat(subresourceRange.aspectMask);
+	return imageFormat.getAspectFormat5(subresourceRange.aspectMask);
 }
 
 uint32_t ImageView::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage) const

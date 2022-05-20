@@ -39,7 +39,11 @@ public:
 	bool isUnsigned() const;
 
 	VkImageAspectFlags getAspects() const;
-	Format getAspectFormat(VkImageAspectFlags aspect) const;
+	Format getAspectFormat1(VkImageAspectFlags aspect) const;
+	Format getAspectFormat2(VkImageAspectFlags aspect) const;
+	Format getAspectFormat3(VkImageAspectFlags aspect) const;
+	Format getAspectFormat4(VkImageAspectFlags aspect) const;
+	Format getAspectFormat5(VkImageAspectFlags aspect) const;
 	VkFormat getClearFormat() const;
 	bool isStencil() const;
 	bool isDepth() const;

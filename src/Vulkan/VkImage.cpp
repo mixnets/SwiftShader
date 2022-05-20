@@ -847,7 +847,7 @@ size_t Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) c
 
 Format Image::getFormat(VkImageAspectFlagBits aspect) const
 {
-	return format.getAspectFormat(aspect);
+	return format.getAspectFormat2(aspect);
 }
 
 bool Image::isCubeCompatible() const
