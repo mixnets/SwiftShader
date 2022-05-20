@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93a296f2_09b64e0e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-20T13:29:20Z",
+      "side": 1,
+      "message": "A bug ID with background info would be nice (e.g. why this hasn\u0027t been a problem before, what\u0027s different about this system configuration, and how this build file change is expected to address it).",
+      "range": {
+        "startLine": 13,
+        "startChar": 7,
+        "endLine": 13,
+        "endChar": 32
+      },
+      "revId": "742fb26cd1562e40561d3979eb3b0f840cb25b4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb47c279_eb63b740",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-20T13:29:20Z",
+      "side": 1,
+      "message": "Thanks for the patch! Does this attempt to link the X libraries, or just helps find the headers? We try to detect things dynamically: b/139491466.",
+      "revId": "742fb26cd1562e40561d3979eb3b0f840cb25b4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
