@@ -1,0 +1,6 @@
+dEQP-VK.compute.zero_initialize_workgroup_memory.max_workgroup_memory.1
+dEQP-VK.compute.zero_initialize_workgroup_memory.max_workgroup_memory.128
+dEQP-VK.compute.zero_initialize_workgroup_memory.max_workgroup_memory.16
+dEQP-VK.compute.zero_initialize_workgroup_memory.max_workgroup_memory.2
+dEQP-VK.compute.zero_initialize_workgroup_memory.max_workgroup_memory.4
+dEQP-VK.compute.zero_initialize_workgroup_memory.max_workgroup_memory.64
