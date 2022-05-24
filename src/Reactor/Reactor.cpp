@@ -4341,6 +4341,309 @@ RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset)
 	return lhs = lhs - offset;
 }
 
+Pointer4::Pointer4(Pointer<Byte> base, Int limit)
+    : base(base)
+    , dynamicLimit(limit)
+    , staticLimit(0)
+    , dynamicOffsets(0)
+    , staticOffsets{}
+    , hasDynamicLimit(true)
+    , hasDynamicOffsets(false)
+    , isBasePlusOffset(true)
+{}
+
+Pointer4::Pointer4(Pointer<Byte> base, unsigned int limit)
+    : base(base)
+    , dynamicLimit(0)
+    , staticLimit(limit)
+    , dynamicOffsets(0)
+    , staticOffsets{}
+    , hasDynamicLimit(false)
+    , hasDynamicOffsets(false)
+    , isBasePlusOffset(true)
+{}
+
+Pointer4::Pointer4(Pointer<Byte> base, Int limit, Int4 offset)
+    : base(base)
+    , dynamicLimit(limit)
+    , staticLimit(0)
+    , dynamicOffsets(offset)
+    , staticOffsets{}
+    , hasDynamicLimit(true)
+    , hasDynamicOffsets(true)
+    , isBasePlusOffset(true)
+{}
+
+Pointer4::Pointer4(Pointer<Byte> base, unsigned int limit, Int4 offset)
+    : base(base)
+    , dynamicLimit(0)
+    , staticLimit(limit)
+    , dynamicOffsets(offset)
+    , staticOffsets{}
+    , hasDynamicLimit(false)
+    , hasDynamicOffsets(true)
+    , isBasePlusOffset(true)
+{}
+
+Pointer4::Pointer4(Pointer<Byte> p0, Pointer<Byte> p1, Pointer<Byte> p2, Pointer<Byte> p3)
+    : pointers({ { p0, p1, p2, p3 } })
+    , isBasePlusOffset(false)
+{
+	static_assert(PWidth == 4, "Expects PWidth to be 4");
+}
+
+Pointer4::Pointer4(std::array<Pointer<Byte>, PWidth> pointers)
+    : pointers(pointers)
+    , isBasePlusOffset(false)
+{}
+
+Pointer4 &Pointer4::operator+=(Int4 i)
+{
+	if(isBasePlusOffset)
+	{
+		dynamicOffsets += i;
+		hasDynamicOffsets = true;
+	}
+	else
+	{
+		for(int el = 0; el < PWidth; el++) { pointers[el] += Extract(i, el); }
+	}
+	return *this;
+}
+
+Pointer4 &Pointer4::operator*=(Int4 i)
+{
+	ASSERT_MSG(isBasePlusOffset, "No offset to multiply for this type of pointer");
+	dynamicOffsets = offsets() * i;
+	staticOffsets = {};
+	hasDynamicOffsets = true;
+	return *this;
+}
+
+Pointer4 Pointer4::operator+(Int4 i)
+{
+	Pointer4 p = *this;
+	p += i;
+	return p;
+}
+Pointer4 Pointer4::operator*(Int4 i)
+{
+	Pointer4 p = *this;
+	p *= i;
+	return p;
+}
+
+Pointer4 &Pointer4::operator+=(int i)
+{
+	if(isBasePlusOffset)
+	{
+		for(int el = 0; el < PWidth; el++) { staticOffsets[el] += i; }
+	}
+	else
+	{
+		for(int el = 0; el < PWidth; el++) { pointers[el] += i; }
+	}
+	return *this;
+}
+
+Pointer4 &Pointer4::operator*=(int i)
+{
+	ASSERT_MSG(isBasePlusOffset, "No offset to multiply for this type of pointer");
+	for(int el = 0; el < PWidth; el++) { staticOffsets[el] *= i; }
+	if(hasDynamicOffsets)
+	{
+		dynamicOffsets *= Int4(i);
+	}
+	return *this;
+}
+
+Pointer4 Pointer4::operator+(int i)
+{
+	Pointer4 p = *this;
+	p += i;
+	return p;
+}
+Pointer4 Pointer4::operator*(int i)
+{
+	Pointer4 p = *this;
+	p *= i;
+	return p;
+}
+
+Int4 Pointer4::offsets() const
+{
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
+	static_assert(PWidth == 4, "Expects PWidth to be 4");
+	return dynamicOffsets + Int4(staticOffsets[0], staticOffsets[1], staticOffsets[2], staticOffsets[3]);
+}
+
+Int4 Pointer4::isInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
+{
+	ASSERT(accessSize > 0);
+
+	if(isStaticallyInBounds(accessSize, robustness))
+	{
+		return Int4(0xffffffff);
+	}
+
+	if(!hasDynamicOffsets && !hasDynamicLimit)
+	{
+		// Common fast paths.
+		static_assert(PWidth == 4, "Expects PWidth to be 4");
+		return Int4(
+		    (staticOffsets[0] + accessSize - 1 < staticLimit) ? 0xffffffff : 0,
+		    (staticOffsets[1] + accessSize - 1 < staticLimit) ? 0xffffffff : 0,
+		    (staticOffsets[2] + accessSize - 1 < staticLimit) ? 0xffffffff : 0,
+		    (staticOffsets[3] + accessSize - 1 < staticLimit) ? 0xffffffff : 0);
+	}
+
+	return CmpGE(offsets(), Int4(0)) & CmpLT(offsets() + Int4(accessSize - 1), Int4(limit()));
+}
+
+bool Pointer4::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
+{
+	if(hasDynamicOffsets)
+	{
+		return false;
+	}
+
+	if(hasDynamicLimit)
+	{
+		if(hasStaticEqualOffsets() || hasStaticSequentialOffsets(accessSize))
+		{
+			switch(robustness)
+			{
+			case OutOfBoundsBehavior::UndefinedBehavior:
+				// With this robustness setting the application/compiler guarantees in-bounds accesses on active lanes,
+				// but since it can't know in advance which branches are taken this must be true even for inactives lanes.
+				return true;
+			case OutOfBoundsBehavior::Nullify:
+			case OutOfBoundsBehavior::RobustBufferAccess:
+			case OutOfBoundsBehavior::UndefinedValue:
+				return false;
+			}
+		}
+	}
+
+	for(int i = 0; i < PWidth; i++)
+	{
+		if(staticOffsets[i] + accessSize - 1 >= staticLimit)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+Int Pointer4::limit() const
+{
+	return dynamicLimit + staticLimit;
+}
+
+// Returns true if all offsets are sequential
+// (N+0*step, N+1*step, N+2*step, N+3*step)
+Bool Pointer4::hasSequentialOffsets(unsigned int step) const
+{
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
+	if(hasDynamicOffsets)
+	{
+		auto o = offsets();
+		static_assert(PWidth == 4, "Expects PWidth to be 4");
+		return SignMask(~CmpEQ(o.yzww, o + Int4(1 * step, 2 * step, 3 * step, 0))) == 0;
+	}
+	return hasStaticSequentialOffsets(step);
+}
+
+// Returns true if all offsets are are compile-time static and
+// sequential (N+0*step, N+1*step, N+2*step, N+3*step)
+bool Pointer4::hasStaticSequentialOffsets(unsigned int step) const
+{
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
+	if(hasDynamicOffsets)
+	{
+		return false;
+	}
+	for(int i = 1; i < PWidth; i++)
+	{
+		if(staticOffsets[i - 1] + int32_t(step) != staticOffsets[i]) { return false; }
+	}
+	return true;
+}
+
+// Returns true if all offsets are equal (N, N, N, N)
+Bool Pointer4::hasEqualOffsets() const
+{
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
+	if(hasDynamicOffsets)
+	{
+		auto o = offsets();
+		static_assert(PWidth == 4, "Expects PWidth to be 4");
+		return SignMask(~CmpEQ(o, o.yzwx)) == 0;
+	}
+	return hasStaticEqualOffsets();
+}
+
+// Returns true if all offsets are compile-time static and are equal
+// (N, N, N, N)
+bool Pointer4::hasStaticEqualOffsets() const
+{
+	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
+	if(hasDynamicOffsets)
+	{
+		return false;
+	}
+	for(int i = 1; i < PWidth; i++)
+	{
+		if(staticOffsets[i - 1] != staticOffsets[i]) { return false; }
+	}
+	return true;
+}
+
+RValue<Bool> AnyTrue(const RValue<Int4> &bools)
+{
+	return SignMask(bools) != 0;
+}
+
+RValue<Bool> AnyFalse(const RValue<Int4> &bools)
+{
+	return SignMask(~bools) != 0;  // TODO(b/214588983): Compare against mask of SIMD::Width 1's to avoid bitwise NOT.
+}
+
+RValue<Bool> AllTrue(const RValue<Int4> &bools)
+{
+	return SignMask(~bools) == 0;  // TODO(b/214588983): Compare against mask of SIMD::Width 1's to avoid bitwise NOT.
+}
+
+RValue<Bool> AllFalse(const RValue<Int4> &bools)
+{
+	return SignMask(bools) == 0;
+}
+
+RValue<Bool> Divergent(const RValue<Int4> &ints)
+{
+	auto broadcastFirst = Int4(Extract(ints, 0));
+	return AnyTrue(CmpNEQ(broadcastFirst, ints));
+}
+
+RValue<Bool> Divergent(const RValue<Float4> &floats)
+{
+	auto broadcastFirst = Float4(Extract(floats, 0));
+	return AnyTrue(CmpNEQ(broadcastFirst, floats));
+}
+
+RValue<Bool> Uniform(const RValue<Int4> &ints)
+{
+	auto broadcastFirst = Int4(Extract(ints, 0));
+	return AllFalse(CmpNEQ(broadcastFirst, ints));
+}
+
+RValue<Bool> Uniform(const RValue<Float4> &floats)
+{
+	auto broadcastFirst = Float4(rr::Extract(floats, 0));
+	return AllFalse(CmpNEQ(broadcastFirst, floats));
+}
+
 void Return()
 {
 	Nucleus::createRetVoid();
@@ -4621,7 +4924,7 @@ int DebugPrintf(const char *format, ...)
 {
 	// Uncomment this to make it so that we do not print, but the call to this function is emitted.
 	// Useful when debugging emitted code to see the Reactor source location.
-	//#	define RR_PRINT_OUTPUT_TYPE_STUB
+	// #	define RR_PRINT_OUTPUT_TYPE_STUB
 
 #	if defined(RR_PRINT_OUTPUT_TYPE_STUB)
 	return 0;

@@ -324,6 +324,27 @@ struct PrintValue::Ty<Pointer<T>>
 	static std::string fmt(const RValue<Pointer<T>> &v) { return "%p"; }
 	static std::vector<Value *> val(const RValue<Pointer<T>> &v) { return { v.value() }; }
 };
+template<>
+struct PrintValue::Ty<Pointer4>
+{
+	static std::string fmt(const Pointer4 &v)
+	{
+		return v.isBasePlusOffset ? "{%p + [%d, %d, %d, %d]}" : "{%p, %p, %p, %p}";
+	}
+	static std::vector<rr::Value *> val(const Pointer4 &v)
+	{
+		if(v.isBasePlusOffset)
+		{
+			return PrintValue::vals(v.getBase(), v.offsets());
+		}
+		else
+		{
+			auto pointers = v.getPointers();
+			static_assert(PWidth == 4, "Expects a SIMD::Width of 4");
+			return PrintValue::vals(pointers[0], pointers[1], pointers[2], pointers[3]);
+		}
+	}
+};
 template<typename T>
 struct PrintValue::Ty<Reference<T>>
 {
