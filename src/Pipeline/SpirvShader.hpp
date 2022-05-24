@@ -1012,7 +1012,7 @@ private:
 	static bool IsStorageInterleavedByLane(spv::StorageClass storageClass);
 	static bool IsExplicitLayout(spv::StorageClass storageClass);
 
-	static sw::SIMD::Pointer InterleaveByLane(sw::SIMD::Pointer p);
+	static Pointer4 InterleaveByLane(Pointer4 p);
 
 	// Output storage buffers and images should not be affected by helper invocations
 	static bool StoresInHelperInvocation(spv::StorageClass storageClass);
