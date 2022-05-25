@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a494a6b6_9316d2d3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-25T16:36:47Z",
+      "side": 1,
+      "message": "Please add a \"Bug: chromium:***\" line for tracking purposes.",
+      "revId": "484e76f72e86076fa75ba04f4a3d5e218d58071d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6647021_40b877de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-25T16:36:47Z",
+      "side": 1,
+      "message": "Thanks for the patch, Antonio! Couple of minor issues:",
+      "revId": "484e76f72e86076fa75ba04f4a3d5e218d58071d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d531a8fc_5f879808",
+        "filename": "src/WSI/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-25T16:36:47Z",
+      "side": 1,
+      "message": "Should only be imported on Linux.",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 44
+      },
+      "revId": "484e76f72e86076fa75ba04f4a3d5e218d58071d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
