@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a672bdc2_6754906d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-25T15:27:57Z",
+      "side": 1,
+      "message": "b/229968910. I\u0027ve restarted Regres with a lower `numParallelTests` to see if this helps avoid the timeouts.",
+      "revId": "9d8a70de8f26a199ae229b687217de5559fb5cab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
