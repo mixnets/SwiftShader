@@ -170,7 +170,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 
 				if(state.centroid || shaderContainsInterpolation)  // TODO(b/194714095)
 				{
-					rhwCentroid = reciprocal(SpirvRoutine::interpolateAtXY(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, w), false, false));
+					rhwCentroid = reciprocal(SpirvRoutine::interpolateAtXY(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, w), { false, false }));
 				}
 			}
 
@@ -201,19 +201,20 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 					auto const &input = spirvShader->inputs[interfaceInterpolant];
 					if(input.Type != SpirvShader::ATTRIBTYPE_UNUSED)
 					{
+						routine.inputsData[packedInterpolant] = { input.Flat, !input.NoPerspective };
 						if(input.Centroid && state.enableMultiSampling)
 						{
 							routine.inputs[interfaceInterpolant] =
 							    SpirvRoutine::interpolateAtXY(XXXX, YYYY, rhwCentroid,
 							                                  primitive + OFFSET(Primitive, V[packedInterpolant]),
-							                                  input.Flat, !input.NoPerspective);
+							                                  routine.inputsData[packedInterpolant]);
 						}
 						else if(perSampleShading)
 						{
 							routine.inputs[interfaceInterpolant] =
 							    SpirvRoutine::interpolateAtXY(xxxx, yyyy, rhw,
 							                                  primitive + OFFSET(Primitive, V[packedInterpolant]),
-							                                  input.Flat, !input.NoPerspective);
+							                                  routine.inputsData[packedInterpolant]);
 						}
 						else
 						{
