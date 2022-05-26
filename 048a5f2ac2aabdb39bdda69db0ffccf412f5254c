@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5ab8612_da012cf3",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1518,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-26T01:53:00Z",
+      "side": 1,
+      "message": "This isn\u0027t data but rather a state variable, and sice there are only three valid options I think we need an enum here:\n```\nenum Interpolation\n{\n    Perspective \u003d 0,\n    Linear,\n    Flat,\n};\n```",
+      "range": {
+        "startLine": 1518,
+        "startChar": 1,
+        "endLine": 1518,
+        "endChar": 17
+      },
+      "revId": "048a5f2ac2aabdb39bdda69db0ffccf412f5254c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b19a0c28_1c0b323d",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1540,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-26T01:53:00Z",
+      "side": 1,
+      "message": "inputsInterpolation",
+      "range": {
+        "startLine": 1540,
+        "startChar": 11,
+        "endLine": 1540,
+        "endChar": 21
+      },
+      "revId": "048a5f2ac2aabdb39bdda69db0ffccf412f5254c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
