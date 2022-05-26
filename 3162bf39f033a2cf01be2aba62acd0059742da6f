@@ -33,6 +33,23 @@
       "message": "I\u0027m good with the change now, modulo Nicolas\u0027 question.",
       "revId": "3162bf39f033a2cf01be2aba62acd0059742da6f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8af6e9b3_a9e026e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-26T15:48:20Z",
+      "side": 1,
+      "message": "Antonio, feel free to manually set Verified+1 if you\u0027re confident in this change, and Submit. If it\u0027s not clear whether this will work on systems without Wayland support, I think it\u0027s okay to land this and just revert if we encounter issues.",
+      "revId": "3162bf39f033a2cf01be2aba62acd0059742da6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
