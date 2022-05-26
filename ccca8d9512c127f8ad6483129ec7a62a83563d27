@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7e42167_3cf3b1df",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-26T17:10:28Z",
+      "side": 1,
+      "message": "Have you tried an MSan run? To test this CL in an MSan run, you can create a Chromium CL and set the swiftshader hash in the DEPS file to point to this CL (`refs/changes/09/66009/2`) and run an MSan trybot.\n",
+      "revId": "ccca8d9512c127f8ad6483129ec7a62a83563d27",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
