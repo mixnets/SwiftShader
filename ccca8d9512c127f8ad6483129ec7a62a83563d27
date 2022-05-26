@@ -16,6 +16,41 @@
       "message": "Have you tried an MSan run? To test this CL in an MSan run, you can create a Chromium CL and set the swiftshader hash in the DEPS file to point to this CL (`refs/changes/09/66009/2`) and run an MSan trybot.\n",
       "revId": "ccca8d9512c127f8ad6483129ec7a62a83563d27",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95aa1664_7b9e7ae2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-26T17:15:45Z",
+      "side": 1,
+      "message": "I ran the linux_chromium_msan_rel_ng tryjob and it came back green. This has been a reliable way to test msan behavior.",
+      "parentUuid": "f7e42167_3cf3b1df",
+      "revId": "ccca8d9512c127f8ad6483129ec7a62a83563d27",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c78ca785_11172f13",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-26T17:15:45Z",
+      "side": 1,
+      "message": "Comment removed by: Nicolas Capens; Reason: d",
+      "revId": "ccca8d9512c127f8ad6483129ec7a62a83563d27",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
