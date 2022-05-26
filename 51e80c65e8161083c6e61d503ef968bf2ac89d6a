@@ -16,6 +16,92 @@
       "message": "Thanks! Alexis, can you do second Googler review?",
       "revId": "51e80c65e8161083c6e61d503ef968bf2ac89d6a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4dc1cdc_d892612a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-26T13:15:41Z",
+      "side": 1,
+      "message": "I see this isn\u0027t formatted. Unfortunately, we don\u0027t have Chromium\u0027s GN formatting rules in SwiftShader. If you have a Chromium checkout, you can apply your changes to //third_party/swiftshader/ and run `git cl format` to get the correct formatting. Sorry we don\u0027t have a more straightforward of doing this at the moment :/",
+      "revId": "51e80c65e8161083c6e61d503ef968bf2ac89d6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a6a8e62_1879801f",
+        "filename": "src/WSI/BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-26T13:15:41Z",
+      "side": 1,
+      "message": "nit: should be single line",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 7
+      },
+      "revId": "51e80c65e8161083c6e61d503ef968bf2ac89d6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6607466d_ede93fd3",
+        "filename": "src/WSI/BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-26T13:15:41Z",
+      "side": 1,
+      "message": "Nit extra spaces",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 2
+      },
+      "revId": "51e80c65e8161083c6e61d503ef968bf2ac89d6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9fec542e_1dfdb78f",
+        "filename": "src/WSI/BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-26T13:15:41Z",
+      "side": 1,
+      "message": "nit: weird formatting, and should be single line",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 7
+      },
+      "revId": "51e80c65e8161083c6e61d503ef968bf2ac89d6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
