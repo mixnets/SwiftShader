@@ -16,6 +16,23 @@
       "message": "Looks great!",
       "revId": "39f16bc00f2a5daec018d5413c1ede463a2128c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48db34ea_3751b9c5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-26T15:50:35Z",
+      "side": 1,
+      "message": "I think you meant CQ+2 😊",
+      "revId": "39f16bc00f2a5daec018d5413c1ede463a2128c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
