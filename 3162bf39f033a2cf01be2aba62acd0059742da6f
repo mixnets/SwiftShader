@@ -68,6 +68,24 @@
       "parentUuid": "74f0cb01_824dc017",
       "revId": "3162bf39f033a2cf01be2aba62acd0059742da6f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dcc47068_a25166ef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-05-27T15:17:10Z",
+      "side": 1,
+      "message": "Yes, that\u0027s the safer approach. Thanks!",
+      "parentUuid": "a78ebbd7_ba53d641",
+      "revId": "3162bf39f033a2cf01be2aba62acd0059742da6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
