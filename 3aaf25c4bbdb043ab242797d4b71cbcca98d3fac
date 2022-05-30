@@ -16,6 +16,23 @@
       "message": "LGTM",
       "revId": "3aaf25c4bbdb043ab242797d4b71cbcca98d3fac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "528678ab_2ab1e73d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-30T17:38:53Z",
+      "side": 1,
+      "message": "Test fixed by:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/66011",
+      "revId": "3aaf25c4bbdb043ab242797d4b71cbcca98d3fac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
