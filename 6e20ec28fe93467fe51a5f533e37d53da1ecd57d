@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1a3fece_a99f42fa",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1034,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-31T17:00:16Z",
+      "side": 1,
+      "message": "Ack\n\nOperator*\u003d is used in interleaveByLane(). For now, I think this should stay as is and be the target of a different CL in the future.",
+      "parentUuid": "2beafc85_1a875234",
+      "range": {
+        "startLine": 1034,
+        "startChar": 26,
+        "endLine": 1034,
+        "endChar": 27
+      },
+      "revId": "6e20ec28fe93467fe51a5f533e37d53da1ecd57d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c32ca67d_6773c7c9",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "\u003e there are places in the codebase that care about modifying the base of a base+offset pointer instead of the offsets\n\nAh, I think we need better encapsulation here. Users of SIMD::Pointer shouldn\u0027t have to worry about how it\u0027s implemented. So let\u0027s get rid of `getBase()` and `offsets()`. Instead we need `getPointerForLane(int)` and `getUniformPointer()` which both return a scalar pointer. `getUniformPointer()` can be implemented as `getPointerForLane(0)` but should assert that if there are offsets they are equal for each lane (use `Assert()` for dynamic offsets).\n\nThat way we should be able to handle all pointer arithmetic inside the addition operators.",
       "parentUuid": "17152c21_6bf1b207",
+      "range": {
+        "startLine": 154,
+        "startChar": 13,
+        "endLine": 154,
+        "endChar": 23
+      },
+      "revId": "6e20ec28fe93467fe51a5f533e37d53da1ecd57d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3db063b_781b8a1d",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-05-31T17:00:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "887424c6_7490d8d2",
       "range": {
         "startLine": 154,
         "startChar": 13,
