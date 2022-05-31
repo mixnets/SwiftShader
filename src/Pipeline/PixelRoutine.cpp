@@ -129,6 +129,8 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 				depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
 				depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 			}
+
+			writeStencil(sBuffer, x, sMask, zMask, cMask, samples);
 		}
 
 		If(depthPass || !earlyFragmentTests)
@@ -136,6 +138,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 			if(earlyFragmentTests)
 			{
 				writeDepth(zBuffer, x, zMask, samples);
+				occlusionSampleCount(zMask, sMask, samples);
 			}
 
 			Float4 yyyy = Float4(Float(y)) + *Pointer<Float4>(primitive + OFFSET(Primitive, yQuad), 16);
@@ -276,14 +279,15 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 				}
 			}
 
+			bool cMaskModified = false;
 			if(spirvShader)
 			{
-				executeShader(cMask, earlyFragmentTests ? sMask : cMask, earlyFragmentTests ? zMask : cMask, samples);
+				cMaskModified = executeShader(cMask, earlyFragmentTests ? sMask : cMask, earlyFragmentTests ? zMask : cMask, samples);
 			}
 
 			Bool alphaPass = alphaTest(cMask, samples);
 
-			if((spirvShader && spirvShader->getAnalysis().ContainsDiscard) || state.alphaToCoverage)
+			if(cMaskModified || state.alphaToCoverage)
 			{
 				for(unsigned int q : samples)
 				{
@@ -309,16 +313,18 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 					if(!earlyFragmentTests)
 					{
 						writeDepth(zBuffer, x, zMask, samples);
+						occlusionSampleCount(zMask, sMask, samples);
 					}
 
 					blendColor(cBuffer, x, sMask, zMask, cMask, samples);
-
-					occlusionSampleCount(zMask, sMask, samples);
 				}
 			}
 		}
 
-		writeStencil(sBuffer, x, sMask, zMask, cMask, samples);
+		if(!earlyFragmentTests)
+		{
+			writeStencil(sBuffer, x, sMask, zMask, cMask, samples);
+		}
 	}
 }
 
@@ -840,29 +846,22 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, const Int &x, const Int 
 void PixelRoutine::stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask)
 {
 	Byte8 &pass = newValue;
-	Byte8 fail;
-	Byte8 zFail;
-
 	stencilOperation(pass, bufferValue, ops.passOp, isBack);
 
-	if(ops.depthFailOp != ops.passOp)
+	if(state.depthTestActive && ops.depthFailOp != ops.passOp)  // zMask valid and values not the same
 	{
+		Byte8 zFail;
 		stencilOperation(zFail, bufferValue, ops.depthFailOp, isBack);
+
+		pass &= *Pointer<Byte8>(constants + OFFSET(Constants, maskB4Q) + 8 * zMask);
+		zFail &= *Pointer<Byte8>(constants + OFFSET(Constants, invMaskB4Q) + 8 * zMask);
+		pass |= zFail;
 	}
 
-	if(ops.failOp != ops.passOp || ops.failOp != ops.depthFailOp)
+	if(ops.failOp != ops.passOp || (state.depthTestActive && ops.failOp != ops.depthFailOp))
 	{
+		Byte8 fail;
 		stencilOperation(fail, bufferValue, ops.failOp, isBack);
-	}
-
-	if(ops.failOp != ops.passOp || ops.failOp != ops.depthFailOp)
-	{
-		if(state.depthTestActive && ops.depthFailOp != ops.passOp)  // zMask valid and values not the same
-		{
-			pass &= *Pointer<Byte8>(constants + OFFSET(Constants, maskB4Q) + 8 * zMask);
-			zFail &= *Pointer<Byte8>(constants + OFFSET(Constants, invMaskB4Q) + 8 * zMask);
-			pass |= zFail;
-		}
 
 		pass &= *Pointer<Byte8>(constants + OFFSET(Constants, maskB4Q) + 8 * sMask);
 		fail &= *Pointer<Byte8>(constants + OFFSET(Constants, invMaskB4Q) + 8 * sMask);

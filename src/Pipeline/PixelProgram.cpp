@@ -136,8 +136,10 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 	});
 }
 
-void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const SampleSet &samples)
+bool PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const SampleSet &samples)
 {
+	bool cMaskModified = false;
+
 	routine.device = device;
 	routine.descriptorSets = data + OFFSET(DrawData, descriptorSets);
 	routine.descriptorDynamicOffsets = data + OFFSET(DrawData, descriptorDynamicOffsets);
@@ -224,6 +226,7 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 		{
 			cMask[q] &= ~routine.discardMask;
 		}
+		cMaskModified = true;
 	}
 
 	it = spirvShader->outputBuiltins.find(spv::BuiltInSampleMask);
@@ -235,6 +238,7 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 		{
 			cMask[q] &= SignMask(CmpNEQ(outputSampleMask & SIMD::Int(1 << q), SIMD::Int(0)));
 		}
+		cMaskModified = true;
 	}
 
 	it = spirvShader->outputBuiltins.find(spv::BuiltInFragDepth);
@@ -245,6 +249,8 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 			z[q] = routine.getVariable(it->second.Id)[it->second.FirstComponent];
 		}
 	}
+
+	return cMaskModified;
 }
 
 Bool PixelProgram::alphaTest(Int cMask[4], const SampleSet &samples)
