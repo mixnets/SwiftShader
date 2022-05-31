@@ -680,6 +680,12 @@ public:
 		return analysis;
 	}
 
+	const bool coverageModified() const
+	{
+		return analysis.ContainsDiscard ||
+		       (outputBuiltins.find(spv::BuiltInSampleMask) != outputBuiltins.end());
+	}
+
 	struct Capabilities
 	{
 		bool Matrix : 1;
