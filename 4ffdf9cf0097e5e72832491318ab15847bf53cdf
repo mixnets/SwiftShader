@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f736132_970695a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-05-31T12:26:14Z",
+      "side": 1,
+      "message": "You\u0027re missing a \"Bug:\" line in your CL description. You can use the same issue as you used in your other CL.",
+      "revId": "4ffdf9cf0097e5e72832491318ab15847bf53cdf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
