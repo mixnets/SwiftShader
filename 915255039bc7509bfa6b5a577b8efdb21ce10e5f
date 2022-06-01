@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c88ed8b_8c9a574e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T15:24:53Z",
+      "side": 1,
+      "message": "Good find! Possibly just needs dropping the `!state.compareEnable`?",
+      "revId": "915255039bc7509bfa6b5a577b8efdb21ce10e5f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62e76c53_965d30a9",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2145,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T15:24:53Z",
+      "side": 1,
+      "message": "While this makes it match the condition in `sampleTexel()`, I think the whole expression could simply be `hasNormalizedFormat()`.",
+      "range": {
+        "startLine": 2145,
+        "startChar": 21,
+        "endLine": 2145,
+        "endChar": 64
+      },
+      "revId": "915255039bc7509bfa6b5a577b8efdb21ce10e5f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
