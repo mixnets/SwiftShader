@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31a97460_b64896a3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T16:11:03Z",
+      "side": 1,
+      "message": "Thanks Sean!",
+      "revId": "dba723b13cf20c58b34fce1ac25cbfc1985ae4b5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e67a22cb_13f76a4c",
+        "filename": "src/Reactor/Assert.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T16:11:03Z",
+      "side": 1,
+      "message": "Ah, I knew we\u0027d have to be careful when a scalar is needed for code within the `SIMD` namespace, but this is an interesting \"hidden\" case. The change looks fine as-is, but I wonder if the real issue here is that we currently have an implicit `Int4(int)` constructor. It\u0027s a delicate issue because we want implicit conversion in some cases (b/221072484), so let\u0027s not try to tackle this now.",
+      "range": {
+        "startLine": 38,
+        "startChar": 79,
+        "endLine": 38,
+        "endChar": 86
+      },
+      "revId": "dba723b13cf20c58b34fce1ac25cbfc1985ae4b5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

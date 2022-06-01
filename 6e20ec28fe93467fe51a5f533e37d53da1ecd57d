@@ -48,6 +48,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "de6a468b_1c41e4f9",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1034,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T16:11:03Z",
+      "side": 1,
+      "message": "Sounds good, I filed b/234488907",
+      "parentUuid": "b1a3fece_a99f42fa",
+      "range": {
+        "startLine": 1034,
+        "startChar": 26,
+        "endLine": 1034,
+        "endChar": 27
+      },
+      "revId": "6e20ec28fe93467fe51a5f533e37d53da1ecd57d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c32ca67d_6773c7c9",
