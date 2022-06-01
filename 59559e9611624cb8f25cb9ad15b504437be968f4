@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a719abb7_6505bf81",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T15:50:14Z",
+      "side": 1,
+      "message": "Please split this into separate CLs.",
+      "range": {
+        "startLine": 21,
+        "startChar": 1,
+        "endLine": 21,
+        "endChar": 2
+      },
+      "revId": "59559e9611624cb8f25cb9ad15b504437be968f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f1199f8_16063271",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T15:50:14Z",
+      "side": 1,
+      "message": "This is hacky. It\u0027s not intuitive that `executeShader()` returns whether or not the coverage mask has changed. I\u0027ll add some suggestions in other comments.",
+      "range": {
+        "startLine": 139,
+        "startChar": 0,
+        "endLine": 139,
+        "endChar": 4
+      },
+      "revId": "59559e9611624cb8f25cb9ad15b504437be968f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c348b201_6b25be27",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T15:50:14Z",
+      "side": 1,
+      "message": "We could have a helper function for this, which can be reused at the point where we update the other masks.",
+      "range": {
+        "startLine": 232,
+        "startChar": 1,
+        "endLine": 233,
+        "endChar": 44
+      },
+      "revId": "59559e9611624cb8f25cb9ad15b504437be968f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55751147_29f084a6",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T15:50:14Z",
+      "side": 1,
+      "message": "Let\u0027s put this in a `coverageModified()` helper function, making use of the other helper function which checks whether `BuiltInSampleMask` is written to.",
+      "range": {
+        "startLine": 290,
+        "startChar": 6,
+        "endLine": 290,
+        "endChar": 44
+      },
+      "revId": "59559e9611624cb8f25cb9ad15b504437be968f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "335a708b_8e78aae1",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 854,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-01T15:50:14Z",
+      "side": 1,
+      "message": "Let\u0027s have a preceding CL which makes `stencilOperation()` return its output through the return value instead of a reference parameter.",
+      "range": {
+        "startLine": 853,
+        "startChar": 2,
+        "endLine": 854,
+        "endChar": 18
+      },
+      "revId": "59559e9611624cb8f25cb9ad15b504437be968f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
