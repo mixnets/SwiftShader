@@ -77,14 +77,14 @@ bool PipelineLayout::release(const VkAllocationCallbacks *pAllocator)
 
 size_t PipelineLayout::ComputeRequiredAllocationSize(const VkPipelineLayoutCreateInfo *pCreateInfo)
 {
-	uint32_t bindingsCount = 0;
+	size_t bindingsCount = 0;
 	for(uint32_t i = 0; i < pCreateInfo->setLayoutCount; i++)
 	{
 		bindingsCount += vk::Cast(pCreateInfo->pSetLayouts[i])->getBindingsArraySize();
 	}
 
-	return bindingsCount * sizeof(Binding) +                                   // descriptorSets[]
-	       pCreateInfo->pushConstantRangeCount * sizeof(VkPushConstantRange);  // pushConstantRanges[]
+	return safeAdd(safeMul(bindingsCount, sizeof(Binding)),                             // descriptorSets[]
+	               pCreateInfo->pushConstantRangeCount * sizeof(VkPushConstantRange));  // pushConstantRanges[]
 }
 
 size_t PipelineLayout::getDescriptorSetCount() const

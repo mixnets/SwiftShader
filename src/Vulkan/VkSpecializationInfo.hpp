@@ -35,6 +35,8 @@ struct SpecializationInfo
 		return (info.mapEntryCount > 0) ? &info : nullptr;
 	}
 
+	VkResult validate() const;
+
 private:
 	VkSpecializationInfo info = {};
 };

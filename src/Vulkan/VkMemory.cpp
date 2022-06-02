@@ -33,6 +33,16 @@ void freeDeviceMemory(void *ptr)
 	sw::freeMemory(ptr);
 }
 
+VkDeviceSize safeAdd(VkDeviceSize size, VkDeviceSize offset)
+{
+	return (size > UINT64_MAX - offset) ? OUT_OF_MEMORY : size + offset;
+}
+
+VkDeviceSize safeMul(VkDeviceSize size, VkDeviceSize offset)
+{
+	return (size > (UINT64_MAX / offset)) ? OUT_OF_MEMORY : size * offset;
+}
+
 void *allocateHostMemory(size_t bytes, size_t alignment, const VkAllocationCallbacks *pAllocator, VkSystemAllocationScope allocationScope)
 {
 	if(pAllocator)

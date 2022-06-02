@@ -365,10 +365,10 @@ struct SubmitInfo
 		size_t totalSize = submitSize;
 		for(uint32_t i = 0; i < submitCount; i++)
 		{
-			totalSize += pSubmits[i].waitSemaphoreCount * sizeof(VkSemaphore);
-			totalSize += pSubmits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags);
-			totalSize += pSubmits[i].signalSemaphoreCount * sizeof(VkSemaphore);
-			totalSize += pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer);
+			totalSize = safeAdd(totalSize, pSubmits[i].waitSemaphoreCount * sizeof(VkSemaphore));
+			totalSize = safeAdd(totalSize, pSubmits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags));
+			totalSize = safeAdd(totalSize, pSubmits[i].signalSemaphoreCount * sizeof(VkSemaphore));
+			totalSize = safeAdd(totalSize, pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer));
 
 			for(const auto *extension = reinterpret_cast<const VkBaseInStructure *>(pSubmits[i].pNext);
 			    extension != nullptr; extension = reinterpret_cast<const VkBaseInStructure *>(extension->pNext))
@@ -378,8 +378,8 @@ struct SubmitInfo
 				case VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO:
 					{
 						const auto *tlsSubmitInfo = reinterpret_cast<const VkTimelineSemaphoreSubmitInfo *>(extension);
-						totalSize += tlsSubmitInfo->waitSemaphoreValueCount * sizeof(uint64_t);
-						totalSize += tlsSubmitInfo->signalSemaphoreValueCount * sizeof(uint64_t);
+						totalSize = safeAdd(totalSize, tlsSubmitInfo->waitSemaphoreValueCount * sizeof(uint64_t));
+						totalSize = safeAdd(totalSize, tlsSubmitInfo->signalSemaphoreValueCount * sizeof(uint64_t));
 					}
 					break;
 				case VK_STRUCTURE_TYPE_DEVICE_GROUP_SUBMIT_INFO:
@@ -398,6 +398,11 @@ struct SubmitInfo
 
 		uint8_t *mem = static_cast<uint8_t *>(
 		    vk::allocateHostMemory(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::NULL_ALLOCATION_CALLBACKS, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT));
+
+		if(!mem)
+		{
+			return nullptr;
+		}
 
 		auto submits = new(mem) SubmitInfo[submitCount];
 		mem += submitSize;
@@ -498,12 +503,12 @@ struct SubmitInfo
 		size_t totalSize = submitSize;
 		for(uint32_t i = 0; i < submitCount; i++)
 		{
-			totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(VkSemaphore);
-			totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(VkPipelineStageFlags);
-			totalSize += pSubmits[i].waitSemaphoreInfoCount * sizeof(uint64_t);
-			totalSize += pSubmits[i].signalSemaphoreInfoCount * sizeof(VkSemaphore);
-			totalSize += pSubmits[i].signalSemaphoreInfoCount * sizeof(uint64_t);
-			totalSize += pSubmits[i].commandBufferInfoCount * sizeof(VkCommandBuffer);
+			totalSize = safeAdd(totalSize, pSubmits[i].waitSemaphoreInfoCount * sizeof(VkSemaphore));
+			totalSize = safeAdd(totalSize, pSubmits[i].waitSemaphoreInfoCount * sizeof(VkPipelineStageFlags));
+			totalSize = safeAdd(totalSize, pSubmits[i].waitSemaphoreInfoCount * sizeof(uint64_t));
+			totalSize = safeAdd(totalSize, pSubmits[i].signalSemaphoreInfoCount * sizeof(VkSemaphore));
+			totalSize = safeAdd(totalSize, pSubmits[i].signalSemaphoreInfoCount * sizeof(uint64_t));
+			totalSize = safeAdd(totalSize, pSubmits[i].commandBufferInfoCount * sizeof(VkCommandBuffer));
 
 			for(const auto *extension = reinterpret_cast<const VkBaseInStructure *>(pSubmits[i].pNext);
 			    extension != nullptr; extension = reinterpret_cast<const VkBaseInStructure *>(extension->pNext))
@@ -525,6 +530,11 @@ struct SubmitInfo
 
 		uint8_t *mem = static_cast<uint8_t *>(
 		    vk::allocateHostMemory(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::NULL_ALLOCATION_CALLBACKS, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT));
+
+		if(!mem)
+		{
+			return nullptr;
+		}
 
 		auto submits = new(mem) SubmitInfo[submitCount];
 		mem += submitSize;

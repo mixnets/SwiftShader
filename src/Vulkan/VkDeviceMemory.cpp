@@ -109,11 +109,12 @@ VkResult DeviceMemory::Allocate(const VkAllocationCallbacks *pAllocator, const V
 	VkMemoryAllocateInfo allocateInfo = *pAllocateInfo;
 	// Add 15 bytes of padding to ensure that any type of attribute within
 	// buffers and images can be read using 16-byte accesses.
-	if(allocateInfo.allocationSize > UINT64_MAX - 15)
+
+	allocateInfo.allocationSize = safeAdd(allocateInfo.allocationSize, 15);
+	if(allocateInfo.allocationSize == OUT_OF_MEMORY)
 	{
 		return VK_ERROR_OUT_OF_DEVICE_MEMORY;
 	}
-	allocateInfo.allocationSize += 15;
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
 	if(AHardwareBufferExternalMemory::SupportsAllocateInfo(extendedAllocationInfo))

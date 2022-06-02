@@ -21,8 +21,10 @@ namespace {
 template<class T>
 size_t ComputeRequiredAllocationSizeT(const T *pCreateInfo)
 {
-	size_t attachmentSize = pCreateInfo->attachmentCount * sizeof(VkAttachmentDescription) + pCreateInfo->attachmentCount * sizeof(int)  // first use
-	                        + pCreateInfo->attachmentCount * sizeof(uint32_t);                                                           // union of subpass view masks, per attachment
+	size_t attachmentSize = pCreateInfo->attachmentCount * sizeof(VkAttachmentDescription);
+	attachmentSize = vk::safeAdd(attachmentSize, pCreateInfo->attachmentCount * sizeof(int));
+	attachmentSize = vk::safeAdd(attachmentSize, pCreateInfo->attachmentCount * sizeof(uint32_t));
+
 	size_t subpassesSize = 0;
 	for(uint32_t i = 0; i < pCreateInfo->subpassCount; ++i)
 	{
@@ -36,14 +38,17 @@ size_t ComputeRequiredAllocationSizeT(const T *pCreateInfo)
 		{
 			nbAttachments += 1;
 		}
-		subpassesSize += sizeof(VkSubpassDescription) +
-		                 sizeof(VkAttachmentReference) * nbAttachments +
-		                 sizeof(uint32_t) * subpass.preserveAttachmentCount +
-		                 sizeof(uint32_t);  // view mask
+		subpassesSize = vk::safeAdd(subpassesSize,
+		                            sizeof(VkSubpassDescription) +
+		                                sizeof(VkAttachmentReference) * nbAttachments +
+		                                sizeof(uint32_t) * subpass.preserveAttachmentCount +
+		                                sizeof(uint32_t));  // view mask
 	}
 	size_t dependenciesSize = pCreateInfo->dependencyCount * sizeof(VkSubpassDependency);
 
-	return attachmentSize + subpassesSize + dependenciesSize;
+	attachmentSize = vk::safeAdd(attachmentSize, subpassesSize);
+	attachmentSize = vk::safeAdd(attachmentSize, dependenciesSize);
+	return attachmentSize;
 }
 
 template<class T>

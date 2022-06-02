@@ -81,4 +81,12 @@ bool SpecializationInfo::operator<(const SpecializationInfo &rhs) const
 	return false;
 }
 
+VkResult SpecializationInfo::validate() const
+{
+	return ((info.mapEntryCount == 0 || info.pMapEntries != nullptr) &&
+	        (info.dataSize == 0 || info.pData != nullptr))
+	           ? VK_SUCCESS
+	           : VK_ERROR_OUT_OF_HOST_MEMORY;
+}
+
 }  // namespace vk

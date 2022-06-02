@@ -360,6 +360,12 @@ VkResult GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocato
 		const ShaderModule *module = vk::Cast(stageInfo.module);
 		const PipelineCache::SpirvBinaryKey key(module->getBinary(), stageInfo.pSpecializationInfo, optimize);
 
+		VkResult result = key.validate();
+		if(result != VK_SUCCESS)
+		{
+			return result;
+		}
+
 		if((pCreateInfo->flags & VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_EXT) &&
 		   (!pPipelineCache || !pPipelineCache->contains(key)))
 		{

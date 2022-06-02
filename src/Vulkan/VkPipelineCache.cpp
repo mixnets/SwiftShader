@@ -88,7 +88,7 @@ void PipelineCache::destroy(const VkAllocationCallbacks *pAllocator)
 
 size_t PipelineCache::ComputeRequiredAllocationSize(const VkPipelineCacheCreateInfo *pCreateInfo)
 {
-	return pCreateInfo->initialDataSize + sizeof(CacheHeader);
+	return safeAdd(pCreateInfo->initialDataSize, sizeof(CacheHeader));
 }
 
 VkResult PipelineCache::getData(size_t *pDataSize, void *pData)

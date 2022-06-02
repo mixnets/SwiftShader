@@ -23,6 +23,8 @@ namespace vk {
 // centralize device memory report callback usage.
 void *allocateDeviceMemory(size_t bytes, size_t alignment);
 void freeDeviceMemory(void *ptr);
+VkDeviceSize safeAdd(VkDeviceSize size, VkDeviceSize offset);
+VkDeviceSize safeMul(VkDeviceSize size, VkDeviceSize offset);
 
 // TODO(b/201798871): Fix host allocation callback usage. Uses of this symbolic constant indicate
 // places where we should use an allocator instead of unaccounted memory allocations.

@@ -66,6 +66,7 @@ public:
 		const sw::SpirvBinary &getBinary() const { return spirv; }
 		const VkSpecializationInfo *getSpecializationInfo() const { return specializationInfo.get(); }
 		bool getOptimization() const { return optimize; }
+		VkResult validate() const { return specializationInfo.validate(); }
 
 	private:
 		const sw::SpirvBinary spirv;

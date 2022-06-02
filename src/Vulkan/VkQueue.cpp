@@ -52,6 +52,11 @@ Queue::~Queue()
 
 VkResult Queue::submit(uint32_t submitCount, SubmitInfo *pSubmits, Fence *fence)
 {
+	if((submitCount > 0) && !pSubmits)
+	{
+		return VK_ERROR_OUT_OF_HOST_MEMORY;
+	}
+
 	garbageCollect();
 
 	Task task;

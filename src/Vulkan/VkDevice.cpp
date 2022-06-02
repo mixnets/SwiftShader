@@ -197,13 +197,14 @@ void Device::destroy(const VkAllocationCallbacks *pAllocator)
 
 size_t Device::ComputeRequiredAllocationSize(const VkDeviceCreateInfo *pCreateInfo)
 {
-	uint32_t queueCount = 0;
+	size_t queueCount = 0;
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
 		queueCount += pCreateInfo->pQueueCreateInfos[i].queueCount;
 	}
 
-	return (sizeof(Queue) * queueCount) + (pCreateInfo->enabledExtensionCount * sizeof(ExtensionName));
+	return safeAdd(safeMul(queueCount, sizeof(Queue)),
+	               (pCreateInfo->enabledExtensionCount * sizeof(ExtensionName)));
 }
 
 bool Device::hasExtension(const char *extensionName) const
