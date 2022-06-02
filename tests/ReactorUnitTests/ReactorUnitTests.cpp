@@ -16,6 +16,7 @@
 #include "Coroutine.hpp"
 #include "Print.hpp"
 #include "Reactor.hpp"
+#include "SIMD.hpp"
 
 #include "gtest/gtest.h"
 
@@ -35,6 +36,38 @@ static std::string testName()
 {
 	auto info = ::testing::UnitTest::GetInstance()->current_test_info();
 	return std::string{ info->test_suite_name() } + "_" + info->name();
+}
+
+TEST(ReactorUnitTests, SIMD)
+{
+	const int arrayLength = 1024;
+
+	FunctionT<void(int *, int *)> function;
+	{
+		Pointer<Int> in = Pointer<Int>(function.Arg<0>());
+		Pointer<Int> out = Pointer<Int>(function.Arg<1>());
+
+		For(Int i = 0, i < arrayLength, i += SIMD::Width)
+		{
+			SIMD::Int x = *Pointer<SIMD::Int>(in);
+			SIMD::Int y = *Pointer<SIMD::Int>(out);
+
+			SIMD::Int z = x + y;
+
+			*Pointer<SIMD::Int>(out) = z;
+		}
+	}
+
+	auto routine = function(testName().c_str());
+
+	int in[arrayLength];
+	int out[arrayLength];
+	for(int i = 0; i < arrayLength; i++) in[i] = i;
+	for(int i = 0; i < arrayLength; i++) out[i] = arrayLength + i;
+
+	routine(in, out);
+
+	EXPECT_EQ(out[arrayLength / 2], arrayLength * 2);
 }
 
 int reference(int *p, int y)
