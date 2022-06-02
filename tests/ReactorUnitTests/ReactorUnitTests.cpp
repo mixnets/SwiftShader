@@ -16,6 +16,7 @@
 #include "Coroutine.hpp"
 #include "Print.hpp"
 #include "Reactor.hpp"
+#include "SIMD.hpp"
 
 #include "gtest/gtest.h"
 
@@ -35,6 +36,49 @@ static std::string testName()
 {
 	auto info = ::testing::UnitTest::GetInstance()->current_test_info();
 	return std::string{ info->test_suite_name() } + "_" + info->name();
+}
+
+TEST(ReactorUnitTests, SIMD)
+{
+	ASSERT_GE(SIMD::Width, 4);
+
+	constexpr int arrayLength = 1024;
+
+	FunctionT<void(int *, int *, int *)> function;
+	{
+		Pointer<Int> r = Pointer<Int>(function.Arg<0>());
+		Pointer<Int> a = Pointer<Int>(function.Arg<1>());
+		Pointer<Int> b = Pointer<Int>(function.Arg<2>());
+
+		For(Int i = 0, i < arrayLength, i += SIMD::Width)
+		{
+			SIMD::Int x = *Pointer<SIMD::Int>(&a[i]);
+			SIMD::Int y = *Pointer<SIMD::Int>(&b[i]);
+
+			SIMD::Int z = x + y;
+
+			*Pointer<SIMD::Int>(&r[i]) = z;
+		}
+	}
+
+	auto routine = function(testName().c_str());
+
+	int r[arrayLength] = {};
+	int a[arrayLength];
+	int b[arrayLength];
+
+	for(int i = 0; i < arrayLength; i++)
+	{
+		a[i] = i;
+		b[i] = arrayLength + i;
+	}
+
+	routine(r, a, b);
+
+	for(int i = 0; i < arrayLength; i++)
+	{
+		ASSERT_EQ(r[i], arrayLength + 2 * i);
+	}
 }
 
 int reference(int *p, int y)
