@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "51cd4b6e_01a3711e",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-02T07:20:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa29db92_becaa93e",
+      "range": {
+        "startLine": 85,
+        "startChar": 21,
+        "endLine": 85,
+        "endChar": 39
+      },
+      "revId": "ec00ad6e4a46641586cdf4ad279be4102134083d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b1b9534e_fde105bd",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-06-01T16:17:59Z",
       "side": 1,
       "message": "This is an unnecessary indirection. `Pointer4`\u0027s width is always 4. And the future incarnation of `SIMD::Pointer` will have the same width as other `SIMD` namespace types.",
+      "range": {
+        "startLine": 2157,
+        "startChar": 0,
+        "endLine": 2157,
+        "endChar": 32
+      },
+      "revId": "ec00ad6e4a46641586cdf4ad279be4102134083d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fabc927f_0217beb6",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2157,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-02T07:20:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b1b9534e_fde105bd",
       "range": {
         "startLine": 2157,
         "startChar": 0,
