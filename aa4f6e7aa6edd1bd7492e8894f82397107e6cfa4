@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8041d59e_69057d2b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-02T17:00:04Z",
+      "side": 1,
+      "message": "Test change and Kokoro failure seem unrelated. PTAL.",
+      "revId": "aa4f6e7aa6edd1bd7492e8894f82397107e6cfa4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
