@@ -70,6 +70,24 @@
       "parentUuid": "b92a19e5_a1a52b9b",
       "revId": "9fec2f1fc564b553e18ce35cf4648e5f74598ad9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "067e673d_61060193",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-03T13:48:55Z",
+      "side": 1,
+      "message": "That\u0027s how it always worked. Regres nightly runs the full test list, and reuses the same Gerrit review to amend the results. It does this for both backends. Otherwise we\u0027d have lots of CLs and difficulties seeing the chronology and have to frequently abandon the older ones.\n\nGranted, it\u0027s not perfect, since if LLVM has failures but Subzero does not we should\u0027t land it since that would affect CI result diffs. But splitting the CLs would have the same issue. I guess we could separate the LLVM ones and automatically abandon them.",
+      "parentUuid": "32551653_e5d0acd7",
+      "revId": "9fec2f1fc564b553e18ce35cf4648e5f74598ad9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
