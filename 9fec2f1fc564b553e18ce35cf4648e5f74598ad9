@@ -34,6 +34,24 @@
       "parentUuid": "003d3f93_5a1084da",
       "revId": "9fec2f1fc564b553e18ce35cf4648e5f74598ad9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b92a19e5_a1a52b9b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-03T13:18:39Z",
+      "side": 1,
+      "message": "Patchset 2 was for LLVM.",
+      "parentUuid": "079f0984_07d2274f",
+      "revId": "9fec2f1fc564b553e18ce35cf4648e5f74598ad9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }

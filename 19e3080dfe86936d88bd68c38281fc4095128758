@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aabc2f4b_3d4f9bd6",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-03T13:18:39Z",
+      "side": 0,
+      "message": "Both b/200826740",
+      "range": {
+        "startLine": 2,
+        "startChar": 28,
+        "endLine": 2,
+        "endChar": 42
+      },
+      "revId": "19e3080dfe86936d88bd68c38281fc4095128758",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
