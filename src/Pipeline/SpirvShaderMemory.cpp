@@ -438,6 +438,23 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, Int arrayIndex, EmitS
 	}
 }
 
+void SpirvShader::OffsetToElem(SIMD::Pointer &ptr, Object::ID elemId, int32_t arrayStride, EmitState const *state) const
+{
+	if(elemId != 0 && arrayStride != 0)
+	{
+		auto &elemObject = getObject(elemId);
+		ASSERT(elemObject.kind == Object::Kind::Constant || elemObject.kind == Object::Kind::Intermediate);
+		if(elemObject.kind == Object::Kind::Constant)
+		{
+			ptr += GetConstScalarInt(elemId) * arrayStride;
+		}
+		else
+		{
+			ptr += state->getIntermediate(elemId).Int(0) * arrayStride;
+		}
+	}
+}
+
 void SpirvShader::Fence(spv::MemorySemanticsMask semantics) const
 {
 	if(semantics != spv::MemorySemanticsMaskNone)
