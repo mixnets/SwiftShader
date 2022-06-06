@@ -2158,16 +2158,9 @@ struct Pointer4
 	Pointer4(std::array<Pointer<Byte>, 4> pointers);
 
 	Pointer4 &operator+=(Int4 i);
-	Pointer4 &operator*=(Int4 i);
-
 	Pointer4 operator+(Int4 i);
-	Pointer4 operator*(Int4 i);
-
 	Pointer4 &operator+=(int i);
-	Pointer4 &operator*=(int i);
-
 	Pointer4 operator+(int i);
-	Pointer4 operator*(int i);
 
 	Int4 offsets() const;
 
@@ -2221,8 +2214,11 @@ public:
 
 	// Per lane offsets from base.
 	Int4 dynamicOffsets;  // If hasDynamicOffsets is false, all dynamicOffsets are zero.
+
+	//private:
 	std::array<int32_t, 4> staticOffsets;
 
+	//public:
 	bool hasDynamicLimit;    // True if dynamicLimit is non-zero.
 	bool hasDynamicOffsets;  // True if any dynamicOffsets are non-zero.
 	bool isBasePlusOffset;   // True if this uses base+offset. False if this is a collection of Pointers

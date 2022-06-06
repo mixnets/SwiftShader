@@ -1392,8 +1392,10 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, Object::ID element
 		case spv::OpTypeArray:
 		case spv::OpTypeRuntimeArray:
 			{
+				auto storageClass = getType(baseObject).storageClass;
+
 				// TODO(b/127950082): Check bounds.
-				if(getType(baseObject).storageClass == spv::StorageClassUniformConstant)
+				if(storageClass == spv::StorageClassUniformConstant)
 				{
 					// indexing into an array of descriptors.
 					auto d = descriptorDecorations.at(baseId);
@@ -1415,8 +1417,14 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, Object::ID element
 				else
 				{
 					auto stride = getType(type.element).componentCount * static_cast<uint32_t>(sizeof(float));
-					auto &obj = getObject(indexIds[i]);
-					if(obj.kind == Object::Kind::Constant)
+					bool interleavedByLane = IsStorageInterleavedByLane(storageClass);
+
+					if(interleavedByLane)
+					{
+						stride *= SIMD::Width;
+					}
+
+					if(getObject(indexIds[i]).kind == Object::Kind::Constant)
 					{
 						ptr += stride * GetConstScalarInt(indexIds[i]);
 					}

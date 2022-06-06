@@ -4411,25 +4411,10 @@ Pointer4 &Pointer4::operator+=(Int4 i)
 	return *this;
 }
 
-Pointer4 &Pointer4::operator*=(Int4 i)
-{
-	ASSERT_MSG(isBasePlusOffset, "No offset to multiply for this type of pointer");
-	dynamicOffsets = offsets() * i;
-	staticOffsets = {};
-	hasDynamicOffsets = true;
-	return *this;
-}
-
 Pointer4 Pointer4::operator+(Int4 i)
 {
 	Pointer4 p = *this;
 	p += i;
-	return p;
-}
-Pointer4 Pointer4::operator*(Int4 i)
-{
-	Pointer4 p = *this;
-	p *= i;
 	return p;
 }
 
@@ -4446,27 +4431,10 @@ Pointer4 &Pointer4::operator+=(int i)
 	return *this;
 }
 
-Pointer4 &Pointer4::operator*=(int i)
-{
-	ASSERT_MSG(isBasePlusOffset, "No offset to multiply for this type of pointer");
-	for(int el = 0; el < 4; el++) { staticOffsets[el] *= i; }
-	if(hasDynamicOffsets)
-	{
-		dynamicOffsets *= Int4(i);
-	}
-	return *this;
-}
-
 Pointer4 Pointer4::operator+(int i)
 {
 	Pointer4 p = *this;
 	p += i;
-	return p;
-}
-Pointer4 Pointer4::operator*(int i)
-{
-	Pointer4 p = *this;
-	p *= i;
 	return p;
 }
 
