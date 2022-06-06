@@ -2158,16 +2158,9 @@ struct Pointer4
 	Pointer4(std::array<Pointer<Byte>, 4> pointers);
 
 	Pointer4 &operator+=(Int4 i);
-	Pointer4 &operator*=(Int4 i);
-
 	Pointer4 operator+(Int4 i);
-	Pointer4 operator*(Int4 i);
-
 	Pointer4 &operator+=(int i);
-	Pointer4 &operator*=(int i);
-
 	Pointer4 operator+(int i);
-	Pointer4 operator*(int i);
 
 	Int4 offsets() const;
 
@@ -3077,7 +3070,7 @@ inline ReactorTypeT<T> CastToReactor(const T &v)
 
 // Calls the static function pointer fptr with the given arguments args.
 template<typename Return, typename... CArgs, typename... RArgs>
-inline CToReactorT<Return> Call(Return(fptr)(CArgs...), RArgs &&... args)
+inline CToReactorT<Return> Call(Return(fptr)(CArgs...), RArgs &&...args)
 {
 	return CallHelper<Return(CArgs...)>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
 }
@@ -3085,7 +3078,7 @@ inline CToReactorT<Return> Call(Return(fptr)(CArgs...), RArgs &&... args)
 // Calls the static function pointer fptr with the given arguments args.
 // Overload for calling functions with void return type.
 template<typename... CArgs, typename... RArgs>
-inline void Call(void(fptr)(CArgs...), RArgs &&... args)
+inline void Call(void(fptr)(CArgs...), RArgs &&...args)
 {
 	CallHelper<void(CArgs...)>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
 }
@@ -3093,7 +3086,7 @@ inline void Call(void(fptr)(CArgs...), RArgs &&... args)
 // Calls the member function pointer fptr with the given arguments args.
 // object can be a Class*, or a Pointer<Byte>.
 template<typename Return, typename Class, typename C, typename... CArgs, typename... RArgs>
-inline CToReactorT<Return> Call(Return (Class::*fptr)(CArgs...), C &&object, RArgs &&... args)
+inline CToReactorT<Return> Call(Return (Class::*fptr)(CArgs...), C &&object, RArgs &&...args)
 {
 	using Helper = CallHelper<Return(Class *, void *, CArgs...)>;
 	using fptrTy = decltype(fptr);
@@ -3117,7 +3110,7 @@ inline CToReactorT<Return> Call(Return (Class::*fptr)(CArgs...), C &&object, RAr
 // Overload for calling functions with void return type.
 // object can be a Class*, or a Pointer<Byte>.
 template<typename Class, typename C, typename... CArgs, typename... RArgs>
-inline void Call(void (Class::*fptr)(CArgs...), C &&object, RArgs &&... args)
+inline void Call(void (Class::*fptr)(CArgs...), C &&object, RArgs &&...args)
 {
 	using Helper = CallHelper<void(Class *, void *, CArgs...)>;
 	using fptrTy = decltype(fptr);
@@ -3174,7 +3167,7 @@ using VoidFunctionReturnType = typename VoidFunction<F>::ReturnType;
 // Calls the Reactor function pointer fptr with the signature FUNCTION_SIGNATURE and arguments.
 // Overload for calling functions with non-void return type.
 template<typename FUNCTION_SIGNATURE, typename... RArgs>
-inline CToReactorT<NonVoidFunctionReturnType<FUNCTION_SIGNATURE>> Call(Pointer<Byte> fptr, RArgs &&... args)
+inline CToReactorT<NonVoidFunctionReturnType<FUNCTION_SIGNATURE>> Call(Pointer<Byte> fptr, RArgs &&...args)
 {
 	return CallHelper<FUNCTION_SIGNATURE>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
 }
@@ -3182,7 +3175,7 @@ inline CToReactorT<NonVoidFunctionReturnType<FUNCTION_SIGNATURE>> Call(Pointer<B
 // Calls the Reactor function pointer fptr with the signature FUNCTION_SIGNATURE and arguments.
 // Overload for calling functions with void return type.
 template<typename FUNCTION_SIGNATURE, typename... RArgs>
-inline VoidFunctionReturnType<FUNCTION_SIGNATURE> Call(Pointer<Byte> fptr, RArgs &&... args)
+inline VoidFunctionReturnType<FUNCTION_SIGNATURE> Call(Pointer<Byte> fptr, RArgs &&...args)
 {
 	CallHelper<FUNCTION_SIGNATURE>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
 }
