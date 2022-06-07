@@ -22,6 +22,30 @@
       },
       "revId": "df86dedb6a0b960de92a23c9792db41010555524",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c6321c4_264d5948",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2390,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-07T21:13:25Z",
+      "side": 1,
+      "message": "The pointer can be an intermediate (not included in this CL).",
+      "parentUuid": "cf9c4cac_216e6442",
+      "range": {
+        "startLine": 2390,
+        "startChar": 10,
+        "endLine": 2390,
+        "endChar": 38
+      },
+      "revId": "df86dedb6a0b960de92a23c9792db41010555524",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
