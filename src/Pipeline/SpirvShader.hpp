@@ -1149,6 +1149,19 @@ private:
 			ASSERT_MSG(added, "Pointer %d created twice", id.value());
 		}
 
+		void assignPhysicalStoragePointer(Object::ID id, SIMD::Pointer ptr)
+		{
+			auto it = pointers.find(id);
+			if(it != pointers.end())
+			{
+				it->second = ptr;
+			}
+			else
+			{
+				createPointer(id, ptr);
+			}
+		}
+
 		SIMD::Pointer const &getPointer(Object::ID id) const
 		{
 			auto it = pointers.find(id);
