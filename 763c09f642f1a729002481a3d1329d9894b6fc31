@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ad54ecf8_79c9c604",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 86106
+      },
+      "writtenOn": "2022-06-07T20:54:01Z",
+      "side": 1,
+      "message": "Hello, great to see people playing with this DRM/KMS code!\n\nMaybe udev could also be used:\n\n  int fd;\n  struct udev *udev;\n  struct udev_enumerate *enumerate;\n  struct udev_list_entry *entry;\n  const char *syspath, *devnode;\n  struct udev_device *device;\n\n  udev \u003d udev_new();\n  enumerate \u003d udev_enumerate_new(udev);\n  udev_enumerate_add_match_subsystem(enumerate, \"drm\");\n  udev_enumerate_add_match_sysname(enumerate, \"card[0-9]*\");\n  udev_enumerate_scan_devices(enumerate);\n\n  udev_list_entry_foreach (entry, udev_enumerate_get_list_entry(enumerate)) {\n    syspath \u003d udev_list_entry_get_name(entry);\n    device \u003d udev_device_new_from_syspath(udev, syspath);\n    if (!device)\n      continue;\n\n    devnode \u003d udev_device_get_devnode(device);\n    if (!devnode) {\n      udev_device_unref(device);\n      continue;\n    }\n\n    fd \u003d open(devnode, O_RDWR);\n    if (fd \u003e\u003d 0) {\n      udev_device_unref(device);\n      break;\n    }\n  }\n\n  udev_enumerate_unref(enumerate);\n  udev_unref(udev);\n  ",
+      "revId": "763c09f642f1a729002481a3d1329d9894b6fc31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
