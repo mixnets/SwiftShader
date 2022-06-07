@@ -36,6 +36,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a16d60e_ae73683d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 101461
+      },
+      "writtenOn": "2022-06-07T21:19:33Z",
+      "side": 1,
+      "message": "Added, I noticed this \"Kokoro presubmit build finished with status: FAILURE\", don\u0027t have access from all the logs, not sure what the failure is.",
+      "parentUuid": "4ed467ca_9f7ec828",
+      "revId": "099e006d71e2161b437a37c616947e1d5907491c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "d18bc938_ac05950d",
