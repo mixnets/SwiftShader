@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "13be4609_36d51589",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1284,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-07T15:53:39Z",
+      "side": 1,
+      "message": "nit: I would spell out element in full, here and elsewhere.",
+      "range": {
+        "startLine": 1284,
+        "startChar": 14,
+        "endLine": 1284,
+        "endChar": 18
+      },
+      "revId": "850f194bdb8964d40e54560f04d3136eddd91902",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
