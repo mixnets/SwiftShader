@@ -16,6 +16,24 @@
       "message": "What causes the regressions? Perhaps we should expose VK_EXT_descriptor_indexing as a first step?",
       "revId": "e833a4a0840ba8da544e307110d54e157d23f259",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba3c98f1_be09987c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-08T19:26:03Z",
+      "side": 1,
+      "message": "descriptorIndexing is a feature flag that implies all the other descriptor indexing flags are set to VK_TRUE. So when dEQP tests device_mandatory_features, and sees that there are descriptor indexing flags which aren\u0027t set, then it fails. This should pass once all the descriptor indexing features are finished.\n\nI don\u0027t have a patch that updates the limits associated with descriptor indexing yet, so when vulkan1p2_limits_validation.general sees that descriptorIndexing is true, it then expects updated limits (most of them are \"UpdateAfterBind\" limits, with an expected value of \u003e\u003d50,000).\n\nI\u0027m not sure what you mean by \"expose VK_EXT_descriptor_indexing as a first step.\" Can you clarify?",
+      "parentUuid": "d27b731b_35b6976f",
+      "revId": "e833a4a0840ba8da544e307110d54e157d23f259",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
