@@ -16,6 +16,24 @@
       "message": "Hi, this CL is causing the SwiftShader -\u003e Dawn roll (https://autoroll.skia.org/r/swiftshader-dawn-autoroll) to fail since Dawn doesn\u0027t have wayland as a dep. I would have expected the import of `wayland/features.gni` to be gated behind `if (ozone_platform_wayland) {`, like\nhttps://source.chromium.org/chromium/chromium/src/+/main:gpu/vulkan/BUILD.gn;l\u003d13?q\u003dozone_platform_wayland%20f:.gn\n",
       "revId": "f54df11f323e8734f65f30b5109c42260ec504f4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa8eae42_89d7826a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101451
+      },
+      "writtenOn": "2022-06-08T09:22:00Z",
+      "side": 1,
+      "message": "Hi Austin! Thank you for reporting this. I\u0027ve just submitted a new CL, please have a look at it: https://swiftshader-review.googlesource.com/c/SwiftShader/+/66348",
+      "parentUuid": "9f1d5816_3746d71b",
+      "revId": "f54df11f323e8734f65f30b5109c42260ec504f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
