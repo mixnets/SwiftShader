@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5756f420_2f773c32",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1423,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:57:39Z",
+      "side": 1,
+      "message": "SIMD::Width",
+      "range": {
+        "startLine": 1423,
+        "startChar": 33,
+        "endLine": 1423,
+        "endChar": 34
+      },
+      "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e75d3250_16b701cb",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1424,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:57:39Z",
+      "side": 1,
+      "message": "SIMD::Width",
+      "range": {
+        "startLine": 1424,
+        "startChar": 26,
+        "endLine": 1424,
+        "endChar": 27
+      },
+      "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3347b03_ba5d5ced",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1428,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:57:39Z",
+      "side": 1,
+      "message": "SIMD::Pointer",
+      "range": {
+        "startLine": 1428,
+        "startChar": 13,
+        "endLine": 1428,
+        "endChar": 21
+      },
+      "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f53e90e_d5ee0e3e",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 632,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:57:39Z",
+      "side": 1,
+      "message": "This is identical in both functions.",
+      "range": {
+        "startLine": 619,
+        "startChar": 1,
+        "endLine": 632,
+        "endChar": 0
+      },
+      "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "963c79f5_ba4a870a",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 681,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:57:39Z",
+      "side": 1,
+      "message": "This is identical in both functions.",
+      "range": {
+        "startLine": 648,
+        "startChar": 0,
+        "endLine": 681,
+        "endChar": 2
+      },
+      "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93dc9f3a_533da59f",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 720,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:57:39Z",
+      "side": 1,
+      "message": "Why aren\u0027t we also getting `sizeInBytes` in this loop?\n`Pointer4::dynamicLimit` could be changed to an Int4, I think, and we wouldn\u0027t lose robustness here.",
+      "range": {
+        "startLine": 718,
+        "startChar": 0,
+        "endLine": 720,
+        "endChar": 104
+      },
+      "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "900f2f10_fc539fda",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 888,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:57:39Z",
+      "side": 1,
+      "message": "Maybe:\n1) Change `GetTexelAddress` to take `ptr` instead of `ptr.getUniformPointer()` as its input argument\n2) Inside `GetTexelAddress` check `ptr.isBasePlusOffset` and call `GetNonUniformTexelAddress` if necessary. Perform all common computation between `GetTexelAddress` and `GetNonUniformTexelAddress` inside `GetTexelAddress` before calling `GetNonUniformTexelAddress` (with added input arguments for the results of u, v, w, ptrOffset, ...)",
+      "range": {
+        "startLine": 886,
+        "startChar": 26,
+        "endLine": 888,
+        "endChar": 122
+      },
+      "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab07d2e8_1edc8e27",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1305,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:57:39Z",
+      "side": 1,
+      "message": "what does `newMask` mean here?",
+      "range": {
+        "startLine": 1305,
+        "startChar": 13,
+        "endLine": 1305,
+        "endChar": 21
+      },
+      "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
