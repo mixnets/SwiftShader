@@ -70,6 +70,30 @@
       },
       "revId": "df86dedb6a0b960de92a23c9792db41010555524",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bec82502_01b64884",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2390,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-08T13:48:58Z",
+      "side": 1,
+      "message": "Thanks. Note that since SPIR-V is in SSA form each variable can only be assigned a value on creation. We do have the `move()` method for integer and floating-point operands because they can be vectors or matrices with multiple elements so for convenience each element can be assigned its initial (and final) value individually.\n\nWe shouldn\u0027t need that for pointer variables since they\u0027re always scalar (at the SPIR-V level). Anyway, if there\u0027s an important usage for it let\u0027s discuss it in the future change that needs it.",
+      "parentUuid": "ba8245cb_ed0a941c",
+      "range": {
+        "startLine": 2390,
+        "startChar": 10,
+        "endLine": 2390,
+        "endChar": 38
+      },
+      "revId": "df86dedb6a0b960de92a23c9792db41010555524",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
