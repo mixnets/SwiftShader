@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "59382278_0f9007ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 20
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-08T17:13:59Z",
+      "side": 1,
+      "message": "I am unable to reproduce the quality warning locally. ",
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
