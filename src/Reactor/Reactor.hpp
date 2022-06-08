@@ -2207,7 +2207,6 @@ private:
 	// Per-lane address for dealing with non-uniform data
 	std::array<Pointer<Byte>, 4> pointers;
 
-public:
 	// Upper (non-inclusive) limit for offsets from base.
 	Int dynamicLimit;  // If hasDynamicLimit is false, dynamicLimit is zero.
 	unsigned int staticLimit;
