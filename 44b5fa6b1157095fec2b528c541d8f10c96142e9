@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "9661b137_71993ddb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 20
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-08T18:56:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "80a18202_2c6e892c",
+      "range": {
+        "startLine": 15,
+        "startChar": 5,
+        "endLine": 15,
+        "endChar": 16
+      },
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "59382278_0f9007ca",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 20
@@ -116,6 +140,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "71089c75_39085328",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 1288,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-08T18:56:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f4bfbfb1_663f1324",
+      "range": {
+        "startLine": 1288,
+        "startChar": 86,
+        "endLine": 1288,
+        "endChar": 91
+      },
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fc64c4d0_3ee47152",
@@ -129,6 +177,30 @@
       "writtenOn": "2022-06-08T18:03:50Z",
       "side": 1,
       "message": "Not new to this CL, but `arrayIndex` VS `arrayIdx` isn\u0027t clear. Maybe rename `arrayIndex` to `arrayIndices` OR rename `arrayIdx` to `uniformArrayIndex`.",
+      "range": {
+        "startLine": 381,
+        "startChar": 69,
+        "endLine": 381,
+        "endChar": 79
+      },
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5638245a_8040063d",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-08T18:56:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fc64c4d0_3ee47152",
       "range": {
         "startLine": 381,
         "startChar": 69,
@@ -162,6 +234,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4170dcc_b794355f",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-08T18:56:54Z",
+      "side": 1,
+      "message": "Because Uniform and NonUniform are not antonyms in SPIR-V, a variable can be declared both Uniform and NonUniform. So I think it\u0027s better to preserve nonUniform here to make it clear which decoration we\u0027re tracking. I can instead just switch the if and else blocks to avoid the double negative.",
+      "parentUuid": "97271f11_aa3d32e7",
+      "range": {
+        "startLine": 402,
+        "startChar": 6,
+        "endLine": 402,
+        "endChar": 17
+      },
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57ddf38b_c21f2c1c",
@@ -175,6 +271,30 @@
       "writtenOn": "2022-06-08T18:03:50Z",
       "side": 1,
       "message": "Nit: Since you took the opportunity to clarify Int -\u003e SIMD::Int above, it would consistent to also do it for all the other Int variables in this function.",
+      "range": {
+        "startLine": 404,
+        "startChar": 4,
+        "endLine": 404,
+        "endChar": 8
+      },
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0350face_e45e307c",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-08T18:56:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "57ddf38b_c21f2c1c",
       "range": {
         "startLine": 404,
         "startChar": 4,
