@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "304c0807_24fc2980",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 22
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:19:23Z",
+      "side": 1,
+      "message": "I\u0027m ok with it, letting Nicolas give the final +2.",
+      "revId": "3f05fc7f7f7a784f20287ce99e078041f5480303",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
