@@ -34,6 +34,24 @@
       "parentUuid": "d27b731b_35b6976f",
       "revId": "e833a4a0840ba8da544e307110d54e157d23f259",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03bd7b67_1cef5f30",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T19:34:12Z",
+      "side": 1,
+      "message": "IIUC, exposing the VK_EXT_descriptor_indexing extension (https://www.khronos.org/registry/vulkan/specs/1.3-extensions/man/html/VK_EXT_descriptor_indexing.html) instead of enabling the feature probably requires the same code changes you did, enables essentially the same tests, but without having to enforce the limits and mandatory feature checks from `dEQP-VK.api.info.vulkan1p2_limits_validation.general` and `dEQP-VK.info.device_mandatory_features`.",
+      "parentUuid": "ba3c98f1_be09987c",
+      "revId": "e833a4a0840ba8da544e307110d54e157d23f259",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
