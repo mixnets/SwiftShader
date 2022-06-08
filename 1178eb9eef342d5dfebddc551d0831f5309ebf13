@@ -16,6 +16,24 @@
       "message": "The rolls into Dawn and ANGLE are still failing: https://dawn-review.googlesource.com/c/dawn/+/93180, https://chromium-review.googlesource.com/c/angle/angle/+/3695600",
       "revId": "1178eb9eef342d5dfebddc551d0831f5309ebf13",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e892350d_f0936cf4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101451
+      },
+      "writtenOn": "2022-06-08T16:01:23Z",
+      "side": 1,
+      "message": "I am trying to solve this trying to find a better approach at managing the wayland dependency in GN: https://chromium-review.googlesource.com/c/chromium/src/+/3695277",
+      "parentUuid": "8c04204d_1bea2043",
+      "revId": "1178eb9eef342d5dfebddc551d0831f5309ebf13",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
