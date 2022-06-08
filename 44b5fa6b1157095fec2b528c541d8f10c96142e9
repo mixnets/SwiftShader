@@ -76,6 +76,23 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f749e8b1_1d9ff31f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 20
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T18:03:50Z",
+      "side": 1,
+      "message": "Some nits",
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f4bfbfb1_663f1324",
@@ -94,6 +111,75 @@
         "startChar": 86,
         "endLine": 1288,
         "endChar": 91
+      },
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc64c4d0_3ee47152",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T18:03:50Z",
+      "side": 1,
+      "message": "Not new to this CL, but `arrayIndex` VS `arrayIdx` isn\u0027t clear. Maybe rename `arrayIndex` to `arrayIndices` OR rename `arrayIdx` to `uniformArrayIndex`.",
+      "range": {
+        "startLine": 381,
+        "startChar": 69,
+        "endLine": 381,
+        "endChar": 79
+      },
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97271f11_aa3d32e7",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T18:03:50Z",
+      "side": 1,
+      "message": "Double negative, maybe change the function parameter to \"uniform\" instead and reverse the logic at call sites.",
+      "range": {
+        "startLine": 402,
+        "startChar": 6,
+        "endLine": 402,
+        "endChar": 17
+      },
+      "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57ddf38b_c21f2c1c",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-08T18:03:50Z",
+      "side": 1,
+      "message": "Nit: Since you took the opportunity to clarify Int -\u003e SIMD::Int above, it would consistent to also do it for all the other Int variables in this function.",
+      "range": {
+        "startLine": 404,
+        "startChar": 4,
+        "endLine": 404,
+        "endChar": 8
       },
       "revId": "44b5fa6b1157095fec2b528c541d8f10c96142e9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
