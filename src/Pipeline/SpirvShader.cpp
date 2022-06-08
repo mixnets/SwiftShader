@@ -1417,9 +1417,9 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, Object::ID element
 				else
 				{
 					auto stride = getType(type.element).componentCount * static_cast<uint32_t>(sizeof(float));
-					bool interleavedByLane = IsStorageInterleavedByLane(storageClass);
+					//bool interleavedByLane = IsStorageInterleavedByLane(storageClass);
 
-					if(interleavedByLane)
+					//if(interleavedByLane)
 					{
 						stride *= SIMD::Width;
 					}
