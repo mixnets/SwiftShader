@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import("../swiftshader.gni")
-if (is_linux) {
+if (ozone_platform_wayland) {
   import("//third_party/wayland/features.gni")
 }
 
