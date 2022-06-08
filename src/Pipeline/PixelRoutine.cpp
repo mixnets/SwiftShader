@@ -169,11 +169,11 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 			if(interpolateW())
 			{
 				w = interpolate(xxxx, Dw, rhw, primitive + OFFSET(Primitive, w), false, false);
-				rhw = reciprocal(w, false, true);
+				////rhw = reciprocal(w, false, true);
 
 				if(state.centroid || shaderContainsInterpolation)  // TODO(b/194714095)
 				{
-					rhwCentroid = reciprocal(SpirvRoutine::interpolateAtXY(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, w), SpirvRoutine::Linear));
+					////					rhwCentroid = reciprocal(SpirvRoutine::interpolateAtXY(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, w), SpirvRoutine::Linear));
 				}
 			}
 
@@ -183,13 +183,13 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 				{
 					routine.interpolationData.primitive = primitive;
 
-					routine.interpolationData.x = xxxx;
-					routine.interpolationData.y = yyyy;
-					routine.interpolationData.rhw = rhw;
+					////routine.interpolationData.x = xxxx;
+					////routine.interpolationData.y = yyyy;
+					////routine.interpolationData.rhw = rhw;
 
-					routine.interpolationData.xCentroid = XXXX;
-					routine.interpolationData.yCentroid = YYYY;
-					routine.interpolationData.rhwCentroid = rhwCentroid;
+					////routine.interpolationData.xCentroid = XXXX;
+					////routine.interpolationData.yCentroid = YYYY;
+					////routine.interpolationData.rhwCentroid = rhwCentroid;
 				}
 
 				if(perSampleShading && (state.multiSampleCount > 1))
@@ -205,27 +205,27 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 					if(input.Type != SpirvShader::ATTRIBTYPE_UNUSED)
 					{
 						routine.inputsInterpolation[packedInterpolant] = input.Flat ? SpirvRoutine::Flat : (input.NoPerspective ? SpirvRoutine::Linear : SpirvRoutine::Perspective);
-						if(input.Centroid && state.enableMultiSampling)
-						{
-							routine.inputs[interfaceInterpolant] =
-							    SpirvRoutine::interpolateAtXY(XXXX, YYYY, rhwCentroid,
-							                                  primitive + OFFSET(Primitive, V[packedInterpolant]),
-							                                  routine.inputsInterpolation[packedInterpolant]);
-						}
-						else if(perSampleShading)
-						{
-							routine.inputs[interfaceInterpolant] =
-							    SpirvRoutine::interpolateAtXY(xxxx, yyyy, rhw,
-							                                  primitive + OFFSET(Primitive, V[packedInterpolant]),
-							                                  routine.inputsInterpolation[packedInterpolant]);
-						}
-						else
-						{
-							routine.inputs[interfaceInterpolant] =
-							    interpolate(xxxx, Dv[interfaceInterpolant], rhw,
-							                primitive + OFFSET(Primitive, V[packedInterpolant]),
-							                input.Flat, !input.NoPerspective);
-						}
+						////if(input.Centroid && state.enableMultiSampling)
+						////{
+						////	routine.inputs[interfaceInterpolant] =
+						////	    SpirvRoutine::interpolateAtXY(XXXX, YYYY, rhwCentroid,
+						////	                                  primitive + OFFSET(Primitive, V[packedInterpolant]),
+						////	                                  routine.inputsInterpolation[packedInterpolant]);
+						////}
+						////else if(perSampleShading)
+						////{
+						////	routine.inputs[interfaceInterpolant] =
+						////	    SpirvRoutine::interpolateAtXY(xxxx, yyyy, rhw,
+						////	                                  primitive + OFFSET(Primitive, V[packedInterpolant]),
+						////	                                  routine.inputsInterpolation[packedInterpolant]);
+						////}
+						////else
+						////{
+						////	routine.inputs[interfaceInterpolant] =
+						////	    interpolate(xxxx, Dv[interfaceInterpolant], rhw,
+						////	                primitive + OFFSET(Primitive, V[packedInterpolant]),
+						////	                input.Flat, !input.NoPerspective);
+						////}
 						packedInterpolant++;
 					}
 				}
@@ -238,13 +238,13 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 					                            primitive + OFFSET(Primitive, clipDistance[i]),
 					                            false, true);
 
-					auto clipMask = SignMask(CmpGE(distance, SIMD::Float(0)));
+					////auto clipMask = SignMask(CmpGE(distance, SIMD::Float(0)));
 					for(unsigned int q : samples)
 					{
 						// FIXME(b/148105887): Fragments discarded by clipping do not exist at
 						// all -- they should not be counted in queries or have their Z/S effects
 						// performed when early fragment tests are enabled.
-						cMask[q] &= clipMask;
+						////cMask[q] &= clipMask;
 					}
 
 					if(spirvShader->getUsedCapabilities().ClipDistance)
@@ -254,7 +254,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 						{
 							if(i < it->second.SizeInComponents)
 							{
-								routine.getVariable(it->second.Id)[it->second.FirstComponent + i] = distance;
+								////routine.getVariable(it->second.Id)[it->second.FirstComponent + i] = distance;
 							}
 						}
 					}
@@ -269,10 +269,10 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 						{
 							if(i < it->second.SizeInComponents)
 							{
-								routine.getVariable(it->second.Id)[it->second.FirstComponent + i] =
-								    interpolate(xxxx, DcullDistance[i], rhw,
-								                primitive + OFFSET(Primitive, cullDistance[i]),
-								                false, true);
+								////routine.getVariable(it->second.Id)[it->second.FirstComponent + i] =
+								////    interpolate(xxxx, DcullDistance[i], rhw,
+								////                primitive + OFFSET(Primitive, cullDistance[i]),
+								////                false, true);
 							}
 						}
 					}
@@ -2022,11 +2022,11 @@ Float4 PixelRoutine::blendOpSoftlight(Float4 &src, Float4 &dst)
 {
 	Int4 largeSrc = CmpGT(src, 0.5f);
 	Int4 largeDst = CmpGT(dst, 0.25f);
-
-	return As<Float4>(
-	    (~largeSrc & As<Int4>(dst - ((1.0f - (2.0f * src)) * dst * (1.0f - dst)))) |
-	    (largeSrc & ((~largeDst & As<Int4>(dst + (((2.0f * src) - 1.0f) * dst * ((((16.0f * dst) - 12.0f) * dst) + 3.0f)))) |
-	                 (largeDst & As<Int4>(dst + (((2.0f * src) - 1.0f) * (Sqrt<Mediump>(dst) - dst)))))));
+	return Float4(largeDst);  ////
+	                          ////return As<Float4>(
+	                          ////    (~largeSrc & As<Int4>(dst - ((1.0f - (2.0f * src)) * dst * (1.0f - dst)))) |
+	                          ////    (largeSrc & ((~largeDst & As<Int4>(dst + (((2.0f * src) - 1.0f) * dst * ((((16.0f * dst) - 12.0f) * dst) + 3.0f)))) |
+	                          ////                 (largeDst & As<Int4>(dst + (((2.0f * src) - 1.0f) * (Sqrt<Mediump>(dst) - dst)))))));
 }
 
 Float4 PixelRoutine::maxRGB(Vector4f &c)

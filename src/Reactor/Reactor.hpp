@@ -99,6 +99,12 @@ class Float;
 class Float2;
 class Float4;
 
+namespace SIMD {
+class Int;
+class UInt;
+class Float;
+}  // namespace SIMD
+
 template<>
 struct Scalar<Float4>
 {
@@ -310,6 +316,24 @@ struct BroadcastLiteral<UInt4>
 
 template<>
 struct BroadcastLiteral<Float4>
+{
+	using Type = float;
+};
+
+template<>
+struct BroadcastLiteral<SIMD::Int>
+{
+	using Type = int;
+};
+
+template<>
+struct BroadcastLiteral<SIMD::UInt>
+{
+	using Type = unsigned int;
+};
+
+template<>
+struct BroadcastLiteral<SIMD::Float>
 {
 	using Type = float;
 };
@@ -2116,10 +2140,11 @@ RValue<T> Load(Pointer<T> pointer, unsigned int alignment, bool atomic, std::mem
 [[deprecated]] void MaskedStore(RValue<Pointer<Float4>> base, RValue<Float4> val, RValue<Int4> mask, unsigned int alignment);
 [[deprecated]] void MaskedStore(RValue<Pointer<Int4>> base, RValue<Int4> val, RValue<Int4> mask, unsigned int alignment);
 
-RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes = false);
-RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes = false);
-void Scatter(RValue<Pointer<Float>> base, RValue<Float4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
-void Scatter(RValue<Pointer<Int>> base, RValue<Int4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+//// deprecate
+// RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes = false);
+// RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes = false);
+// void Scatter(RValue<Pointer<Float>> base, RValue<Float4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+// void Scatter(RValue<Pointer<Int>> base, RValue<Int4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
 
 template<typename T>
 void Store(RValue<T> value, RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
@@ -2391,7 +2416,7 @@ inline Value *broadcastUInt4(unsigned int i)
 
 template<>
 inline RValue<UInt4>::RValue(unsigned int i)
-    : val(broadcastInt4(i))
+    : val(broadcastUInt4(i))
 {
 	RR_DEBUG_INFO_EMIT_VAR(val);
 }

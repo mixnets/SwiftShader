@@ -89,22 +89,22 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 		y1 = 1.0f + y0;
 	}
 
-	routine.fragCoord[0] = SIMD::Float(Float(x)) + SIMD::Float(x0, x1, x0, x1);
-	routine.fragCoord[1] = SIMD::Float(Float(y)) + SIMD::Float(y0, y0, y1, y1);
-	routine.fragCoord[2] = z[0];  // sample 0
-	routine.fragCoord[3] = w;
+	////routine.fragCoord[0] = SIMD::Float(Float(x)) + SIMD::Float(x0, x1, x0, x1);
+	////routine.fragCoord[1] = SIMD::Float(Float(y)) + SIMD::Float(y0, y0, y1, y1);
+	////routine.fragCoord[2] = z[0];  // sample 0
+	////routine.fragCoord[3] = w;
 
-	routine.invocationsPerSubgroup = SIMD::Width;
-	routine.helperInvocation = ~maskAny(cMask, samples);
-	routine.windowSpacePosition[0] = SIMD::Int(x) + SIMD::Int(0, 1, 0, 1);
-	routine.windowSpacePosition[1] = SIMD::Int(y) + SIMD::Int(0, 0, 1, 1);
-	routine.layer = *Pointer<Int>(data + OFFSET(DrawData, layer));
+	////routine.invocationsPerSubgroup = SIMD::Width;
+	////routine.helperInvocation = ~maskAny(cMask, samples);
+	////routine.windowSpacePosition[0] = SIMD::Int(x) + SIMD::Int(0, 1, 0, 1);
+	////routine.windowSpacePosition[1] = SIMD::Int(y) + SIMD::Int(0, 0, 1, 1);
+	////routine.layer = *Pointer<Int>(data + OFFSET(DrawData, layer));
 
 	// PointCoord formula reference: https://www.khronos.org/registry/vulkan/specs/1.2/html/vkspec.html#primsrast-points-basic
 	// Note we don't add a 0.5 offset to x and y here (like for fragCoord) because pointCoordX/Y have 0.5 subtracted as part of the viewport transform.
 	SIMD::Float pointSizeInv = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointSizeInv)));
-	routine.pointCoord[0] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(x)) + SIMD::Float(0.0f, 1.0f, 0.0f, 1.0f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordX)))));
-	routine.pointCoord[1] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(y)) + SIMD::Float(0.0f, 0.0f, 1.0f, 1.0f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordY)))));
+	////routine.pointCoord[0] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(x)) + SIMD::Float(0.0f, 1.0f, 0.0f, 1.0f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordX)))));
+	////	routine.pointCoord[1] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(y)) + SIMD::Float(0.0f, 0.0f, 1.0f, 1.0f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordY)))));
 
 	routine.setInputBuiltin(spirvShader, spv::BuiltInViewIndex, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 1);
@@ -149,28 +149,28 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 	{
 		ASSERT(it->second.SizeInComponents == 1);
 		auto frontFacing = Int4(*Pointer<Int>(primitive + OFFSET(Primitive, clockwiseMask)));
-		routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<Float4>(frontFacing);
+		////		routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<Float4>(frontFacing);
 	}
 
 	it = spirvShader->inputBuiltins.find(spv::BuiltInSampleMask);
 	if(it != spirvShader->inputBuiltins.end())
 	{
-		static_assert(SIMD::Width == 4, "Expects SIMD width to be 4");
-		Int4 laneBits = Int4(1, 2, 4, 8);
+		////static_assert(SIMD::Width == 4, "Expects SIMD width to be 4");
+		////Int4 laneBits = Int4(1, 2, 4, 8);
 
-		Int4 inputSampleMask = 0;
-		for(unsigned int q : samples)
-		{
-			inputSampleMask |= Int4(1 << q) & CmpNEQ(Int4(cMask[q]) & laneBits, Int4(0));
-		}
+		////Int4 inputSampleMask = 0;
+		////for(unsigned int q : samples)
+		////{
+		////	inputSampleMask |= Int4(1 << q) & CmpNEQ(Int4(cMask[q]) & laneBits, Int4(0));
+		////}
 
-		routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<Float4>(inputSampleMask);
-		// Sample mask input is an array, as the spec contemplates MSAA levels higher than 32.
-		// Fill any non-zero indices with 0.
-		for(auto i = 1u; i < it->second.SizeInComponents; i++)
-		{
-			routine.getVariable(it->second.Id)[it->second.FirstComponent + i] = Float4(0);
-		}
+		////routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<Float4>(inputSampleMask);
+		////// Sample mask input is an array, as the spec contemplates MSAA levels higher than 32.
+		////// Fill any non-zero indices with 0.
+		////for(auto i = 1u; i < it->second.SizeInComponents; i++)
+		////{
+		////	routine.getVariable(it->second.Id)[it->second.FirstComponent + i] = Float4(0);
+		////}
 	}
 
 	it = spirvShader->inputBuiltins.find(spv::BuiltInSampleId);
@@ -196,7 +196,7 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 	// Note: all lanes initially active to facilitate derivatives etc. Actual coverage is
 	// handled separately, through the cMask.
 	auto activeLaneMask = SIMD::Int(0xFFFFFFFF);
-	auto storesAndAtomicsMask = maskAny(cMask, sMask, zMask, samples);
+	auto storesAndAtomicsMask = activeLaneMask;  ////maskAny(cMask, sMask, zMask, samples);
 	routine.discardMask = 0;
 
 	spirvShader->emit(&routine, activeLaneMask, storesAndAtomicsMask, descriptorSets, state.multiSampleCount);
@@ -210,10 +210,10 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 
 	for(int i = 0; i < MAX_COLOR_BUFFERS; i++)
 	{
-		c[i].x = routine.outputs[i * 4 + 0];
-		c[i].y = routine.outputs[i * 4 + 1];
-		c[i].z = routine.outputs[i * 4 + 2];
-		c[i].w = routine.outputs[i * 4 + 3];
+		////c[i].x = routine.outputs[i * 4 + 0];
+		////c[i].y = routine.outputs[i * 4 + 1];
+		////c[i].z = routine.outputs[i * 4 + 2];
+		////c[i].w = routine.outputs[i * 4 + 3];
 	}
 
 	clampColor(c);
@@ -233,7 +233,7 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 
 		for(unsigned int q : samples)
 		{
-			cMask[q] &= SignMask(CmpNEQ(outputSampleMask & SIMD::Int(1 << q), SIMD::Int(0)));
+			////			cMask[q] &= SignMask(CmpNEQ(outputSampleMask & SIMD::Int(1 << q), SIMD::Int(0)));
 		}
 	}
 
@@ -242,7 +242,7 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 	{
 		for(unsigned int q : samples)
 		{
-			z[q] = routine.getVariable(it->second.Id)[it->second.FirstComponent];
+			////	z[q] = routine.getVariable(it->second.Id)[it->second.FirstComponent];
 		}
 	}
 }

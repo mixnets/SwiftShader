@@ -131,15 +131,15 @@ struct PrintValue::Ty<sw::Intermediate>
 template<>
 struct PrintValue::Ty<sw::SpirvShader::Operand>
 {
-	static inline std::string fmt(const sw::SpirvShader::Operand &v)
-	{
-		return (v.intermediate != nullptr) ? PrintValue::Ty<sw::Intermediate>::fmt(*v.intermediate) : PrintValue::Ty<sw::SIMD::UInt>::fmt(v.UInt(0));
-	}
+	////static inline std::string fmt(const sw::SpirvShader::Operand &v)
+	////{
+	////	return (v.intermediate != nullptr) ? PrintValue::Ty<sw::Intermediate>::fmt(*v.intermediate) : PrintValue::Ty<sw::SIMD::UInt>::fmt(v.UInt(0));
+	////}
 
-	static inline std::vector<Value *> val(const sw::SpirvShader::Operand &v)
-	{
-		return (v.intermediate != nullptr) ? PrintValue::Ty<sw::Intermediate>::val(*v.intermediate) : PrintValue::Ty<sw::SIMD::UInt>::val(v.UInt(0));
-	}
+	////static inline std::vector<Value *> val(const sw::SpirvShader::Operand &v)
+	////{
+	////	return (v.intermediate != nullptr) ? PrintValue::Ty<sw::Intermediate>::val(*v.intermediate) : PrintValue::Ty<sw::SIMD::UInt>::val(v.UInt(0));
+	////}
 };
 }  // namespace rr
 #endif  // ENABLE_RR_PRINT

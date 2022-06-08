@@ -1281,7 +1281,7 @@ Int4 SamplerCore::cubeFace(Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z
 	// V = !yMajor ? -y : (n ^ z)
 	V = As<Float4>((~yMajor & As<Int4>(-y)) | (yMajor & (n ^ As<Int4>(z))));
 
-	M = reciprocal(M) * Float4(0.5f);
+	////M = reciprocal(M) * Float4(0.5f);
 	U = U * M + Float4(0.5f);
 	V = V * M + Float4(0.5f);
 
@@ -1970,10 +1970,10 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 			t2 = Int4(*Pointer<UShort4>(buffer + index[2] * 2));
 			t3 = Int4(*Pointer<UShort4>(buffer + index[3] * 2));
 
-			c.x.x = Extract(As<Float4>(halfToFloatBits(t0)), 0);
-			c.x.y = Extract(As<Float4>(halfToFloatBits(t1)), 0);
-			c.x.z = Extract(As<Float4>(halfToFloatBits(t2)), 0);
-			c.x.w = Extract(As<Float4>(halfToFloatBits(t3)), 0);
+			////c.x.x = Extract(As<Float4>(halfToFloatBits(t0)), 0);
+			////c.x.y = Extract(As<Float4>(halfToFloatBits(t1)), 0);
+			////c.x.z = Extract(As<Float4>(halfToFloatBits(t2)), 0);
+			////c.x.w = Extract(As<Float4>(halfToFloatBits(t3)), 0);
 			break;
 		case VK_FORMAT_R16G16_SFLOAT:
 			t0 = Int4(*Pointer<UShort4>(buffer + index[0] * 4));
@@ -1982,10 +1982,10 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 			t3 = Int4(*Pointer<UShort4>(buffer + index[3] * 4));
 
 			// TODO: shuffles
-			c.x = As<Float4>(halfToFloatBits(t0));
-			c.y = As<Float4>(halfToFloatBits(t1));
-			c.z = As<Float4>(halfToFloatBits(t2));
-			c.w = As<Float4>(halfToFloatBits(t3));
+			////c.x = As<Float4>(halfToFloatBits(t0));
+			////c.y = As<Float4>(halfToFloatBits(t1));
+			////c.z = As<Float4>(halfToFloatBits(t2));
+			////c.w = As<Float4>(halfToFloatBits(t3));
 			transpose4x4(c.x, c.y, c.z, c.w);
 			break;
 		case VK_FORMAT_R16G16B16A16_SFLOAT:
@@ -1994,10 +1994,10 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 			t2 = Int4(*Pointer<UShort4>(buffer + index[2] * 8));
 			t3 = Int4(*Pointer<UShort4>(buffer + index[3] * 8));
 
-			c.x = As<Float4>(halfToFloatBits(t0));
-			c.y = As<Float4>(halfToFloatBits(t1));
-			c.z = As<Float4>(halfToFloatBits(t2));
-			c.w = As<Float4>(halfToFloatBits(t3));
+			////c.x = As<Float4>(halfToFloatBits(t0));
+			////c.y = As<Float4>(halfToFloatBits(t1));
+			////c.z = As<Float4>(halfToFloatBits(t2));
+			////c.w = As<Float4>(halfToFloatBits(t3));
 			transpose4x4(c.x, c.y, c.z, c.w);
 			break;
 		case VK_FORMAT_R32_SFLOAT:
@@ -2053,9 +2053,9 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 				t.z = *Pointer<Float>(buffer + index[2] * 4);
 				t.w = *Pointer<Float>(buffer + index[3] * 4);
 				t0 = As<UInt4>(t);
-				c.x = As<Float4>(halfToFloatBits((t0 << 4) & UInt4(0x7FF0)));
-				c.y = As<Float4>(halfToFloatBits((t0 >> 7) & UInt4(0x7FF0)));
-				c.z = As<Float4>(halfToFloatBits((t0 >> 17) & UInt4(0x7FE0)));
+				////c.x = As<Float4>(halfToFloatBits((t0 << 4) & UInt4(0x7FF0)));
+				////c.y = As<Float4>(halfToFloatBits((t0 >> 7) & UInt4(0x7FF0)));
+				////c.z = As<Float4>(halfToFloatBits((t0 >> 17) & UInt4(0x7FE0)));
 			}
 			break;
 		default:

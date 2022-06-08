@@ -17,6 +17,7 @@
 
 #include "Reactor/Print.hpp"
 #include "Reactor/Reactor.hpp"
+#include "Reactor/SIMD.hpp"
 #include "System/Debug.hpp"
 
 #include <array>
@@ -90,11 +91,11 @@ enum class OutOfBoundsBehavior
 namespace SIMD {
 
 // Width is the number of per-lane scalars packed into each SIMD vector.
-static constexpr int Width = 4;
+static const int Width = rr::SIMD::Width;
 
-using Float = rr::Float4;
-using Int = rr::Int4;
-using UInt = rr::UInt4;
+using Float = rr::SIMD::Float;
+using Int = rr::SIMD::Int;
+using UInt = rr::SIMD::UInt;
 
 struct Pointer
 {
@@ -103,7 +104,7 @@ struct Pointer
 	Pointer(rr::Pointer<Byte> base, rr::Int limit, SIMD::Int offset);
 	Pointer(rr::Pointer<Byte> base, unsigned int limit, SIMD::Int offset);
 	Pointer(rr::Pointer<Byte> p0, rr::Pointer<Byte> p1, rr::Pointer<Byte> p2, rr::Pointer<Byte> p3);
-	Pointer(std::array<rr::Pointer<Byte>, SIMD::Width> pointers);
+	Pointer(std::array<rr::Pointer<Byte>, 8> pointers);
 
 	Pointer &operator+=(Int i);
 	Pointer &operator*=(Int i);
@@ -160,7 +161,7 @@ private:
 	// Base address for the pointer, common across all lanes.
 	rr::Pointer<rr::Byte> base;
 	// Per-lane address for dealing with non-uniform data
-	std::array<rr::Pointer<Byte>, SIMD::Width> pointers;
+	std::array<rr::Pointer<Byte>, 8> pointers;
 
 public:
 	// Upper (non-inclusive) limit for offsets from base.
@@ -169,7 +170,7 @@ public:
 
 	// Per lane offsets from base.
 	SIMD::Int dynamicOffsets;  // If hasDynamicOffsets is false, all dynamicOffsets are zero.
-	std::array<int32_t, SIMD::Width> staticOffsets;
+	std::array<int32_t, 8> staticOffsets;
 
 	bool hasDynamicLimit;    // True if dynamicLimit is non-zero.
 	bool hasDynamicOffsets;  // True if any dynamicOffsets are non-zero.
@@ -198,25 +199,25 @@ struct Element<UInt>
 }  // namespace SIMD
 
 // Vulkan 'SPIR-V Extended Instructions for GLSL' (GLSL.std.450) compliant transcendental functions
-RValue<Float4> Sin(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Cos(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Tan(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Asin(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Acos(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Atan(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Atan2(RValue<Float4> y, RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Exp2(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Log2(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Exp(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Log(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Pow(RValue<Float4> x, RValue<Float4> y, bool relaxedPrecision);
-RValue<Float4> Sinh(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Cosh(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Tanh(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Asinh(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Acosh(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Atanh(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Sqrt(RValue<Float4> x, bool relaxedPrecision);
+RValue<SIMD::Float> Sin(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Cos(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Tan(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Asin(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Acos(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Atan(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Atan2(RValue<SIMD::Float> y, RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Exp2(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Log2(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Exp(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Log(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Pow(RValue<SIMD::Float> x, RValue<SIMD::Float> y, bool relaxedPrecision);
+RValue<SIMD::Float> Sinh(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Cosh(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Tanh(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Asinh(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Acosh(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Atanh(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x, bool relaxedPrecision);
 
 // Math functions with uses outside of shaders can be invoked using a verbose template argument instead
 // of a Boolean argument to indicate precision. For example Sqrt<Mediump>(x) equals Sqrt(x, true).
@@ -228,19 +229,19 @@ enum Precision
 };
 
 // clang-format off
-template<Precision precision> RValue<Float4> Sqrt(RValue<Float4> x);
-template<> inline RValue<Float4> Sqrt<Highp>(RValue<Float4> x) { return Sqrt(x, false); }
-template<> inline RValue<Float4> Sqrt<Mediump>(RValue<Float4> x) { return Sqrt(x, true); }
+template<Precision precision> RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x);
+template<> inline RValue<SIMD::Float> Sqrt<Highp>(RValue<SIMD::Float> x) { return Sqrt(x, false); }
+template<> inline RValue<SIMD::Float> Sqrt<Mediump>(RValue<SIMD::Float> x) { return Sqrt(x, true); }
 
-template<Precision precision> RValue<Float4> Pow(RValue<Float4> x, RValue<Float4> y);
-template<> inline RValue<Float4> Pow<Highp>(RValue<Float4> x, RValue<Float4> y) { return Pow(x, y, false); }
-template<> inline RValue<Float4> Pow<Mediump>(RValue<Float4> x, RValue<Float4> y) { return Pow(x, y, true); }
+template<Precision precision> RValue<SIMD::Float> Pow(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+template<> inline RValue<SIMD::Float> Pow<Highp>(RValue<SIMD::Float> x, RValue<SIMD::Float> y) { return Pow(x, y, false); }
+template<> inline RValue<SIMD::Float> Pow<Mediump>(RValue<SIMD::Float> x, RValue<SIMD::Float> y) { return Pow(x, y, true); }
 // clang-format on
 
-RValue<Float4> reciprocal(RValue<Float4> x, bool pp = false, bool exactAtPow2 = false);
-RValue<Float4> reciprocalSquareRoot(RValue<Float4> x, bool abs, bool pp = false);
+RValue<SIMD::Float> reciprocal(RValue<SIMD::Float> x, bool pp = false, bool exactAtPow2 = false);
+RValue<SIMD::Float> reciprocalSquareRoot(RValue<SIMD::Float> x, bool abs, bool pp = false);
 
-RValue<Float4> mulAdd(RValue<Float4> x, RValue<Float4> y, RValue<Float4> z);  // TODO(chromium:1299047)
+RValue<SIMD::Float> mulAdd(RValue<SIMD::Float> x, RValue<SIMD::Float> y, RValue<SIMD::Float> z);  // TODO(chromium:1299047)
 
 void transpose4x4(Short4 &row0, Short4 &row1, Short4 &row2, Short4 &row3);
 void transpose4x3(Short4 &row0, Short4 &row1, Short4 &row2, Short4 &row3);
@@ -435,7 +436,7 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 
 		// TODO(b/195446858): Optimize static sequential offsets case by using masked load.
 
-		return rr::Gather(rr::Pointer<EL>(base), offs, mask, alignment, zeroMaskedLanes);
+		return rr::SIMD::Gather(rr::Pointer<EL>(base), offs, mask, alignment, zeroMaskedLanes);
 	}
 	else
 	{
@@ -509,14 +510,14 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 			If(AnyTrue(mask))
 			{
 				// All equal. One of these writes will win -- elect the winning lane.
-				auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-				auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
-				auto maskedVal = As<SIMD::Int>(val) & elect;
-				auto scalarVal = Extract(maskedVal, 0) |
-				                 Extract(maskedVal, 1) |
-				                 Extract(maskedVal, 2) |
-				                 Extract(maskedVal, 3);
-				*rr::Pointer<EL>(base + staticOffsets[0], alignment) = As<EL>(scalarVal);
+				////auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+				////auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
+				////auto maskedVal = As<SIMD::Int>(val) & elect;
+				////auto scalarVal = Extract(maskedVal, 0) |
+				////                 Extract(maskedVal, 1) |
+				////                 Extract(maskedVal, 2) |
+				////                 Extract(maskedVal, 3);
+				////*rr::Pointer<EL>(base + staticOffsets[0], alignment) = As<EL>(scalarVal);
 			}
 		}
 		else if(hasStaticSequentialOffsets(sizeof(float)) &&
@@ -531,7 +532,7 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 		}
 		else
 		{
-			rr::Scatter(rr::Pointer<EL>(base), val, offs, mask, alignment);
+			rr::SIMD::Scatter(rr::Pointer<EL>(base), val, offs, mask, alignment);
 		}
 	}
 	else

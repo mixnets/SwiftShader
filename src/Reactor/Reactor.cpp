@@ -4443,7 +4443,6 @@ static std::string replaceAll(std::string str, const std::string &substr, const 
 
 // extractAll returns a vector containing the extracted n scalar value of
 // the vector vec.
-// TODO: Move to Reactor.cpp (LLVMReactor can use this too)
 static std::vector<Value *> extractAll(Value *vec, int n)
 {
 	Type *elemTy = Nucleus::getContainedType(Nucleus::getType(vec));
@@ -4565,6 +4564,21 @@ std::vector<Value *> PrintValue::Ty<Float>::val(const RValue<Float> &v)
 std::vector<Value *> PrintValue::Ty<Float4>::val(const RValue<Float4> &v)
 {
 	return toFloat(extractAll(v.value(), 4));
+}
+
+std::vector<Value *> PrintValue::Ty<SIMD::Int>::val(const RValue<SIMD::Int> &v)
+{
+	return toInt(extractAll(v.value(), SIMD::Width), true);
+}
+
+std::vector<Value *> PrintValue::Ty<SIMD::UInt>::val(const RValue<SIMD::UInt> &v)
+{
+	return toInt(extractAll(v.value(), SIMD::Width), false);
+}
+
+std::vector<Value *> PrintValue::Ty<SIMD::Float>::val(const RValue<SIMD::Float> &v)
+{
+	return toFloat(extractAll(v.value(), SIMD::Width));
 }
 
 std::vector<Value *> PrintValue::Ty<const char *>::val(const char *v)

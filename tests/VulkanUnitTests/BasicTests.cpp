@@ -112,8 +112,8 @@ TEST_F(BasicTest, Version)
 
 	driver.vkDestroyInstance(instance, nullptr);
 }
-/*
-TEST_F(BasicTest, UnsupportedDeviceExtension_DISABLED)
+
+TEST_F(BasicTest, DISABLED_UnsupportedDeviceExtension)
 {
     uint32_t apiVersion = 0;
     VkResult result = driver.vkEnumerateInstanceVersion(&apiVersion);
@@ -181,4 +181,4 @@ TEST_F(BasicTest, UnsupportedDeviceExtension_DISABLED)
 
     driver.vkDestroyInstance(instance, nullptr);
 }
-*/
+

@@ -127,7 +127,7 @@ void ComputeProgram::setSubgroupBuiltins(Pointer<Byte> data, SpirvRoutine *routi
 		localInvocationID[X] = idx;
 	}
 
-	Int4 wgID = Insert(Insert(Insert(SIMD::Int(0), workgroupID[X], X), workgroupID[Y], Y), workgroupID[Z], Z);
+	Int4 wgID = Insert(Insert(Insert(Int4(0), workgroupID[X], X), workgroupID[Y], Y), workgroupID[Z], Z);
 	auto localBase = workgroupSize * wgID;
 	SIMD::Int globalInvocationID[3];
 	globalInvocationID[X] = SIMD::Int(Extract(localBase, X)) + localInvocationID[X];
@@ -197,8 +197,11 @@ void ComputeProgram::emit(SpirvRoutine *routine)
 	{
 		auto subgroupIndex = firstSubgroup + i;
 
-		// TODO: Replace SIMD::Int(0, 1, 2, 3) with SIMD-width equivalent
-		auto localInvocationIndex = SIMD::Int(subgroupIndex * SIMD::Width) + SIMD::Int(0, 1, 2, 3);
+		// TODO
+		SIMD::Int staircase;
+		for(int i = 0; i < SIMD::Width; i++) staircase = Insert(staircase, i, i);
+
+		auto localInvocationIndex = SIMD::Int(subgroupIndex * SIMD::Width) + staircase;
 
 		// Disable lanes where (invocationIDs >= invocationsPerWorkgroup)
 		auto activeLaneMask = CmpLT(localInvocationIndex, SIMD::Int(invocationsPerWorkgroup));

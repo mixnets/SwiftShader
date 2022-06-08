@@ -104,10 +104,10 @@ void VertexRoutine::readInput(Pointer<UInt> &batch)
 			}
 
 			auto value = readStream(input, stride, state.input[i / 4], batch, state.robustBufferAccess, robustnessSize, baseVertex);
-			routine.inputs[i + 0] = value.x;
-			routine.inputs[i + 1] = value.y;
-			routine.inputs[i + 2] = value.z;
-			routine.inputs[i + 3] = value.w;
+			////routine.inputs[i + 0] = value.x;
+			////routine.inputs[i + 1] = value.y;
+			////routine.inputs[i + 2] = value.z;
+			////routine.inputs[i + 3] = value.w;
 		}
 	}
 }
@@ -124,30 +124,30 @@ void VertexRoutine::computeClipFlags()
 		auto posZ = pos[it->second.FirstComponent + 2];
 		auto posW = pos[it->second.FirstComponent + 3];
 
-		Int4 maxX = CmpLT(posW, posX);
-		Int4 maxY = CmpLT(posW, posY);
-		Int4 minX = CmpNLE(-posW, posX);
-		Int4 minY = CmpNLE(-posW, posY);
+		////Int4 maxX = CmpLT(posW, posX);
+		////Int4 maxY = CmpLT(posW, posY);
+		////Int4 minX = CmpNLE(-posW, posX);
+		////Int4 minY = CmpNLE(-posW, posY);
 
-		clipFlags = Pointer<Int>(constants + OFFSET(Constants, maxX))[SignMask(maxX)];
-		clipFlags |= Pointer<Int>(constants + OFFSET(Constants, maxY))[SignMask(maxY)];
-		clipFlags |= Pointer<Int>(constants + OFFSET(Constants, minX))[SignMask(minX)];
-		clipFlags |= Pointer<Int>(constants + OFFSET(Constants, minY))[SignMask(minY)];
+		////clipFlags = Pointer<Int>(constants + OFFSET(Constants, maxX))[SignMask(maxX)];
+		////clipFlags |= Pointer<Int>(constants + OFFSET(Constants, maxY))[SignMask(maxY)];
+		////clipFlags |= Pointer<Int>(constants + OFFSET(Constants, minX))[SignMask(minX)];
+		////clipFlags |= Pointer<Int>(constants + OFFSET(Constants, minY))[SignMask(minY)];
 		if(state.depthClipEnable)
 		{
-			Int4 maxZ = CmpLT(posW, posZ);
-			Int4 minZ = CmpNLE(Float4(0.0f), posZ);
-			clipFlags |= Pointer<Int>(constants + OFFSET(Constants, maxZ))[SignMask(maxZ)];
-			clipFlags |= Pointer<Int>(constants + OFFSET(Constants, minZ))[SignMask(minZ)];
+			////Int4 maxZ = CmpLT(posW, posZ);
+			////Int4 minZ = CmpNLE(Float4(0.0f), posZ);
+			////clipFlags |= Pointer<Int>(constants + OFFSET(Constants, maxZ))[SignMask(maxZ)];
+			////clipFlags |= Pointer<Int>(constants + OFFSET(Constants, minZ))[SignMask(minZ)];
 		}
 
 		Float4 maxPos = As<Float4>(Int4(0x7F7FFFFF));
-		Int4 finiteX = CmpLE(Abs(posX), maxPos);
-		Int4 finiteY = CmpLE(Abs(posY), maxPos);
-		Int4 finiteZ = CmpLE(Abs(posZ), maxPos);
+		////Int4 finiteX = CmpLE(Abs(posX), maxPos);
+		////Int4 finiteY = CmpLE(Abs(posY), maxPos);
+		////Int4 finiteZ = CmpLE(Abs(posZ), maxPos);
 
-		Int4 finiteXYZ = finiteX & finiteY & finiteZ;
-		clipFlags |= Pointer<Int>(constants + OFFSET(Constants, fini))[SignMask(finiteXYZ)];
+		////Int4 finiteXYZ = finiteX & finiteY & finiteZ;
+		////clipFlags |= Pointer<Int>(constants + OFFSET(Constants, fini))[SignMask(finiteXYZ)];
 	}
 }
 
@@ -161,9 +161,9 @@ void VertexRoutine::computeCullMask()
 		auto count = spirvShader->getNumOutputCullDistances();
 		for(uint32_t i = 0; i < count; i++)
 		{
-			auto const &distance = routine.getVariable(it->second.Id)[it->second.FirstComponent + i];
-			auto mask = SignMask(CmpGE(distance, SIMD::Float(0)));
-			cullMask &= mask;
+			////auto const &distance = routine.getVariable(it->second.Id)[it->second.FirstComponent + i];
+			////auto mask = SignMask(CmpGE(distance, SIMD::Float(0)));
+			////cullMask &= mask;
 		}
 	}
 }
@@ -591,10 +591,10 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 		auto &position = routine.getVariable(it->second.Id);
 
 		Vector4f pos;
-		pos.x = position[it->second.FirstComponent + 0];
-		pos.y = position[it->second.FirstComponent + 1];
-		pos.z = position[it->second.FirstComponent + 2];
-		pos.w = position[it->second.FirstComponent + 3];
+		////pos.x = position[it->second.FirstComponent + 0];
+		////pos.y = position[it->second.FirstComponent + 1];
+		////pos.z = position[it->second.FirstComponent + 2];
+		////pos.w = position[it->second.FirstComponent + 3];
 
 		// Projection and viewport transform.
 		Float4 w = As<Float4>(As<Int4>(pos.w) | (As<Int4>(CmpEQ(pos.w, Float4(0.0f))) & As<Int4>(Float4(1.0f))));
@@ -679,10 +679,10 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 		   spirvShader->outputs[i + 3].Type != SpirvShader::ATTRIBTYPE_UNUSED)
 		{
 			Vector4f v;
-			v.x = routine.outputs[i + 0];
-			v.y = routine.outputs[i + 1];
-			v.z = routine.outputs[i + 2];
-			v.w = routine.outputs[i + 3];
+			////v.x = routine.outputs[i + 0];
+			////v.y = routine.outputs[i + 1];
+			////v.z = routine.outputs[i + 2];
+			////v.w = routine.outputs[i + 3];
 
 			transpose4x4(v.x, v.y, v.z, v.w);
 

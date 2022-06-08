@@ -315,6 +315,74 @@ RValue<SIMD::Float> Log(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Exp2(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Log2(RValue<SIMD::Float> x);
 
+RValue<SIMD::Float> Gather(RValue<Pointer<rr::Float>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment, bool zeroMaskedLanes = false);
+RValue<SIMD::Int> Gather(RValue<Pointer<rr::Int>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment, bool zeroMaskedLanes = false);
+void Scatter(RValue<Pointer<rr::Float>> base, RValue<SIMD::Float> val, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment);
+void Scatter(RValue<Pointer<rr::Int>> base, RValue<SIMD::Int> val, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment);
+
 }  // namespace rr::SIMD
+
+namespace rr {
+
+inline Value *broadcastInt(int i)
+{
+	int64_t constantVector[16] = { i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i };
+	return Nucleus::createConstantVector(constantVector, SIMD::Int::type());
+}
+
+template<>
+inline RValue<SIMD::Int>::RValue(int i)
+    : val(broadcastInt(i))
+{
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
+inline Value *broadcastUInt(unsigned int i)
+{
+	int64_t constantVector[16] = { i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i };
+	return Nucleus::createConstantVector(constantVector, SIMD::UInt::type());
+}
+
+template<>
+inline RValue<SIMD::UInt>::RValue(unsigned int i)
+    : val(broadcastUInt(i))
+{
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
+inline Value *broadcastFloat(float f)
+{
+	// See Float(float) constructor for the rationale behind this assert.
+	assert(std::isfinite(f));
+
+	double constantVector[16] = {
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+		f,
+	};
+	return Nucleus::createConstantVector(constantVector, SIMD::Float::type());
+}
+
+template<>
+inline RValue<SIMD::Float>::RValue(float f)
+    : val(broadcastFloat(f))
+{
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
+}  // namespace rr
 
 #endif  // rr_SIMD_hpp

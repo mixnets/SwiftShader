@@ -890,11 +890,11 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 		break;
 	case VK_FORMAT_R8G8B8A8_SRGB:
 	case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
-		dst.move(0, sRGBtoLinear(SIMD::Float(packed[0] & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(1, sRGBtoLinear(SIMD::Float((packed[0] >> 8) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(2, sRGBtoLinear(SIMD::Float((packed[0] >> 16) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(3, SIMD::Float((packed[0] >> 24) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
-		break;
+		/////*dst.move(0, sRGBtoLinear(SIMD::Float(packed[0] & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		////dst.move(1, sRGBtoLinear(SIMD::Float((packed[0] >> 8) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		////dst.move(2, sRGBtoLinear(SIMD::Float((packed[0] >> 16) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		////dst.move(3, SIMD::Float((packed[0] >> 24) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
+		////*/break;
 	case VK_FORMAT_B8G8R8A8_UNORM:
 		dst.move(0, SIMD::Float((packed[0] >> 16) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
 		dst.move(1, SIMD::Float((packed[0] >> 8) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
@@ -902,11 +902,11 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 		dst.move(3, SIMD::Float((packed[0] >> 24) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
 		break;
 	case VK_FORMAT_B8G8R8A8_SRGB:
-		dst.move(0, sRGBtoLinear(SIMD::Float((packed[0] >> 16) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(1, sRGBtoLinear(SIMD::Float((packed[0] >> 8) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(2, sRGBtoLinear(SIMD::Float(packed[0] & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
-		dst.move(3, SIMD::Float((packed[0] >> 24) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
-		break;
+		////dst.move(0, sRGBtoLinear(SIMD::Float((packed[0] >> 16) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		////dst.move(1, sRGBtoLinear(SIMD::Float((packed[0] >> 8) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		////dst.move(2, sRGBtoLinear(SIMD::Float(packed[0] & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF)));
+		////dst.move(3, SIMD::Float((packed[0] >> 24) & SIMD::Int(0xFF)) * SIMD::Float(1.0f / 0xFF));
+		////break;
 	case VK_FORMAT_R8G8B8A8_UINT:
 	case VK_FORMAT_A8B8G8R8_UINT_PACK32:
 		dst.move(0, As<SIMD::UInt>(packed[0]) & SIMD::UInt(0xFF));
@@ -1225,11 +1225,11 @@ void SpirvShader::WriteImage(ImageInstructionSignature instruction, Pointer<Byte
 		            ((SIMD::UInt(Round(Min(Max(As<SIMD::Float>(texel[3]), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 24);
 		break;
 	case VK_FORMAT_B8G8R8A8_SRGB:
-		packed[0] = (SIMD::UInt(Round(Min(Max(linearToSRGB(As<SIMD::Float>(texel[2])), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) |
-		            ((SIMD::UInt(Round(Min(Max(linearToSRGB(As<SIMD::Float>(texel[1])), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 8) |
-		            ((SIMD::UInt(Round(Min(Max(linearToSRGB(As<SIMD::Float>(texel[0])), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 16) |
-		            ((SIMD::UInt(Round(Min(Max(linearToSRGB(As<SIMD::Float>(texel[3])), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 24);
-		break;
+		////packed[0] = (SIMD::UInt(Round(Min(Max(linearToSRGB(As<SIMD::Float>(texel[2])), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) |
+		////            ((SIMD::UInt(Round(Min(Max(linearToSRGB(As<SIMD::Float>(texel[1])), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 8) |
+		////            ((SIMD::UInt(Round(Min(Max(linearToSRGB(As<SIMD::Float>(texel[0])), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 16) |
+		////            ((SIMD::UInt(Round(Min(Max(linearToSRGB(As<SIMD::Float>(texel[3])), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 24);
+		////break;
 	case VK_FORMAT_R8G8B8A8_SNORM:
 	case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
 		packed[0] = (SIMD::Int(Round(Min(Max(As<SIMD::Float>(texel[0]), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &

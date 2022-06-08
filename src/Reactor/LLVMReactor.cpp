@@ -1165,14 +1165,14 @@ static llvm::Value *createGather(llvm::Value *base, llvm::Type *elTy, llvm::Valu
 	}
 }
 
-RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes /* = false */)
+RValue<SIMD::Float> SIMD::Gather(RValue<Pointer<rr::Float>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment, bool zeroMaskedLanes /* = false */)
 {
-	return As<Float4>(V(createGather(V(base.value()), T(Float::type()), V(offsets.value()), V(mask.value()), alignment, zeroMaskedLanes)));
+	return As<SIMD::Float>(V(createGather(V(base.value()), T(rr::Float::type()), V(offsets.value()), V(mask.value()), alignment, zeroMaskedLanes)));
 }
 
-RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes /* = false */)
+RValue<SIMD::Int> SIMD::Gather(RValue<Pointer<rr::Int>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment, bool zeroMaskedLanes /* = false */)
 {
-	return As<Int4>(V(createGather(V(base.value()), T(Int::type()), V(offsets.value()), V(mask.value()), alignment, zeroMaskedLanes)));
+	return As<SIMD::Int>(V(createGather(V(base.value()), T(rr::Int::type()), V(offsets.value()), V(mask.value()), alignment, zeroMaskedLanes)));
 }
 
 static void createScatter(llvm::Value *base, llvm::Value *val, llvm::Value *offsets, llvm::Value *mask, unsigned int alignment)
@@ -1228,12 +1228,12 @@ static void createScatter(llvm::Value *base, llvm::Value *val, llvm::Value *offs
 	}
 }
 
-void Scatter(RValue<Pointer<Float>> base, RValue<Float4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+void SIMD::Scatter(RValue<Pointer<rr::Float>> base, RValue<SIMD::Float> val, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment)
 {
 	return createScatter(V(base.value()), V(val.value()), V(offsets.value()), V(mask.value()), alignment);
 }
 
-void Scatter(RValue<Pointer<Int>> base, RValue<Int4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+void SIMD::Scatter(RValue<Pointer<rr::Int>> base, RValue<SIMD::Int> val, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment)
 {
 	return createScatter(V(base.value()), V(val.value()), V(offsets.value()), V(mask.value()), alignment);
 }
@@ -4399,13 +4399,13 @@ RValue<SIMD::Int> Min(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 	return (x & less) | (y & ~less);
 }
 
-RValue<SIMD::Int> RoundInt(RValue<Float4> cast)
+RValue<SIMD::Int> RoundInt(RValue<SIMD::Float> cast)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	return As<SIMD::Int>(V(lowerRoundInt(V(cast.value()), T(SIMD::Int::type()))));
 }
 
-RValue<SIMD::Int> RoundIntClamped(RValue<Float4> cast)
+RValue<SIMD::Int> RoundIntClamped(RValue<SIMD::Float> cast)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 
@@ -4420,7 +4420,7 @@ RValue<SIMD::Int> RoundIntClamped(RValue<Float4> cast)
 	    jit->module.get(), llvm::Intrinsic::fptosi_sat, { T(SIMD::Int::type()), T(Float4::type()) });
 	return RValue<SIMD::Int>(V(jit->builder->CreateCall(fptosi_sat, { rounded })));
 #else
-	RValue<Float4> clamped = Max(Min(cast, Float4(0x7FFFFF80)), Float4(static_cast<int>(0x80000000)));
+	RValue<SIMD::Float> clamped = Max(Min(cast, SIMD::Float(0x7FFFFF80)), SIMD::Float(static_cast<int>(0x80000000)));
 	return As<SIMD::Int>(V(lowerRoundInt(V(clamped.value()), T(SIMD::Int::type()))));
 #endif
 }
@@ -4556,6 +4556,20 @@ RValue<SIMD::Float> Min(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	return As<SIMD::Float>(V(lowerPFMINMAX(V(x.value()), V(y.value()), llvm::FCmpInst::FCMP_OLT)));
+}
+
+RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
+{
+	assert(false);  // optimize
+	RR_DEBUG_INFO_UPDATE_LOC();
+	return As<SIMD::Float>(V(lowerRCP(V(x.value()))));
+}
+
+RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision)
+{
+	assert(false);  // optimize
+	RR_DEBUG_INFO_UPDATE_LOC();
+	return As<SIMD::Float>(V(lowerRCP(lowerSQRT(V(x.value())))));
 }
 
 RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x)

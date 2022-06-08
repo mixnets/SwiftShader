@@ -238,7 +238,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			// Derivative instructions: FS invocations are laid out like so:
 			//    0 1
 			//    2 3
-			static_assert(SIMD::Width == 4, "All cross-lane instructions will need care when using a different width");
+			////static_assert(SIMD::Width == 4, "All cross-lane instructions will need care when using a different width");
 			dst.move(i, SIMD::Float(Extract(src.Float(i), 1) - Extract(src.Float(i), 0)));
 			break;
 		case spv::OpDPdy:
@@ -495,11 +495,11 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 			// In our flat view then, component i is the i'th component of the first member;
 			// component i + N is the i'th component of the second member.
 			dst.move(i, lhs.Int(i) * rhs.Int(i));
-			dst.move(i + lhsType.componentCount, MulHigh(lhs.Int(i), rhs.Int(i)));
+			////dst.move(i + lhsType.componentCount, MulHigh(lhs.Int(i), rhs.Int(i)));
 			break;
 		case spv::OpUMulExtended:
 			dst.move(i, lhs.UInt(i) * rhs.UInt(i));
-			dst.move(i + lhsType.componentCount, MulHigh(lhs.UInt(i), rhs.UInt(i)));
+			////dst.move(i + lhsType.componentCount, MulHigh(lhs.UInt(i), rhs.UInt(i)));
 			break;
 		case spv::OpIAddCarry:
 			dst.move(i, lhs.UInt(i) + rhs.UInt(i));
@@ -707,9 +707,9 @@ SIMD::Int SpirvShader::AddSat(RValue<SIMD::Int> a, RValue<SIMD::Int> b)
 	SIMD::Int overflow = oob & sSign;
 	SIMD::Int underflow = oob & aSign;
 
-	return (overflow & std::numeric_limits<int32_t>::max()) |
-	       (underflow & std::numeric_limits<int32_t>::min()) |
-	       (~oob & sum);
+	return  ////(overflow & std::numeric_limits<int32_t>::max()) |
+	        ////(underflow & std::numeric_limits<int32_t>::min()) |
+	    (~oob & sum);
 }
 
 SIMD::UInt SpirvShader::AddSat(RValue<SIMD::UInt> a, RValue<SIMD::UInt> b)

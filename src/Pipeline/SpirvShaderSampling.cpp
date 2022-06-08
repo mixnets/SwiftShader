@@ -181,18 +181,18 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstructionSig
 		{
 			for(uint32_t j = 0; j < instruction.grad; j++, i++)
 			{
-				dsx[j] = in[i];
+				////dsx[j] = in[i];
 			}
 
 			for(uint32_t j = 0; j < instruction.grad; j++, i++)
 			{
-				dsy[j] = in[i];
+				////dsy[j] = in[i];
 			}
 		}
 
 		for(uint32_t j = 0; j < instruction.offset; j++, i++)
 		{
-			offset[j] = As<SIMD::Int>(in[i]);
+			////offset[j] = As<SIMD::Int>(in[i]);
 		}
 
 		if(instruction.sample)
@@ -216,46 +216,46 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstructionSig
 			{
 				SIMD::Float dPdx;
 				SIMD::Float dPdy;
-				dPdx.x = Pointer<Float>(&dsx.x)[i];
-				dPdx.y = Pointer<Float>(&dsx.y)[i];
-				dPdx.z = Pointer<Float>(&dsx.z)[i];
+				////dPdx.x = Pointer<Float>(&dsx.x)[i];
+				////dPdx.y = Pointer<Float>(&dsx.y)[i];
+				////dPdx.z = Pointer<Float>(&dsx.z)[i];
 
-				dPdy.x = Pointer<Float>(&dsy.x)[i];
-				dPdy.y = Pointer<Float>(&dsy.y)[i];
-				dPdy.z = Pointer<Float>(&dsy.z)[i];
+				////dPdy.x = Pointer<Float>(&dsy.x)[i];
+				////dPdy.y = Pointer<Float>(&dsy.y)[i];
+				////dPdy.z = Pointer<Float>(&dsy.z)[i];
 
-				Vector4f sample = s.sampleTexture(texture, uvwa, dRef, lod[i], dPdx, dPdy, offset, sampleId);
+				////Vector4f sample = s.sampleTexture(texture, uvwa, dRef, lod[i], dPdx, dPdy, offset, sampleId);
 
-				If(perLaneSampling)
-				{
-					Pointer<Float> rgba = out;
-					rgba[0 * SIMD::Width + i] = Pointer<Float>(&sample.x)[i];
-					rgba[1 * SIMD::Width + i] = Pointer<Float>(&sample.y)[i];
-					rgba[2 * SIMD::Width + i] = Pointer<Float>(&sample.z)[i];
-					rgba[3 * SIMD::Width + i] = Pointer<Float>(&sample.w)[i];
-					i++;
-				}
-				Else
-				{
-					Pointer<SIMD::Float> rgba = out;
-					rgba[0] = sample.x;
-					rgba[1] = sample.y;
-					rgba[2] = sample.z;
-					rgba[3] = sample.w;
-					i = SIMD::Width;
-				}
+				////If(perLaneSampling)
+				////{
+				////	Pointer<Float> rgba = out;
+				////	rgba[0 * SIMD::Width + i] = Pointer<Float>(&sample.x)[i];
+				////	rgba[1 * SIMD::Width + i] = Pointer<Float>(&sample.y)[i];
+				////	rgba[2 * SIMD::Width + i] = Pointer<Float>(&sample.z)[i];
+				////	rgba[3 * SIMD::Width + i] = Pointer<Float>(&sample.w)[i];
+				////	i++;
+				////}
+				////Else
+				////{
+				////	Pointer<SIMD::Float> rgba = out;
+				////	rgba[0] = sample.x;
+				////	rgba[1] = sample.y;
+				////	rgba[2] = sample.z;
+				////	rgba[3] = sample.w;
+				////	i = SIMD::Width;
+				////}
 			}
 			Until(i == SIMD::Width);
 		}
 		else
 		{
-			Vector4f sample = s.sampleTexture(texture, uvwa, dRef, lodOrBias.x, (dsx.x), (dsy.x), offset, sampleId);
+			////Vector4f sample = s.sampleTexture(texture, uvwa, dRef, lodOrBias.x, (dsx.x), (dsy.x), offset, sampleId);
 
-			Pointer<SIMD::Float> rgba = out;
-			rgba[0] = sample.x;
-			rgba[1] = sample.y;
-			rgba[2] = sample.z;
-			rgba[3] = sample.w;
+			////Pointer<SIMD::Float> rgba = out;
+			////rgba[0] = sample.x;
+			////rgba[1] = sample.y;
+			////rgba[2] = sample.z;
+			////rgba[3] = sample.w;
 		}
 	}
 

@@ -237,8 +237,8 @@ Float4 QuadRasterizer::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<By
 		return D;
 	}
 
-	Float4 interpolant = mulAdd(x, *Pointer<Float4>(planeEquation + OFFSET(PlaneEquation, A), 16), D);
-
+	////	Float4 interpolant = mulAdd(x, *Pointer<Float4>(planeEquation + OFFSET(PlaneEquation, A), 16), D);
+	Float4 interpolant;
 	if(perspective)
 	{
 		interpolant *= rhw;

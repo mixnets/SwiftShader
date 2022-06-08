@@ -26,7 +26,7 @@ namespace fs = std::filesystem;
 #endif
 
 #ifndef LOAD_SWIFTSHADER_DIRECTLY
-#	define LOAD_SWIFTSHADER_DIRECTLY 0
+#	define LOAD_SWIFTSHADER_DIRECTLY 1
 #endif
 
 #if LOAD_NATIVE_DRIVER && LOAD_SWIFTSHADER_DIRECTLY

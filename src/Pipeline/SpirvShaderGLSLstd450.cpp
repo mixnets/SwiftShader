@@ -69,7 +69,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto src = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Abs(src.Int(i)));
+				////dst.move(i, Abs(src.Int(i)));
 			}
 		}
 		break;
@@ -134,8 +134,8 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			{
 				auto x = Round(src.Float(i));
 				// dst = round(src) + ((round(src) < src) * 2 - 1) * (fract(src) == 0.5) * isOdd(round(src));
-				dst.move(i, x + ((SIMD::Float(CmpLT(x, src.Float(i)) & SIMD::Int(1)) * SIMD::Float(2.0f)) - SIMD::Float(1.0f)) *
-				                    SIMD::Float(CmpEQ(Frac(src.Float(i)), SIMD::Float(0.5f)) & SIMD::Int(1)) * SIMD::Float(Int4(x) & SIMD::Int(1)));
+				////		dst.move(i, x + ((SIMD::Float(CmpLT(x, src.Float(i)) & SIMD::Int(1)) * SIMD::Float(2.0f)) - SIMD::Float(1.0f)) *
+				////	                    SIMD::Float(CmpEQ(Frac(src.Float(i)), SIMD::Float(0.5f)) & SIMD::Int(1)) * SIMD::Float(Int4(x) & SIMD::Int(1)));
 			}
 		}
 		break;
@@ -218,9 +218,9 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			{
 				auto tx = Min(Max((x.Float(i) - edge0.Float(i)) /
 				                      (edge1.Float(i) - edge0.Float(i)),
-				                  SIMD::Float(0.0f)),
-				              SIMD::Float(1.0f));
-				dst.move(i, tx * tx * (Float4(3.0f) - Float4(2.0f) * tx));
+				                  0.0f),
+				              1.0f);
+				dst.move(i, tx * tx * (3.0f - 2.0f * tx));
 			}
 		}
 		break;
@@ -914,7 +914,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
 				auto v = val.UInt(i);
-				dst.move(i, Cttz(v, true) | CmpEQ(v, SIMD::UInt(0)));
+				// dst.move(i, Cttz(v, true) | CmpEQ(v, SIMD::UInt(0)));
 			}
 		}
 		break;
@@ -924,7 +924,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
 				auto v = val.UInt(i) ^ As<SIMD::UInt>(CmpLT(val.Int(i), SIMD::Int(0)));
-				dst.move(i, SIMD::UInt(31) - Ctlz(v, false));
+				// dst.move(i, SIMD::UInt(31) - Ctlz(v, false));
 			}
 		}
 		break;
@@ -933,7 +933,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto val = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, SIMD::UInt(31) - Ctlz(val.UInt(i), false));
+				// dst.move(i, SIMD::UInt(31) - Ctlz(val.UInt(i), false));
 			}
 		}
 		break;

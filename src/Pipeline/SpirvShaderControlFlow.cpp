@@ -574,7 +574,7 @@ SpirvShader::EmitResult SpirvShader::EmitReturn(InsnIterator insn, EmitState *st
 
 SpirvShader::EmitResult SpirvShader::EmitTerminateInvocation(InsnIterator insn, EmitState *state) const
 {
-	state->routine->discardMask |= SignMask(state->activeLaneMask());
+	////state->routine->discardMask |= SignMask(state->activeLaneMask());
 	SetActiveLaneMask(SIMD::Int(0), state);
 	return EmitResult::Terminator;
 }
@@ -582,7 +582,7 @@ SpirvShader::EmitResult SpirvShader::EmitTerminateInvocation(InsnIterator insn, 
 SpirvShader::EmitResult SpirvShader::EmitDemoteToHelperInvocation(InsnIterator insn, EmitState *state) const
 {
 	state->routine->helperInvocation |= state->activeLaneMask();
-	state->routine->discardMask |= SignMask(state->activeLaneMask());
+	////state->routine->discardMask |= SignMask(state->activeLaneMask());
 	SetStoresAndAtomicsMask(state->storesAndAtomicsMask() & ~state->activeLaneMask(), state);
 	return EmitResult::Continue;
 }

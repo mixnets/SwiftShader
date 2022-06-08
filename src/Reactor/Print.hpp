@@ -13,11 +13,10 @@
 // limitations under the License.
 
 #ifndef rr_Print_hpp
-#define rr_Print_hpp
-
-#ifdef ENABLE_RR_PRINT
+#	define rr_Print_hpp
 
 #	include "Reactor.hpp"
+#	include "SIMD.hpp"
 
 #	include <string>
 #	include <vector>
@@ -313,6 +312,24 @@ struct PrintValue::Ty<Float4>
 	static std::vector<Value *> val(const RValue<Float4> &v);
 };
 template<>
+struct PrintValue::Ty<SIMD::Int>
+{
+	static std::string fmt(const RValue<SIMD::Int> &v) { return "[%f, %f, %f, %f]"; }
+	static std::vector<Value *> val(const RValue<SIMD::Int> &v);
+};
+template<>
+struct PrintValue::Ty<SIMD::UInt>
+{
+	static std::string fmt(const RValue<SIMD::UInt> &v) { return "[%f, %f, %f, %f]"; }
+	static std::vector<Value *> val(const RValue<SIMD::UInt> &v);
+};
+template<>
+struct PrintValue::Ty<SIMD::Float>
+{
+	static std::string fmt(const RValue<SIMD::Float> &v) { return "[%f, %f, %f, %f]"; }
+	static std::vector<Value *> val(const RValue<SIMD::Float> &v);
+};
+template<>
 struct PrintValue::Ty<Long>
 {
 	static std::string fmt(const RValue<Long> &v) { return "%lld"; }
@@ -459,6 +476,5 @@ static_assert(3 == RR_COUNT_ARGUMENTS(a, b, c), "RR_COUNT_ARGUMENTS broken");
 #	define RR_PRINT_ONLY(x) x
 #else
 #	define RR_PRINT_ONLY(x)
-#endif  // ENABLE_RR_PRINT
 
 #endif  // rr_Print_hpp
