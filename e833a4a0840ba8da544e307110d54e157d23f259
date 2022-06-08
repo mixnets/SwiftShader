@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d27b731b_35b6976f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-08T17:53:56Z",
+      "side": 1,
+      "message": "What causes the regressions? Perhaps we should expose VK_EXT_descriptor_indexing as a first step?",
+      "revId": "e833a4a0840ba8da544e307110d54e157d23f259",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
