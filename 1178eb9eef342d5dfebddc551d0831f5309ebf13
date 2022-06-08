@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c04204d_1bea2043",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-08T14:54:21Z",
+      "side": 1,
+      "message": "The rolls into Dawn and ANGLE are still failing: https://dawn-review.googlesource.com/c/dawn/+/93180, https://chromium-review.googlesource.com/c/angle/angle/+/3695600",
+      "revId": "1178eb9eef342d5dfebddc551d0831f5309ebf13",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
