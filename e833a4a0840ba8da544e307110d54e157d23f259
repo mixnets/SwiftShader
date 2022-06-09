@@ -52,6 +52,24 @@
       "parentUuid": "ba3c98f1_be09987c",
       "revId": "e833a4a0840ba8da544e307110d54e157d23f259",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac7464b8_213e082c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-09T23:41:47Z",
+      "side": 1,
+      "message": "I tried to just add the extension, however dEQP\u0027s tests still check the descriptorIndexing feature flag. So it\u0027s impossible to get regres runs without regressions with this CL until descriptor indexing is fully supported.",
+      "parentUuid": "03bd7b67_1cef5f30",
+      "revId": "e833a4a0840ba8da544e307110d54e157d23f259",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
