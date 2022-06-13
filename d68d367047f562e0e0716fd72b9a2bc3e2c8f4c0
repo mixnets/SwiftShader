@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69091fb2_6444eeba",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-13T16:28:08Z",
+      "side": 0,
+      "message": "b/232956854",
+      "range": {
+        "startLine": 1,
+        "startChar": 24,
+        "endLine": 1,
+        "endChar": 55
+      },
+      "revId": "d68d367047f562e0e0716fd72b9a2bc3e2c8f4c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
