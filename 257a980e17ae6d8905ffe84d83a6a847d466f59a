@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ed75bac_839c6fa7",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1100,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-13T18:15:16Z",
+      "side": 1,
+      "message": "Nit: static constexpr? It looks like this could be a compile time constant.",
+      "range": {
+        "startLine": 1100,
+        "startChar": 1,
+        "endLine": 1100,
+        "endChar": 54
+      },
+      "revId": "257a980e17ae6d8905ffe84d83a6a847d466f59a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
