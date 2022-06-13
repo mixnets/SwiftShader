@@ -4514,6 +4514,7 @@ rr::Bool Pointer4::hasSequentialOffsets(unsigned int step) const
 	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	if(hasDynamicOffsets)
 	{
+		assert(false);
 		auto o = offsets();
 		return rr::SignMask(~CmpEQ(o.yzww, o + Int4(1 * step, 2 * step, 3 * step, 0))) == 0;
 	}
