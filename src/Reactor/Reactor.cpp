@@ -4543,6 +4543,7 @@ rr::Bool Pointer4::hasEqualOffsets() const
 	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	if(hasDynamicOffsets)
 	{
+		assert(false);
 		auto o = offsets();
 		return rr::SignMask(~CmpEQ(o, o.yzwx)) == 0;
 	}
