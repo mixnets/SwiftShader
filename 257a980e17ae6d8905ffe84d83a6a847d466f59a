@@ -22,6 +22,30 @@
       },
       "revId": "257a980e17ae6d8905ffe84d83a6a847d466f59a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e229b56b_f257bca7",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1100,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-13T19:06:42Z",
+      "side": 1,
+      "message": "`SIMD::Width` will very soon not be a `constexpr` any more, and `log2i()` is also not `constexpr`, but I\u0027ve made this variable `const`.",
+      "parentUuid": "1ed75bac_839c6fa7",
+      "range": {
+        "startLine": 1100,
+        "startChar": 1,
+        "endLine": 1100,
+        "endChar": 54
+      },
+      "revId": "257a980e17ae6d8905ffe84d83a6a847d466f59a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
