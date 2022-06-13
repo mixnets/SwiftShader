@@ -113,9 +113,8 @@ void ComputeProgram::setSubgroupBuiltins(Pointer<Byte> data, SpirvRoutine *routi
 	Int4 numWorkgroups = *Pointer<Int4>(data + OFFSET(Data, numWorkgroups));
 	Int4 workgroupSize = *Pointer<Int4>(data + OFFSET(Data, workgroupSize));
 
-	// TODO: Fix Int4 swizzles so we can just use workgroupSize.x, workgroupSize.y.
-	Int workgroupSizeX = Extract(workgroupSize, X);
-	Int workgroupSizeY = Extract(workgroupSize, Y);
+	Int workgroupSizeX = workgroupSize.x;
+	Int workgroupSizeY = workgroupSize.y;
 
 	SIMD::Int localInvocationID[3];
 	{
@@ -128,7 +127,7 @@ void ComputeProgram::setSubgroupBuiltins(Pointer<Byte> data, SpirvRoutine *routi
 	}
 
 	Int4 wgID = Insert(Insert(Insert(Int4(0), workgroupID[X], X), workgroupID[Y], Y), workgroupID[Z], Z);
-	auto localBase = workgroupSize * wgID;
+	Int4 localBase = workgroupSize * wgID;
 	SIMD::Int globalInvocationID[3];
 	globalInvocationID[X] = SIMD::Int(Extract(localBase, X)) + localInvocationID[X];
 	globalInvocationID[Y] = SIMD::Int(Extract(localBase, Y)) + localInvocationID[Y];
@@ -156,16 +155,14 @@ void ComputeProgram::setSubgroupBuiltins(Pointer<Byte> data, SpirvRoutine *routi
 	routine->setInputBuiltin(shader.get(), spv::BuiltInLocalInvocationId, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		for(uint32_t component = 0; component < builtin.SizeInComponents; component++)
 		{
-			value[builtin.FirstComponent + component] =
-			    As<SIMD::Float>(localInvocationID[component]);
+			value[builtin.FirstComponent + component] = As<SIMD::Float>(localInvocationID[component]);
 		}
 	});
 
 	routine->setInputBuiltin(shader.get(), spv::BuiltInGlobalInvocationId, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		for(uint32_t component = 0; component < builtin.SizeInComponents; component++)
 		{
-			value[builtin.FirstComponent + component] =
-			    As<SIMD::Float>(globalInvocationID[component]);
+			value[builtin.FirstComponent + component] = As<SIMD::Float>(globalInvocationID[component]);
 		}
 	});
 }

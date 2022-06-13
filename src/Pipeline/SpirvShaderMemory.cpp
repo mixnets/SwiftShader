@@ -497,10 +497,11 @@ bool SpirvShader::IsExplicitLayout(spv::StorageClass storageClass)
 sw::SIMD::Pointer SpirvShader::InterleaveByLane(sw::SIMD::Pointer p)
 {
 	p *= sw::SIMD::Width;
-	p.staticOffsets[0] += 0 * sizeof(float);
-	p.staticOffsets[1] += 1 * sizeof(float);
-	p.staticOffsets[2] += 2 * sizeof(float);
-	p.staticOffsets[3] += 3 * sizeof(float);
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		p.staticOffsets[i] += i * sizeof(float);
+	}
+
 	return p;
 }
 

@@ -724,23 +724,32 @@ Float4 sRGBtoLinear(const Float4 &c)
 
 RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools)
 {
+	Int b = Extract(bools, 0);
+	for(int i = 1; i < SIMD::Width; i++)
+	{
+		b |= Extract(bools, i);
+	}
+	return b != 0;
 	return false;
 	////SignMask(bools) != 0;
 }
 
 RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
 {
+	return AnyTrue(~bools);
 	return false;  ////	SignMask(~bools) != 0;  // TODO(b/214588983): Compare against mask of SIMD::Width 1's to avoid bitwise NOT.
 }
 
 RValue<Bool> AllTrue(const RValue<SIMD::Int> &bools)
 {
+	return AnyTrue(~bools) == 0;
 	return false;
 	////SignMask(~bools) == 0;  // TODO(b/214588983): Compare against mask of SIMD::Width 1's to avoid bitwise NOT.
 }
 
 RValue<Bool> AllFalse(const RValue<SIMD::Int> &bools)
 {
+	return AnyTrue(bools) == 0;
 	return false;
 	////SignMask(bools) == 0;
 }
@@ -1103,8 +1112,9 @@ SIMD::Int Pointer::offsets() const
 {
 	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	////	static_assert(SIMD::Width == 4, "Expects SIMD::Width to be 4");
-	return dynamicOffsets;
-	////	+SIMD::Int(staticOffsets[0], staticOffsets[1], staticOffsets[2], staticOffsets[3]);
+	SIMD::Int s;
+	for(int i = 0; i < SIMD::Width; i++) { s = Insert(s, staticOffsets[i], i); }
+	return dynamicOffsets + s;
 }
 
 SIMD::Int Pointer::isInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
