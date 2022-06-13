@@ -375,6 +375,30 @@
       },
       "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e88329a_15aabb40",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1305,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-13T22:22:15Z",
+      "side": 1,
+      "message": "Maybe `singleLaneMask` then?",
+      "parentUuid": "bd070afd_419bbe13",
+      "range": {
+        "startLine": 1305,
+        "startChar": 13,
+        "endLine": 1305,
+        "endChar": 21
+      },
+      "revId": "86e9346d4d8edf9023d771bde9535b75afb36467",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
