@@ -1257,6 +1257,11 @@ private:
 		return getType(getObject(id));
 	}
 
+	Intermediate &createIntermediate(Object::ID id, uint32_t componentCount, EmitState *state) const
+	{
+		return state->createIntermediate(id, componentCount);
+	}
+
 	Function const &getFunction(Function::ID id) const
 	{
 		auto it = functions.find(id);

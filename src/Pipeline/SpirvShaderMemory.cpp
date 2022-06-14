@@ -55,7 +55,7 @@ SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *stat
 
 	auto ptr = GetPointerToData(pointerId, 0, false, state);
 	bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
-	auto &dst = state->createIntermediate(resultId, resultTy.componentCount);
+	auto &dst = createIntermediate(resultId, resultTy.componentCount, state);
 	auto robustness = getOutOfBoundsBehavior(pointerId, state);
 
 	VisitMemoryObject(pointerId, [&](const MemoryElement &el) {

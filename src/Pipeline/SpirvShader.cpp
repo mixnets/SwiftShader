@@ -2256,7 +2256,7 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 SpirvShader::EmitResult SpirvShader::EmitCompositeConstruct(InsnIterator insn, EmitState *state) const
 {
 	auto &type = getType(insn.resultTypeId());
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 	auto offset = 0u;
 
 	for(auto i = 0u; i < insn.wordCount() - 3; i++)
@@ -2279,7 +2279,7 @@ SpirvShader::EmitResult SpirvShader::EmitCompositeInsert(InsnIterator insn, Emit
 {
 	Type::ID resultTypeId = insn.word(1);
 	auto &type = getType(resultTypeId);
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 	auto &newPartObject = getObject(insn.word(3));
 	auto &newPartObjectTy = getType(newPartObject);
 	auto firstNewComponent = WalkLiteralAccessChain(resultTypeId, Span(insn, 5, insn.wordCount() - 5));
@@ -2309,7 +2309,7 @@ SpirvShader::EmitResult SpirvShader::EmitCompositeInsert(InsnIterator insn, Emit
 SpirvShader::EmitResult SpirvShader::EmitCompositeExtract(InsnIterator insn, EmitState *state) const
 {
 	auto &type = getType(insn.resultTypeId());
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 	auto &compositeObject = getObject(insn.word(3));
 	Type::ID compositeTypeId = compositeObject.definition.word(1);
 	auto firstComponent = WalkLiteralAccessChain(compositeTypeId, Span(insn, 4, insn.wordCount() - 4));
@@ -2326,7 +2326,7 @@ SpirvShader::EmitResult SpirvShader::EmitCompositeExtract(InsnIterator insn, Emi
 SpirvShader::EmitResult SpirvShader::EmitVectorShuffle(InsnIterator insn, EmitState *state) const
 {
 	auto &type = getType(insn.resultTypeId());
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 
 	// Note: number of components in result type, first half type, and second
 	// half type are all independent.
@@ -2360,7 +2360,7 @@ SpirvShader::EmitResult SpirvShader::EmitVectorShuffle(InsnIterator insn, EmitSt
 SpirvShader::EmitResult SpirvShader::EmitVectorExtractDynamic(InsnIterator insn, EmitState *state) const
 {
 	auto &type = getType(insn.resultTypeId());
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 	auto &srcType = getObjectType(insn.word(3));
 
 	Operand src(this, state, insn.word(3));
@@ -2380,7 +2380,7 @@ SpirvShader::EmitResult SpirvShader::EmitVectorExtractDynamic(InsnIterator insn,
 SpirvShader::EmitResult SpirvShader::EmitVectorInsertDynamic(InsnIterator insn, EmitState *state) const
 {
 	auto &type = getType(insn.resultTypeId());
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 
 	Operand src(this, state, insn.word(3));
 	Operand component(this, state, insn.word(4));
@@ -2417,7 +2417,7 @@ SpirvShader::EmitResult SpirvShader::EmitSelect(InsnIterator insn, EmitState *st
 		{
 			auto lhs = Operand(this, state, insn.word(4));
 			auto rhs = Operand(this, state, insn.word(5));
-			auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+			auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
 				auto sel = cond.Int(condIsScalar ? 0 : i);
@@ -2439,7 +2439,7 @@ SpirvShader::EmitResult SpirvShader::EmitAny(InsnIterator insn, EmitState *state
 {
 	auto &type = getType(insn.resultTypeId());
 	ASSERT(type.componentCount == 1);
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 	auto &srcType = getObjectType(insn.word(3));
 	auto src = Operand(this, state, insn.word(3));
 
@@ -2458,7 +2458,7 @@ SpirvShader::EmitResult SpirvShader::EmitAll(InsnIterator insn, EmitState *state
 {
 	auto &type = getType(insn.resultTypeId());
 	ASSERT(type.componentCount == 1);
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 	auto &srcType = getObjectType(insn.word(3));
 	auto src = Operand(this, state, insn.word(3));
 
@@ -2483,7 +2483,7 @@ SpirvShader::EmitResult SpirvShader::EmitAtomicOp(InsnIterator insn, EmitState *
 	auto memoryOrder = MemoryOrder(memorySemantics);
 	// Where no value is provided (increment/decrement) use an implicit value of 1.
 	auto value = (insn.wordCount() == 7) ? Operand(this, state, insn.word(6)).UInt(0) : RValue<SIMD::UInt>(1);
-	auto &dst = state->createIntermediate(resultId, resultType.componentCount);
+	auto &dst = createIntermediate(resultId, resultType.componentCount, state);
 	auto ptr = state->getPointer(pointerId);
 
 	SIMD::Int mask = state->activeLaneMask() & state->storesAndAtomicsMask();
@@ -2559,7 +2559,7 @@ SpirvShader::EmitResult SpirvShader::EmitAtomicCompareExchange(InsnIterator insn
 
 	auto value = Operand(this, state, insn.word(7));
 	auto comparator = Operand(this, state, insn.word(8));
-	auto &dst = state->createIntermediate(resultId, resultType.componentCount);
+	auto &dst = createIntermediate(resultId, resultType.componentCount, state);
 	auto ptr = state->getPointer(insn.word(3));
 
 	SIMD::UInt x(0);
@@ -2582,7 +2582,7 @@ SpirvShader::EmitResult SpirvShader::EmitAtomicCompareExchange(InsnIterator insn
 SpirvShader::EmitResult SpirvShader::EmitCopyObject(InsnIterator insn, EmitState *state) const
 {
 	auto type = getType(insn.resultTypeId());
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
+	auto &dst = createIntermediate(insn.resultId(), type.componentCount, state);
 	auto src = Operand(this, state, insn.word(3));
 	for(uint32_t i = 0; i < type.componentCount; i++)
 	{
@@ -2604,7 +2604,7 @@ SpirvShader::EmitResult SpirvShader::EmitArrayLength(InsnIterator insn, EmitStat
 	auto &structTy = getType(structPtrTy.element);
 	auto arrayId = Type::ID(structTy.definition.word(2 + arrayFieldIdx));
 
-	auto &result = state->createIntermediate(insn.resultId(), 1);
+	auto &result = createIntermediate(insn.resultId(), 1, state);
 	auto structBase = GetPointerToData(structPtrId, 0, false, state);
 
 	Decorations structDecorations = {};
