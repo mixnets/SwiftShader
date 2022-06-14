@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "caec9758_e0c61258",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-14T17:47:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f85acb93_e72c802f",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 30
+      },
+      "revId": "407d84b8281be565f904e7a1c3c309db28ea478d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e8b180bb_28b9b869",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-06-13T22:23:53Z",
       "side": 1,
       "message": "You probably don\u0027t want to turn this on in the same CL as the one where you expose the extension.",
+      "range": {
+        "startLine": 380,
+        "startChar": 32,
+        "endLine": 380,
+        "endChar": 39
+      },
+      "revId": "407d84b8281be565f904e7a1c3c309db28ea478d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "25f8141b_d2d6f37e",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-14T17:47:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e8b180bb_28b9b869",
       "range": {
         "startLine": 380,
         "startChar": 32,
