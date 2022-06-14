@@ -1148,6 +1148,11 @@ private:
 			return it->second;
 		}
 
+		bool isIntermediate(Object::ID id) const
+		{
+			return intermediates.find(id) != intermediates.end();
+		}
+
 		void createPointer(Object::ID id, SIMD::Pointer ptr)
 		{
 			bool added = pointers.emplace(id, ptr).second;
@@ -1218,6 +1223,18 @@ private:
 			return SIMD::UInt(constant[i]);
 		}
 
+		const SIMD::Pointer &Pointer(uint32_t i) const
+		{
+			ASSERT(intermediate == nullptr);
+
+			return pointer[i];
+		}
+
+		bool isPointer() const
+		{
+			return (pointer != nullptr);
+		}
+
 	private:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
 
@@ -1226,6 +1243,7 @@ private:
 
 		const uint32_t *constant;
 		const Intermediate *intermediate;
+		const SIMD::Pointer *pointer;
 
 	public:
 		const uint32_t componentCount;
