@@ -146,11 +146,62 @@ SpirvShader::EmitResult SpirvShader::EmitTranspose(InsnIterator insn, EmitState 
 	return EmitResult::Continue;
 }
 
+void SpirvShader::BitCast(Intermediate &dst, Operand &src, uint32_t &i)
+{
+	if(src.isPointer())  // Pointer -> Integer bits
+	{
+		if(sizeof(void *) == 4)  // 32-bit pointers
+		{
+			SIMD::UInt bits;
+			src.Pointer(i).castTo(bits);
+			dst.move(i, bits);
+		}
+		else  // 64-bit pointers
+		{
+			ASSERT(sizeof(void *) == 8);
+			// Casting a 64 bit pointer into 2 32bit integers
+			auto &ptr = src.Pointer(i >> 1);
+			SIMD::UInt lowerBits, upperBits;
+			ptr.castTo(lowerBits, upperBits);
+			dst.move(i++, lowerBits);
+			dst.move(i, upperBits);
+		}
+	}
+	else
+	{
+		dst.move(i, src.Float(i));
+	}
+}
+
 SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *state) const
 {
 	auto &type = getType(insn.resultTypeId());
-	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
 	auto src = Operand(this, state, insn.word(3));
+
+	if(getObject(insn.resultId()).kind == Object::Kind::Pointer)   // Integer bits -> Pointer
+	{
+		ASSERT(insn.opcode() == spv::OpBitcast);
+		ASSERT(type.componentCount == 1);
+
+		SIMD::Pointer dst(std::array<rr::Pointer<Byte>, 4>{ nullptr, nullptr, nullptr, nullptr });
+
+		if(sizeof(void *) == 4)  // 32-bit pointers
+		{
+			dst.castFrom(src.UInt(0));
+		}
+		else  // 64-bit pointers
+		{
+			ASSERT(sizeof(void *) == 8);
+			// Casting 2 32bit integers into a 64 bit pointer
+			dst.castFrom(src.UInt(0), src.UInt(1));
+		}
+
+		state->createPointer(insn.resultId(), dst);
+
+		return EmitResult::Continue;
+	}
+
+	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
 
 	for(auto i = 0u; i < type.componentCount; i++)
 	{
@@ -225,7 +276,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			dst.move(i, SIMD::Float(src.UInt(i)));
 			break;
 		case spv::OpBitcast:
-			dst.move(i, src.Float(i));
+			BitCast(dst, src, i);
 			break;
 		case spv::OpIsInf:
 			dst.move(i, IsInf(src.Float(i)));
