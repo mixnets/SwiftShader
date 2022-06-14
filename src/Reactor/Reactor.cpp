@@ -4342,6 +4342,18 @@ RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset)
 	return lhs = lhs - offset;
 }
 
+Pointer4::Pointer4()
+    : base(nullptr)
+    , dynamicLimit(0)
+    , staticLimit(0)
+    , dynamicOffsets(0)
+    , staticOffsets{}
+    , hasDynamicLimit(false)
+    , hasDynamicOffsets(false)
+    , isBasePlusOffset(false)
+{
+}
+
 Pointer4::Pointer4(Pointer<Byte> base, rr::Int limit)
     : base(base)
     , dynamicLimit(limit)

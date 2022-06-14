@@ -81,6 +81,8 @@ struct PrintValue::Ty<sw::Intermediate>
 			return PrintValue::Ty<sw::SIMD::Int>::fmt(v.Int(i));
 		case sw::Intermediate::TypeHint::UInt:
 			return PrintValue::Ty<sw::SIMD::UInt>::fmt(v.UInt(i));
+		case sw::Intermediate::TypeHint::Pointer:
+			return PrintValue::Ty<sw::SIMD::Pointer>::fmt(v.Pointer(i));
 		}
 		return "";
 	}
@@ -95,6 +97,8 @@ struct PrintValue::Ty<sw::Intermediate>
 			return PrintValue::Ty<sw::SIMD::Int>::val(v.Int(i));
 		case sw::Intermediate::TypeHint::UInt:
 			return PrintValue::Ty<sw::SIMD::UInt>::val(v.UInt(i));
+		case sw::Intermediate::TypeHint::Pointer:
+			return PrintValue::Ty<sw::SIMD::Pointer>::val(v.Pointer(i));
 		}
 		return {};
 	}

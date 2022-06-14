@@ -382,7 +382,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto val = Operand(this, state, insn.word(5));
 			auto ptrId = Object::ID(insn.word(6));
 
-			Intermediate whole(type.componentCount);
+			Intermediate whole(type.componentCount, false);
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
@@ -519,7 +519,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto val = Operand(this, state, insn.word(5));
 			auto ptrId = Object::ID(insn.word(6));
 
-			Intermediate exp(type.componentCount);
+			Intermediate exp(type.componentCount, false);
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{

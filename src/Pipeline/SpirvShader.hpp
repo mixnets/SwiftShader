@@ -75,30 +75,38 @@ class SpirvRoutine;
 class Intermediate
 {
 public:
-	Intermediate(uint32_t componentCount)
-	    : componentCount(componentCount)
-	    , scalar(new rr::Value *[componentCount])
-	{
-		for(auto i = 0u; i < componentCount; i++) { scalar[i] = nullptr; }
-	}
-
-	~Intermediate()
-	{
-		delete[] scalar;
-	}
-
 	// TypeHint is used as a hint for rr::PrintValue::Ty<sw::Intermediate> to
 	// decide the format used to print the intermediate data.
 	enum class TypeHint
 	{
 		Float,
 		Int,
-		UInt
+		UInt,
+		Pointer
 	};
+
+	Intermediate(uint32_t componentCount, bool isPointer)
+	    : componentCount(componentCount)
+	    , scalar(isPointer ? nullptr : new rr::Value *[componentCount])
+	    , pointer(isPointer ? new SIMD::Pointer[componentCount] : nullptr)
+	{
+		if(scalar)
+		{
+			for(auto i = 0u; i < componentCount; i++) { scalar[i] = nullptr; }
+		}
+		RR_PRINT_ONLY(typeHint = (isPointer ? TypeHint::Pointer : TypeHint::Float);)
+	}
+
+	~Intermediate()
+	{
+		delete[] scalar;
+		delete[] pointer;
+	}
 
 	void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value(), TypeHint::Float); }
 	void move(uint32_t i, RValue<SIMD::Int> &&scalar) { emplace(i, scalar.value(), TypeHint::Int); }
 	void move(uint32_t i, RValue<SIMD::UInt> &&scalar) { emplace(i, scalar.value(), TypeHint::UInt); }
+	void move(uint32_t i, SIMD::Pointer pointer) { emplace(i, pointer, TypeHint::Pointer); }
 
 	void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value(), TypeHint::Float); }
 	void move(uint32_t i, const RValue<SIMD::Int> &scalar) { emplace(i, scalar.value(), TypeHint::Int); }
@@ -108,6 +116,7 @@ public:
 	RValue<SIMD::Float> Float(uint32_t i) const
 	{
 		ASSERT(i < componentCount);
+		ASSERT(!isPointer());
 		ASSERT(scalar[i] != nullptr);
 		return As<SIMD::Float>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::Float>(scalar)
 	}
@@ -115,6 +124,7 @@ public:
 	RValue<SIMD::Int> Int(uint32_t i) const
 	{
 		ASSERT(i < componentCount);
+		ASSERT(!isPointer());
 		ASSERT(scalar[i] != nullptr);
 		return As<SIMD::Int>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::Int>(scalar)
 	}
@@ -122,8 +132,21 @@ public:
 	RValue<SIMD::UInt> UInt(uint32_t i) const
 	{
 		ASSERT(i < componentCount);
+		ASSERT(!isPointer());
 		ASSERT(scalar[i] != nullptr);
 		return As<SIMD::UInt>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::UInt>(scalar)
+	}
+
+	SIMD::Pointer &Pointer(uint32_t i) const
+	{
+		ASSERT(i < componentCount);
+		ASSERT(isPointer());
+		return pointer[i];
+	}
+
+	bool isPointer() const
+	{
+		return pointer != nullptr;
 	}
 
 	// No copy/move construction or assignment
@@ -143,7 +166,15 @@ private:
 		RR_PRINT_ONLY(typeHint = type;)
 	}
 
+	void emplace(uint32_t i, SIMD::Pointer value, TypeHint type)
+	{
+		ASSERT(i < componentCount);
+		pointer[i] = value;
+		RR_PRINT_ONLY(typeHint = type;)
+	}
+
 	rr::Value **const scalar;
+	SIMD::Pointer *pointer;
 
 #ifdef ENABLE_RR_PRINT
 	friend struct rr::PrintValue::Ty<sw::Intermediate>;
@@ -1132,11 +1163,11 @@ private:
 
 		unsigned int getMultiSampleCount() const { return multiSampleCount; }
 
-		Intermediate &createIntermediate(Object::ID id, uint32_t componentCount)
+		Intermediate &createIntermediate(Object::ID id, uint32_t componentCount, bool isPointer)
 		{
 			auto it = intermediates.emplace(std::piecewise_construct,
 			                                std::forward_as_tuple(id),
-			                                std::forward_as_tuple(componentCount));
+			                                std::forward_as_tuple(componentCount, isPointer));
 			ASSERT_MSG(it.second, "Intermediate %d created twice", id.value());
 			return it.first->second;
 		}
@@ -1259,7 +1290,8 @@ private:
 
 	Intermediate &createIntermediate(Object::ID id, uint32_t componentCount, EmitState *state) const
 	{
-		return state->createIntermediate(id, componentCount);
+		bool isPointer = (getObject(id).kind == Object::Kind::Pointer);
+		return state->createIntermediate(id, componentCount, isPointer);
 	}
 
 	Function const &getFunction(Function::ID id) const

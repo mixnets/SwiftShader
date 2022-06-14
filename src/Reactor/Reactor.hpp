@@ -2150,6 +2150,7 @@ enum class OutOfBoundsBehavior
 
 struct Pointer4
 {
+	Pointer4();
 	Pointer4(Pointer<Byte> base, Int limit);
 	Pointer4(Pointer<Byte> base, unsigned int limit);
 	Pointer4(Pointer<Byte> base, Int limit, Int4 offset);
