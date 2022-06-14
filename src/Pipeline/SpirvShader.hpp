@@ -1489,6 +1489,9 @@ private:
 	// has a result type ID and result ID, i.e. defines an Object.
 	static bool HasTypeAndResult(spv::Op op);
 
+	// Helper function to cast pointers to and from integer bits
+	static void BitCast(Intermediate &dst, Operand &src, uint32_t &i);
+
 	// Helper as we often need to take dot products as part of doing other things.
 	static SIMD::Float FDot(unsigned numComponents, Operand const &x, Operand const &y);
 	static SIMD::Int SDot(unsigned numComponents, Operand const &x, Operand const &y, Operand const *accum);
