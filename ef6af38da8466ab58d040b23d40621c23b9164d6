@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de6bb556_3d9ec257",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-14T23:46:48Z",
+      "side": 1,
+      "message": "Regres confirms that the descriptor indexing feature is required for this CL. This will have to wait to land until all of descriptor indexing is finished however.",
+      "revId": "ef6af38da8466ab58d040b23d40621c23b9164d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
