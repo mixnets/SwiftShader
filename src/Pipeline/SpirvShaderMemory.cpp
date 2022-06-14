@@ -55,13 +55,24 @@ SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *stat
 
 	auto ptr = GetPointerToData(pointerId, 0, false, state);
 	bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
-	auto &dst = state->createIntermediate(resultId, resultTy.componentCount);
 	auto robustness = getOutOfBoundsBehavior(pointerId, state);
 
-	VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
-		auto p = GetElementPointer(ptr, el.offset, interleavedByLane);
-		dst.move(el.index, p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder));
-	});
+	if(result.kind == Object::Kind::Pointer)
+	{
+		VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
+			ASSERT(el.index == 0);
+			auto p = GetElementPointer(ptr, el.offset, interleavedByLane);
+			state->createPointer(resultId, p.Load<SIMD::Pointer>(robustness, state->activeLaneMask(), atomic, memoryOrder, sizeof(void *)));
+		});
+	}
+	else
+	{
+		auto &dst = state->createIntermediate(resultId, resultTy.componentCount);
+		VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
+			auto p = GetElementPointer(ptr, el.offset, interleavedByLane);
+			dst.move(el.index, p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder));
+		});
+	}
 
 	SPIRV_SHADER_DBG("Load(atomic: {0}, order: {1}, ptr: {2}, val: {3}, mask: {4})", atomic, int(memoryOrder), ptr, dst, state->activeLaneMask());
 
@@ -109,10 +120,20 @@ void SpirvShader::Store(Object::ID pointerId, const Operand &value, bool atomic,
 
 	SPIRV_SHADER_DBG("Store(atomic: {0}, order: {1}, ptr: {2}, val: {3}, mask: {4}", atomic, int(memoryOrder), ptr, value, mask);
 
-	VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
-		auto p = GetElementPointer(ptr, el.offset, interleavedByLane);
-		p.Store(value.Float(el.index), robustness, mask, atomic, memoryOrder);
-	});
+	if(value.isPointer())
+	{
+		VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
+			auto p = GetElementPointer(ptr, el.offset, interleavedByLane);
+			p.Store(value.Pointer(el.index), robustness, mask, atomic, memoryOrder);
+		});
+	}
+	else
+	{
+		VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
+			auto p = GetElementPointer(ptr, el.offset, interleavedByLane);
+			p.Store(value.Float(el.index), robustness, mask, atomic, memoryOrder);
+		});
+	}
 }
 
 SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *state) const
