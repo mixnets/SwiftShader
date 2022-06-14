@@ -16,6 +16,24 @@
       "message": "Seems to be working.\nCould someone CR+2, please?\nI\u0027d like to resume SwS-\u003eANGLE roller.",
       "revId": "4e0608d143a094927cf19ca624322ee6c0919be0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f157b9b9_f4bae834",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-14T18:12:52Z",
+      "side": 1,
+      "message": "You have to manually set Verified to +1 for it to work. I\u0027ll do it.",
+      "parentUuid": "f38113d3_6ce83b19",
+      "revId": "4e0608d143a094927cf19ca624322ee6c0919be0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
