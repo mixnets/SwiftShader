@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f38113d3_6ce83b19",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6650
+      },
+      "writtenOn": "2022-06-14T16:03:42Z",
+      "side": 1,
+      "message": "Seems to be working.\nCould someone CR+2, please?\nI\u0027d like to resume SwS-\u003eANGLE roller.",
+      "revId": "4e0608d143a094927cf19ca624322ee6c0919be0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
