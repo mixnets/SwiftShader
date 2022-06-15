@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9e74da8_13e871b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-15T15:22:58Z",
+      "side": 1,
+      "message": "That\u0027s my understanding. I think we\u0027re ok as is as long as we don\u0027t expose the \"bufferDeviceAddressCaptureReplay\" and \"bufferDeviceAddressMultiDevice\" capabilities.",
+      "parentUuid": "88a13b57_8ee19351",
+      "revId": "2f2ea4a003d3cb089098d691d54ffe58e678522b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6c6834d8_69f5f033",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-06-15T14:31:59Z",
       "side": 1,
       "message": "It\u0027s odd that this function behaves the same as `vkGetBufferOpaqueCaptureAddress`. Is it just to allow for `VK_KHR_buffer_device_address` to provide the `deviceAddress` value, which did not get promoted to Vulkan 1.2 ?",
+      "range": {
+        "startLine": 1802,
+        "startChar": 33,
+        "endLine": 1802,
+        "endChar": 56
+      },
+      "revId": "2f2ea4a003d3cb089098d691d54ffe58e678522b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d417f63_c4ec7290",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1802,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-15T15:22:58Z",
+      "side": 1,
+      "message": "From the spec, this appears to be the only difference:\nvkGetBufferDeviceAddress: returns buffer address or opaqueCaptureAddress or deviceAddress\nvkGetBufferOpaqueCaptureAddress: returns buffer address or opaqueCaptureAddress",
+      "parentUuid": "6c6834d8_69f5f033",
       "range": {
         "startLine": 1802,
         "startChar": 33,
