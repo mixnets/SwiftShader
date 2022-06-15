@@ -395,7 +395,7 @@ static void getPhysicalDeviceVulkan12Features(T *features)
 }
 
 template<typename T>
-static void getPhysicalDeviceDepthClipEnableFeaturesExt(T *features)
+static void getPhysicalDeviceDepthClipEnableFeaturesEXT(T *features)
 {
 	features->depthClipEnable = VK_TRUE;
 }
@@ -418,26 +418,33 @@ static void getPhysicalDeviceVulkan13Features(T *features)
 	getPhysicalDeviceMaintenance4Features(features);
 }
 
-static void getPhysicalDeviceCustomBorderColorFeaturesExt(VkPhysicalDeviceCustomBorderColorFeaturesEXT *features)
+static void getPhysicalDeviceCustomBorderColorFeaturesEXT(VkPhysicalDeviceCustomBorderColorFeaturesEXT *features)
 {
 	features->customBorderColors = VK_TRUE;
 	features->customBorderColorWithoutFormat = VK_TRUE;
 }
 
-static void getPhysicalDeviceBlendOperationAdvancedFeaturesExt(VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *features)
+static void getPhysicalDeviceBlendOperationAdvancedFeaturesEXT(VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *features)
 {
 	features->advancedBlendCoherentOperations = VK_FALSE;
 }
 
-static void getPhysicalDeviceExtendedDynamicStateFeaturesExt(VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *features)
+static void getPhysicalDeviceExtendedDynamicStateFeaturesEXT(VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *features)
 {
 	features->extendedDynamicState = VK_TRUE;
 }
 
-static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsFeaturesEXT *features)
+static void getPhysicalDevice4444FormatsFeaturesEXT(VkPhysicalDevice4444FormatsFeaturesEXT *features)
 {
 	features->formatA4R4G4B4 = VK_TRUE;
 	features->formatA4B4G4R4 = VK_TRUE;
+}
+
+static void getPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM(VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM *features)
+{
+	features->rasterizationOrderColorAttachmentAccess = VK_TRUE;
+	features->rasterizationOrderDepthAttachmentAccess = VK_TRUE;
+	features->rasterizationOrderStencilAttachmentAccess = VK_TRUE;
 }
 
 void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
@@ -535,19 +542,19 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			getPhysicalDeviceDescriptorIndexingFeatures(reinterpret_cast<VkPhysicalDeviceDescriptorIndexingFeatures *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT:
-			getPhysicalDeviceDepthClipEnableFeaturesExt(reinterpret_cast<VkPhysicalDeviceDepthClipEnableFeaturesEXT *>(curExtension));
+			getPhysicalDeviceDepthClipEnableFeaturesEXT(reinterpret_cast<VkPhysicalDeviceDepthClipEnableFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES:
 			getPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures(reinterpret_cast<VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT:
-			getPhysicalDeviceCustomBorderColorFeaturesExt(reinterpret_cast<VkPhysicalDeviceCustomBorderColorFeaturesEXT *>(curExtension));
+			getPhysicalDeviceCustomBorderColorFeaturesEXT(reinterpret_cast<VkPhysicalDeviceCustomBorderColorFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT:
-			getPhysicalDeviceBlendOperationAdvancedFeaturesExt(reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *>(curExtension));
+			getPhysicalDeviceBlendOperationAdvancedFeaturesEXT(reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT:
-			getPhysicalDeviceExtendedDynamicStateFeaturesExt(reinterpret_cast<VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *>(curExtension));
+			getPhysicalDeviceExtendedDynamicStateFeaturesEXT(reinterpret_cast<VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES:
 			getPhysicalDevicePrivateDataFeatures(reinterpret_cast<VkPhysicalDevicePrivateDataFeatures *>(curExtension));
@@ -568,7 +575,7 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			getPhysicalDeviceInlineUniformBlockFeatures(reinterpret_cast<VkPhysicalDeviceInlineUniformBlockFeatures *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT:
-			getPhysicalDevice4444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
+			getPhysicalDevice4444FormatsFeaturesEXT(reinterpret_cast<struct VkPhysicalDevice4444FormatsFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES:
 			getPhysicalDeviceSynchronization2Features(reinterpret_cast<struct VkPhysicalDeviceSynchronization2Features *>(curExtension));
@@ -578,6 +585,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES:
 			getPhysicalDeviceMaintenance4Features(reinterpret_cast<struct VkPhysicalDeviceMaintenance4Features *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM:
+			getPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM(reinterpret_cast<struct VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT:
 			// Workaround for a test bug (see https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3564)
