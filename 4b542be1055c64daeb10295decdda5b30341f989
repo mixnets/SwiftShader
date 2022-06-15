@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87b70a20_48a3ee81",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-15T14:56:59Z",
+      "side": 1,
+      "message": "As pointed out by this comment, the role of `Intermediate` is to facilitate the construction of multi-element rvalues. Granted, the name is confusing so it can be tempting to use the same approach for pointers, but since they\u0027re scalar we should be able to just use `createPointer()`.",
+      "range": {
+        "startLine": 70,
+        "startChar": 3,
+        "endLine": 70,
+        "endChar": 54
+      },
+      "revId": "4b542be1055c64daeb10295decdda5b30341f989",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
