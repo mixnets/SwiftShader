@@ -943,6 +943,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto ptr = state->getPointer(insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
+				assert(d.Location == 0);
 				dst.move(i, Interpolate(ptr, d.Location, 0, i, state, SpirvShader::Centroid));
 			}
 		}
@@ -953,6 +954,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto ptr = state->getPointer(insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
+				assert(d.Location == 0);
 				dst.move(i, Interpolate(ptr, d.Location, insn.word(6), i, state, SpirvShader::AtSample));
 			}
 		}
@@ -963,6 +965,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto ptr = state->getPointer(insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
+				assert(d.Location == 0);
 				dst.move(i, Interpolate(ptr, d.Location, insn.word(6), i, state, SpirvShader::AtOffset));
 			}
 		}
