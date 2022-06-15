@@ -568,6 +568,8 @@ SpirvShader::SpirvShader(
 		case spv::OpCopyObject:
 		case spv::OpCopyLogical:
 			{
+				DefineResult(insn);
+
 				// Propagate the descriptor decorations to the result.
 				Object::ID resultId = insn.word(2);
 				Object::ID pointerId = insn.word(3);
@@ -576,18 +578,12 @@ SpirvShader::SpirvShader(
 				if(d != descriptorDecorations.end())
 				{
 					descriptorDecorations[resultId] = d->second;
-				}
 
-				DefineResult(insn);
-
-				if(opcode == spv::OpAccessChain || opcode == spv::OpInBoundsAccessChain || opcode == spv::OpPtrAccessChain)
-				{
-					int indexId = (insn.opcode() == spv::OpPtrAccessChain) ? 5 : 4;
-					Decorations dd{};
-					ApplyDecorationsForAccessChain(&dd, &descriptorDecorations[resultId], pointerId, Span(insn, indexId, insn.wordCount() - indexId));
-					// Note: offset is the one thing that does *not* propagate, as the access chain accounts for it.
-					dd.HasOffset = false;
-					decorations[resultId].Apply(dd);
+					if(opcode == spv::OpAccessChain || opcode == spv::OpInBoundsAccessChain || opcode == spv::OpPtrAccessChain)
+					{
+						Decorations dd = ApplyDecorationsForAccessChain(&descriptorDecorations[resultId], pointerId, Span(insn, 4, insn.wordCount() - 4));
+						decorations[resultId].Apply(dd);
+					}
 				}
 			}
 			break;
@@ -1219,23 +1215,25 @@ void SpirvShader::VisitInterface(Object::ID id, const InterfaceVisitor &f) const
 	VisitInterfaceInner(def.word(1), d, f);
 }
 
-void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecorations *dd, Object::ID baseId, const Span &indexIds) const
+SpirvShader::Decorations SpirvShader::ApplyDecorationsForAccessChain(DescriptorDecorations *dd, Object::ID baseId, const Span &indexIds) const
 {
-	ApplyDecorationsForId(d, baseId);
+	Decorations d;
+
+	ApplyDecorationsForId(&d, baseId);
 	auto &baseObject = getObject(baseId);
-	ApplyDecorationsForId(d, baseObject.typeId());
+	ApplyDecorationsForId(&d, baseObject.typeId());
 	auto typeId = getType(baseObject).element;
 
 	for(uint32_t i = 0; i < indexIds.size(); i++)
 	{
-		ApplyDecorationsForId(d, typeId);
+		ApplyDecorationsForId(&d, typeId);
 		auto &type = getType(typeId);
 		switch(type.opcode())
 		{
 		case spv::OpTypeStruct:
 			{
 				int memberIndex = GetConstScalarInt(indexIds[i]);
-				ApplyDecorationsForIdMember(d, typeId, memberIndex);
+				ApplyDecorationsForIdMember(&d, typeId, memberIndex);
 				typeId = type.definition.word(2u + memberIndex);
 			}
 			break;
@@ -1252,12 +1250,17 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 			break;
 		case spv::OpTypeMatrix:
 			typeId = type.element;
-			d->InsideMatrix = true;
+			d.InsideMatrix = true;
 			break;
 		default:
 			UNREACHABLE("%s", OpcodeName(type.definition.opcode()));
 		}
 	}
+
+	// Note: offset is the one thing that does *not* propagate, as the access chain accounts for it.
+	d.HasOffset = false;
+
+	return d;
 }
 
 SIMD::Pointer SpirvEmitter::WalkExplicitLayoutAccessChain(Object::ID baseId, Object::ID elementId, const Span &indexIds, bool nonUniform) const
