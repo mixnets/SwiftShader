@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88a13b57_8ee19351",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-15T14:31:59Z",
+      "side": 1,
+      "message": "It\u0027s still not quite clear to me how the mapping between opaque and physical addresses happen. Is this entirely the application side\u0027s responsibility?",
+      "revId": "2f2ea4a003d3cb089098d691d54ffe58e678522b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c6834d8_69f5f033",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1802,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-15T14:31:59Z",
+      "side": 1,
+      "message": "It\u0027s odd that this function behaves the same as `vkGetBufferOpaqueCaptureAddress`. Is it just to allow for `VK_KHR_buffer_device_address` to provide the `deviceAddress` value, which did not get promoted to Vulkan 1.2 ?",
+      "range": {
+        "startLine": 1802,
+        "startChar": 33,
+        "endLine": 1802,
+        "endChar": 56
+      },
+      "revId": "2f2ea4a003d3cb089098d691d54ffe58e678522b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
