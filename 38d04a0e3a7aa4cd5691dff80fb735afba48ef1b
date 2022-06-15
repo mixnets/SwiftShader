@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c90eabe_85b04041",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-15T15:02:21Z",
+      "side": 1,
+      "message": "See https://swiftshader-review.googlesource.com/c/SwiftShader/+/66455/comments/87b70a20_48a3ee81",
+      "range": {
+        "startLine": 10,
+        "startChar": 13,
+        "endLine": 10,
+        "endChar": 52
+      },
+      "revId": "38d04a0e3a7aa4cd5691dff80fb735afba48ef1b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
