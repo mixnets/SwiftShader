@@ -46,6 +46,23 @@
       },
       "revId": "7f6177ed9458d2291eac1f9cb515d39b6e2b7c5c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ede61409_8e99c913",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-16T16:48:09Z",
+      "side": 1,
+      "message": "Closely related to b/233239120. Since it\u0027s actually C++ UB to write one member of a union and then read other, this solves two issues at once.",
+      "revId": "7f6177ed9458d2291eac1f9cb515d39b6e2b7c5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
