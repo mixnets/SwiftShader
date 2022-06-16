@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be726f6e_0ef6d57a",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-16T19:20:41Z",
+      "side": 1,
+      "message": "Consider renaming to `BitcastPointerToInteger`.\n\nOtherwise it can be confused to implement `OpBitcast` which does both directions.",
+      "range": {
+        "startLine": 149,
+        "startChar": 18,
+        "endLine": 149,
+        "endChar": 25
+      },
+      "revId": "e793059fbf549701c6d08ad43c2e3edaaa1c3dda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f037af8_2402d189",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-16T19:20:41Z",
+      "side": 1,
+      "message": "I think it would be clearer to just use `insn.opcode() \u003d\u003d spv::OpBitcast` here and handle both cast types.",
+      "range": {
+        "startLine": 181,
+        "startChar": 4,
+        "endLine": 181,
+        "endChar": 60
+      },
+      "revId": "e793059fbf549701c6d08ad43c2e3edaaa1c3dda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
