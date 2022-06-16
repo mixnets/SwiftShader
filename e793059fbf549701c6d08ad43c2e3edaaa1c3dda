@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6246714_8aa9306f",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-16T19:37:11Z",
+      "side": 1,
+      "message": "Never mind. Old comment on Patchset 5.",
+      "parentUuid": "be726f6e_0ef6d57a",
+      "range": {
+        "startLine": 149,
+        "startChar": 18,
+        "endLine": 149,
+        "endChar": 25
+      },
+      "revId": "e793059fbf549701c6d08ad43c2e3edaaa1c3dda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5f037af8_2402d189",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-06-16T19:20:41Z",
       "side": 1,
       "message": "I think it would be clearer to just use `insn.opcode() \u003d\u003d spv::OpBitcast` here and handle both cast types.",
+      "range": {
+        "startLine": 181,
+        "startChar": 4,
+        "endLine": 181,
+        "endChar": 60
+      },
+      "revId": "e793059fbf549701c6d08ad43c2e3edaaa1c3dda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "885a4609_75ed43cd",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-16T19:37:11Z",
+      "side": 1,
+      "message": "Patchset 6 looks great!",
+      "parentUuid": "5f037af8_2402d189",
       "range": {
         "startLine": 181,
         "startChar": 4,
