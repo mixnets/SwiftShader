@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "adbed259_6cf88961",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 23
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-17T20:02:39Z",
+      "side": 1,
+      "message": "uber-nit: \"Expose bufferDeviceAddress support\"\n\nOtherwise can be confused for the CL that implements the functional support.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 27
+      },
+      "revId": "0f43b6928741a92173558ed18a8cfd8c04f17445",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
