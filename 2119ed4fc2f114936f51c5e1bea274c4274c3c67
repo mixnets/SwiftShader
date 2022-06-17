@@ -120,6 +120,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f01f8182_382bbf42",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1719,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-17T19:57:26Z",
+      "side": 1,
+      "message": "Should be `OutOfBoundsBehavior::UndefinedBehavior`, not fall back to `OutOfBoundsBehavior::UndefinedValue` as in Patchset 6.",
+      "parentUuid": "3926442d_966bda7e",
+      "range": {
+        "startLine": 1719,
+        "startChar": 1,
+        "endLine": 1719,
+        "endChar": 45
+      },
+      "revId": "2119ed4fc2f114936f51c5e1bea274c4274c3c67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ff15ac20_42322704",
         "filename": "src/Pipeline/SpirvShaderMemory.cpp",
         "patchSetId": 3
