@@ -809,8 +809,7 @@ public:
 		bool Block : 1;
 		bool BufferBlock : 1;
 		bool RelaxedPrecision : 1;
-		bool RowMajor : 1;      // RowMajor if true; ColMajor if false
-		bool InsideMatrix : 1;  // pseudo-decoration for whether we're inside a matrix.
+		bool RowMajor : 1;  // RowMajor if true; ColMajor if false
 		bool NonUniform : 1;
 
 		Decorations()
@@ -834,7 +833,6 @@ public:
 		    , BufferBlock{ false }
 		    , RelaxedPrecision{ false }
 		    , RowMajor{ false }
-		    , InsideMatrix{ false }
 		    , NonUniform{ false }
 		{
 		}

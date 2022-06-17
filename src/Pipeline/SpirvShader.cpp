@@ -1249,7 +1249,6 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 			break;
 		case spv::OpTypeMatrix:
 			typeId = type.element;
-			d->InsideMatrix = true;
 			break;
 		default:
 			UNREACHABLE("%s", OpcodeName(type.definition.opcode()));
@@ -1331,7 +1330,6 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, Obje
 			{
 				// TODO: b/127950082: Check bounds.
 				ASSERT(d.HasMatrixStride);
-				d.InsideMatrix = true;
 				auto columnStride = (d.HasRowMajor && d.RowMajor) ? static_cast<int32_t>(sizeof(float)) : d.MatrixStride;
 				auto &obj = getObject(indexIds[i]);
 				if(obj.kind == Object::Kind::Constant)
@@ -1347,7 +1345,7 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, Obje
 			break;
 		case spv::OpTypeVector:
 			{
-				auto elemStride = (d.InsideMatrix && d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
+				auto elemStride = (d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
 				auto &obj = getObject(indexIds[i]);
 				if(obj.kind == Object::Kind::Constant)
 				{
@@ -1641,7 +1639,6 @@ void SpirvShader::Decorations::Apply(const sw::SpirvShader::Decorations &src)
 	Block |= src.Block;
 	BufferBlock |= src.BufferBlock;
 	RelaxedPrecision |= src.RelaxedPrecision;
-	InsideMatrix |= src.InsideMatrix;
 	NonUniform |= src.NonUniform;
 }
 
