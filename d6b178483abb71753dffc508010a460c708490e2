@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a27c67f0_1f81fec3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-17T17:21:52Z",
+      "side": 1,
+      "message": "Also requires support for `OpConvertPtrToU` / `OpConvertUToPtr`. Needs dEQP-VK coverage. Can be done after.",
+      "range": {
+        "startLine": 455,
+        "startChar": 14,
+        "endLine": 455,
+        "endChar": 54
+      },
+      "revId": "d6b178483abb71753dffc508010a460c708490e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
