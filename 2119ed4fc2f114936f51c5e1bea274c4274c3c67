@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "51f1d3ca_bab77e62",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1250,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-17T15:35:22Z",
+      "side": 1,
+      "message": "I think the issue here is that `ApplyDecorationsForAccessChain()` is called for both `OpAccessChain` and `OpPtrAccessChain` with `indexIds` being the span of words starting at offset 4, while the later operation has the `Element` operand at word 4 and the `Indexes` follow.\n\nIn https://swiftshader-review.googlesource.com/c/SwiftShader/+/66248 the `Element` operand is correctly treated separately, because `Base` is actually implicitly a pointer to an *array* of the indicated pointer element type. Thus for these enum cases here we\u0027re not indexing into actual float and int elements but an array of them.\n\nIt surprising this patch doesn\u0027t cause test failures. It seems to dodge some bullets. If `Element` is a variable index instead of a constant, things would blow up at line 1229 for `Base` pointing to structs.\n\nIdeally `Element` is handled properly by treating `Base` as an array before handling the `Indexes`. I could also accept a big TODO comment if you strongly prefer landing this as-is and fixing it later. We\u0027ll also want to request more test coverage.",
+      "range": {
+        "startLine": 1250,
+        "startChar": 2,
+        "endLine": 1250,
+        "endChar": 7
+      },
+      "revId": "2119ed4fc2f114936f51c5e1bea274c4274c3c67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "7ba7d657_0311b05b",
@@ -20,6 +43,46 @@
         "endLine": 1252,
         "endChar": 9
       },
+      "revId": "2119ed4fc2f114936f51c5e1bea274c4274c3c67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ad947f0_d0c28dfc",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1719,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-17T15:35:22Z",
+      "side": 1,
+      "message": "I don\u0027t think this is correct. There\u0027s no descriptor, so there\u0027s no bounds information.",
+      "range": {
+        "startLine": 1719,
+        "startChar": 1,
+        "endLine": 1719,
+        "endChar": 45
+      },
+      "revId": "2119ed4fc2f114936f51c5e1bea274c4274c3c67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff15ac20_42322704",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 528,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-17T15:35:22Z",
+      "side": 1,
+      "message": "Let\u0027s add the SPIR-V spec quote here:\n\n\"Composite objects in the StorageBuffer, PhysicalStorageBuffer, Uniform, and PushConstant Storage Classes must be explicitly laid out.\"",
       "revId": "2119ed4fc2f114936f51c5e1bea274c4274c3c67",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
