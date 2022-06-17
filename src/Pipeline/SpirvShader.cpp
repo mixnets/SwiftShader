@@ -1234,7 +1234,7 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 		case spv::OpTypeRuntimeArray:
 			if(dd->InputAttachmentIndex >= 0)
 			{
-				dd->InputAttachmentIndex += GetConstScalarInt(indexIds[i]);
+				//dd->InputAttachmentIndex += GetConstScalarInt(indexIds[i]);
 			}
 			typeId = type.element;
 			break;
