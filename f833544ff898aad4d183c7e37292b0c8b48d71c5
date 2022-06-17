@@ -16,6 +16,24 @@
       "message": "Looking into the 2 Regres failures, will follow up on it.",
       "revId": "f833544ff898aad4d183c7e37292b0c8b48d71c5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c11dca1a_1b560e6f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 27
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-17T21:50:11Z",
+      "side": 1,
+      "message": "That\u0027s odd, these 2 tests do pass locally. They take a bit of time to run and they allocate ~1.8Gb of RAM, so maybe Regres ran into a memory issue or timeout?",
+      "parentUuid": "5f223a31_47e7e427",
+      "revId": "f833544ff898aad4d183c7e37292b0c8b48d71c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
