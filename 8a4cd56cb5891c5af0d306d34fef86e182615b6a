@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea92597c_e55b01eb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-17T17:12:28Z",
+      "side": 1,
+      "message": "Let\u0027s make this b/236387999. I think there\u0027s more work to be done in this area.",
+      "range": {
+        "startLine": 16,
+        "startChar": 7,
+        "endLine": 16,
+        "endChar": 16
+      },
+      "revId": "8a4cd56cb5891c5af0d306d34fef86e182615b6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2c820da_56a6135f",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1686,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-17T17:12:28Z",
+      "side": 1,
+      "message": "This only handles ptr -\u003e int2. Is int2 -\u003e ptr already working as expected, or is it not excercised by dEQP-VK?",
+      "range": {
+        "startLine": 1686,
+        "startChar": 33,
+        "endLine": 1686,
+        "endChar": 34
+      },
+      "revId": "8a4cd56cb5891c5af0d306d34fef86e182615b6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
