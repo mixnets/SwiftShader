@@ -310,7 +310,7 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 		break;
 	case spv::OpTypeVector:
 		{
-			auto elemStride = (d.InsideMatrix && d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
+			auto elemStride = (d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
 			for(auto i = 0u; i < type.definition.word(3); i++)
 			{
 				VisitMemoryObjectInner(type.definition.word(2), d, index, offset + elemStride * i, f);
@@ -320,7 +320,6 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 	case spv::OpTypeMatrix:
 		{
 			auto columnStride = (d.HasRowMajor && d.RowMajor) ? static_cast<int32_t>(sizeof(float)) : d.MatrixStride;
-			d.InsideMatrix = true;
 			for(auto i = 0u; i < type.definition.word(3); i++)
 			{
 				ASSERT(d.HasMatrixStride);
