@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c82abfb8_2a5b9370",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1579,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-20T15:44:31Z",
+      "side": 1,
+      "message": "This was broken by https://swiftshader-review.googlesource.com/c/SwiftShader/+/64928.",
+      "range": {
+        "startLine": 1577,
+        "startChar": 1,
+        "endLine": 1579,
+        "endChar": 20
+      },
+      "revId": "beea36c6a0f656eb37950b9d05c421d57e369896",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
