@@ -48,6 +48,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2cee909c_6890acf3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 457,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-20T17:57:52Z",
+      "side": 1,
+      "message": "FYI the order I\u0027ve been trying to use is that of the declaration of the `spv::` enums.",
+      "parentUuid": "e894d009_a2ced1cb",
+      "range": {
+        "startLine": 457,
+        "startChar": 4,
+        "endLine": 457,
+        "endChar": 130
+      },
+      "revId": "edf7b5177869d4feb3cdf8bf41a032aea2b69ac5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0abc1ea8_df39e732",

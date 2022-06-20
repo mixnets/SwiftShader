@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fef45057_23b5e906",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-20T17:57:52Z",
+      "side": 1,
+      "message": "LGTM assuming it solves the asserts and there are no regressions.",
+      "revId": "ee967427b9cf2ce7540d923be09654a404ff0d8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
