@@ -583,7 +583,7 @@ SpirvShader::SpirvShader(
 				{
 					int indexId = (insn.opcode() == spv::OpPtrAccessChain) ? 5 : 4;
 					Decorations dd{};
-					ApplyDecorationsForAccessChain(&dd, &descriptorDecorations[resultId], pointerId, Span(insn, indexId, insn.wordCount() - indexId));
+					ApplyDecorationsForAccessChain(&dd, pointerId, Span(insn, indexId, insn.wordCount() - indexId));
 					// Note: offset is the one thing that does *not* propagate, as the access chain accounts for it.
 					dd.HasOffset = false;
 					decorations[resultId].Apply(dd);
@@ -1215,7 +1215,7 @@ void SpirvShader::VisitInterface(Object::ID id, const InterfaceVisitor &f) const
 	VisitInterfaceInner(def.word(1), d, f);
 }
 
-void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecorations *dd, Object::ID baseId, const Span &indexIds) const
+void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, Object::ID baseId, const Span &indexIds) const
 {
 	ApplyDecorationsForId(d, baseId);
 	auto &baseObject = getObject(baseId);
@@ -1237,10 +1237,6 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 			break;
 		case spv::OpTypeArray:
 		case spv::OpTypeRuntimeArray:
-			if(dd->InputAttachmentIndex >= 0)
-			{
-				dd->InputAttachmentIndex += GetConstScalarInt(indexIds[i]);
-			}
 			typeId = type.element;
 			break;
 		case spv::OpTypeVector:
@@ -2280,10 +2276,7 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 		}
 	}
 
-	if(type.storageClass == spv::StorageClassPushConstant ||
-	   type.storageClass == spv::StorageClassUniform ||
-	   type.storageClass == spv::StorageClassStorageBuffer ||
-	   type.storageClass == spv::StorageClassPhysicalStorageBuffer)
+	if(IsExplicitLayout(type.storageClass))
 	{
 		auto ptr = WalkExplicitLayoutAccessChain(baseId, elementId, Span(insn, indexId, insn.wordCount() - indexId), nonUniform, state);
 		state->createPointer(resultId, ptr);

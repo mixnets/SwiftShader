@@ -801,12 +801,18 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 
 	auto coordinate = Operand(this, state, instruction.coordinateId);
 	const DescriptorDecorations &d = descriptorDecorations.at(instruction.imageId);
+	SIMD::Pointer ptr = state->getPointer(instruction.imageId);
 
 	// For subpass data, format in the instruction is spv::ImageFormatUnknown. Get it from
 	// the renderpass data instead. In all other cases, we can use the format in the instruction.
-	vk::Format imageFormat = (dim == spv::DimSubpassData)
-	                             ? inputAttachmentFormats[d.InputAttachmentIndex]
-	                             : SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(instruction.imageFormat));
+	vk::Format imageFormat = SpirvFormatToVulkanFormat(static_cast<spv::ImageFormat>(instruction.imageFormat));
+
+	if(dim == spv::DimSubpassData)
+	{
+		ASSERT(ptr.hasStaticEqualOffsets());  // TODO(b/236629837): shaderInputAttachmentArrayDynamicIndexing
+		uint32_t offset = ptr.staticOffsets[0] / sizeof(vk::StorageImageDescriptor);
+		imageFormat = inputAttachmentFormats[d.InputAttachmentIndex + offset];
+	}
 
 	// Depth+Stencil image attachments select aspect based on the Sampled Type of the
 	// OpTypeImage. If float, then we want the depth aspect. If int, we want the stencil aspect.
@@ -817,9 +823,6 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 	{
 		imageFormat = VK_FORMAT_S8_UINT;
 	}
-
-	auto &dst = state->createIntermediate(instruction.resultId, resultType.componentCount);
-	SIMD::Pointer ptr = state->getPointer(instruction.imageId);
 
 	SIMD::Int uvwa[4];
 	SIMD::Int sample;
@@ -877,6 +880,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 	}
 	else
 		UNREACHABLE("texelSize: %d", int(texelSize));
+
+	auto &dst = state->createIntermediate(instruction.resultId, resultType.componentCount);
 
 	// Format support requirements here come from two sources:
 	// - Minimum required set of formats for loads from storage images
