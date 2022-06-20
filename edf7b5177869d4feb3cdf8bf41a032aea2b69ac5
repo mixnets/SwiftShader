@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e894d009_a2ced1cb",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 457,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-20T17:49:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ce11e457_917810f8",
+      "range": {
+        "startLine": 457,
+        "startChar": 4,
+        "endLine": 457,
+        "endChar": 130
+      },
+      "revId": "edf7b5177869d4feb3cdf8bf41a032aea2b69ac5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0abc1ea8_df39e732",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-06-20T17:30:21Z",
       "side": 1,
       "message": "Please move this up by a line or 2, in order to group it with similar capabilities.",
+      "range": {
+        "startLine": 731,
+        "startChar": 7,
+        "endLine": 731,
+        "endChar": 50
+      },
+      "revId": "edf7b5177869d4feb3cdf8bf41a032aea2b69ac5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "001a6109_df0d8ef9",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 731,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-20T17:49:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0abc1ea8_df39e732",
       "range": {
         "startLine": 731,
         "startChar": 7,
