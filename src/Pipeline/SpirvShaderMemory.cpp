@@ -553,7 +553,6 @@ bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 
 bool SpirvShader::IsExplicitLayout(spv::StorageClass storageClass)
 {
-	// From the Vulkan spec:
 	// "Composite objects in the StorageBuffer, PhysicalStorageBuffer, Uniform,
 	//  and PushConstant Storage Classes must be explicitly laid out."
 	switch(storageClass)
