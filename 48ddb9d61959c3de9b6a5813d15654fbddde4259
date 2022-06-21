@@ -22,6 +22,30 @@
       },
       "revId": "48ddb9d61959c3de9b6a5813d15654fbddde4259",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6ca9cf4_fc1db9b5",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1762,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-21T20:55:04Z",
+      "side": 1,
+      "message": "Their size can depend on SIMD::Width, which will be variable in the future.",
+      "parentUuid": "267563e3_aa7390f1",
+      "range": {
+        "startLine": 1762,
+        "startChar": 42,
+        "endLine": 1762,
+        "endChar": 48
+      },
+      "revId": "48ddb9d61959c3de9b6a5813d15654fbddde4259",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
