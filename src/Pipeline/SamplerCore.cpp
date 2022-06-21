@@ -142,7 +142,10 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 	bool force32BitFiltering = state.highPrecisionFiltering && !isYcbcrFormat() && (state.textureFilter != FILTER_POINT);
 	bool use32BitFiltering = hasFloatTexture() || hasUnnormalizedIntegerTexture() || force32BitFiltering ||
 	                         state.isCube() || state.unnormalizedCoordinates || state.compareEnable ||
-	                         borderModeActive() || (function == Gather) || (function == Fetch);
+	                         borderModeActive() || (function == Gather) || (function == Fetch) ||
+	                         // Linear filtering *16_SNORM formats requires 32 bit filtering to have enough precision for Vulkan
+	                         ((state.textureFilter == FILTER_LINEAR) && state.textureFormat.isSignedNormalized() &&
+							  state.textureFormat.bitsPerComponent()[0] == 16);
 	int numComponents = (function == Gather) ? 4 : textureComponentCount();
 
 	if(use32BitFiltering)
