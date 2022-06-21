@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2fe2749_fec3ec68",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-21T20:43:27Z",
+      "side": 1,
+      "message": "Could we compute this value right away based on the hardware available?",
+      "range": {
+        "startLine": 363,
+        "startChar": 24,
+        "endLine": 363,
+        "endChar": 25
+      },
+      "revId": "8ba5bf63538ef283237ef970514b861055232f6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
