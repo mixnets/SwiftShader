@@ -51,6 +51,7 @@ public:
 	RValue<Int> operator=(const Reference<Int> &rhs);
 
 	static Type *type();
+	static int element_count() { return SIMD::Width; }
 };
 
 RValue<Int> operator+(RValue<Int> lhs, RValue<Int> rhs);
@@ -141,6 +142,7 @@ public:
 	RValue<UInt> operator=(const Reference<UInt> &rhs);
 
 	static Type *type();
+	static int element_count() { return SIMD::Width; }
 };
 
 RValue<UInt> operator+(RValue<UInt> lhs, RValue<UInt> rhs);
@@ -225,6 +227,7 @@ public:
 	static Float infinity();
 
 	static Type *type();
+	static int element_count() { return SIMD::Width; }
 };
 
 RValue<Float> operator+(RValue<Float> lhs, RValue<Float> rhs);
