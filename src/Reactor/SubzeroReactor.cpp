@@ -328,7 +328,7 @@ private:
 
 constexpr bool CPUID::ARM = CPUID::detectARM();
 const bool CPUID::SSE4_1 = CPUID::detectSSE4_1();
-constexpr bool emulateIntrinsics = false;
+constexpr bool emulateIntrinsics = true;
 constexpr bool emulateMismatchedBitCast = CPUID::ARM;
 
 constexpr bool subzeroDumpEnabled = false;
@@ -2246,22 +2246,80 @@ Type *SByte4::type()
 	return T(Type_v4i8);
 }
 
-namespace {
-RValue<Byte> SaturateUnsigned(RValue<Short> x)
+// Call single arg function on a vector type
+template<typename Func, typename T>
+static RValue<T> call4(Func func, const RValue<T> &x)
+{
+	T result;
+	result = Insert(result, Call(func, Extract(x, 0)), 0);
+	result = Insert(result, Call(func, Extract(x, 1)), 1);
+	result = Insert(result, Call(func, Extract(x, 2)), 2);
+	result = Insert(result, Call(func, Extract(x, 3)), 3);
+	return result;
+}
+
+// Call two arg function on a vector type
+template<typename Func, typename T>
+static RValue<T> call4(Func func, const RValue<T> &x, const RValue<T> &y)
+{
+	T result;
+	result = Insert(result, Call(func, Extract(x, 0), Extract(y, 0)), 0);
+	result = Insert(result, Call(func, Extract(x, 1), Extract(y, 1)), 1);
+	result = Insert(result, Call(func, Extract(x, 2), Extract(y, 2)), 2);
+	result = Insert(result, Call(func, Extract(x, 3), Extract(y, 3)), 3);
+	return result;
+}
+
+// Call one arg function on a vector type
+template<typename Func, typename T>
+static RValue<T> call44(Func func, const RValue<T> &x)
+{
+	T result;
+	result = Insert(result, func(Extract(x, 0)), 0);
+	result = Insert(result, func(Extract(x, 1)), 1);
+	result = Insert(result, func(Extract(x, 2)), 2);
+	result = Insert(result, func(Extract(x, 3)), 3);
+	return result;
+}
+
+// Call two arg function on a vector type
+template<typename Func, typename T>
+static RValue<T> call44(Func func, const RValue<T> &x, const RValue<T> &y)
+{
+	T result;
+	result = Insert(result, func(Extract(x, 0), Extract(y, 0)), 0);
+	result = Insert(result, func(Extract(x, 1), Extract(y, 1)), 1);
+	result = Insert(result, func(Extract(x, 2), Extract(y, 2)), 2);
+	result = Insert(result, func(Extract(x, 3), Extract(y, 3)), 3);
+	return result;
+}
+
+// Call three arg function on a vector type
+template<typename Func, typename T>
+static RValue<T> call4(Func func, const RValue<T> &x, const RValue<T> &y, const RValue<T> &z)
+{
+	T result;
+	result = Insert(result, Call(func, Extract(x, 0), Extract(y, 0), Extract(z, 0)), 0);
+	result = Insert(result, Call(func, Extract(x, 1), Extract(y, 1), Extract(z, 1)), 1);
+	result = Insert(result, Call(func, Extract(x, 2), Extract(y, 2), Extract(z, 2)), 2);
+	result = Insert(result, Call(func, Extract(x, 3), Extract(y, 3), Extract(z, 3)), 3);
+	return result;
+}
+
+static RValue<Byte> SaturateUnsigned(RValue<Short> x)
 {
 	return Byte(IfThenElse(Int(x) > 0xFF, Int(0xFF), IfThenElse(Int(x) < 0, Int(0), Int(x))));
 }
 
-RValue<Byte> Extract(RValue<Byte8> val, int i)
+static RValue<Byte> Extract(RValue<Byte8> val, int i)
 {
 	return RValue<Byte>(Nucleus::createExtractElement(val.value(), Byte::type(), i));
 }
 
-RValue<Byte8> Insert(RValue<Byte8> val, RValue<Byte> element, int i)
+static RValue<Byte8> Insert(RValue<Byte8> val, RValue<Byte> element, int i)
 {
 	return RValue<Byte8>(Nucleus::createInsertElement(val.value(), element.value(), i));
 }
-}  // namespace
 
 RValue<Byte8> AddSat(RValue<Byte8> x, RValue<Byte8> y)
 {
@@ -2279,6 +2337,8 @@ RValue<Byte8> AddSat(RValue<Byte8> x, RValue<Byte8> y)
 		result = Insert(result, SaturateUnsigned(Short(Int(Extract(x, 7)) + Int(Extract(y, 7)))), 7);
 
 		return result;
+
+		return call44([](auto a, auto b) { return SaturateUnsigned(Short(Int(a) + Int(b))); }, x, y);
 	}
 	else
 	{
@@ -3922,45 +3982,11 @@ Float4::Float4(RValue<Float> rhs)
 	storeValue(replicate);
 }
 
-// Call single arg function on a vector type
-template<typename Func, typename T>
-static RValue<T> call4(Func func, const RValue<T> &x)
-{
-	T result;
-	result = Insert(result, Call(func, Extract(x, 0)), 0);
-	result = Insert(result, Call(func, Extract(x, 1)), 1);
-	result = Insert(result, Call(func, Extract(x, 2)), 2);
-	result = Insert(result, Call(func, Extract(x, 3)), 3);
-	return result;
-}
-
-// Call two arg function on a vector type
-template<typename Func, typename T>
-static RValue<T> call4(Func func, const RValue<T> &x, const RValue<T> &y)
-{
-	T result;
-	result = Insert(result, Call(func, Extract(x, 0), Extract(y, 0)), 0);
-	result = Insert(result, Call(func, Extract(x, 1), Extract(y, 1)), 1);
-	result = Insert(result, Call(func, Extract(x, 2), Extract(y, 2)), 2);
-	result = Insert(result, Call(func, Extract(x, 3), Extract(y, 3)), 3);
-	return result;
-}
-
-// Call three arg function on a vector type
-template<typename Func, typename T>
-static RValue<T> call4(Func func, const RValue<T> &x, const RValue<T> &y, const RValue<T> &z)
-{
-	T result;
-	result = Insert(result, Call(func, Extract(x, 0), Extract(y, 0), Extract(z, 0)), 0);
-	result = Insert(result, Call(func, Extract(x, 1), Extract(y, 1), Extract(z, 1)), 1);
-	result = Insert(result, Call(func, Extract(x, 2), Extract(y, 2), Extract(z, 2)), 2);
-	result = Insert(result, Call(func, Extract(x, 3), Extract(y, 3), Extract(z, 3)), 3);
-	return result;
-}
-
 RValue<Float4> operator%(RValue<Float4> lhs, RValue<Float4> rhs)
 {
 	return call4(fmodf, lhs, rhs);
+
+	return call44([](auto x, auto y) { return Call(fmodf, x, y); }, lhs, rhs);
 }
 
 RValue<Float4> MulAdd(RValue<Float4> x, RValue<Float4> y, RValue<Float4> z)
@@ -4572,6 +4598,8 @@ RValue<UInt4> Ctlz(RValue<UInt4> x, bool isZeroUndef)
 		result = Insert(result, Ctlz(Extract(x, 2), isZeroUndef), 2);
 		result = Insert(result, Ctlz(Extract(x, 3), isZeroUndef), 3);
 		return result;
+
+		return call44([isZeroUndef](auto e) { return Ctlz(e, isZeroUndef); }, x);
 	}
 }
 
@@ -4612,6 +4640,8 @@ RValue<UInt4> Cttz(RValue<UInt4> x, bool isZeroUndef)
 		result = Insert(result, Cttz(Extract(x, 2), isZeroUndef), 2);
 		result = Insert(result, Cttz(Extract(x, 3), isZeroUndef), 3);
 		return result;
+
+		return call44([isZeroUndef](auto e) { return Ctlz(e, isZeroUndef); }, x);
 	}
 }
 
@@ -5125,13 +5155,7 @@ RValue<SIMD::Int> operator<<(RValue<SIMD::Int> lhs, unsigned char rhs)
 	RR_DEBUG_INFO_UPDATE_LOC();
 	if(emulateIntrinsics)
 	{
-		SIMD::Int result;
-		result = Insert(result, Extract(lhs, 0) << scalar::Int(rhs), 0);
-		result = Insert(result, Extract(lhs, 1) << scalar::Int(rhs), 1);
-		result = Insert(result, Extract(lhs, 2) << scalar::Int(rhs), 2);
-		result = Insert(result, Extract(lhs, 3) << scalar::Int(rhs), 3);
-
-		return result;
+		return call44([rhs](auto x) { return x << rhs; }, lhs);
 	}
 	else
 	{
@@ -5151,6 +5175,8 @@ RValue<SIMD::Int> operator>>(RValue<SIMD::Int> lhs, unsigned char rhs)
 		result = Insert(result, Extract(lhs, 3) >> scalar::Int(rhs), 3);
 
 		return result;
+
+		return call44([rhs](auto x) { return x >> rhs; }, lhs);
 	}
 	else
 	{
@@ -5320,6 +5346,8 @@ RValue<SIMD::UInt> operator<<(RValue<SIMD::UInt> lhs, unsigned char rhs)
 		result = Insert(result, Extract(lhs, 3) << scalar::UInt(rhs), 3);
 
 		return result;
+
+		return call44([rhs](auto x) { return x << rhs; }, lhs);
 	}
 	else
 	{
@@ -5339,6 +5367,8 @@ RValue<SIMD::UInt> operator>>(RValue<SIMD::UInt> lhs, unsigned char rhs)
 		result = Insert(result, Extract(lhs, 3) >> scalar::UInt(rhs), 3);
 
 		return result;
+
+		return call44([rhs](auto x) { return x >> rhs; }, lhs);
 	}
 	else
 	{
@@ -5493,6 +5523,8 @@ RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x)
 		}
 
 		return result;
+
+		return call44([](auto e) { return Sqrt(e); }, x);
 	}
 	else
 	{
