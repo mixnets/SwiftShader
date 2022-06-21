@@ -22,6 +22,30 @@
       },
       "revId": "8ba5bf63538ef283237ef970514b861055232f6f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4aa05f0_30cb07f6",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-21T20:53:40Z",
+      "side": 1,
+      "message": "Yes, this will be dynamically detected in a future version.",
+      "parentUuid": "e2fe2749_fec3ec68",
+      "range": {
+        "startLine": 363,
+        "startChar": 24,
+        "endLine": 363,
+        "endChar": 25
+      },
+      "revId": "8ba5bf63538ef283237ef970514b861055232f6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
