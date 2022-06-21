@@ -31,8 +31,7 @@ SIMD::Int::Int(RValue<SIMD::Float> cast)
 
 SIMD::Int::Int(int broadcast)
 {
-	int64_t constantVector[16];
-	for(auto &x : constantVector) { x = broadcast; }
+	std::vector<int64_t> constantVector = { broadcast };
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
@@ -227,8 +226,7 @@ SIMD::UInt::UInt()
 
 SIMD::UInt::UInt(int broadcast)
 {
-	int64_t constantVector[16];
-	for(auto &x : constantVector) { x = broadcast; }
+	std::vector<int64_t> constantVector = { broadcast };
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
@@ -436,8 +434,7 @@ SIMD::Float::Float(float broadcast)
 	// See rr::Float(float) constructor for the rationale behind this assert.
 	ASSERT(std::isfinite(broadcast));
 
-	double constantVector[16];
-	for(auto &x : constantVector) { x = broadcast; }
+	std::vector<double> constantVector = { broadcast };
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
@@ -446,7 +443,7 @@ SIMD::Float SIMD::Float::infinity()
 	SIMD::Float result;
 
 	constexpr double inf = std::numeric_limits<double>::infinity();
-	double constantVector[4] = { inf, inf, inf, inf };
+	std::vector<double> constantVector = { inf };
 	result.storeValue(Nucleus::createConstantVector(constantVector, type()));
 
 	return result;
