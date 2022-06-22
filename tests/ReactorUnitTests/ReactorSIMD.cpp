@@ -94,3 +94,42 @@ TEST(ReactorSIMD, Broadcast)
 		}
 	}
 }
+
+TEST(ReactorSIMD, Quad)
+{
+	FunctionT<void(int *, int *)> function;
+	{
+		Pointer<Int> r = Pointer<Int>(function.Arg<0>());
+		Pointer<Int> a = Pointer<Int>(function.Arg<1>());
+
+		SIMD::Int x = *Pointer<SIMD::Int>(a);
+		SIMD::Int y = *Pointer<SIMD::Int>(r);
+
+		x += x;
+
+		for(int i = 0; i < SIMD::Width / 4; i++)
+		{
+			y = InsertQuad(y, ExtractQuad(x, i) << (i + 1), i);
+		}
+
+		*Pointer<SIMD::Int>(r) = y;
+	}
+
+	auto routine = function(testName().c_str());
+
+	std::vector<int> r(SIMD::Width);
+	std::vector<int> a(SIMD::Width);
+
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		r[i] = 0;
+		a[i] = 1 + i;
+	}
+
+	routine(r.data(), a.data());
+
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		EXPECT_EQ(r[i], a[i]) << "i: " << i;
+	}
+}

@@ -27,202 +27,205 @@ class Int;
 class UInt;
 class Float;
 
-class Int : public LValue<Int>
+class Int : public LValue<SIMD::Int>
 {
 public:
-	explicit Int(RValue<Float> cast);
+	explicit Int(RValue<SIMD::Float> cast);
 
 	Int();
 	Int(int broadcast);
-	Int(RValue<Int> rhs);
+	Int(RValue<SIMD::Int> rhs);
 	Int(const Int &rhs);
-	Int(const Reference<Int> &rhs);
-	Int(RValue<UInt> rhs);
+	Int(const Reference<SIMD::Int> &rhs);
+	Int(RValue<SIMD::UInt> rhs);
 	Int(const UInt &rhs);
-	Int(const Reference<UInt> &rhs);
+	Int(const Reference<SIMD::UInt> &rhs);
 	Int(RValue<scalar::Int2> lo, RValue<scalar::Int2> hi);
 	Int(RValue<scalar::Int> rhs);
 	Int(const scalar::Int &rhs);
 	Int(const Reference<scalar::Int> &rhs);
 
-	RValue<Int> operator=(int broadcast);
-	RValue<Int> operator=(RValue<Int> rhs);
-	RValue<Int> operator=(const Int &rhs);
-	RValue<Int> operator=(const Reference<Int> &rhs);
+	RValue<SIMD::Int> operator=(int broadcast);
+	RValue<SIMD::Int> operator=(RValue<SIMD::Int> rhs);
+	RValue<SIMD::Int> operator=(const Int &rhs);
+	RValue<SIMD::Int> operator=(const Reference<SIMD::Int> &rhs);
 
 	static Type *type();
 	static int element_count() { return SIMD::Width; }
 };
 
-RValue<Int> operator+(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator-(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator*(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator/(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator%(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator&(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator|(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator^(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator<<(RValue<Int> lhs, unsigned char rhs);
-RValue<Int> operator>>(RValue<Int> lhs, unsigned char rhs);
-RValue<Int> operator<<(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator>>(RValue<Int> lhs, RValue<Int> rhs);
-RValue<Int> operator+=(Int &lhs, RValue<Int> rhs);
-RValue<Int> operator-=(Int &lhs, RValue<Int> rhs);
-RValue<Int> operator*=(Int &lhs, RValue<Int> rhs);
-//	RValue<Int> operator/=(Int &lhs, RValue<Int> rhs);
-//	RValue<Int> operator%=(Int &lhs, RValue<Int> rhs);
-RValue<Int> operator&=(Int &lhs, RValue<Int> rhs);
-RValue<Int> operator|=(Int &lhs, RValue<Int> rhs);
-RValue<Int> operator^=(Int &lhs, RValue<Int> rhs);
-RValue<Int> operator<<=(Int &lhs, unsigned char rhs);
-RValue<Int> operator>>=(Int &lhs, unsigned char rhs);
-RValue<Int> operator+(RValue<Int> val);
-RValue<Int> operator-(RValue<Int> val);
-RValue<Int> operator~(RValue<Int> val);
-//	RValue<Int> operator++(Int &val, int);   // Post-increment
+RValue<SIMD::Int> operator+(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator-(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator*(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator/(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator%(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator&(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator|(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator^(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator<<(RValue<SIMD::Int> lhs, unsigned char rhs);
+RValue<SIMD::Int> operator>>(RValue<SIMD::Int> lhs, unsigned char rhs);
+RValue<SIMD::Int> operator<<(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator>>(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator+=(Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator-=(Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator*=(Int &lhs, RValue<SIMD::Int> rhs);
+//	RValue<SIMD::Int> operator/=(Int &lhs, RValue<SIMD::Int> rhs);
+//	RValue<SIMD::Int> operator%=(Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator&=(Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator|=(Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator^=(Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator<<=(Int &lhs, unsigned char rhs);
+RValue<SIMD::Int> operator>>=(Int &lhs, unsigned char rhs);
+RValue<SIMD::Int> operator+(RValue<SIMD::Int> val);
+RValue<SIMD::Int> operator-(RValue<SIMD::Int> val);
+RValue<SIMD::Int> operator~(RValue<SIMD::Int> val);
+//	RValue<SIMD::Int> operator++(Int &val, int);   // Post-increment
 //	const Int &operator++(Int &val);   // Pre-increment
-//	RValue<Int> operator--(Int &val, int);   // Post-decrement
+//	RValue<SIMD::Int> operator--(Int &val, int);   // Post-decrement
 //	const Int &operator--(Int &val);   // Pre-decrement
-//	RValue<Bool> operator<(RValue<Int> lhs, RValue<Int> rhs);
-//	RValue<Bool> operator<=(RValue<Int> lhs, RValue<Int> rhs);
-//	RValue<Bool> operator>(RValue<Int> lhs, RValue<Int> rhs);
-//	RValue<Bool> operator>=(RValue<Int> lhs, RValue<Int> rhs);
-//	RValue<Bool> operator!=(RValue<Int> lhs, RValue<Int> rhs);
-//	RValue<Bool> operator==(RValue<Int> lhs, RValue<Int> rhs);
+//	RValue<Bool> operator<(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+//	RValue<Bool> operator<=(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+//	RValue<Bool> operator>(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+//	RValue<Bool> operator>=(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+//	RValue<Bool> operator!=(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
+//	RValue<Bool> operator==(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
 
-RValue<Int> CmpEQ(RValue<Int> x, RValue<Int> y);
-RValue<Int> CmpLT(RValue<Int> x, RValue<Int> y);
-RValue<Int> CmpLE(RValue<Int> x, RValue<Int> y);
-RValue<Int> CmpNEQ(RValue<Int> x, RValue<Int> y);
-RValue<Int> CmpNLT(RValue<Int> x, RValue<Int> y);
-RValue<Int> CmpNLE(RValue<Int> x, RValue<Int> y);
-inline RValue<Int> CmpGT(RValue<Int> x, RValue<Int> y)
+RValue<SIMD::Int> CmpEQ(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
+RValue<SIMD::Int> CmpLT(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
+RValue<SIMD::Int> CmpLE(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
+RValue<SIMD::Int> CmpNEQ(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
+RValue<SIMD::Int> CmpNLT(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
+RValue<SIMD::Int> CmpNLE(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
+inline RValue<SIMD::Int> CmpGT(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 {
 	return CmpNLE(x, y);
 }
-inline RValue<Int> CmpGE(RValue<Int> x, RValue<Int> y)
+inline RValue<SIMD::Int> CmpGE(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 {
 	return CmpNLT(x, y);
 }
-RValue<Int> Max(RValue<Int> x, RValue<Int> y);
-RValue<Int> Min(RValue<Int> x, RValue<Int> y);
+RValue<SIMD::Int> Abs(RValue<SIMD::Int> x);
+RValue<SIMD::Int> Max(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
+RValue<SIMD::Int> Min(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
 // Convert to nearest integer. If a converted value is outside of the integer
 // range, the returned result is undefined.
-RValue<Int> RoundInt(RValue<Float> cast);
+RValue<SIMD::Int> RoundInt(RValue<SIMD::Float> cast);
 // Rounds to the nearest integer, but clamps very large values to an
 // implementation-dependent range.
 // Specifically, on x86, values larger than 2147483583.0 are converted to
 // 2147483583 (0x7FFFFFBF) instead of producing 0x80000000.
-RValue<Int> RoundIntClamped(RValue<Float> cast);
-RValue<Short8> PackSigned(RValue<Int> x, RValue<Int> y);
-RValue<UShort8> PackUnsigned(RValue<Int> x, RValue<Int> y);
-RValue<scalar::Int> Extract(RValue<Int> val, int i);
-RValue<Int> Insert(RValue<Int> val, RValue<scalar::Int> element, int i);
+RValue<SIMD::Int> RoundIntClamped(RValue<SIMD::Float> cast);
+RValue<scalar::Int> Extract(RValue<SIMD::Int> val, int i);
+RValue<SIMD::Int> Insert(RValue<SIMD::Int> val, RValue<scalar::Int> element, int i);
+RValue<Int4> ExtractQuad(RValue<SIMD::Int> val, int i);
+RValue<SIMD::Int> InsertQuad(RValue<SIMD::Int> val, RValue<Int4> element, int i);
 
-class UInt : public LValue<UInt>
+class UInt : public LValue<SIMD::UInt>
 {
 public:
-	explicit UInt(RValue<Float> cast);
+	explicit UInt(RValue<SIMD::Float> cast);
 
 	UInt();
 	UInt(int broadcast);
-	UInt(RValue<UInt> rhs);
+	UInt(RValue<SIMD::UInt> rhs);
 	UInt(const UInt &rhs);
-	UInt(const Reference<UInt> &rhs);
-	UInt(RValue<Int> rhs);
+	UInt(const Reference<SIMD::UInt> &rhs);
+	UInt(RValue<SIMD::Int> rhs);
 	UInt(const Int &rhs);
-	UInt(const Reference<Int> &rhs);
+	UInt(const Reference<SIMD::Int> &rhs);
 	UInt(RValue<scalar::UInt2> lo, RValue<scalar::UInt2> hi);
 	UInt(RValue<scalar::UInt> rhs);
 	UInt(const scalar::UInt &rhs);
 	UInt(const Reference<scalar::UInt> &rhs);
 
-	RValue<UInt> operator=(RValue<UInt> rhs);
-	RValue<UInt> operator=(const UInt &rhs);
-	RValue<UInt> operator=(const Reference<UInt> &rhs);
+	RValue<SIMD::UInt> operator=(RValue<SIMD::UInt> rhs);
+	RValue<SIMD::UInt> operator=(const UInt &rhs);
+	RValue<SIMD::UInt> operator=(const Reference<SIMD::UInt> &rhs);
 
 	static Type *type();
 	static int element_count() { return SIMD::Width; }
 };
 
-RValue<UInt> operator+(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator-(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator*(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator/(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator%(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator&(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator|(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator^(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator<<(RValue<UInt> lhs, unsigned char rhs);
-RValue<UInt> operator>>(RValue<UInt> lhs, unsigned char rhs);
-RValue<UInt> operator<<(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator>>(RValue<UInt> lhs, RValue<UInt> rhs);
-RValue<UInt> operator+=(UInt &lhs, RValue<UInt> rhs);
-RValue<UInt> operator-=(UInt &lhs, RValue<UInt> rhs);
-RValue<UInt> operator*=(UInt &lhs, RValue<UInt> rhs);
-//	RValue<UInt> operator/=(UInt &lhs, RValue<UInt> rhs);
-//	RValue<UInt> operator%=(UInt &lhs, RValue<UInt> rhs);
-RValue<UInt> operator&=(UInt &lhs, RValue<UInt> rhs);
-RValue<UInt> operator|=(UInt &lhs, RValue<UInt> rhs);
-RValue<UInt> operator^=(UInt &lhs, RValue<UInt> rhs);
-RValue<UInt> operator<<=(UInt &lhs, unsigned char rhs);
-RValue<UInt> operator>>=(UInt &lhs, unsigned char rhs);
-RValue<UInt> operator+(RValue<UInt> val);
-RValue<UInt> operator-(RValue<UInt> val);
-RValue<UInt> operator~(RValue<UInt> val);
-//	RValue<UInt> operator++(UInt &val, int);   // Post-increment
+RValue<SIMD::UInt> operator+(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator-(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator*(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator/(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator%(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator&(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator|(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator^(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator<<(RValue<SIMD::UInt> lhs, unsigned char rhs);
+RValue<SIMD::UInt> operator>>(RValue<SIMD::UInt> lhs, unsigned char rhs);
+RValue<SIMD::UInt> operator<<(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator>>(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator+=(UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator-=(UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator*=(UInt &lhs, RValue<SIMD::UInt> rhs);
+//	RValue<SIMD::UInt> operator/=(UInt &lhs, RValue<SIMD::UInt> rhs);
+//	RValue<SIMD::UInt> operator%=(UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator&=(UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator|=(UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator^=(UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator<<=(UInt &lhs, unsigned char rhs);
+RValue<SIMD::UInt> operator>>=(UInt &lhs, unsigned char rhs);
+RValue<SIMD::UInt> operator+(RValue<SIMD::UInt> val);
+RValue<SIMD::UInt> operator-(RValue<SIMD::UInt> val);
+RValue<SIMD::UInt> operator~(RValue<SIMD::UInt> val);
+//	RValue<SIMD::UInt> operator++(UInt &val, int);   // Post-increment
 //	const UInt &operator++(UInt &val);   // Pre-increment
-//	RValue<UInt> operator--(UInt &val, int);   // Post-decrement
+//	RValue<SIMD::UInt> operator--(UInt &val, int);   // Post-decrement
 //	const UInt &operator--(UInt &val);   // Pre-decrement
-//	RValue<Bool> operator<(RValue<UInt> lhs, RValue<UInt> rhs);
-//	RValue<Bool> operator<=(RValue<UInt> lhs, RValue<UInt> rhs);
-//	RValue<Bool> operator>(RValue<UInt> lhs, RValue<UInt> rhs);
-//	RValue<Bool> operator>=(RValue<UInt> lhs, RValue<UInt> rhs);
-//	RValue<Bool> operator!=(RValue<UInt> lhs, RValue<UInt> rhs);
-//	RValue<Bool> operator==(RValue<UInt> lhs, RValue<UInt> rhs);
+//	RValue<Bool> operator<(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+//	RValue<Bool> operator<=(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+//	RValue<Bool> operator>(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+//	RValue<Bool> operator>=(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+//	RValue<Bool> operator!=(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
+//	RValue<Bool> operator==(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 
-RValue<UInt> CmpEQ(RValue<UInt> x, RValue<UInt> y);
-RValue<UInt> CmpLT(RValue<UInt> x, RValue<UInt> y);
-RValue<UInt> CmpLE(RValue<UInt> x, RValue<UInt> y);
-RValue<UInt> CmpNEQ(RValue<UInt> x, RValue<UInt> y);
-RValue<UInt> CmpNLT(RValue<UInt> x, RValue<UInt> y);
-RValue<UInt> CmpNLE(RValue<UInt> x, RValue<UInt> y);
-inline RValue<UInt> CmpGT(RValue<UInt> x, RValue<UInt> y)
+RValue<SIMD::UInt> CmpEQ(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
+RValue<SIMD::UInt> CmpLT(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
+RValue<SIMD::UInt> CmpLE(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
+RValue<SIMD::UInt> CmpNEQ(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
+RValue<SIMD::UInt> CmpNLT(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
+RValue<SIMD::UInt> CmpNLE(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
+inline RValue<SIMD::UInt> CmpGT(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 {
 	return CmpNLE(x, y);
 }
-inline RValue<UInt> CmpGE(RValue<UInt> x, RValue<UInt> y)
+inline RValue<SIMD::UInt> CmpGE(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 {
 	return CmpNLT(x, y);
 }
-RValue<UInt> Max(RValue<UInt> x, RValue<UInt> y);
-RValue<UInt> Min(RValue<UInt> x, RValue<UInt> y);
-RValue<scalar::UInt> Extract(RValue<UInt> val, int i);
-RValue<UInt> Insert(RValue<UInt> val, RValue<scalar::UInt> element, int i);
-//	RValue<UInt> RoundInt(RValue<Float> cast);
+RValue<SIMD::UInt> Max(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
+RValue<SIMD::UInt> Min(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
+RValue<scalar::UInt> Extract(RValue<SIMD::UInt> val, int i);
+RValue<SIMD::UInt> Insert(RValue<SIMD::UInt> val, RValue<scalar::UInt> element, int i);
+RValue<UInt4> ExtractQuad(RValue<SIMD::UInt> val, int i);
+RValue<SIMD::UInt> InsertQuad(RValue<SIMD::UInt> val, RValue<UInt4> element, int i);
+//	RValue<SIMD::UInt> RoundInt(RValue<SIMD::Float> cast);
 
-class Float : public LValue<Float>
+class Float : public LValue<SIMD::Float>
 {
 public:
-	explicit Float(RValue<Int> cast);
-	explicit Float(RValue<UInt> cast);
+	explicit Float(RValue<SIMD::Int> cast);
+	explicit Float(RValue<SIMD::UInt> cast);
 
 	Float();
 	Float(float broadcast);
-	Float(RValue<Float> rhs);
+	Float(RValue<SIMD::Float> rhs);
 	Float(const Float &rhs);
-	Float(const Reference<Float> &rhs);
+	Float(const Reference<SIMD::Float> &rhs);
 	Float(RValue<scalar::Float> rhs);
 	Float(const scalar::Float &rhs);
 	Float(const Reference<scalar::Float> &rhs);
 
-	RValue<Float> operator=(float broadcast);
-	RValue<Float> operator=(RValue<Float> rhs);
-	RValue<Float> operator=(const Float &rhs);
-	RValue<Float> operator=(const Reference<Float> &rhs);
-	RValue<Float> operator=(RValue<scalar::Float> rhs);
-	RValue<Float> operator=(const scalar::Float &rhs);
-	RValue<Float> operator=(const Reference<scalar::Float> &rhs);
+	RValue<SIMD::Float> operator=(float broadcast);
+	RValue<SIMD::Float> operator=(RValue<SIMD::Float> rhs);
+	RValue<SIMD::Float> operator=(const Float &rhs);
+	RValue<SIMD::Float> operator=(const Reference<SIMD::Float> &rhs);
+	RValue<SIMD::Float> operator=(RValue<scalar::Float> rhs);
+	RValue<SIMD::Float> operator=(const scalar::Float &rhs);
+	RValue<SIMD::Float> operator=(const Reference<scalar::Float> &rhs);
 
 	static Float infinity();
 
@@ -230,95 +233,97 @@ public:
 	static int element_count() { return SIMD::Width; }
 };
 
-RValue<Float> operator+(RValue<Float> lhs, RValue<Float> rhs);
-RValue<Float> operator-(RValue<Float> lhs, RValue<Float> rhs);
-RValue<Float> operator*(RValue<Float> lhs, RValue<Float> rhs);
-RValue<Float> operator/(RValue<Float> lhs, RValue<Float> rhs);
-RValue<Float> operator%(RValue<Float> lhs, RValue<Float> rhs);
-RValue<Float> operator+=(Float &lhs, RValue<Float> rhs);
-RValue<Float> operator-=(Float &lhs, RValue<Float> rhs);
-RValue<Float> operator*=(Float &lhs, RValue<Float> rhs);
-RValue<Float> operator/=(Float &lhs, RValue<Float> rhs);
-RValue<Float> operator%=(Float &lhs, RValue<Float> rhs);
-RValue<Float> operator+(RValue<Float> val);
-RValue<Float> operator-(RValue<Float> val);
+RValue<SIMD::Float> operator+(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator-(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator*(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator/(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator%(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator+=(Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator-=(Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator*=(Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator/=(Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator%=(Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator+(RValue<SIMD::Float> val);
+RValue<SIMD::Float> operator-(RValue<SIMD::Float> val);
 
 // Computes `x * y + z`, which may be fused into one operation to produce a higher-precision result.
-RValue<Float> MulAdd(RValue<Float> x, RValue<Float> y, RValue<Float> z);
+RValue<SIMD::Float> MulAdd(RValue<SIMD::Float> x, RValue<SIMD::Float> y, RValue<SIMD::Float> z);
 // Computes a fused `x * y + z` operation. Caps::fmaIsFast indicates whether it emits an FMA instruction.
-RValue<Float> FMA(RValue<Float> x, RValue<Float> y, RValue<Float> z);
+RValue<SIMD::Float> FMA(RValue<SIMD::Float> x, RValue<SIMD::Float> y, RValue<SIMD::Float> z);
 
-RValue<Float> Abs(RValue<Float> x);
-RValue<Float> Max(RValue<Float> x, RValue<Float> y);
-RValue<Float> Min(RValue<Float> x, RValue<Float> y);
+RValue<SIMD::Float> Abs(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Max(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Float> Min(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
 
-RValue<Float> Rcp(RValue<Float> x, bool relaxedPrecision, bool exactAtPow2 = false);
-RValue<Float> RcpSqrt(RValue<Float> x, bool relaxedPrecision);
-RValue<Float> Sqrt(RValue<Float> x);
-RValue<Float> Insert(RValue<Float> val, RValue<rr ::Float> element, int i);
-RValue<rr ::Float> Extract(RValue<Float> x, int i);
+RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2 = false);
+RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Insert(RValue<SIMD::Float> val, RValue<rr ::Float> element, int i);
+RValue<rr ::Float> Extract(RValue<SIMD::Float> x, int i);
+RValue<Float4> ExtractQuad(RValue<SIMD::Float> val, int i);
+RValue<SIMD::Float> InsertQuad(RValue<SIMD::Float> val, RValue<Float4> element, int i);
 
 // Ordered comparison functions
-RValue<Int> CmpEQ(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpLT(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpLE(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpNEQ(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpNLT(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpNLE(RValue<Float> x, RValue<Float> y);
-inline RValue<Int> CmpGT(RValue<Float> x, RValue<Float> y)
+RValue<SIMD::Int> CmpEQ(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpLT(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpLE(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpNEQ(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpNLT(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpNLE(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+inline RValue<SIMD::Int> CmpGT(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
 {
 	return CmpNLE(x, y);
 }
-inline RValue<Int> CmpGE(RValue<Float> x, RValue<Float> y)
+inline RValue<SIMD::Int> CmpGE(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
 {
 	return CmpNLT(x, y);
 }
 
 // Unordered comparison functions
-RValue<Int> CmpUEQ(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpULT(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpULE(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpUNEQ(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpUNLT(RValue<Float> x, RValue<Float> y);
-RValue<Int> CmpUNLE(RValue<Float> x, RValue<Float> y);
-inline RValue<Int> CmpUGT(RValue<Float> x, RValue<Float> y)
+RValue<SIMD::Int> CmpUEQ(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpULT(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpULE(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpUNEQ(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpUNLT(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Int> CmpUNLE(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+inline RValue<SIMD::Int> CmpUGT(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
 {
 	return CmpUNLE(x, y);
 }
-inline RValue<Int> CmpUGE(RValue<Float> x, RValue<Float> y)
+inline RValue<SIMD::Int> CmpUGE(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
 {
 	return CmpUNLT(x, y);
 }
 
-RValue<Int> IsInf(RValue<Float> x);
-RValue<Int> IsNan(RValue<Float> x);
-RValue<Float> Round(RValue<Float> x);
-RValue<Float> Trunc(RValue<Float> x);
-RValue<Float> Frac(RValue<Float> x);
-RValue<Float> Floor(RValue<Float> x);
-RValue<Float> Ceil(RValue<Float> x);
+RValue<SIMD::Int> IsInf(RValue<SIMD::Float> x);
+RValue<SIMD::Int> IsNan(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Round(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Trunc(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Frac(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Floor(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Ceil(RValue<SIMD::Float> x);
 
 // Trigonometric functions
-RValue<Float> Sin(RValue<Float> x);
-RValue<Float> Cos(RValue<Float> x);
-RValue<Float> Tan(RValue<Float> x);
-RValue<Float> Asin(RValue<Float> x);
-RValue<Float> Acos(RValue<Float> x);
-RValue<Float> Atan(RValue<Float> x);
-RValue<Float> Sinh(RValue<Float> x);
-RValue<Float> Cosh(RValue<Float> x);
-RValue<Float> Tanh(RValue<Float> x);
-RValue<Float> Asinh(RValue<Float> x);
-RValue<Float> Acosh(RValue<Float> x);
-RValue<Float> Atanh(RValue<Float> x);
-RValue<Float> Atan2(RValue<Float> x, RValue<Float> y);
+RValue<SIMD::Float> Sin(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Cos(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Tan(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Asin(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Acos(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Atan(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Sinh(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Cosh(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Tanh(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Asinh(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Acosh(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Atanh(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Atan2(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
 
 // Exponential functions
-RValue<Float> Pow(RValue<Float> x, RValue<Float> y);
-RValue<Float> Exp(RValue<Float> x);
-RValue<Float> Log(RValue<Float> x);
-RValue<Float> Exp2(RValue<Float> x);
-RValue<Float> Log2(RValue<Float> x);
+RValue<SIMD::Float> Pow(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Float> Exp(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Log(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Exp2(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Log2(RValue<SIMD::Float> x);
 
 }  // namespace rr::SIMD
 

@@ -4173,7 +4173,7 @@ void Nucleus::createCoroutine(Type *YieldType, const std::vector<Type *> &Params
 	auto promisePtrTy = promiseTy->getPointerTo();
 
 	jit->function = rr::createFunction("coroutine_begin", handleTy, T(Params));
-#if LLVM_VERSION_MAJOR >= 15
+#if LLVM_VERSION_MAJOR >= 16
 	jit->function->setPresplitCoroutine();
 #else
 	jit->function->addFnAttr("coroutine.presplit", "0");
@@ -4410,6 +4410,26 @@ RValue<SIMD::Int> RoundIntClamped(RValue<Float4> cast)
 	RValue<Float4> clamped = Max(Min(cast, Float4(0x7FFFFF80)), Float4(static_cast<int>(0x80000000)));
 	return As<SIMD::Int>(V(lowerRoundInt(V(clamped.value()), T(SIMD::Int::type()))));
 #endif
+}
+
+RValue<Int4> ExtractQuad(RValue<SIMD::Int> val, int i)
+{
+	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
+
+	llvm::Value *a = jit->builder->CreateExtractElement(v128, i);
+
+	return As<Int4>(V(jit->builder->CreateBitCast(a, T(Int4::type()))));
+}
+
+RValue<SIMD::Int> InsertQuad(RValue<SIMD::Int> val, RValue<Int4> element, int i)
+{
+	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
+
+	llvm::Value *a = jit->builder->CreateBitCast(V(element.value()), llvm::IntegerType::get(*jit->context, 128));
+
+	llvm::Value *b = jit->builder->CreateInsertElement(v128, a, i);
+
+	return As<SIMD::Int>(V(b));
 }
 
 Type *SIMD::Int::type()
