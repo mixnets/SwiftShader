@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1301bd0e_f7ceb3c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-22T21:24:29Z",
+      "side": 1,
+      "message": "Thanks for fixing this. Please also create a CL which adds an incremental build using SPIRV_SHADER_DBG to our Kokoro recipe (we already have similar incremental builds).",
+      "revId": "caa484f2c38720c195c712bdc3f5be12a4b90376",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
