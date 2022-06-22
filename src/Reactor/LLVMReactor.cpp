@@ -4412,6 +4412,34 @@ RValue<SIMD::Int> RoundIntClamped(RValue<Float4> cast)
 #endif
 }
 
+RValue<Int4> ExtractQuad(RValue<SIMD::Int> val, int i)
+{
+	/*llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::VectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
+
+	llvm::Value *a = jit->builder->CreateExtractElement(v128, i);
+
+	return As<Int4>(V(jit->builder->CreateBitCast(a, T(Int4::type()))));*/
+
+	Int4 v;
+	v = Insert(v, Extract(val, i * 4 + 0), 0);
+	v = Insert(v, Extract(val, i * 4 + 1), 1);
+	v = Insert(v, Extract(val, i * 4 + 2), 2);
+	v = Insert(v, Extract(val, i * 4 + 3), 3);
+
+	return v;
+}
+
+RValue<SIMD::Int> InsertQuad(RValue<SIMD::Int> val, RValue<Int4> element, int i)
+{
+	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::VectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
+
+	llvm::Value *a = jit->builder->CreateBitCast(V(element.value()), llvm::IntegerType::get(*jit->context, 128));
+
+	llvm::Value *b = jit->builder->CreateInsertElement(v128, a, i);
+
+	return As<SIMD::Int>(V(b));
+}
+
 Type *SIMD::Int::type()
 {
 	return T(llvm::VectorType::get(T(scalar::Int::type()), SIMD::Width, false));

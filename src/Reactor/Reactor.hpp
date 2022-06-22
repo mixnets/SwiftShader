@@ -1125,7 +1125,6 @@ RValue<Short8> operator>>(RValue<Short8> lhs, unsigned char rhs);
 
 RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y);
 RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y);
-RValue<Int4> Abs(RValue<Int4> x);
 
 class UShort8 : public LValue<UShort8>
 {
@@ -1619,6 +1618,7 @@ inline RValue<Int4> CmpGE(RValue<Int4> x, RValue<Int4> y)
 {
 	return CmpNLT(x, y);
 }
+RValue<Int4> Abs(RValue<Int4> x);
 RValue<Int4> Max(RValue<Int4> x, RValue<Int4> y);
 RValue<Int4> Min(RValue<Int4> x, RValue<Int4> y);
 // Convert to nearest integer. If a converted value is outside of the integer

@@ -2989,7 +2989,7 @@ RValue<UInt4> MulHigh(RValue<UInt4> x, RValue<UInt4> y)
 		return (xh * yh) + (xlyhh + xhylh) + oflow;
 	}
 
-	return As<UInt4>(Scalarize([](auto a, auto b) { return Int((Long(UInt(a)) * Long(UInt(b))) >> Long(Int(32))); }, As<Int4>(x), As<Int4>(y)));
+	return Scalarize([](auto a, auto b) { return UInt((Long(a) * Long(b)) >> Long(Int(32))); }, x, y);
 }
 
 RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)
