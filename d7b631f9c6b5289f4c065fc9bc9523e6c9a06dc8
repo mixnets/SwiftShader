@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45d55f4f_771577a8",
+        "filename": "tests/regres/testlists/vk-master-TIMEOUT.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-22T14:17:56Z",
+      "side": 1,
+      "message": "b/184952772",
+      "range": {
+        "startLine": 1,
+        "startChar": 22,
+        "endLine": 1,
+        "endChar": 43
+      },
+      "revId": "d7b631f9c6b5289f4c065fc9bc9523e6c9a06dc8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
