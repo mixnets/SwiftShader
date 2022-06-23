@@ -443,6 +443,7 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityGroupNonUniformBallot: capabilities.GroupNonUniformBallot = true; break;
 				case spv::CapabilityGroupNonUniformShuffle: capabilities.GroupNonUniformShuffle = true; break;
 				case spv::CapabilityGroupNonUniformShuffleRelative: capabilities.GroupNonUniformShuffleRelative = true; break;
+				case spv::CapabilityGroupNonUniformQuad: capabilities.GroupNonUniformQuad = true; break;
 				case spv::CapabilityDeviceGroup: capabilities.DeviceGroup = true; break;
 				case spv::CapabilityMultiView: capabilities.MultiView = true; break;
 				case spv::CapabilityDemoteToHelperInvocation: capabilities.DemoteToHelperInvocation = true; break;
@@ -731,6 +732,8 @@ SpirvShader::SpirvShader(
 		case spv::OpGroupNonUniformAllEqual:
 		case spv::OpGroupNonUniformBroadcast:
 		case spv::OpGroupNonUniformBroadcastFirst:
+		case spv::OpGroupNonUniformQuadBroadcast:
+		case spv::OpGroupNonUniformQuadSwap:
 		case spv::OpGroupNonUniformBallot:
 		case spv::OpGroupNonUniformInverseBallot:
 		case spv::OpGroupNonUniformBallotBitExtract:
@@ -2215,6 +2218,8 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 	case spv::OpGroupNonUniformAllEqual:
 	case spv::OpGroupNonUniformBroadcast:
 	case spv::OpGroupNonUniformBroadcastFirst:
+	case spv::OpGroupNonUniformQuadBroadcast:
+	case spv::OpGroupNonUniformQuadSwap:
 	case spv::OpGroupNonUniformBallot:
 	case spv::OpGroupNonUniformInverseBallot:
 	case spv::OpGroupNonUniformBallotBitExtract:
@@ -2769,7 +2774,7 @@ SpirvShader::Operand::Operand(const SpirvShader *shader, const EmitState *state,
 SpirvShader::Operand::Operand(const EmitState *state, const Object &object)
     : constant(object.kind == SpirvShader::Object::Kind::Constant ? object.constantValue.data() : nullptr)
     , intermediate(object.kind == SpirvShader::Object::Kind::Intermediate ? &state->getIntermediate(object.id()) : nullptr)
-	, pointer(object.kind == SpirvShader::Object::Kind::Pointer ? &state->getPointer(object.id()) : nullptr)
+    , pointer(object.kind == SpirvShader::Object::Kind::Pointer ? &state->getPointer(object.id()) : nullptr)
     , componentCount(intermediate ? intermediate->componentCount : object.constantValue.size())
 {
 	ASSERT(intermediate || constant || pointer);
