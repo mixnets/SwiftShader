@@ -194,6 +194,92 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 		}
 		break;
 
+	case spv::OpGroupNonUniformQuadBroadcast:
+		{
+			auto valueId = Object::ID(insn.word(4));
+			auto indexId = Object::ID(insn.word(5));
+			Operand value(this, state, valueId);
+			if(getObject(indexId).kind == SpirvShader::Object::Kind::Constant)
+			{
+				int index = GetConstScalarInt(insn.word(5));
+				for(auto i = 0u; i < type.componentCount; i++)
+				{
+					SIMD::Int v = value.Int(i);
+					switch(index)
+					{
+					case 0:
+						dst.move(i, v.xxxx);
+						break;
+					case 1:
+						dst.move(i, v.yyyy);
+						break;
+					case 2:
+						dst.move(i, v.zzzz);
+						break;
+					case 3:
+						dst.move(i, v.wwww);
+						break;
+					default:
+						// Undefined result, so just move v to dst
+						dst.move(i, v);
+						break;
+					}
+				}
+			}
+			else
+			{
+				SIMD::Int active = state->activeLaneMask();
+				Operand index(this, state, indexId);
+				ASSERT(getType(getObject(insn.word(5))).componentCount == 1);
+				SIMD::Int indexV = index.Int(0);
+
+				// Need the index from an active lane. Note that index is uniform so it's arbitrary
+				// which lane we choose.
+				auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+				auto elect = active & ~(v0111 & (active.xxyz | active.xxxy | active.xxxx));
+				indexV = OrAll(elect & indexV);
+
+				SIMD::Int mask = CmpEQ(indexV, SIMD::Int(0, 1, 2, 3));
+
+				for(auto i = 0u; i < type.componentCount; i++)
+				{
+					dst.move(i, OrAll(value.Int(i) & mask));
+				}
+			}
+		}
+		break;
+
+	case spv::OpGroupNonUniformQuadSwap:
+		{
+			auto valueId = Object::ID(insn.word(4));
+			// SPIR-V spec: Drection must be a scalar of integer type and come from a constant instruction
+			int direction = GetConstScalarInt(insn.word(5));
+
+			Operand value(this, state, valueId);
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				SIMD::Int v = value.Int(i);
+				switch(direction)
+				{
+				case 0:  // Horizontal
+					dst.move(i, v.yxwz);
+					break;
+				case 1:  // Vertical
+					dst.move(i, v.zwxy);
+					break;
+				case 2:  // Diagonal
+					dst.move(i, v.wzyx);
+					break;
+				default:
+					// SPIR-V spec doesn't say another direction value is illegal, so I'm
+					// assuming that no swap happens and the result is still valid.
+					dst.move(i, v);
+					break;
+				}
+			}
+		}
+		break;
+
 	case spv::OpGroupNonUniformBallot:
 		{
 			ASSERT(type.componentCount == 4);
