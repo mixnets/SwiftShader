@@ -22,6 +22,30 @@
       },
       "revId": "71ab754be6a47989cd03bbb4dd353509cdec69b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b16d53c_e7061b42",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-23T20:18:13Z",
+      "side": 1,
+      "message": "Inactive lanes might have values that are not equal to the values in active lanes. Say index contains {0, 2, 2, 2} (and the activeLaneMask is {0, -1, -1, -1}), then if you don\u0027t populate all the lanes in index, and you do mask \u003d CmpEq(...), then you\u0027ll get a mask of {-1, 0, -1, 0}. This is wrong because only a single lane can be broadcast to all other lanes.\n\nIt\u0027s necessary to do this so that all lanes are guaranteed to be filled with the same value for the comparison on 210.",
+      "parentUuid": "8b945643_f52c44f2",
+      "range": {
+        "startLine": 206,
+        "startChar": 3,
+        "endLine": 209,
+        "endChar": 33
+      },
+      "revId": "71ab754be6a47989cd03bbb4dd353509cdec69b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
