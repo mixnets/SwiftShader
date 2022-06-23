@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b945643_f52c44f2",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-23T20:04:44Z",
+      "side": 1,
+      "message": "Wouldn\u0027t it still produce the correct result if we removed these 2 lines?\nIt looks to me like doing this could potentially cause an issue, but maybe I\u0027m misunderstanding what this is trying to do.",
+      "range": {
+        "startLine": 206,
+        "startChar": 3,
+        "endLine": 209,
+        "endChar": 33
+      },
+      "revId": "71ab754be6a47989cd03bbb4dd353509cdec69b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
