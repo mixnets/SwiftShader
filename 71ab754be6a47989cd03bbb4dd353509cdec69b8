@@ -110,6 +110,30 @@
       },
       "revId": "71ab754be6a47989cd03bbb4dd353509cdec69b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e48680dd_d13025ad",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-06-27T19:18:07Z",
+      "side": 1,
+      "message": "https://gitlab.khronos.org/spirv/SPIR-V/-/issues/707",
+      "parentUuid": "d7cd1c07_ab01cc3f",
+      "range": {
+        "startLine": 241,
+        "startChar": 5,
+        "endLine": 244,
+        "endChar": 20
+      },
+      "revId": "71ab754be6a47989cd03bbb4dd353509cdec69b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
