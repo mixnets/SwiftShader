@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4891a976_d9f39bdb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-27T18:55:22Z",
+      "side": 1,
+      "message": "LGTM with one change:",
+      "revId": "71ab754be6a47989cd03bbb4dd353509cdec69b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8b945643_f52c44f2",
@@ -67,6 +84,29 @@
         "startChar": 3,
         "endLine": 209,
         "endChar": 33
+      },
+      "revId": "71ab754be6a47989cd03bbb4dd353509cdec69b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7cd1c07_ab01cc3f",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-27T18:55:22Z",
+      "side": 1,
+      "message": "If it\u0027s not defined by the spec, the result is undefined. So let\u0027s add an `UNSUPPORTED()` here.\n\nIt\u0027s probably an oversight that this isn\u0027t explicitly stated as undefined (or indeed expected to be a no-op) by the spec. Please file a bug at https://gitlab.khronos.org/spirv/SPIR-V.",
+      "range": {
+        "startLine": 241,
+        "startChar": 5,
+        "endLine": 244,
+        "endChar": 20
       },
       "revId": "71ab754be6a47989cd03bbb4dd353509cdec69b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
