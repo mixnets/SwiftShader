@@ -4150,6 +4150,7 @@ Nucleus::CoroutineHandle Nucleus::invokeCoroutineBegin(Routine &routine, std::fu
 //namespace SIMD {
 
 SIMD::Int::Int(RValue<scalar::Int> rhs)
+    : XYZW(this)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *vector = loadValue();
@@ -4281,6 +4282,7 @@ Type *SIMD::Int::type()
 }
 
 SIMD::UInt::UInt(RValue<SIMD::Float> cast)
+    : XYZW(this)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *xyzw = Nucleus::createFPToUI(cast.value(), SIMD::UInt::type());
@@ -4288,6 +4290,7 @@ SIMD::UInt::UInt(RValue<SIMD::Float> cast)
 }
 
 SIMD::UInt::UInt(RValue<scalar::UInt> rhs)
+    : XYZW(this)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *vector = loadValue();
@@ -4382,6 +4385,7 @@ Type *SIMD::UInt::type()
 }
 
 SIMD::Float::Float(RValue<scalar::Float> rhs)
+    : XYZW(this)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *vector = loadValue();

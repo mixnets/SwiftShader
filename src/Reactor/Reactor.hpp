@@ -124,6 +124,24 @@ struct Scalar<UInt4>
 	using Type = UInt;
 };
 
+template<>
+struct Scalar<SIMD::Float>
+{
+	using Type = Float;
+};
+
+template<>
+struct Scalar<SIMD::Int>
+{
+	using Type = Int;
+};
+
+template<>
+struct Scalar<SIMD::UInt>
+{
+	using Type = UInt;
+};
+
 class Void
 {
 public:

@@ -90,12 +90,12 @@ namespace SIMD {
 // Width is the number of per-lane scalars packed into each SIMD vector.
 static constexpr int Width = 4;
 
-//using Float = rr::SIMD::Float;
-//using Int = rr::SIMD::Int;
-//using UInt = rr::SIMD::UInt;
-using Float = rr::Float4;
-using Int = rr::Int4;
-using UInt = rr::UInt4;
+using Float = rr::SIMD::Float;
+using Int = rr::SIMD::Int;
+using UInt = rr::SIMD::UInt;
+//using Float = rr::Float4;
+//using Int = rr::Int4;
+//using UInt = rr::UInt4;
 using Pointer = rr::Pointer4;
 
 // Vulkan 'SPIR-V Extended Instructions for GLSL' (GLSL.std.450) compliant transcendental functions
