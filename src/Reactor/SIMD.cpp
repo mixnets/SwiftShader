@@ -18,7 +18,7 @@
 
 #include <cmath>
 
-namespace rr::SIMD {
+namespace rr {
 
 SIMD::Int::Int()
 {
@@ -676,4 +676,4 @@ RValue<SIMD::Float> Log2(RValue<SIMD::Float> x)
 	return ScalarizeCall(log2f, x);
 }
 
-}  // namespace rr::SIMD
+}  // namespace rr

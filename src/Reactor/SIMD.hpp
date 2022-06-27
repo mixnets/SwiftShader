@@ -17,9 +17,11 @@
 
 #include "Reactor.hpp"
 
-namespace rr::SIMD {
+namespace rr {
 
 namespace scalar = rr;
+
+namespace SIMD {
 
 extern const int Width;
 
@@ -40,7 +42,6 @@ public:
 	Int(RValue<SIMD::UInt> rhs);
 	Int(const UInt &rhs);
 	Int(const Reference<SIMD::UInt> &rhs);
-	Int(RValue<scalar::Int2> lo, RValue<scalar::Int2> hi);
 	Int(RValue<scalar::Int> rhs);
 	Int(const scalar::Int &rhs);
 	Int(const Reference<scalar::Int> &rhs);
@@ -54,6 +55,62 @@ public:
 	static int element_count() { return SIMD::Width; }
 };
 
+class UInt : public LValue<SIMD::UInt>
+{
+public:
+	explicit UInt(RValue<SIMD::Float> cast);
+
+	UInt();
+	UInt(int broadcast);
+	UInt(RValue<SIMD::UInt> rhs);
+	UInt(const UInt &rhs);
+	UInt(const Reference<SIMD::UInt> &rhs);
+	UInt(RValue<SIMD::Int> rhs);
+	UInt(const Int &rhs);
+	UInt(const Reference<SIMD::Int> &rhs);
+	UInt(RValue<scalar::UInt> rhs);
+	UInt(const scalar::UInt &rhs);
+	UInt(const Reference<scalar::UInt> &rhs);
+
+	RValue<SIMD::UInt> operator=(RValue<SIMD::UInt> rhs);
+	RValue<SIMD::UInt> operator=(const UInt &rhs);
+	RValue<SIMD::UInt> operator=(const Reference<SIMD::UInt> &rhs);
+
+	static Type *type();
+	static int element_count() { return SIMD::Width; }
+};
+
+class Float : public LValue<SIMD::Float>
+{
+public:
+	explicit Float(RValue<SIMD::Int> cast);
+	explicit Float(RValue<SIMD::UInt> cast);
+
+	Float();
+	Float(float broadcast);
+	Float(RValue<SIMD::Float> rhs);
+	Float(const Float &rhs);
+	Float(const Reference<SIMD::Float> &rhs);
+	Float(RValue<scalar::Float> rhs);
+	Float(const scalar::Float &rhs);
+	Float(const Reference<scalar::Float> &rhs);
+
+	RValue<SIMD::Float> operator=(float broadcast);
+	RValue<SIMD::Float> operator=(RValue<SIMD::Float> rhs);
+	RValue<SIMD::Float> operator=(const Float &rhs);
+	RValue<SIMD::Float> operator=(const Reference<SIMD::Float> &rhs);
+	RValue<SIMD::Float> operator=(RValue<scalar::Float> rhs);
+	RValue<SIMD::Float> operator=(const scalar::Float &rhs);
+	RValue<SIMD::Float> operator=(const Reference<scalar::Float> &rhs);
+
+	static Float infinity();
+
+	static Type *type();
+	static int element_count() { return SIMD::Width; }
+};
+
+}  // namespace SIMD
+
 RValue<SIMD::Int> operator+(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
 RValue<SIMD::Int> operator-(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
 RValue<SIMD::Int> operator*(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
@@ -66,23 +123,23 @@ RValue<SIMD::Int> operator<<(RValue<SIMD::Int> lhs, unsigned char rhs);
 RValue<SIMD::Int> operator>>(RValue<SIMD::Int> lhs, unsigned char rhs);
 RValue<SIMD::Int> operator<<(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
 RValue<SIMD::Int> operator>>(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
-RValue<SIMD::Int> operator+=(Int &lhs, RValue<SIMD::Int> rhs);
-RValue<SIMD::Int> operator-=(Int &lhs, RValue<SIMD::Int> rhs);
-RValue<SIMD::Int> operator*=(Int &lhs, RValue<SIMD::Int> rhs);
-//	RValue<SIMD::Int> operator/=(Int &lhs, RValue<SIMD::Int> rhs);
-//	RValue<SIMD::Int> operator%=(Int &lhs, RValue<SIMD::Int> rhs);
-RValue<SIMD::Int> operator&=(Int &lhs, RValue<SIMD::Int> rhs);
-RValue<SIMD::Int> operator|=(Int &lhs, RValue<SIMD::Int> rhs);
-RValue<SIMD::Int> operator^=(Int &lhs, RValue<SIMD::Int> rhs);
-RValue<SIMD::Int> operator<<=(Int &lhs, unsigned char rhs);
-RValue<SIMD::Int> operator>>=(Int &lhs, unsigned char rhs);
+RValue<SIMD::Int> operator+=(SIMD::Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator-=(SIMD::Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator*=(SIMD::Int &lhs, RValue<SIMD::Int> rhs);
+//	RValue<SIMD::Int> operator/=(SIMD::Int &lhs, RValue<SIMD::Int> rhs);
+//	RValue<SIMD::Int> operator%=(SIMD::Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator&=(SIMD::Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator|=(SIMD::Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator^=(SIMD::Int &lhs, RValue<SIMD::Int> rhs);
+RValue<SIMD::Int> operator<<=(SIMD::Int &lhs, unsigned char rhs);
+RValue<SIMD::Int> operator>>=(SIMD::Int &lhs, unsigned char rhs);
 RValue<SIMD::Int> operator+(RValue<SIMD::Int> val);
 RValue<SIMD::Int> operator-(RValue<SIMD::Int> val);
 RValue<SIMD::Int> operator~(RValue<SIMD::Int> val);
-//	RValue<SIMD::Int> operator++(Int &val, int);   // Post-increment
-//	const Int &operator++(Int &val);   // Pre-increment
-//	RValue<SIMD::Int> operator--(Int &val, int);   // Post-decrement
-//	const Int &operator--(Int &val);   // Pre-decrement
+//	RValue<SIMD::Int> operator++(SIMD::Int &val, int);   // Post-increment
+//	const Int &operator++(SIMD::Int &val);   // Pre-increment
+//	RValue<SIMD::Int> operator--(SIMD::Int &val, int);   // Post-decrement
+//	const Int &operator--(SIMD::Int &val);   // Pre-decrement
 //	RValue<Bool> operator<(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
 //	RValue<Bool> operator<=(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
 //	RValue<Bool> operator>(RValue<SIMD::Int> lhs, RValue<SIMD::Int> rhs);
@@ -120,32 +177,6 @@ RValue<SIMD::Int> Insert(RValue<SIMD::Int> val, RValue<scalar::Int> element, int
 RValue<Int4> Extract128(RValue<SIMD::Int> val, int i);
 RValue<SIMD::Int> Insert128(RValue<SIMD::Int> val, RValue<Int4> element, int i);
 
-class UInt : public LValue<SIMD::UInt>
-{
-public:
-	explicit UInt(RValue<SIMD::Float> cast);
-
-	UInt();
-	UInt(int broadcast);
-	UInt(RValue<SIMD::UInt> rhs);
-	UInt(const UInt &rhs);
-	UInt(const Reference<SIMD::UInt> &rhs);
-	UInt(RValue<SIMD::Int> rhs);
-	UInt(const Int &rhs);
-	UInt(const Reference<SIMD::Int> &rhs);
-	UInt(RValue<scalar::UInt2> lo, RValue<scalar::UInt2> hi);
-	UInt(RValue<scalar::UInt> rhs);
-	UInt(const scalar::UInt &rhs);
-	UInt(const Reference<scalar::UInt> &rhs);
-
-	RValue<SIMD::UInt> operator=(RValue<SIMD::UInt> rhs);
-	RValue<SIMD::UInt> operator=(const UInt &rhs);
-	RValue<SIMD::UInt> operator=(const Reference<SIMD::UInt> &rhs);
-
-	static Type *type();
-	static int element_count() { return SIMD::Width; }
-};
-
 RValue<SIMD::UInt> operator+(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 RValue<SIMD::UInt> operator-(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 RValue<SIMD::UInt> operator*(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
@@ -158,23 +189,23 @@ RValue<SIMD::UInt> operator<<(RValue<SIMD::UInt> lhs, unsigned char rhs);
 RValue<SIMD::UInt> operator>>(RValue<SIMD::UInt> lhs, unsigned char rhs);
 RValue<SIMD::UInt> operator<<(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 RValue<SIMD::UInt> operator>>(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
-RValue<SIMD::UInt> operator+=(UInt &lhs, RValue<SIMD::UInt> rhs);
-RValue<SIMD::UInt> operator-=(UInt &lhs, RValue<SIMD::UInt> rhs);
-RValue<SIMD::UInt> operator*=(UInt &lhs, RValue<SIMD::UInt> rhs);
-//	RValue<SIMD::UInt> operator/=(UInt &lhs, RValue<SIMD::UInt> rhs);
-//	RValue<SIMD::UInt> operator%=(UInt &lhs, RValue<SIMD::UInt> rhs);
-RValue<SIMD::UInt> operator&=(UInt &lhs, RValue<SIMD::UInt> rhs);
-RValue<SIMD::UInt> operator|=(UInt &lhs, RValue<SIMD::UInt> rhs);
-RValue<SIMD::UInt> operator^=(UInt &lhs, RValue<SIMD::UInt> rhs);
-RValue<SIMD::UInt> operator<<=(UInt &lhs, unsigned char rhs);
-RValue<SIMD::UInt> operator>>=(UInt &lhs, unsigned char rhs);
+RValue<SIMD::UInt> operator+=(SIMD::UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator-=(SIMD::UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator*=(SIMD::UInt &lhs, RValue<SIMD::UInt> rhs);
+//	RValue<SIMD::UInt> operator/=(SIMD::UInt &lhs, RValue<SIMD::UInt> rhs);
+//	RValue<SIMD::UInt> operator%=(SIMD::UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator&=(SIMD::UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator|=(SIMD::UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator^=(SIMD::UInt &lhs, RValue<SIMD::UInt> rhs);
+RValue<SIMD::UInt> operator<<=(SIMD::UInt &lhs, unsigned char rhs);
+RValue<SIMD::UInt> operator>>=(SIMD::UInt &lhs, unsigned char rhs);
 RValue<SIMD::UInt> operator+(RValue<SIMD::UInt> val);
 RValue<SIMD::UInt> operator-(RValue<SIMD::UInt> val);
 RValue<SIMD::UInt> operator~(RValue<SIMD::UInt> val);
-//	RValue<SIMD::UInt> operator++(UInt &val, int);   // Post-increment
-//	const UInt &operator++(UInt &val);   // Pre-increment
-//	RValue<SIMD::UInt> operator--(UInt &val, int);   // Post-decrement
-//	const UInt &operator--(UInt &val);   // Pre-decrement
+//	RValue<SIMD::UInt> operator++(SIMD::UInt &val, int);   // Post-increment
+//	const UInt &operator++(SIMD::UInt &val);   // Pre-increment
+//	RValue<SIMD::UInt> operator--(SIMD::UInt &val, int);   // Post-decrement
+//	const UInt &operator--(SIMD::UInt &val);   // Pre-decrement
 //	RValue<Bool> operator<(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 //	RValue<Bool> operator<=(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 //	RValue<Bool> operator>(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
@@ -204,45 +235,16 @@ RValue<UInt4> Extract128(RValue<SIMD::UInt> val, int i);
 RValue<SIMD::UInt> Insert128(RValue<SIMD::UInt> val, RValue<UInt4> element, int i);
 //	RValue<SIMD::UInt> RoundInt(RValue<SIMD::Float> cast);
 
-class Float : public LValue<SIMD::Float>
-{
-public:
-	explicit Float(RValue<SIMD::Int> cast);
-	explicit Float(RValue<SIMD::UInt> cast);
-
-	Float();
-	Float(float broadcast);
-	Float(RValue<SIMD::Float> rhs);
-	Float(const Float &rhs);
-	Float(const Reference<SIMD::Float> &rhs);
-	Float(RValue<scalar::Float> rhs);
-	Float(const scalar::Float &rhs);
-	Float(const Reference<scalar::Float> &rhs);
-
-	RValue<SIMD::Float> operator=(float broadcast);
-	RValue<SIMD::Float> operator=(RValue<SIMD::Float> rhs);
-	RValue<SIMD::Float> operator=(const Float &rhs);
-	RValue<SIMD::Float> operator=(const Reference<SIMD::Float> &rhs);
-	RValue<SIMD::Float> operator=(RValue<scalar::Float> rhs);
-	RValue<SIMD::Float> operator=(const scalar::Float &rhs);
-	RValue<SIMD::Float> operator=(const Reference<scalar::Float> &rhs);
-
-	static Float infinity();
-
-	static Type *type();
-	static int element_count() { return SIMD::Width; }
-};
-
 RValue<SIMD::Float> operator+(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
 RValue<SIMD::Float> operator-(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
 RValue<SIMD::Float> operator*(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
 RValue<SIMD::Float> operator/(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
 RValue<SIMD::Float> operator%(RValue<SIMD::Float> lhs, RValue<SIMD::Float> rhs);
-RValue<SIMD::Float> operator+=(Float &lhs, RValue<SIMD::Float> rhs);
-RValue<SIMD::Float> operator-=(Float &lhs, RValue<SIMD::Float> rhs);
-RValue<SIMD::Float> operator*=(Float &lhs, RValue<SIMD::Float> rhs);
-RValue<SIMD::Float> operator/=(Float &lhs, RValue<SIMD::Float> rhs);
-RValue<SIMD::Float> operator%=(Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator+=(SIMD::Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator-=(SIMD::Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator*=(SIMD::Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator/=(SIMD::Float &lhs, RValue<SIMD::Float> rhs);
+RValue<SIMD::Float> operator%=(SIMD::Float &lhs, RValue<SIMD::Float> rhs);
 RValue<SIMD::Float> operator+(RValue<SIMD::Float> val);
 RValue<SIMD::Float> operator-(RValue<SIMD::Float> val);
 
@@ -325,6 +327,6 @@ RValue<SIMD::Float> Log(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Exp2(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Log2(RValue<SIMD::Float> x);
 
-}  // namespace rr::SIMD
+}  // namespace rr
 
 #endif  // rr_SIMD_hpp
