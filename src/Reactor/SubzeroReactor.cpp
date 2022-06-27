@@ -4732,8 +4732,6 @@ Nucleus::CoroutineHandle Nucleus::invokeCoroutineBegin(Routine &routine, std::fu
 	}
 }
 
-namespace SIMD {
-
 SIMD::Int::Int(RValue<scalar::Int> rhs)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
@@ -5331,7 +5329,5 @@ Type *SIMD::Float::type()
 {
 	return T(Ice::IceType_v4f32);
 }
-
-}  // namespace SIMD
 
 }  // namespace rr
