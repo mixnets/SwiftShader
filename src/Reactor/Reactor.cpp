@@ -3489,6 +3489,16 @@ RValue<Int4> Insert(RValue<Int4> x, RValue<Int> element, int i)
 	return RValue<Int4>(Nucleus::createInsertElement(x.value(), element.value(), i));
 }
 
+RValue<Int4> Extract128(RValue<Int4> x, int i)
+{
+	return x;
+}
+
+RValue<Int4> Insert128(RValue<Int4> x, RValue<Int4> element, int i)
+{
+	return element;
+}
+
 RValue<Int4> Swizzle(RValue<Int4> x, uint16_t select)
 {
 	return RValue<Int4>(createSwizzle4(x.value(), select));
@@ -3729,6 +3739,16 @@ RValue<UInt> Extract(RValue<UInt4> x, int i)
 RValue<UInt4> Insert(RValue<UInt4> x, RValue<UInt> element, int i)
 {
 	return RValue<UInt4>(Nucleus::createInsertElement(x.value(), element.value(), i));
+}
+
+RValue<UInt4> Extract128(RValue<UInt4> x, int i)
+{
+	return x;
+}
+
+RValue<UInt4> Insert128(RValue<UInt4> x, RValue<UInt4> element, int i)
+{
+	return element;
 }
 
 RValue<UInt4> Swizzle(RValue<UInt4> x, uint16_t select)
@@ -4227,6 +4247,16 @@ RValue<Float4> Insert(RValue<Float4> x, RValue<Float> element, int i)
 RValue<Float> Extract(RValue<Float4> x, int i)
 {
 	return RValue<Float>(Nucleus::createExtractElement(x.value(), Float::type(), i));
+}
+
+RValue<Float4> Insert128(RValue<Float4> x, RValue<Float4> element, int i)
+{
+	return element;
+}
+
+RValue<Float4> Extract128(RValue<Float4> x, int i)
+{
+	return x;
 }
 
 RValue<Float4> Swizzle(RValue<Float4> x, uint16_t select)
