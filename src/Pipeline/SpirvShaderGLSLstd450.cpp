@@ -21,20 +21,23 @@
 #include <spirv/unified1/GLSL.std.450.h>
 #include <spirv/unified1/spirv.hpp>
 
-namespace {
-constexpr float PI = 3.141592653589793f;
+namespace sw {
 
-sw::SIMD::Float Interpolate(const sw::SIMD::Float &x, const sw::SIMD::Float &y, const sw::SIMD::Float &rhw,
-                            const sw::SIMD::Float &A, const sw::SIMD::Float &B, const sw::SIMD::Float &C,
-                            sw::SpirvRoutine::Interpolation interpolation)
+using namespace rr;
+
+static constexpr float PI = 3.141592653589793f;
+
+static SIMD::Float Interpolate(const SIMD::Float &x, const SIMD::Float &y, const SIMD::Float &rhw,
+                               const SIMD::Float &A, const SIMD::Float &B, const SIMD::Float &C,
+                               SpirvRoutine::Interpolation interpolation)
 {
-	sw::SIMD::Float interpolant = C;
+	SIMD::Float interpolant = C;
 
-	if(interpolation != sw::SpirvRoutine::Flat)
+	if(interpolation != SpirvRoutine::Flat)
 	{
 		interpolant += x * A + y * B;
 
-		if(interpolation == sw::SpirvRoutine::Perspective)
+		if(interpolation == SpirvRoutine::Perspective)
 		{
 			interpolant *= rhw;
 		}
@@ -42,10 +45,6 @@ sw::SIMD::Float Interpolate(const sw::SIMD::Float &x, const sw::SIMD::Float &y, 
 
 	return interpolant;
 }
-
-}  // namespace
-
-namespace sw {
 
 SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitState *state) const
 {
@@ -313,7 +312,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			SIMD::Float d = FDot(type.componentCount, I, N);
 			SIMD::Float k = SIMD::Float(1.0f) - eta.Float(0) * eta.Float(0) * (SIMD::Float(1.0f) - d * d);
 			SIMD::Int pos = CmpNLT(k, SIMD::Float(0.0f));
-			SIMD::Float t = (eta.Float(0) * d + Sqrt(k, r.RelaxedPrecision));
+			SIMD::Float t = (eta.Float(0) * d + SIMD::Sqrt(k, r.RelaxedPrecision));
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
@@ -343,7 +342,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			SIMD::Float d = FDot(getObjectType(insn.word(5)).componentCount, x, x);
 			Decorations r = GetDecorationsForId(insn.resultId());
 
-			dst.move(0, Sqrt(d, r.RelaxedPrecision));
+			dst.move(0, SIMD::Sqrt(d, r.RelaxedPrecision));
 		}
 		break;
 	case GLSLstd450Normalize:
@@ -352,7 +351,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			Decorations r = GetDecorationsForId(insn.resultId());
 
 			SIMD::Float d = FDot(getObjectType(insn.word(5)).componentCount, x, x);
-			SIMD::Float invLength = SIMD::Float(1.0f) / Sqrt(d, r.RelaxedPrecision);
+			SIMD::Float invLength = SIMD::Float(1.0f) / SIMD::Sqrt(d, r.RelaxedPrecision);
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
@@ -374,7 +373,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 				d += (p0.Float(i) - p1.Float(i)) * (p0.Float(i) - p1.Float(i));
 			}
 
-			dst.move(0, Sqrt(d, r.RelaxedPrecision));
+			dst.move(0, SIMD::Sqrt(d, r.RelaxedPrecision));
 		}
 		break;
 	case GLSLstd450Modf:
@@ -602,7 +601,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Sin(radians.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Sin(radians.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -613,7 +612,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Cos(radians.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Cos(radians.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -624,7 +623,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Tan(radians.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Tan(radians.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -635,7 +634,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Asin(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Asin(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -646,7 +645,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Acos(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Acos(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -657,7 +656,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Atan(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Atan(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -668,7 +667,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Sinh(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Sinh(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -679,7 +678,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Cosh(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Cosh(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -690,7 +689,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Tanh(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Tanh(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -701,7 +700,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Asinh(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Asinh(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -712,7 +711,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Acosh(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Acosh(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -723,7 +722,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Atanh(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Atanh(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -735,7 +734,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Atan2(x.Float(i), y.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Atan2(x.Float(i), y.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -747,7 +746,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Pow(x.Float(i), y.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Pow(x.Float(i), y.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -758,7 +757,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Exp(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Exp(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -769,7 +768,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Log(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Log(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -780,7 +779,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Exp2(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Exp2(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -791,7 +790,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, sw::Log2(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Log2(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -802,7 +801,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Sqrt(val.Float(i), d.RelaxedPrecision));
+				dst.move(i, SIMD::Sqrt(val.Float(i), d.RelaxedPrecision));
 			}
 		}
 		break;
@@ -943,7 +942,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto ptr = state->getPointer(insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Interpolate(ptr, d.Location, 0, i, state, SpirvShader::Centroid));
+				dst.move(i, EmitInterpolate(ptr, d.Location, 0, i, state, SpirvShader::Centroid));
 			}
 		}
 		break;
@@ -953,7 +952,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto ptr = state->getPointer(insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Interpolate(ptr, d.Location, insn.word(6), i, state, SpirvShader::AtSample));
+				dst.move(i, EmitInterpolate(ptr, d.Location, insn.word(6), i, state, SpirvShader::AtSample));
 			}
 		}
 		break;
@@ -963,7 +962,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto ptr = state->getPointer(insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Interpolate(ptr, d.Location, insn.word(6), i, state, SpirvShader::AtOffset));
+				dst.move(i, EmitInterpolate(ptr, d.Location, insn.word(6), i, state, SpirvShader::AtOffset));
 			}
 		}
 		break;
@@ -1007,8 +1006,8 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 	return EmitResult::Continue;
 }
 
-SIMD::Float SpirvShader::Interpolate(SIMD::Pointer const &ptr, int32_t location, Object::ID paramId,
-                                     uint32_t component, EmitState *state, InterpolationType type) const
+SIMD::Float SpirvShader::EmitInterpolate(SIMD::Pointer const &ptr, int32_t location, Object::ID paramId,
+                                         uint32_t component, EmitState *state, InterpolationType type) const
 {
 	uint32_t interpolant = (location * 4);
 	uint32_t components_per_row = GetNumInputComponents(location);
@@ -1064,9 +1063,9 @@ SIMD::Float SpirvShader::Interpolate(SIMD::Pointer const &ptr, int32_t location,
 			// input variable is undefined, so we just clamp to avoid OOB accesses.
 			SIMD::Int samples = sampleOperand.Int(0) & SIMD::Int(NUM_SAMPLES - 1);
 
-			for(int i = 0; i < SIMD::Width; ++i)
+			for(int i = 0; i < SIMD::Width; i++)
 			{
-				Int sample = Extract(samples, i);
+				scalar::Int sample = Extract(samples, i);
 				x = Insert(x, sampleX[sample], i);
 				y = Insert(y, sampleY[sample], i);
 			}
@@ -1114,7 +1113,7 @@ SIMD::Float SpirvShader::Interpolate(SIMD::Pointer const &ptr, int32_t location,
 			B = Insert(B, Extract(*Pointer<SIMD::Float>(planeEquationI + OFFSET(PlaneEquation, B), 16), i), i);
 			C = Insert(C, Extract(*Pointer<SIMD::Float>(planeEquationI + OFFSET(PlaneEquation, C), 16), i), i);
 		}
-		return ::Interpolate(x, y, rhw, A, B, C, state->routine->inputsInterpolation[packedInterpolant]);
+		return Interpolate(x, y, rhw, A, B, C, state->routine->inputsInterpolation[packedInterpolant]);
 	}
 	else
 	{
@@ -1143,7 +1142,7 @@ SIMD::Float SpirvRoutine::interpolateAtXY(const SIMD::Float &x, const SIMD::Floa
 		B = *Pointer<SIMD::Float>(planeEquation + OFFSET(PlaneEquation, B), 16);
 	}
 
-	return ::Interpolate(x, y, rhw, A, B, C, interpolation);
+	return Interpolate(x, y, rhw, A, B, C, interpolation);
 }
 
 }  // namespace sw

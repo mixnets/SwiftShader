@@ -4147,7 +4147,7 @@ Nucleus::CoroutineHandle Nucleus::invokeCoroutineBegin(Routine &routine, std::fu
 	return func();
 }
 
-namespace SIMD {
+//namespace SIMD {
 
 SIMD::Int::Int(RValue<scalar::Int> rhs)
 {
@@ -4234,13 +4234,13 @@ RValue<SIMD::Int> Min(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 	return (x & less) | (y & ~less);
 }
 
-RValue<SIMD::Int> RoundInt(RValue<Float4> cast)
+RValue<SIMD::Int> RoundInt(RValue<SIMD::Float> cast)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	return As<SIMD::Int>(V(lowerRoundInt(V(cast.value()), T(SIMD::Int::type()))));
 }
 
-RValue<SIMD::Int> RoundIntClamped(RValue<Float4> cast)
+RValue<SIMD::Int> RoundIntClamped(RValue<SIMD::Float> cast)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 
@@ -4252,10 +4252,10 @@ RValue<SIMD::Int> RoundIntClamped(RValue<Float4> cast)
 #elif LLVM_VERSION_MAJOR >= 14
 	llvm::Value *rounded = lowerRound(V(cast.value()));
 	llvm::Function *fptosi_sat = llvm::Intrinsic::getDeclaration(
-	    jit->module.get(), llvm::Intrinsic::fptosi_sat, { T(SIMD::Int::type()), T(Float4::type()) });
+	    jit->module.get(), llvm::Intrinsic::fptosi_sat, { T(SIMD::Int::type()), T(SIMD::Float::type()) });
 	return RValue<SIMD::Int>(V(jit->builder->CreateCall(fptosi_sat, { rounded })));
 #else
-	RValue<Float4> clamped = Max(Min(cast, Float4(0x7FFFFF80)), Float4(static_cast<int>(0x80000000)));
+	RValue<SIMD::Float> clamped = Max(Min(cast, SIMD::Float(0x7FFFFF80)), SIMD::Float(static_cast<int>(0x80000000)));
 	return As<SIMD::Int>(V(lowerRoundInt(V(clamped.value()), T(SIMD::Int::type()))));
 #endif
 }
@@ -4560,6 +4560,6 @@ Type *SIMD::Float::type()
 	return T(llvm::VectorType::get(T(scalar::Float::type()), SIMD::Width, false));
 }
 
-}  // namespace SIMD
+//}  // namespace SIMD
 
 }  // namespace rr
