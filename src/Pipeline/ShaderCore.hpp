@@ -93,10 +93,42 @@ static constexpr int Width = 4;
 using Float = rr::SIMD::Float;
 using Int = rr::SIMD::Int;
 using UInt = rr::SIMD::UInt;
+using Pointer = rr::SIMD::Pointer;
 //using Float = rr::Float4;
 //using Int = rr::Int4;
 //using UInt = rr::UInt4;
-using Pointer = rr::Pointer4;
+//using Pointer = rr::Pointer4;
+
+struct Float4
+{
+	//SIMD::Float &operator[](int i)
+	//{
+	//	switch(i)
+	//	{
+	//	case 0: return x;
+	//	case 1: return y;
+	//	case 2: return z;
+	//	case 3: return w;
+	//	}
+
+	//	return x;
+	//}
+
+	SIMD::Float x;
+	SIMD::Float y;
+	SIMD::Float z;
+	SIMD::Float w;
+};
+
+struct Int4
+{
+	SIMD::Int x;
+	SIMD::Int y;
+	SIMD::Int z;
+	SIMD::Int w;
+};
+
+}  // namespace SIMD
 
 // Vulkan 'SPIR-V Extended Instructions for GLSL' (GLSL.std.450) compliant transcendental functions
 RValue<SIMD::Float> Sin(RValue<SIMD::Float> x, bool relaxedPrecision);
@@ -131,13 +163,14 @@ template<> inline RValue<SIMD::Float> Sqrt<Mediump>(RValue<SIMD::Float> x) { ret
 
 SIMD::UInt halfToFloatBits(SIMD::UInt halfBits);
 SIMD::UInt floatToHalfBits(SIMD::UInt floatBits, bool storeInUpperBits);
-
-}  // namespace SIMD
+SIMD::Float linearToSRGB(const SIMD::Float &c);
+SIMD::Float sRGBtoLinear(const SIMD::Float &c);
 
 RValue<Float4> reciprocal(RValue<Float4> x, bool pp = false, bool exactAtPow2 = false);
+RValue<SIMD::Float> reciprocal(RValue<SIMD::Float> x, bool pp = false, bool exactAtPow2 = false);
 RValue<Float4> reciprocalSquareRoot(RValue<Float4> x, bool abs, bool pp = false);
 
-RValue<Float4> mulAdd(RValue<Float4> x, RValue<Float4> y, RValue<Float4> z);  // TODO(chromium:1299047)
+RValue<SIMD::Float> mulAdd(RValue<SIMD::Float> x, RValue<SIMD::Float> y, RValue<SIMD::Float> z);  // TODO(chromium:1299047)
 
 RValue<Float4> Pow(RValue<Float4> x, RValue<Float4> y, bool relaxedPrecision);
 RValue<Float4> Sqrt(RValue<Float4> x, bool relaxedPrecision);

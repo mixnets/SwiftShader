@@ -92,9 +92,6 @@ struct Constants
 	int Xf[4];
 	int Yf[4];
 
-	float4 X[4];
-	float4 Y[4];
-
 	// VK_SAMPLE_COUNT_4_BIT
 	// https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html#primsrast-multisampling
 	static constexpr float VkSampleLocations4[][2] = {
