@@ -1,6 +1,6 @@
 {
     "remote": "https://github.com/KhronosGroup/VK-GL-CTS.git",
-    "branch": "",
+    "branch": "vulkan-cts-1.3.2",
     "sha": "f08773d25d83229cfda333f307da30825b8c32d8",
     "patches": [
         "tests/regres/deqp-patches/deqp-x11.patch"
