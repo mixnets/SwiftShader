@@ -350,19 +350,19 @@ void PixelRoutine::stencilTest(const Pointer<Byte> &sBuffer, const Int &x, Int s
 		value = value | (*Pointer<Byte8>(buffer + pitch - 2) & Byte8(0, 0, -1, -1, 0, 0, 0, 0));
 		Byte8 valueBack = value;
 
-		if(state.frontStencil.compareMask != 0xff)
+		if(state.frontStencil.useCompareMask())
 		{
 			value &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[0].testMaskQ));
 		}
 
-		stencilTest(value, state.frontStencil.compareOp, false);
+		stencilTest(value, state.frontStencil.getCompareOp(), false);
 
-		if(state.backStencil.compareMask != 0xff)
+		if(state.backStencil.useCompareMask())
 		{
 			valueBack &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[1].testMaskQ));
 		}
 
-		stencilTest(valueBack, state.backStencil.compareOp, true);
+		stencilTest(valueBack, state.backStencil.getCompareOp(), true);
 
 		value &= *Pointer<Byte8>(primitive + OFFSET(Primitive, clockwiseMask));
 		valueBack &= *Pointer<Byte8>(primitive + OFFSET(Primitive, invClockwiseMask));
@@ -781,15 +781,15 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, const Int &x, const Int 
 		return;
 	}
 
-	if(state.frontStencil.passOp == VK_STENCIL_OP_KEEP && state.frontStencil.depthFailOp == VK_STENCIL_OP_KEEP && state.frontStencil.failOp == VK_STENCIL_OP_KEEP)
+	if(state.frontStencil.getPassOp() == VK_STENCIL_OP_KEEP && state.frontStencil.getDepthFailOp() == VK_STENCIL_OP_KEEP && state.frontStencil.getFailOp() == VK_STENCIL_OP_KEEP)
 	{
-		if(state.backStencil.passOp == VK_STENCIL_OP_KEEP && state.backStencil.depthFailOp == VK_STENCIL_OP_KEEP && state.backStencil.failOp == VK_STENCIL_OP_KEEP)
+		if(state.backStencil.getPassOp() == VK_STENCIL_OP_KEEP && state.backStencil.getDepthFailOp() == VK_STENCIL_OP_KEEP && state.backStencil.getFailOp() == VK_STENCIL_OP_KEEP)
 		{
 			return;
 		}
 	}
 
-	if((state.frontStencil.writeMask == 0) && (state.backStencil.writeMask == 0))
+	if(state.frontStencil.writeDisabled() && state.backStencil.writeDisabled())
 	{
 		return;
 	}
@@ -808,7 +808,7 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, const Int &x, const Int 
 		bufferValue = bufferValue | (*Pointer<Byte8>(buffer + pitch - 2) & Byte8(0, 0, -1, -1, 0, 0, 0, 0));
 		Byte8 newValue = stencilOperation(bufferValue, state.frontStencil, false, zMask[q], sMask[q]);
 
-		if((state.frontStencil.writeMask & 0xFF) != 0xFF)  // Assume 8-bit stencil buffer
+		if(state.frontStencil.useWriteMask())  // Assume 8-bit stencil buffer
 		{
 			Byte8 maskedValue = bufferValue;
 			newValue &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[0].writeMaskQ));
@@ -818,7 +818,7 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, const Int &x, const Int 
 
 		Byte8 newValueBack = stencilOperation(bufferValue, state.backStencil, true, zMask[q], sMask[q]);
 
-		if((state.backStencil.writeMask & 0xFF) != 0xFF)  // Assume 8-bit stencil buffer
+		if(state.backStencil.useWriteMask())  // Assume 8-bit stencil buffer
 		{
 			Byte8 maskedValue = bufferValue;
 			newValueBack &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[1].writeMaskQ));
@@ -841,20 +841,20 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, const Int &x, const Int 
 
 Byte8 PixelRoutine::stencilOperation(const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask)
 {
-	Byte8 pass = stencilOperation(bufferValue, ops.passOp, isBack);
+	Byte8 pass = stencilOperation(bufferValue, ops.getPassOp(), isBack);
 
-	if(state.depthTestActive && ops.depthFailOp != ops.passOp)  // zMask valid and values not the same
+	if(state.depthTestActive && ops.getDepthFailOp() != ops.getPassOp())  // zMask valid and values not the same
 	{
-		Byte8 zFail = stencilOperation(bufferValue, ops.depthFailOp, isBack);
+		Byte8 zFail = stencilOperation(bufferValue, ops.getDepthFailOp(), isBack);
 
 		pass &= *Pointer<Byte8>(constants + OFFSET(Constants, maskB4Q) + 8 * zMask);
 		zFail &= *Pointer<Byte8>(constants + OFFSET(Constants, invMaskB4Q) + 8 * zMask);
 		pass |= zFail;
 	}
 
-	if(ops.failOp != ops.passOp || (state.depthTestActive && ops.failOp != ops.depthFailOp))
+	if(ops.getFailOp() != ops.getPassOp() || (state.depthTestActive && ops.getFailOp() != ops.getDepthFailOp()))
 	{
-		Byte8 fail = stencilOperation(bufferValue, ops.failOp, isBack);
+		Byte8 fail = stencilOperation(bufferValue, ops.getFailOp(), isBack);
 
 		pass &= *Pointer<Byte8>(constants + OFFSET(Constants, maskB4Q) + 8 * sMask);
 		fail &= *Pointer<Byte8>(constants + OFFSET(Constants, invMaskB4Q) + 8 * sMask);
