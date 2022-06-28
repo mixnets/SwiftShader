@@ -40,6 +40,21 @@ SIMD::Int::Int(int broadcast)
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
+SIMD::Int::Int(int x, int y, int z, int w)
+    : XYZW(this)
+{
+	std::vector<int64_t> constantVector = { x, y, z, w };
+	storeValue(Nucleus::createConstantVector(constantVector, type()));
+}
+
+SIMD::Int::Int(std::vector<int> v)
+    : XYZW(this)
+{
+	std::vector<int64_t> constantVector;
+	for(int i : v) { constantVector.push_back(i); }
+	storeValue(Nucleus::createConstantVector(constantVector, type()));
+}
+
 SIMD::Int::Int(RValue<SIMD::Int> rhs)
     : XYZW(this)
 {
@@ -86,6 +101,15 @@ SIMD::Int::Int(const Reference<scalar::Int> &rhs)
     : XYZW(this)
 {
 	*this = RValue<scalar::Int>(rhs.loadValue());
+}
+
+SIMD::Int::Int(RValue<packed::Int4> rhs)
+    : XYZW(this)
+{
+	for(int i = 0; i < SIMD::Width / 4; i++)
+	{
+		*this = Insert128(*this, rhs, i);
+	}
 }
 
 RValue<SIMD::Int> SIMD::Int::operator=(int x)
@@ -245,6 +269,21 @@ SIMD::UInt::UInt(int broadcast)
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
+SIMD::UInt::UInt(int x, int y, int z, int w)
+    : XYZW(this)
+{
+	std::vector<int64_t> constantVector = { x, y, z, w };
+	storeValue(Nucleus::createConstantVector(constantVector, type()));
+}
+
+SIMD::UInt::UInt(std::vector<int> v)
+    : XYZW(this)
+{
+	std::vector<int64_t> constantVector;
+	for(int i : v) { constantVector.push_back(i); }
+	storeValue(Nucleus::createConstantVector(constantVector, type()));
+}
+
 SIMD::UInt::UInt(RValue<SIMD::UInt> rhs)
     : XYZW(this)
 {
@@ -291,6 +330,15 @@ SIMD::UInt::UInt(const Reference<scalar::UInt> &rhs)
     : XYZW(this)
 {
 	*this = RValue<scalar::UInt>(rhs.loadValue());
+}
+
+SIMD::UInt::UInt(RValue<packed::UInt4> rhs)
+    : XYZW(this)
+{
+	for(int i = 0; i < SIMD::Width / 4; i++)
+	{
+		*this = Insert128(*this, rhs, i);
+	}
 }
 
 RValue<SIMD::UInt> SIMD::UInt::operator=(RValue<SIMD::UInt> rhs)
@@ -465,6 +513,21 @@ SIMD::Float::Float(float broadcast)
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
+SIMD::Float::Float(float x, float y, float z, float w)
+    : XYZW(this)
+{
+	std::vector<double> constantVector = { x, y, z, w };
+	storeValue(Nucleus::createConstantVector(constantVector, type()));
+}
+
+SIMD::Float::Float(std::vector<float> v)
+    : XYZW(this)
+{
+	std::vector<double> constantVector;
+	for(int f : v) { constantVector.push_back(f); }
+	storeValue(Nucleus::createConstantVector(constantVector, type()));
+}
+
 SIMD::Float SIMD::Float::infinity()
 {
 	SIMD::Float result;
@@ -504,6 +567,20 @@ SIMD::Float::Float(const Reference<scalar::Float> &rhs)
     : XYZW(this)
 {
 	*this = RValue<scalar::Float>(rhs.loadValue());
+}
+
+SIMD::Float::Float(RValue<packed::Float4> rhs)
+    : XYZW(this)
+{
+	for(int i = 0; i < SIMD::Width / 4; i++)
+	{
+		*this = Insert128(*this, rhs, i);
+	}
+}
+
+RValue<SIMD::Float> SIMD::Float::operator=(RValue<packed::Float4> rhs)
+{
+	return *this = SIMD::Float(rhs);
 }
 
 RValue<SIMD::Float> SIMD::Float::operator=(float x)
@@ -595,6 +672,24 @@ RValue<SIMD::Float> operator-(RValue<SIMD::Float> val)
 {
 	return RValue<SIMD::Float>(Nucleus::createFNeg(val.value()));
 }
+
+RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::Float(Rcp(Extract128(x, 0), relaxedPrecision, exactAtPow2));
+}
+
+RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::Float(RcpSqrt(Extract128(x, 0), relaxedPrecision));
+}
+
+//RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x)
+//{
+//	ASSERT(SIMD::Width == 4);
+//	return SIMD::Float(Sqrt(Extract128(x, 0)));
+//}
 
 RValue<SIMD::Float> Insert(RValue<SIMD::Float> x, RValue<scalar::Float> element, int i)
 {
@@ -704,6 +799,90 @@ RValue<SIMD::Float> Exp2(RValue<SIMD::Float> x)
 RValue<SIMD::Float> Log2(RValue<SIMD::Float> x)
 {
 	return ScalarizeCall(log2f, x);
+}
+
+RValue<Int> SignMask(RValue<SIMD::Int> x)
+{
+	ASSERT(SIMD::Width == 4);
+	return SignMask(Extract128(x, 0));
+}
+
+RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::UInt(Ctlz(Extract128(x, 0), isZeroUndef));
+}
+
+RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> x, bool isZeroUndef)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::UInt(Cttz(Extract128(x, 0), isZeroUndef));
+}
+
+RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::Int(MulHigh(Extract128(x, 0), Extract128(y, 0)));
+}
+
+RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::UInt(MulHigh(Extract128(x, 0), Extract128(y, 0)));
+}
+
+RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools)
+{
+	ASSERT(SIMD::Width == 4);
+	return AnyTrue(Extract128(bools, 0));
+}
+
+RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
+{
+	ASSERT(SIMD::Width == 4);
+	return AnyFalse(Extract128(bools, 0));
+}
+
+RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)
+{
+	ASSERT(SIMD::Width == 4);
+	return Divergent(Extract128(ints, 0));
+}
+
+RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::Int(Swizzle(Extract128(x, 0), select));
+}
+
+RValue<SIMD::UInt> Swizzle(RValue<SIMD::UInt> x, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::UInt(Swizzle(Extract128(x, 0), select));
+}
+
+RValue<SIMD::Float> Swizzle(RValue<SIMD::Float> x, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::Float(Swizzle(Extract128(x, 0), select));
+}
+
+RValue<SIMD::Int> Shuffle(RValue<SIMD::Int> x, RValue<SIMD::Int> y, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::Int(Shuffle(Extract128(x, 0), Extract128(y, 0), select));
+}
+
+RValue<SIMD::UInt> Shuffle(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::UInt(Shuffle(Extract128(x, 0), Extract128(y, 0), select));
+}
+
+RValue<SIMD::Float> Shuffle(RValue<SIMD::Float> x, RValue<SIMD::Float> y, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	return SIMD::Float(Shuffle(Extract128(x, 0), Extract128(y, 0), select));
 }
 
 }  // namespace rr
