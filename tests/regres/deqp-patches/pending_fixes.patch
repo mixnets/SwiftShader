@@ -1,0 +1,75 @@
+ .../vktFragmentOperationsEarlyFragmentTests.cpp    | 15 ++++++------
+ .../modules/vulkan/ycbcr/vktYCbCrViewTests.cpp     | 27 +++++++---------------
+ 2 files changed, 16 insertions(+), 26 deletions(-)
+
+diff --git a/external/vulkancts/modules/vulkan/fragment_ops/vktFragmentOperationsEarlyFragmentTests.cpp b/external/vulkancts/modules/vulkan/fragment_ops/vktFragmentOperationsEarlyFragmentTests.cpp
+index a255de397..a1a430316 100644
+--- a/external/vulkancts/modules/vulkan/fragment_ops/vktFragmentOperationsEarlyFragmentTests.cpp
++++ b/external/vulkancts/modules/vulkan/fragment_ops/vktFragmentOperationsEarlyFragmentTests.cpp
+@@ -362,13 +362,14 @@ tcu::TestStatus EarlyFragmentTestInstance::iterate (void)
+ 	{
+ 		tcu::Vec4* const pVertices = reinterpret_cast<tcu::Vec4*>(vertexBufferAlloc->getHostPtr());
+ 
+-		pVertices[0] = tcu::Vec4( 1.0f, -1.0f,  0.5f,  1.0f);
+-		pVertices[1] = tcu::Vec4(-1.0f, -1.0f,  0.0f,  1.0f);
+-		pVertices[2] = tcu::Vec4(-1.0f,  1.0f,  0.5f,  1.0f);
+-
+-		pVertices[3] = tcu::Vec4(-1.0f,  1.0f,  0.5f,  1.0f);
+-		pVertices[4] = tcu::Vec4( 1.0f,  1.0f,  1.0f,  1.0f);
+-		pVertices[5] = tcu::Vec4( 1.0f, -1.0f,  0.5f,  1.0f);
++		// A small +0.00001f adjustment for the z-coordinate to get the expected rounded value for depth.
++		pVertices[0] = tcu::Vec4( 1.0f, -1.0f,  0.50001f,  1.0f);
++		pVertices[1] = tcu::Vec4(-1.0f, -1.0f,  0.0f,      1.0f);
++		pVertices[2] = tcu::Vec4(-1.0f,  1.0f,  0.50001f,  1.0f);
++
++		pVertices[3] = tcu::Vec4(-1.0f,  1.0f,  0.50001f,  1.0f);
++		pVertices[4] = tcu::Vec4( 1.0f,  1.0f,  1.0f,      1.0f);
++		pVertices[5] = tcu::Vec4( 1.0f, -1.0f,  0.50001f,  1.0f);
+ 
+ 		flushAlloc(vk, device, *vertexBufferAlloc);
+ 		// No barrier needed, flushed memory is automatically visible
+diff --git a/external/vulkancts/modules/vulkan/ycbcr/vktYCbCrViewTests.cpp b/external/vulkancts/modules/vulkan/ycbcr/vktYCbCrViewTests.cpp
+index fd4ed135a..1734b5f12 100644
+--- a/external/vulkancts/modules/vulkan/ycbcr/vktYCbCrViewTests.cpp
++++ b/external/vulkancts/modules/vulkan/ycbcr/vktYCbCrViewTests.cpp
+@@ -392,32 +392,21 @@ void generateLookupCoordinates (const UVec2& imageSize, size_t numCoords, de::Ra
+ 	}
+ }
+ 
+-void checkImageUsageSupport (Context&			context,
+-							 VkFormat			format,
+-							 VkImageUsageFlags	usage)
++void checkImageFeatureSupport (Context& context, VkFormat format, VkFormatFeatureFlags req)
+ {
+-	const VkFormatProperties	formatProperties	= getPhysicalDeviceFormatProperties(context.getInstanceInterface(),
+-																						context.getPhysicalDevice(),
+-																						format);
+-	const VkFormatFeatureFlags	featureFlags		= formatProperties.optimalTilingFeatures;
++	const VkFormatProperties formatProperties = getPhysicalDeviceFormatProperties(	context.getInstanceInterface(),
++																					context.getPhysicalDevice(),
++																					format);
+ 
+-	if ((usage & VK_IMAGE_USAGE_SAMPLED_BIT) != 0
+-		&& (featureFlags & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) == 0)
+-	{
+-		TCU_THROW(NotSupportedError, "Format doesn't support sampling");
+-	}
+-
+-	// Other image usages are not handled currently
+-	DE_ASSERT((usage & ~(VK_IMAGE_USAGE_TRANSFER_SRC_BIT|VK_IMAGE_USAGE_TRANSFER_DST_BIT|VK_IMAGE_USAGE_SAMPLED_BIT)) == 0);
++	if (req & ~formatProperties.optimalTilingFeatures)
++		TCU_THROW(NotSupportedError, "Format doesn't support required features");
+ }
+ 
+ void checkSupport(Context& context, TestParameters params)
+ {
+-	const VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+-
+ 	checkImageSupport(context, params.format, params.createFlags);
+-	checkImageUsageSupport(context, params.format, usage);
+-	checkImageUsageSupport(context, params.planeCompatibleFormat, usage);
++	checkImageFeatureSupport(context, params.format,				VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT | VK_FORMAT_FEATURE_TRANSFER_DST_BIT | VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT);
++	checkImageFeatureSupport(context, params.planeCompatibleFormat,	VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT | VK_FORMAT_FEATURE_TRANSFER_DST_BIT);
+ }
+ 
+ tcu::TestStatus testPlaneView (Context& context, TestParameters params)
