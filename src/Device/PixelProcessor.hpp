@@ -39,22 +39,90 @@ public:
 		// (it doesn't require a different program to be generated)
 		struct StencilOpState
 		{
-			VkStencilOp failOp;
-			VkStencilOp passOp;
-			VkStencilOp depthFailOp;
-			VkCompareOp compareOp;
-			uint32_t compareMask;
-			uint32_t writeMask;
+		private:
+			uint8_t failOp : 3;
+			uint8_t passOp : 3;
+			bool partialCompareMask : 1;
+			bool partialWriteMask : 1;
+			uint8_t depthFailOp : 3;
+			uint8_t compareOp : 3;
+			bool writeMaskOff : 1;
 
+		public:
 			void operator=(const VkStencilOpState &rhs)
 			{
-				failOp = rhs.failOp;
-				passOp = rhs.passOp;
-				depthFailOp = rhs.depthFailOp;
-				compareOp = rhs.compareOp;
-				compareMask = rhs.compareMask;
-				writeMask = rhs.writeMask;
+				switch(rhs.failOp)
+				{
+				case VK_STENCIL_OP_KEEP:
+				case VK_STENCIL_OP_ZERO:
+				case VK_STENCIL_OP_REPLACE:
+				case VK_STENCIL_OP_INCREMENT_AND_CLAMP:
+				case VK_STENCIL_OP_DECREMENT_AND_CLAMP:
+				case VK_STENCIL_OP_INVERT:
+				case VK_STENCIL_OP_INCREMENT_AND_WRAP:
+				case VK_STENCIL_OP_DECREMENT_AND_WRAP:
+					failOp = rhs.failOp;
+				default:
+					UNSUPPORTED("VkStencilOp: %d", int(rhs.failOp));
+				}
+
+				switch(rhs.passOp)
+				{
+				case VK_STENCIL_OP_KEEP:
+				case VK_STENCIL_OP_ZERO:
+				case VK_STENCIL_OP_REPLACE:
+				case VK_STENCIL_OP_INCREMENT_AND_CLAMP:
+				case VK_STENCIL_OP_DECREMENT_AND_CLAMP:
+				case VK_STENCIL_OP_INVERT:
+				case VK_STENCIL_OP_INCREMENT_AND_WRAP:
+				case VK_STENCIL_OP_DECREMENT_AND_WRAP:
+					passOp = rhs.passOp;
+				default:
+					UNSUPPORTED("VkStencilOp: %d", int(rhs.passOp));
+				}
+
+				switch(rhs.depthFailOp)
+				{
+				case VK_STENCIL_OP_KEEP:
+				case VK_STENCIL_OP_ZERO:
+				case VK_STENCIL_OP_REPLACE:
+				case VK_STENCIL_OP_INCREMENT_AND_CLAMP:
+				case VK_STENCIL_OP_DECREMENT_AND_CLAMP:
+				case VK_STENCIL_OP_INVERT:
+				case VK_STENCIL_OP_INCREMENT_AND_WRAP:
+				case VK_STENCIL_OP_DECREMENT_AND_WRAP:
+					depthFailOp = rhs.depthFailOp;
+				default:
+					UNSUPPORTED("VkStencilOp: %d", int(rhs.depthFailOp));
+				}
+
+				switch(rhs.compareOp)
+				{
+				case VK_COMPARE_OP_NEVER:
+				case VK_COMPARE_OP_LESS:
+				case VK_COMPARE_OP_EQUAL:
+				case VK_COMPARE_OP_LESS_OR_EQUAL:
+				case VK_COMPARE_OP_GREATER:
+				case VK_COMPARE_OP_NOT_EQUAL:
+				case VK_COMPARE_OP_GREATER_OR_EQUAL:
+				case VK_COMPARE_OP_ALWAYS:
+					compareOp = rhs.compareOp;
+				default:
+					UNSUPPORTED("VkCompareOp: %d", int(rhs.compareOp));
+				}
+
+				partialCompareMask = (rhs.compareMask & 0xFF) != 0xFF;
+				partialWriteMask = (rhs.writeMask & 0xFF) != 0xFF;
+				writeMaskOff = rhs.writeMask == 0;
 			}
+
+			VkStencilOp getFailOp() const { return static_cast<VkStencilOp>(failOp); }
+			VkStencilOp getPassOp() const { return static_cast<VkStencilOp>(passOp); }
+			VkStencilOp getDepthFailOp() const { return static_cast<VkStencilOp>(depthFailOp); }
+			VkCompareOp getCompareOp() const { return static_cast<VkCompareOp>(compareOp); }
+			bool useCompareMask() const { return partialCompareMask; }
+			bool useWriteMask() const { return partialWriteMask; }
+			bool writeDisabled() const { return writeMaskOff; }
 		};
 
 		States()
