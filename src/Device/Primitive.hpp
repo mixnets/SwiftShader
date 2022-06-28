@@ -29,9 +29,9 @@ struct Triangle
 
 struct PlaneEquation  // z = A * x + B * y + C
 {
-	float4 A;
-	float4 B;
-	float4 C;
+	float A;
+	float B;
+	float C;
 };
 
 struct Primitive
@@ -39,20 +39,20 @@ struct Primitive
 	int yMin;
 	int yMax;
 
-	float4 xQuad;
-	float4 yQuad;
+	float4 xQuad;  ///
+	float4 yQuad;  ///
 
 	float pointCoordX;
 	float pointCoordY;
 	float pointSizeInv;
 
-	PlaneEquation z;
-	float4 zBias;
-	PlaneEquation w;
-	PlaneEquation V[MAX_INTERFACE_COMPONENTS];
+	PlaneEquation z_;
+	float zBias;
+	PlaneEquation w_;
+	PlaneEquation V_[MAX_INTERFACE_COMPONENTS];
 
-	PlaneEquation clipDistance[MAX_CLIP_DISTANCES];
-	PlaneEquation cullDistance[MAX_CULL_DISTANCES];
+	PlaneEquation clipDistance_[MAX_CLIP_DISTANCES];
+	PlaneEquation cullDistance_[MAX_CULL_DISTANCES];
 
 	// Masks for two-sided stencil
 	int64_t clockwiseMask;

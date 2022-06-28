@@ -62,6 +62,7 @@ public:
 	SamplerCore(Pointer<Byte> &constants, const Sampler &state, SamplerFunction function);
 
 	Vector4f sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &q, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample);
+	SIMD::Float4 sampleTextureW(Pointer<Byte> &texture, SIMD::Float uvwa[4], SIMD::Float &q, Float lodOrBias, SIMD::Float &dsx, SIMD::Float &dsy, SIMD::Int offset[4], SIMD::Int &sample);
 
 private:
 	Float4 applySwizzle(const Vector4f &c, VkComponentSwizzle swizzle, bool integer);

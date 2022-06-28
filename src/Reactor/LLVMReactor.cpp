@@ -360,7 +360,7 @@ llvm::Value *lowerMulHigh(llvm::Value *x, llvm::Value *y, bool sext)
 
 namespace rr {
 
-const int SIMD::Width = 8;
+const int SIMD::Width = 4;
 
 std::string Caps::backendName()
 {

@@ -4472,7 +4472,7 @@ RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset)
 	return lhs = lhs - offset;
 }
 
-Pointer4::Pointer4(Pointer<Byte> base, rr::Int limit)
+SIMD::Pointer::Pointer(scalar::Pointer<Byte> base, rr::Int limit)
     : base(base)
     , dynamicLimit(limit)
     , staticLimit(0)
@@ -4483,7 +4483,7 @@ Pointer4::Pointer4(Pointer<Byte> base, rr::Int limit)
     , isBasePlusOffset(true)
 {}
 
-Pointer4::Pointer4(Pointer<Byte> base, unsigned int limit)
+SIMD::Pointer::Pointer(scalar::Pointer<Byte> base, unsigned int limit)
     : base(base)
     , dynamicLimit(0)
     , staticLimit(limit)
@@ -4494,7 +4494,7 @@ Pointer4::Pointer4(Pointer<Byte> base, unsigned int limit)
     , isBasePlusOffset(true)
 {}
 
-Pointer4::Pointer4(Pointer<Byte> base, rr::Int limit, Int4 offset)
+SIMD::Pointer::Pointer(scalar::Pointer<Byte> base, rr::Int limit, SIMD::Int offset)
     : base(base)
     , dynamicLimit(limit)
     , staticLimit(0)
@@ -4505,7 +4505,7 @@ Pointer4::Pointer4(Pointer<Byte> base, rr::Int limit, Int4 offset)
     , isBasePlusOffset(true)
 {}
 
-Pointer4::Pointer4(Pointer<Byte> base, unsigned int limit, Int4 offset)
+SIMD::Pointer::Pointer(scalar::Pointer<Byte> base, unsigned int limit, SIMD::Int offset)
     : base(base)
     , dynamicLimit(0)
     , staticLimit(limit)
@@ -4516,18 +4516,12 @@ Pointer4::Pointer4(Pointer<Byte> base, unsigned int limit, Int4 offset)
     , isBasePlusOffset(true)
 {}
 
-Pointer4::Pointer4(Pointer<Byte> p0, Pointer<Byte> p1, Pointer<Byte> p2, Pointer<Byte> p3)
-    : pointers({ { p0, p1, p2, p3 } })
-    , isBasePlusOffset(false)
-{
-}
-
-Pointer4::Pointer4(std::array<Pointer<Byte>, 4> pointers)
+SIMD::Pointer::Pointer(std::vector<scalar::Pointer<Byte>> pointers)
     : pointers(pointers)
     , isBasePlusOffset(false)
 {}
 
-Pointer4 &Pointer4::operator+=(Int4 i)
+SIMD::Pointer &SIMD::Pointer::operator+=(SIMD::Int i)
 {
 	if(isBasePlusOffset)
 	{
@@ -4536,67 +4530,69 @@ Pointer4 &Pointer4::operator+=(Int4 i)
 	}
 	else
 	{
-		for(int el = 0; el < 4; el++) { pointers[el] += Extract(i, el); }
+		for(int el = 0; el < SIMD::Width; el++) { pointers[el] += Extract(i, el); }
 	}
 	return *this;
 }
 
-Pointer4 Pointer4::operator+(Int4 i)
+SIMD::Pointer SIMD::Pointer::operator+(SIMD::Int i)
 {
-	Pointer4 p = *this;
+	SIMD::Pointer p = *this;
 	p += i;
 	return p;
 }
 
-Pointer4 &Pointer4::operator+=(int i)
+SIMD::Pointer &SIMD::Pointer::operator+=(int i)
 {
 	if(isBasePlusOffset)
 	{
-		for(int el = 0; el < 4; el++) { staticOffsets[el] += i; }
+		for(int el = 0; el < SIMD::Width; el++) { staticOffsets[el] += i; }
 	}
 	else
 	{
-		for(int el = 0; el < 4; el++) { pointers[el] += i; }
+		for(int el = 0; el < SIMD::Width; el++) { pointers[el] += i; }
 	}
 	return *this;
 }
 
-Pointer4 Pointer4::operator+(int i)
+SIMD::Pointer SIMD::Pointer::operator+(int i)
 {
-	Pointer4 p = *this;
+	SIMD::Pointer p = *this;
 	p += i;
 	return p;
 }
 
-Int4 Pointer4::offsets() const
+SIMD::Int SIMD::Pointer::offsets() const
 {
 	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
-	return dynamicOffsets + Int4(staticOffsets[0], staticOffsets[1], staticOffsets[2], staticOffsets[3]);
+	ASSERT(SIMD::Width == 4);
+	return dynamicOffsets + SIMD::Int(staticOffsets[0], staticOffsets[1], staticOffsets[2], staticOffsets[3]);
 }
 
-Int4 Pointer4::isInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
+SIMD::Int SIMD::Pointer::isInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
 {
 	ASSERT(accessSize > 0);
 
 	if(isStaticallyInBounds(accessSize, robustness))
 	{
-		return Int4(0xFFFFFFFF);
+		return SIMD::Int(0xFFFFFFFF);
 	}
 
 	if(!hasDynamicOffsets && !hasDynamicLimit)
 	{
+		ASSERT(SIMD::Width == 4);
 		// Common fast paths.
-		return Int4(
+		return SIMD::Int(
 		    (staticOffsets[0] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0,
 		    (staticOffsets[1] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0,
 		    (staticOffsets[2] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0,
 		    (staticOffsets[3] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0);
 	}
 
-	return CmpGE(offsets(), Int4(0)) & CmpLT(offsets() + Int4(accessSize - 1), Int4(limit()));
+	return CmpGE(offsets(), 0) & CmpLT(offsets() + SIMD::Int(accessSize - 1), limit());
 }
 
-bool Pointer4::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
+bool SIMD::Pointer::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
 {
 	if(hasDynamicOffsets)
 	{
@@ -4621,7 +4617,7 @@ bool Pointer4::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior
 		}
 	}
 
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < SIMD::Width; i++)
 	{
 		if(staticOffsets[i] + accessSize - 1 >= staticLimit)
 		{
@@ -4632,34 +4628,34 @@ bool Pointer4::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior
 	return true;
 }
 
-rr::Int Pointer4::limit() const
+SIMD::Int SIMD::Pointer::limit() const
 {
 	return dynamicLimit + staticLimit;
 }
 
 // Returns true if all offsets are sequential
 // (N+0*step, N+1*step, N+2*step, N+3*step)
-rr::Bool Pointer4::hasSequentialOffsets(unsigned int step) const
+rr::Bool SIMD::Pointer::hasSequentialOffsets(unsigned int step) const
 {
 	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
-	if(hasDynamicOffsets)
-	{
-		auto o = offsets();
-		return rr::SignMask(~CmpEQ(o.yzww, o + Int4(1 * step, 2 * step, 3 * step, 0))) == 0;
-	}
+	//if(hasDynamicOffsets)
+	//{
+	//	auto o = offsets();
+	//	return rr::SignMask(~CmpEQ(o.yzww, o + Int4(1 * step, 2 * step, 3 * step, 0))) == 0;
+	//}
 	return hasStaticSequentialOffsets(step);
 }
 
 // Returns true if all offsets are are compile-time static and
 // sequential (N+0*step, N+1*step, N+2*step, N+3*step)
-bool Pointer4::hasStaticSequentialOffsets(unsigned int step) const
+bool SIMD::Pointer::hasStaticSequentialOffsets(unsigned int step) const
 {
 	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	if(hasDynamicOffsets)
 	{
 		return false;
 	}
-	for(int i = 1; i < 4; i++)
+	for(int i = 1; i < SIMD::Width; i++)
 	{
 		if(staticOffsets[i - 1] + int32_t(step) != staticOffsets[i]) { return false; }
 	}
@@ -4667,34 +4663,39 @@ bool Pointer4::hasStaticSequentialOffsets(unsigned int step) const
 }
 
 // Returns true if all offsets are equal (N, N, N, N)
-rr::Bool Pointer4::hasEqualOffsets() const
+rr::Bool SIMD::Pointer::hasEqualOffsets() const
 {
 	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
-	if(hasDynamicOffsets)
-	{
-		auto o = offsets();
-		return rr::SignMask(~CmpEQ(o, o.yzwx)) == 0;
-	}
+	//if(hasDynamicOffsets)
+	//{
+	//	auto o = offsets();
+	//	return rr::SignMask(~CmpEQ(o, o.yzwx)) == 0;
+	//}
 	return hasStaticEqualOffsets();
 }
 
 // Returns true if all offsets are compile-time static and are equal
 // (N, N, N, N)
-bool Pointer4::hasStaticEqualOffsets() const
+bool SIMD::Pointer::hasStaticEqualOffsets() const
 {
 	ASSERT_MSG(isBasePlusOffset, "No offsets for this type of pointer");
 	if(hasDynamicOffsets)
 	{
 		return false;
 	}
-	for(int i = 1; i < 4; i++)
+
+	for(int i = 1; i < SIMD::Width; i++)
 	{
-		if(staticOffsets[i - 1] != staticOffsets[i]) { return false; }
+		if(staticOffsets[i - 1] != staticOffsets[i])
+		{
+			return false;
+		}
 	}
+
 	return true;
 }
 
-Pointer<Byte> Pointer4::getUniformPointer() const
+Pointer<Byte> SIMD::Pointer::getUniformPointer() const
 {
 	if(isBasePlusOffset)
 	{
@@ -4702,12 +4703,14 @@ Pointer<Byte> Pointer4::getUniformPointer() const
 	}
 	else
 	{
+		ASSERT(SIMD::Width == 4);
 		Assert(pointers[0] == pointers[1] && pointers[0] == pointers[2] && pointers[0] == pointers[3]);
 	}
+
 	return getPointerForLane(0);
 }
 
-Pointer<Byte> Pointer4::getPointerForLane(int lane) const
+Pointer<Byte> SIMD::Pointer::getPointerForLane(int lane) const
 {
 	if(isBasePlusOffset)
 	{
@@ -4719,10 +4722,10 @@ Pointer<Byte> Pointer4::getPointerForLane(int lane) const
 	}
 }
 
-void Pointer4::castFrom(UInt4 lowerBits, UInt4 upperBits)
+void SIMD::Pointer::castFrom(SIMD::UInt lowerBits, SIMD::UInt upperBits)
 {
 	assert(sizeof(void *) == 8);
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < SIMD::Width; i++)
 	{
 		UInt2 address;
 		address = Insert(address, Extract(lowerBits, i), 0);
@@ -4731,10 +4734,10 @@ void Pointer4::castFrom(UInt4 lowerBits, UInt4 upperBits)
 	}
 }
 
-void Pointer4::castTo(UInt4 &lowerBits, UInt4 &upperBits) const
+void SIMD::Pointer::castTo(SIMD::UInt &lowerBits, SIMD::UInt &upperBits) const
 {
 	assert(sizeof(void *) == 8);
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < SIMD::Width; i++)
 	{
 		UInt2 address = As<UInt2>(pointers[i]);
 		lowerBits = Insert(lowerBits, Extract(address, 0), i);
@@ -4742,28 +4745,28 @@ void Pointer4::castTo(UInt4 &lowerBits, UInt4 &upperBits) const
 	}
 }
 
-void Pointer4::castFrom(UInt4 bits)
+void SIMD::Pointer::castFrom(SIMD::UInt bits)
 {
 	assert(sizeof(void *) == 4);
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < SIMD::Width; i++)
 	{
 		pointers[i] = As<rr::Pointer<Byte>>(Extract(bits, i));
 	}
 }
 
-void Pointer4::castTo(UInt4 &bits) const
+void SIMD::Pointer::castTo(SIMD::UInt &bits) const
 {
 	assert(sizeof(void *) == 4);
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < SIMD::Width; i++)
 	{
-		bits = Insert(bits, As<UInt>(pointers[i]), i);
+		bits = Insert(bits, As<scalar::UInt>(pointers[i]), i);
 	}
 }
 
-Pointer4 Pointer4::IfThenElse(Int4 condition, const Pointer4 &lhs, const Pointer4 &rhs)
+SIMD::Pointer SIMD::Pointer::IfThenElse(SIMD::Int condition, const SIMD::Pointer &lhs, const SIMD::Pointer &rhs)
 {
-	std::array<Pointer<Byte>, 4> pointers;
-	for(int i = 0; i < 4; i++)
+	std::vector<scalar::Pointer<Byte>> pointers(SIMD::Width);
+	for(int i = 0; i < SIMD::Width; i++)
 	{
 		If(Extract(condition, i) != 0)
 		{
@@ -4774,11 +4777,12 @@ Pointer4 Pointer4::IfThenElse(Int4 condition, const Pointer4 &lhs, const Pointer
 			pointers[i] = rhs.getPointerForLane(i);
 		}
 	}
+
 	return { pointers };
 }
 
 #ifdef ENABLE_RR_PRINT
-std::vector<rr::Value *> Pointer4::getPrintValues() const
+std::vector<rr::Value *> SIMD::Pointer::getPrintValues() const
 {
 	if(isBasePlusOffset)
 	{

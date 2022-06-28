@@ -27,6 +27,7 @@ SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler &state, Sampler
     , function(function)
 {
 }
+
 Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &dRef, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample)
 {
 	Vector4f c;
@@ -1235,9 +1236,9 @@ Int4 SamplerCore::cubeFace(Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z
 	// TODO: Comply with Vulkan recommendation:
 	// Vulkan 1.1: "The rules should have as the first rule that rz wins over ry and rx, and the second rule that ry wins over rx."
 
-	Int4 xn = CmpLT(x, Float4(0.0f));  // x < 0
-	Int4 yn = CmpLT(y, Float4(0.0f));  // y < 0
-	Int4 zn = CmpLT(z, Float4(0.0f));  // z < 0
+	Int4 xn = CmpLT(x, 0.0f);  // x < 0
+	Int4 yn = CmpLT(y, 0.0f);  // y < 0
+	Int4 zn = CmpLT(z, 0.0f);  // z < 0
 
 	Float4 absX = Abs(x);
 	Float4 absY = Abs(y);
@@ -1281,9 +1282,9 @@ Int4 SamplerCore::cubeFace(Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z
 	// V = !yMajor ? -y : (n ^ z)
 	V = As<Float4>((~yMajor & As<Int4>(-y)) | (yMajor & (n ^ As<Int4>(z))));
 
-	M = reciprocal(M) * Float4(0.5f);
-	U = U * M + Float4(0.5f);
-	V = V * M + Float4(0.5f);
+	M = reciprocal(M) * 0.5f;
+	U = U * M + 0.5f;
+	V = V * M + 0.5f;
 
 	return face;
 }

@@ -518,53 +518,70 @@ RValue<Float> Sqrt(RValue<Float> x, bool relaxedPrecision)
 	return Sqrt(x);  // TODO(b/222218659): Optimize for relaxed precision.
 }
 
-UInt halfToFloatBits(UInt halfBits)
+}  // namespace SIMD
+
+SIMD::UInt halfToFloatBits(SIMD::UInt halfBits)
 {
-	auto magic = UInt(126 << 23);
+	auto magic = SIMD::UInt(126 << 23);
 
-	auto sign16 = halfBits & UInt(0x8000);
-	auto man16 = halfBits & UInt(0x03FF);
-	auto exp16 = halfBits & UInt(0x7C00);
+	auto sign16 = halfBits & SIMD::UInt(0x8000);
+	auto man16 = halfBits & SIMD::UInt(0x03FF);
+	auto exp16 = halfBits & SIMD::UInt(0x7C00);
 
-	auto isDnormOrZero = CmpEQ(exp16, UInt(0));
-	auto isInfOrNaN = CmpEQ(exp16, UInt(0x7C00));
+	auto isDnormOrZero = CmpEQ(exp16, SIMD::UInt(0));
+	auto isInfOrNaN = CmpEQ(exp16, SIMD::UInt(0x7C00));
 
 	auto sign32 = sign16 << 16;
 	auto man32 = man16 << 13;
-	auto exp32 = (exp16 + UInt(0x1C000)) << 13;
-	auto norm32 = (man32 | exp32) | (isInfOrNaN & UInt(0x7F800000));
+	auto exp32 = (exp16 + SIMD::UInt(0x1C000)) << 13;
+	auto norm32 = (man32 | exp32) | (isInfOrNaN & SIMD::UInt(0x7F800000));
 
-	auto denorm32 = As<UInt>(As<Float>(magic + man16) - As<Float>(magic));
+	auto denorm32 = As<SIMD::UInt>(As<SIMD::Float>(magic + man16) - As<SIMD::Float>(magic));
 
 	return sign32 | (norm32 & ~isDnormOrZero) | (denorm32 & isDnormOrZero);
 }
 
-UInt floatToHalfBits(UInt floatBits, bool storeInUpperBits)
+SIMD::UInt floatToHalfBits(SIMD::UInt floatBits, bool storeInUpperBits)
 {
-	UInt sign = floatBits & UInt(0x80000000);
-	UInt abs = floatBits & UInt(0x7FFFFFFF);
+	SIMD::UInt sign = floatBits & SIMD::UInt(0x80000000);
+	SIMD::UInt abs = floatBits & SIMD::UInt(0x7FFFFFFF);
 
-	UInt normal = CmpNLE(abs, UInt(0x38800000));
+	SIMD::UInt normal = CmpNLE(abs, SIMD::UInt(0x38800000));
 
-	UInt mantissa = (abs & UInt(0x007FFFFF)) | UInt(0x00800000);
-	UInt e = UInt(113) - (abs >> 23);
-	UInt denormal = CmpLT(e, UInt(24)) & (mantissa >> e);
+	SIMD::UInt mantissa = (abs & SIMD::UInt(0x007FFFFF)) | SIMD::UInt(0x00800000);
+	SIMD::UInt e = SIMD::UInt(113) - (abs >> 23);
+	SIMD::UInt denormal = CmpLT(e, SIMD::UInt(24)) & (mantissa >> e);
 
-	UInt base = (normal & abs) | (~normal & denormal);  // TODO: IfThenElse()
+	SIMD::UInt base = (normal & abs) | (~normal & denormal);  // TODO: IfThenElse()
 
 	// float exponent bias is 127, half bias is 15, so adjust by -112
-	UInt bias = normal & UInt(0xC8000000);
+	SIMD::UInt bias = normal & SIMD::UInt(0xC8000000);
 
-	UInt rounded = base + bias + UInt(0x00000FFF) + ((base >> 13) & UInt(1));
-	UInt fp16u = rounded >> 13;
+	SIMD::UInt rounded = base + bias + SIMD::UInt(0x00000FFF) + ((base >> 13) & SIMD::UInt(1));
+	SIMD::UInt fp16u = rounded >> 13;
 
 	// Infinity
-	fp16u |= CmpNLE(abs, UInt(0x47FFEFFF)) & UInt(0x7FFF);
+	fp16u |= CmpNLE(abs, SIMD::UInt(0x47FFEFFF)) & SIMD::UInt(0x7FFF);
 
 	return storeInUpperBits ? (sign | (fp16u << 16)) : ((sign >> 16) | fp16u);
 }
 
-}  // namespace SIMD
+SIMD::Float linearToSRGB(const SIMD::Float &c)
+{
+	SIMD::Float lc = Min(c, 0.0031308f) * 12.92f;
+	SIMD::Float ec = MulAdd(1.055f, Pow<Mediump>(c, (1.0f / 2.4f)), -0.055f);  // TODO(b/149574741): Use a custom approximation.
+
+	return Max(lc, ec);
+}
+
+SIMD::Float sRGBtoLinear(const SIMD::Float &c)
+{
+	SIMD::Float lc = c * (1.0f / 12.92f);
+	SIMD::Float ec = Pow<Mediump>(MulAdd(c, 1.0f / 1.055f, 0.055f / 1.055f), 2.4f);  // TODO(b/149574741): Use a custom approximation.
+
+	SIMD::Int linear = CmpLT(c, 0.04045f);
+	return As<SIMD::Float>((linear & As<SIMD::Int>(lc)) | (~linear & As<SIMD::Int>(ec)));  // TODO: IfThenElse()
+}
 
 RValue<Float4> reciprocal(RValue<Float4> x, bool pp, bool exactAtPow2)
 {

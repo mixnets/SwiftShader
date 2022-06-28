@@ -67,7 +67,7 @@ Int4 PixelProgram::maskAny(Int cMask[4], Int sMask[4], Int zMask[4], const Sampl
 	return mask;
 }
 
-void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4], const SampleSet &samples)
+void PixelProgram::setBuiltins(Int &x, Int &y, SIMD::Float (&z)[4], SIMD::Float &w, Int cMask[4], const SampleSet &samples)
 {
 	routine.setImmutableInputBuiltins(spirvShader);
 
@@ -148,8 +148,8 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 	if(it != spirvShader->inputBuiltins.end())
 	{
 		ASSERT(it->second.SizeInComponents == 1);
-		auto frontFacing = Int4(*Pointer<Int>(primitive + OFFSET(Primitive, clockwiseMask)));
-		routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<Float4>(frontFacing);
+		auto frontFacing = SIMD::Int(*Pointer<Int>(primitive + OFFSET(Primitive, clockwiseMask)));
+		routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<SIMD::Float>(frontFacing);
 	}
 
 	it = spirvShader->inputBuiltins.find(spv::BuiltInSampleMask);
@@ -161,15 +161,15 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 		Int4 inputSampleMask = 0;
 		for(unsigned int q : samples)
 		{
-			inputSampleMask |= Int4(1 << q) & CmpNEQ(Int4(cMask[q]) & laneBits, Int4(0));
+			inputSampleMask |= Int4(1 << q) & CmpNEQ(Int4(cMask[q]) & laneBits, 0);
 		}
 
-		routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<Float4>(inputSampleMask);
+		routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<SIMD::Float>(inputSampleMask);
 		// Sample mask input is an array, as the spec contemplates MSAA levels higher than 32.
 		// Fill any non-zero indices with 0.
 		for(auto i = 1u; i < it->second.SizeInComponents; i++)
 		{
-			routine.getVariable(it->second.Id)[it->second.FirstComponent + i] = Float4(0);
+			routine.getVariable(it->second.Id)[it->second.FirstComponent + i] = 0;
 		}
 	}
 
@@ -195,8 +195,8 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 
 	// Note: all lanes initially active to facilitate derivatives etc. Actual coverage is
 	// handled separately, through the cMask.
-	auto activeLaneMask = SIMD::Int(0xFFFFFFFF);
-	auto storesAndAtomicsMask = maskAny(cMask, sMask, zMask, samples);
+	SIMD::Int activeLaneMask = 0xFFFFFFFF;
+	SIMD::Int storesAndAtomicsMask = maskAny(cMask, sMask, zMask, samples);
 	routine.discardMask = 0;
 
 	spirvShader->emit(&routine, activeLaneMask, storesAndAtomicsMask, descriptorSets, state.multiSampleCount);
@@ -300,13 +300,14 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 			{
 				Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
 
-				Vector4f colorf = alphaBlend(index, buffer, c[index], x);
+				SIMD::Float4 colorf = alphaBlend(index, buffer, c[index], x);
 
+				ASSERT(SIMD::Width == 4);
 				Vector4s color;
-				color.x = convertFixed16(colorf.x, true);
-				color.y = convertFixed16(colorf.y, true);
-				color.z = convertFixed16(colorf.z, true);
-				color.w = convertFixed16(colorf.w, true);
+				color.x = convertFixed16(Extract128(colorf.x, 0), true);
+				color.y = convertFixed16(Extract128(colorf.y, 0), true);
+				color.z = convertFixed16(Extract128(colorf.z, 0), true);
+				color.w = convertFixed16(Extract128(colorf.w, 0), true);
 				writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 			}
 			break;
@@ -346,7 +347,13 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 			{
 				Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
 
-				Vector4f color = alphaBlend(index, buffer, c[index], x);
+				SIMD::Float4 C = alphaBlend(index, buffer, c[index], x);
+				ASSERT(SIMD::Width == 4);
+				Vector4f color;
+				color.x = Extract128(C.x, 0);
+				color.y = Extract128(C.y, 0);
+				color.z = Extract128(C.z, 0);
+				color.w = Extract128(C.w, 0);
 				writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 			}
 			break;
@@ -356,7 +363,7 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 	}
 }
 
-void PixelProgram::clampColor(Vector4f color[MAX_COLOR_BUFFERS])
+void PixelProgram::clampColor(SIMD::Float4 color[MAX_COLOR_BUFFERS])
 {
 	// "If the color attachment is fixed-point, the components of the source and destination values and blend factors
 	//  are each clamped to [0,1] or [-1,1] respectively for an unsigned normalized or signed normalized color attachment
@@ -395,10 +402,10 @@ void PixelProgram::clampColor(Vector4f color[MAX_COLOR_BUFFERS])
 		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 		case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
-			color[index].x = Min(Max(color[index].x, Float4(0.0f)), Float4(1.0f));
-			color[index].y = Min(Max(color[index].y, Float4(0.0f)), Float4(1.0f));
-			color[index].z = Min(Max(color[index].z, Float4(0.0f)), Float4(1.0f));
-			color[index].w = Min(Max(color[index].w, Float4(0.0f)), Float4(1.0f));
+			color[index].x = Min(Max(color[index].x, 0.0f), 1.0f);
+			color[index].y = Min(Max(color[index].y, 0.0f), 1.0f);
+			color[index].z = Min(Max(color[index].z, 0.0f), 1.0f);
+			color[index].w = Min(Max(color[index].w, 0.0f), 1.0f);
 			break;
 		case VK_FORMAT_R32_SFLOAT:
 		case VK_FORMAT_R32G32_SFLOAT:
