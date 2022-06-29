@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "957fd5fb_ddc71701",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-29T18:59:33Z",
+      "side": 1,
+      "message": "True, but if bit fields weren\u0027t tightly packed by any compiler, wouldn\u0027t that cause issues with our ETC and BCn decoders? In any case, I removed that part of the CL.",
+      "parentUuid": "3068b08a_4156aa31",
+      "range": {
+        "startLine": 10,
+        "startChar": 30,
+        "endLine": 10,
+        "endChar": 42
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b70de529_d8e04b8f",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -37,6 +61,30 @@
       "writtenOn": "2022-06-29T04:08:38Z",
       "side": 1,
       "message": "Is that actually useful? Validation layers should check that only valid enums are being used by the application. If we do something incorrect on our end it\u0027s going to be during pipeline compilation.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 143
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6ea7b54_c2c4013b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-29T18:59:33Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b70de529_d8e04b8f",
       "range": {
         "startLine": 11,
         "startChar": 0,
@@ -70,6 +118,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a37d788_f4375350",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-29T18:59:33Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e3d4486b_0a2f5f87",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 133
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "21ad0bb8_14916cae",
@@ -93,6 +165,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c773dcd_4f1aa790",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-29T18:59:33Z",
+      "side": 1,
+      "message": "It doesn\u0027t matter where the enums start, as long as none of the values are above 7. The idea was that if more enums get added, then the number of bits would need to be increased and the switch statements below would need to be updated. In any case, I\u0027ll just remove this part of the change.",
+      "parentUuid": "21ad0bb8_14916cae",
+      "range": {
+        "startLine": 43,
+        "startChar": 17,
+        "endLine": 43,
+        "endChar": 21
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fabcf9d4_cb6b7775",
@@ -106,6 +202,30 @@
       "writtenOn": "2022-06-29T04:08:38Z",
       "side": 1,
       "message": "Negative Booleans are a bit hard to read (true means off, false means on). Something like `writeEnabled`  might be clearer?",
+      "range": {
+        "startLine": 49,
+        "startChar": 8,
+        "endLine": 49,
+        "endChar": 20
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26df4f2a_d5c5b6f5",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-29T18:59:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabcf9d4_cb6b7775",
       "range": {
         "startLine": 49,
         "startChar": 8,
