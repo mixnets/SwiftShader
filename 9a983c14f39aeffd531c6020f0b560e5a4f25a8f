@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3068b08a_4156aa31",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-29T04:08:38Z",
+      "side": 1,
+      "message": "It\u0027s compiler implementation-dependent how tightly bitfields get packed.",
+      "range": {
+        "startLine": 10,
+        "startChar": 30,
+        "endLine": 10,
+        "endChar": 42
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b70de529_d8e04b8f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-29T04:08:38Z",
+      "side": 1,
+      "message": "Is that actually useful? Validation layers should check that only valid enums are being used by the application. If we do something incorrect on our end it\u0027s going to be during pipeline compilation.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 143
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3d4486b_0a2f5f87",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-29T04:08:38Z",
+      "side": 1,
+      "message": "This is the actual fix for b/143288278, so let\u0027s make it a separate CL from any refactorings.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 133
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21ad0bb8_14916cae",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-29T04:08:38Z",
+      "side": 1,
+      "message": "I\u0027m not sure these bitfields are worthwhile. They make it harder to see the meaning of each value during debugging, and if more enums become defined they might be too small. Also this relies on the enum values to start at 0.\n\nThe use of the hash value avoids most comparisons of the full struct, so unless we start seeing this show up in profiles as time consuming, I don\u0027t think we need to optimize this for size.",
+      "range": {
+        "startLine": 43,
+        "startChar": 17,
+        "endLine": 43,
+        "endChar": 21
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fabcf9d4_cb6b7775",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-29T04:08:38Z",
+      "side": 1,
+      "message": "Negative Booleans are a bit hard to read (true means off, false means on). Something like `writeEnabled`  might be clearer?",
+      "range": {
+        "startLine": 49,
+        "startChar": 8,
+        "endLine": 49,
+        "endChar": 20
+      },
+      "revId": "9a983c14f39aeffd531c6020f0b560e5a4f25a8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
