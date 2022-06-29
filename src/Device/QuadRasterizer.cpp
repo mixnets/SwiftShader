@@ -122,20 +122,21 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			x1 = Max(x1, Max(x1a, x1b));
 		}
 
-		Float4 yyyy = Float4(Float(y)) + *Pointer<Float4>(primitive + OFFSET(Primitive, yQuad), 16);
+		ASSERT(SIMD::Width == 4);
+		SIMD::Float yyyy = SIMD::Float(Float(y)) + SIMD::Float(*Pointer<Float4>(primitive + OFFSET(Primitive, yQuad), 16));
 
 		if(interpolateZ())
 		{
 			for(unsigned int q = 0; q < state.multiSampleCount; q++)
 			{
-				Float4 y = yyyy;
+				SIMD::Float y = yyyy;
 
 				if(state.enableMultiSampling)
 				{
-					y += Float4(*Pointer<Float>(constants + OFFSET(Constants, SampleLocationsY) + q * sizeof(float)));
+					y += SIMD::Float(*Pointer<Float>(constants + OFFSET(Constants, SampleLocationsY) + q * sizeof(float)));
 				}
 
-				Dz[q] = Float4(*Pointer<Float>(primitive + OFFSET(Primitive, z.C))) + y * Float4(*Pointer<Float>(primitive + OFFSET(Primitive, z.B)));
+				Dz[q] = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, z.C))) + y * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, z.B)));
 			}
 		}
 
@@ -143,7 +144,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 		{
 			if(interpolateW())
 			{
-				Dw = Float4(*Pointer<Float>(primitive + OFFSET(Primitive, w.C))) + yyyy * Float4(*Pointer<Float>(primitive + OFFSET(Primitive, w.B)));
+				Dw = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, w.C))) + yyyy * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, w.B)));
 			}
 
 			if(spirvShader)
@@ -151,28 +152,28 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 				int packedInterpolant = 0;
 				for(int interfaceInterpolant = 0; interfaceInterpolant < MAX_INTERFACE_COMPONENTS; interfaceInterpolant++)
 				{
-					if(spirvShader->inputs[interfaceInterpolant].Type != SpirvShader::ATTRIBTYPE_UNUSED)
+					if(spirvShader->inputs[interfaceInterpolant].Type == SpirvShader::ATTRIBTYPE_UNUSED)
+						continue;
+
+					Dv[interfaceInterpolant] = *Pointer<Float>(primitive + OFFSET(Primitive, V[packedInterpolant].C));
+					if(!spirvShader->inputs[interfaceInterpolant].Flat)
 					{
-						Dv[interfaceInterpolant] = Float4(*Pointer<Float>(primitive + OFFSET(Primitive, V[packedInterpolant].C)));
-						if(!spirvShader->inputs[interfaceInterpolant].Flat)
-						{
-							Dv[interfaceInterpolant] +=
-							    yyyy * Float4(*Pointer<Float>(primitive + OFFSET(Primitive, V[packedInterpolant].B)));
-						}
-						packedInterpolant++;
+						Dv[interfaceInterpolant] +=
+						    yyyy * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, V[packedInterpolant].B)));
 					}
+					packedInterpolant++;
 				}
 
 				for(unsigned int i = 0; i < state.numClipDistances; i++)
 				{
-					DclipDistance[i] = Float4(*Pointer<Float>(primitive + OFFSET(Primitive, clipDistance[i].C))) +
-					                   yyyy * Float4(*Pointer<Float>(primitive + OFFSET(Primitive, clipDistance[i].B)));
+					DclipDistance[i] = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, clipDistance[i].C))) +
+					                   yyyy * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, clipDistance[i].B)));
 				}
 
 				for(unsigned int i = 0; i < state.numCullDistances; i++)
 				{
-					DcullDistance[i] = Float4(*Pointer<Float>(primitive + OFFSET(Primitive, cullDistance[i].C))) +
-					                   yyyy * Float4(*Pointer<Float>(primitive + OFFSET(Primitive, cullDistance[i].B)));
+					DcullDistance[i] = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, cullDistance[i].C))) +
+					                   yyyy * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, cullDistance[i].B)));
 				}
 			}
 
@@ -230,14 +231,14 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 	Until(y >= yMax);
 }
 
-Float4 QuadRasterizer::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+SIMD::Float QuadRasterizer::interpolate(SIMD::Float &x, SIMD::Float &D, SIMD::Float &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
 {
 	if(flat)
 	{
 		return D;
 	}
 
-	Float4 interpolant = mulAdd(x, Float4(*Pointer<Float>(planeEquation + OFFSET(PlaneEquation, A))), D);
+	SIMD::Float interpolant = mulAdd(x, SIMD::Float(*Pointer<Float>(planeEquation + OFFSET(PlaneEquation, A))), D);
 
 	if(perspective)
 	{
