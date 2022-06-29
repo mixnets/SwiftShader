@@ -133,3 +133,76 @@ TEST(ReactorSIMD, InsertExtract128)
 		ASSERT_EQ(r[i], a[i] << (i / 4 + 1));
 	}
 }
+
+TEST(ReactorSIMD, Intrinsics_Scatter)
+{
+	Function<Void(Pointer<Float> base, Pointer<SIMD::Float> val, Pointer<SIMD::Int> offsets)> function;
+	{
+		Pointer<Float> base = function.Arg<0>();
+		Pointer<SIMD::Float> val = function.Arg<1>();
+		Pointer<SIMD::Int> offsets = function.Arg<2>();
+
+		SIMD::Int mask = ~0;
+		unsigned int alignment = 1;
+		Scatter(base, *val, *offsets, mask, alignment);
+	}
+
+	std::vector<float> buffer(10 + 10 * SIMD::Width);
+	std::vector<int> offsets(SIMD::Width);
+	std::vector<float> val(SIMD::Width);
+
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		offsets[i] = (3 + 7 * i) * sizeof(float);
+		val[i] = 13.0f + 17.0f * i;
+	}
+
+	auto routine = function(testName().c_str());
+	auto entry = (void (*)(float *, float *, int *))routine->getEntry();
+
+	entry(buffer.data(), val.data(), offsets.data());
+
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		EXPECT_EQ(buffer[offsets[i] / sizeof(float)], val[i]);
+	}
+}
+
+TEST(ReactorSIMD, Intrinsics_Gather)
+{
+	Function<Void(Pointer<Float> base, Pointer<SIMD::Int> offsets, Pointer<SIMD::Float> result)> function;
+	{
+		Pointer<Float> base = function.Arg<0>();
+		Pointer<SIMD::Int> offsets = function.Arg<1>();
+		Pointer<SIMD::Float> result = function.Arg<2>();
+
+		SIMD::Int mask = ~0;
+		unsigned int alignment = 1;
+		bool zeroMaskedLanes = true;
+		*result = Gather(base, *offsets, mask, alignment, zeroMaskedLanes);
+	}
+
+	std::vector<float> buffer(10 + 10 * SIMD::Width);
+	std::vector<int> offsets(SIMD::Width);
+
+	std::vector<float> val(SIMD::Width);
+
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		offsets[i] = (3 + 7 * i) * sizeof(float);
+		val[i] = 13.0f + 17.0f * i;
+
+		buffer[offsets[i] / sizeof(float)] = val[i];
+	}
+
+	auto routine = function(testName().c_str());
+	auto entry = (void (*)(float *, int *, float *))routine->getEntry();
+
+	std::vector<float> result(SIMD::Width);
+	entry(buffer.data(), offsets.data(), result.data());
+
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		EXPECT_EQ(result[i], val[i]);
+	}
+}
