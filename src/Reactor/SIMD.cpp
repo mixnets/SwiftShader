@@ -887,9 +887,9 @@ RValue<SIMD::Float> Shuffle(RValue<SIMD::Float> x, RValue<SIMD::Float> y, uint16
 	return SIMD::Float(Shuffle(Extract128(x, 0), Extract128(y, 0), select));
 }
 
-SIMD::Pointer::Pointer()
-    : staticOffsets(SIMD::Width)
-{}
+// SIMD::Pointer::Pointer()
+//     : staticOffsets(SIMD::Width)
+//{}
 
 SIMD::Pointer::Pointer(scalar::Pointer<Byte> base, rr::Int limit)
     : base(base)
@@ -939,6 +939,31 @@ SIMD::Pointer::Pointer(std::vector<scalar::Pointer<Byte>> pointers)
     : pointers(pointers)
     , isBasePlusOffset(false)
 {}
+
+SIMD::Pointer::Pointer(SIMD::UInt cast)
+    : pointers(pointers)
+    , isBasePlusOffset(false)
+{
+	assert(sizeof(void *) == 4);
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		pointers[i] = As<rr::Pointer<Byte>>(Extract(cast, i));
+	}
+}
+
+SIMD::Pointer::Pointer(SIMD::UInt castLow, SIMD::UInt castHigh)
+    : pointers(pointers)
+    , isBasePlusOffset(false)
+{
+	assert(sizeof(void *) == 8);
+	for(int i = 0; i < SIMD::Width; i++)
+	{
+		UInt2 address;
+		address = Insert(address, Extract(castLow, i), 0);
+		address = Insert(address, Extract(castHigh, i), 1);
+		pointers[i] = As<rr::Pointer<Byte>>(address);
+	}
+}
 
 SIMD::Pointer &SIMD::Pointer::operator+=(SIMD::Int i)
 {
@@ -1142,15 +1167,12 @@ Pointer<Byte> SIMD::Pointer::getPointerForLane(int lane) const
 	}
 }
 
-void SIMD::Pointer::castFrom(SIMD::UInt lowerBits, SIMD::UInt upperBits)
+void SIMD::Pointer::castTo(SIMD::UInt &bits) const
 {
-	assert(sizeof(void *) == 8);
+	assert(sizeof(void *) == 4);
 	for(int i = 0; i < SIMD::Width; i++)
 	{
-		UInt2 address;
-		address = Insert(address, Extract(lowerBits, i), 0);
-		address = Insert(address, Extract(upperBits, i), 1);
-		pointers[i] = As<rr::Pointer<Byte>>(address);
+		bits = Insert(bits, As<scalar::UInt>(pointers[i]), i);
 	}
 }
 
@@ -1162,24 +1184,6 @@ void SIMD::Pointer::castTo(SIMD::UInt &lowerBits, SIMD::UInt &upperBits) const
 		UInt2 address = As<UInt2>(pointers[i]);
 		lowerBits = Insert(lowerBits, Extract(address, 0), i);
 		upperBits = Insert(upperBits, Extract(address, 1), i);
-	}
-}
-
-void SIMD::Pointer::castFrom(SIMD::UInt bits)
-{
-	assert(sizeof(void *) == 4);
-	for(int i = 0; i < SIMD::Width; i++)
-	{
-		pointers[i] = As<rr::Pointer<Byte>>(Extract(bits, i));
-	}
-}
-
-void SIMD::Pointer::castTo(SIMD::UInt &bits) const
-{
-	assert(sizeof(void *) == 4);
-	for(int i = 0; i < SIMD::Width; i++)
-	{
-		bits = Insert(bits, As<scalar::UInt>(pointers[i]), i);
 	}
 }
 
