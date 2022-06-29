@@ -20,7 +20,6 @@
 #include <vector>
 
 using namespace rr;
-using namespace sw;
 
 BENCHMARK_MAIN();
 
@@ -40,8 +39,8 @@ static void Transcendental1(benchmark::State &state, Func func, Args &&...args)
 
 	FunctionT<void(float *, float *)> function;
 	{
-		Pointer<Float4> r = Pointer<Float>(function.Arg<0>());
-		Pointer<Float4> a = Pointer<Float>(function.Arg<1>());
+		Pointer<sw::SIMD::Float> r = Pointer<Float>(function.Arg<0>());
+		Pointer<sw::SIMD::Float> a = Pointer<Float>(function.Arg<1>());
 
 		for(int i = 0; i < REPS; i++)
 		{
@@ -51,8 +50,8 @@ static void Transcendental1(benchmark::State &state, Func func, Args &&...args)
 
 	auto routine = function("one");
 
-	std::vector<float> r(REPS * 4);
-	std::vector<float> a(REPS * 4, 1.0f);
+	std::vector<float> r(REPS * sw::SIMD::Width);
+	std::vector<float> a(REPS * sw::SIMD::Width, 1.0f);
 
 	for(auto _ : state)
 	{
@@ -67,9 +66,9 @@ static void Transcendental2(benchmark::State &state, Func func, Args &&...args)
 
 	FunctionT<void(float *, float *, float *)> function;
 	{
-		Pointer<Float4> r = Pointer<Float>(function.Arg<0>());
-		Pointer<Float4> a = Pointer<Float>(function.Arg<1>());
-		Pointer<Float4> b = Pointer<Float>(function.Arg<2>());
+		Pointer<sw::SIMD::Float> r = Pointer<Float>(function.Arg<0>());
+		Pointer<sw::SIMD::Float> a = Pointer<Float>(function.Arg<1>());
+		Pointer<sw::SIMD::Float> b = Pointer<Float>(function.Arg<2>());
 
 		for(int i = 0; i < REPS; i++)
 		{
@@ -79,9 +78,9 @@ static void Transcendental2(benchmark::State &state, Func func, Args &&...args)
 
 	auto routine = function("two");
 
-	std::vector<float> r(REPS * 4);
-	std::vector<float> a(REPS * 4, 0.456f);
-	std::vector<float> b(REPS * 4, 0.789f);
+	std::vector<float> r(REPS * sw::SIMD::Width);
+	std::vector<float> a(REPS * sw::SIMD::Width, 0.456f);
+	std::vector<float> b(REPS * sw::SIMD::Width, 0.789f);
 
 	for(auto _ : state)
 	{
@@ -90,7 +89,7 @@ static void Transcendental2(benchmark::State &state, Func func, Args &&...args)
 }
 
 // No operation; just copy the input to the output, for use as a baseline.
-static Float4 Nop(RValue<Float4> x)
+static sw::SIMD::Float Nop(RValue<sw::SIMD::Float> x)
 {
 	return x;
 }
