@@ -2286,7 +2286,7 @@ enum class OutOfBoundsBehavior
 	UndefinedBehavior,   // Program may terminate.
 };
 
-RValue<Bool> AnyTrue(const RValue<Int4> &bools);
+RValue<Bool> AnyTrue(const RValue<Int4> &bools);  ///deprecate
 RValue<Bool> AnyFalse(const RValue<Int4> &bools);
 RValue<Bool> AllTrue(const RValue<Int4> &bools);
 RValue<Bool> AllFalse(const RValue<Int4> &bools);
