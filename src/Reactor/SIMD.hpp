@@ -145,12 +145,14 @@ public:
 class Pointer
 {
 public:
-	Pointer();
+	// Pointer();
 	Pointer(scalar::Pointer<Byte> base, scalar::Int limit);
 	Pointer(scalar::Pointer<Byte> base, unsigned int limit);
 	Pointer(scalar::Pointer<Byte> base, scalar::Int limit, SIMD::Int offset);
 	Pointer(scalar::Pointer<Byte> base, unsigned int limit, SIMD::Int offset);
 	Pointer(std::vector<scalar::Pointer<Byte>> pointers);
+	Pointer(SIMD::UInt cast);
+	Pointer(SIMD::UInt castLow, SIMD::UInt castHight);
 
 	Pointer &operator+=(SIMD::Int i);
 	Pointer operator+(SIMD::Int i);
@@ -193,13 +195,8 @@ public:
 	scalar::Pointer<Byte> getPointerForLane(int lane) const;
 	static Pointer IfThenElse(SIMD::Int condition, const Pointer &lhs, const Pointer &rhs);
 
-	// 64-bit pointer bit cast utilities
-	void castFrom(SIMD::UInt lowerBits, SIMD::UInt upperBits);
-	void castTo(SIMD::UInt &lowerBits, SIMD::UInt &upperBits) const;
-
-	// 32-bit pointer bit cast utilities
-	void castFrom(SIMD::UInt bits);
 	void castTo(SIMD::UInt &bits) const;
+	void castTo(SIMD::UInt &lowerBits, SIMD::UInt &upperBits) const;
 
 #ifdef ENABLE_RR_PRINT
 	std::vector<rr::Value *> getPrintValues() const;
@@ -214,15 +211,15 @@ private:
 public:
 	// Upper (non-inclusive) limit for offsets from base.
 	scalar::Int dynamicLimit;  // If hasDynamicLimit is false, dynamicLimit is zero.
-	unsigned int staticLimit;
+	unsigned int staticLimit = 0;
 
 	// Per lane offsets from base.
 	SIMD::Int dynamicOffsets;  // If hasDynamicOffsets is false, all dynamicOffsets are zero.
 	std::vector<int32_t> staticOffsets;
 
-	bool hasDynamicLimit;    // True if dynamicLimit is non-zero.
-	bool hasDynamicOffsets;  // True if any dynamicOffsets are non-zero.
-	bool isBasePlusOffset;   // True if this uses base+offset. False if this is a collection of Pointers
+	bool hasDynamicLimit = false;    // True if dynamicLimit is non-zero.
+	bool hasDynamicOffsets = false;  // True if any dynamicOffsets are non-zero.
+	bool isBasePlusOffset = false;   // True if this uses base+offset. False if this is a collection of Pointers
 };
 
 }  // namespace SIMD
@@ -452,12 +449,12 @@ RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
 RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools);
 RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools);
 RValue<Bool> Divergent(const RValue<SIMD::Int> &ints);
-RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select);                             //quad
-RValue<SIMD::UInt> Swizzle(RValue<SIMD::UInt> x, uint16_t select);                           //quad
-RValue<SIMD::Float> Swizzle(RValue<SIMD::Float> x, uint16_t select);                         //quad
-RValue<SIMD::Int> Shuffle(RValue<SIMD::Int> x, RValue<SIMD::Int> y, uint16_t select);        //quad
-RValue<SIMD::UInt> Shuffle(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y, uint16_t select);     //quad
-RValue<SIMD::Float> Shuffle(RValue<SIMD::Float> x, RValue<SIMD::Float> y, uint16_t select);  //quad
+RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select);                             // quad
+RValue<SIMD::UInt> Swizzle(RValue<SIMD::UInt> x, uint16_t select);                           // quad
+RValue<SIMD::Float> Swizzle(RValue<SIMD::Float> x, uint16_t select);                         // quad
+RValue<SIMD::Int> Shuffle(RValue<SIMD::Int> x, RValue<SIMD::Int> y, uint16_t select);        // quad
+RValue<SIMD::UInt> Shuffle(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y, uint16_t select);     // quad
+RValue<SIMD::Float> Shuffle(RValue<SIMD::Float> x, RValue<SIMD::Float> y, uint16_t select);  // quad
 RValue<SIMD::Float> Gather(RValue<Pointer<Float>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment, bool zeroMaskedLanes = false);
 RValue<SIMD::Int> Gather(RValue<Pointer<Int>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment, bool zeroMaskedLanes = false);
 void Scatter(RValue<Pointer<Float>> base, RValue<SIMD::Float> val, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment);
@@ -637,17 +634,17 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, SIMD::Int mask, boo
 template<>
 inline SIMD::Pointer SIMD::Pointer::Load(OutOfBoundsBehavior robustness, SIMD::Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */, int alignment /* = sizeof(float) */)
 {
-	SIMD::Pointer out;
+	std::vector<scalar::Pointer<Byte>> pointers(SIMD::Width);
 
 	for(int i = 0; i < SIMD::Width; i++)
 	{
 		If(Extract(mask, i) != 0)
 		{
-			out.pointers[i] = rr::Load(scalar::Pointer<scalar::Pointer<Byte>>(getPointerForLane(i)), alignment, atomic, order);
+			pointers[i] = rr::Load(scalar::Pointer<scalar::Pointer<Byte>>(getPointerForLane(i)), alignment, atomic, order);
 		}
 	}
 
-	return out;
+	return SIMD::Pointer(pointers);
 }
 
 template<typename T>
