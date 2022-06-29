@@ -1419,8 +1419,8 @@ private:
 		AtSample,
 		AtOffset,
 	};
-	SIMD::Float Interpolate(SIMD::Pointer const &ptr, int32_t location, Object::ID paramId,
-	                        uint32_t component, EmitState *state, InterpolationType type) const;
+	SIMD::Float EmitInterpolate(SIMD::Pointer const &ptr, int32_t location, Object::ID paramId,
+	                            uint32_t component, EmitState *state, InterpolationType type) const;
 
 	// Helper for implementing OpStore, which doesn't take an InsnIterator so it
 	// can also store independent operands.
