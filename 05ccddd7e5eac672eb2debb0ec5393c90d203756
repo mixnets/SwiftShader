@@ -22,6 +22,30 @@
       },
       "revId": "05ccddd7e5eac672eb2debb0ec5393c90d203756",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d09b8ea_f45d5f63",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-29T15:34:28Z",
+      "side": 1,
+      "message": "I understand the need for duplication here, although it might be avoidable, but I\u0027m not sure why the constants above are no longer declared within the Constants struct.",
+      "parentUuid": "f6bb0fb6_3288dff9",
+      "range": {
+        "startLine": 125,
+        "startChar": 13,
+        "endLine": 125,
+        "endChar": 29
+      },
+      "revId": "05ccddd7e5eac672eb2debb0ec5393c90d203756",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
