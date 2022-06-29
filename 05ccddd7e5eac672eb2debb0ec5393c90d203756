@@ -46,6 +46,30 @@
       },
       "revId": "05ccddd7e5eac672eb2debb0ec5393c90d203756",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3e795e9_5c78cf54",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-29T16:45:44Z",
+      "side": 1,
+      "message": "They were never addressable as fields from Reactor, so they don\u0027t belong in the `Constants` struct since it has the purpose of being passed to Reactor routines.",
+      "parentUuid": "5d09b8ea_f45d5f63",
+      "range": {
+        "startLine": 125,
+        "startChar": 13,
+        "endLine": 125,
+        "endChar": 29
+      },
+      "revId": "05ccddd7e5eac672eb2debb0ec5393c90d203756",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
