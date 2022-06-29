@@ -728,7 +728,7 @@ SIMD::Pointer SpirvShader::GetNonUniformTexelAddress(ImageInstructionSignature i
 		texelData.ptrOffset = (texelData.ptrOffset & ~oobMask) | (oobMask & SIMD::Int(OOB_OFFSET));  // oob ? OOB_OFFSET : ptrOffset  // TODO: IfThenElse()
 	}
 
-	std::array<Pointer<Byte>, SIMD::Width> imageBase;
+	std::vector<Pointer<Byte>> imageBase(SIMD::Width);
 	for(int i = 0; i < SIMD::Width; i++)
 	{
 		imageBase[i] = *Pointer<Pointer<Byte>>(descriptor.getPointerForLane(i) + (useStencilAspect
@@ -1199,9 +1199,9 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 		dst.move(3, SIMD::Float((packed[0] >> 15) & SIMD::Int(0x1)));
 		break;
 	case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-		dst.move(0, halfToFloatBits((packed[0] << 4) & SIMD::Int(0x7FF0)));
-		dst.move(1, halfToFloatBits((packed[0] >> 7) & SIMD::Int(0x7FF0)));
-		dst.move(2, halfToFloatBits((packed[0] >> 17) & SIMD::Int(0x7FE0)));
+		dst.move(0, halfToFloatBits(SIMD::UInt(packed[0] << 4) & SIMD::UInt(0x7FF0)));
+		dst.move(1, halfToFloatBits(SIMD::UInt(packed[0] >> 7) & SIMD::UInt(0x7FF0)));
+		dst.move(2, halfToFloatBits(SIMD::UInt(packed[0] >> 17) & SIMD::UInt(0x7FE0)));
 		dst.move(3, SIMD::Float(1.0f));
 		break;
 	default:

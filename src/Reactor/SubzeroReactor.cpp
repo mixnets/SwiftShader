@@ -4103,7 +4103,7 @@ template<typename T>
 using UnderlyingTypeT = typename UnderlyingType<T>::Type;
 
 template<typename T, typename EL = UnderlyingTypeT<T>>
-static void gather(T &out, RValue<Pointer<EL>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes)
+static void gather(T &out, RValue<Pointer<EL>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment, bool zeroMaskedLanes)
 {
 	constexpr bool atomic = false;
 	constexpr std::memory_order order = std::memory_order_relaxed;
@@ -4111,7 +4111,7 @@ static void gather(T &out, RValue<Pointer<EL>> base, RValue<Int4> offsets, RValu
 	Pointer<Byte> baseBytePtr = base;
 
 	out = T(0);
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < SIMD::Width; i++)
 	{
 		If(Extract(mask, i) != 0)
 		{
@@ -4127,14 +4127,14 @@ static void gather(T &out, RValue<Pointer<EL>> base, RValue<Int4> offsets, RValu
 }
 
 template<typename T, typename EL = UnderlyingTypeT<T>>
-static void scatter(RValue<Pointer<EL>> base, RValue<T> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+static void scatter(RValue<Pointer<EL>> base, RValue<T> val, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment)
 {
 	constexpr bool atomic = false;
 	constexpr std::memory_order order = std::memory_order_relaxed;
 
 	Pointer<Byte> baseBytePtr = base;
 
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < SIMD::Width; i++)
 	{
 		If(Extract(mask, i) != 0)
 		{
@@ -4144,32 +4144,32 @@ static void scatter(RValue<Pointer<EL>> base, RValue<T> val, RValue<Int4> offset
 	}
 }
 
-RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes /* = false */)
+RValue<SIMD::Float> Gather(RValue<Pointer<Float>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment, bool zeroMaskedLanes /* = false */)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	Float4 result{};
+	SIMD::Float result{};
 	gather(result, base, offsets, mask, alignment, zeroMaskedLanes);
 	return result;
 }
 
-RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes /* = false */)
+RValue<SIMD::Int> Gather(RValue<Pointer<Int>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment, bool zeroMaskedLanes /* = false */)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	Int4 result{};
+	SIMD::Int result{};
 	gather(result, base, offsets, mask, alignment, zeroMaskedLanes);
 	return result;
 }
 
-void Scatter(RValue<Pointer<Float>> base, RValue<Float4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+void Scatter(RValue<Pointer<Float>> base, RValue<SIMD::Float> val, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	scatter(base, val, offsets, mask, alignment);
 }
 
-void Scatter(RValue<Pointer<Int>> base, RValue<Int4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+void Scatter(RValue<Pointer<Int>> base, RValue<SIMD::Int> val, RValue<SIMD::Int> offsets, RValue<SIMD::Int> mask, unsigned int alignment)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	scatter<Int4>(base, val, offsets, mask, alignment);
+	scatter<SIMD::Int>(base, val, offsets, mask, alignment);
 }
 
 RValue<UInt> Ctlz(RValue<UInt> x, bool isZeroUndef)
@@ -4732,9 +4732,8 @@ Nucleus::CoroutineHandle Nucleus::invokeCoroutineBegin(Routine &routine, std::fu
 	}
 }
 
-namespace SIMD {
-
 SIMD::Int::Int(RValue<scalar::Int> rhs)
+    : XYZW(this)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *vector = Nucleus::createBitCast(rhs.value(), SIMD::Int::type());
@@ -4910,6 +4909,7 @@ Type *SIMD::Int::type()
 }
 
 SIMD::UInt::UInt(RValue<SIMD::Float> cast)
+    : XYZW(this)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	// Smallest positive value representable in UInt, but not in Int
@@ -4927,6 +4927,7 @@ SIMD::UInt::UInt(RValue<SIMD::Float> cast)
 }
 
 SIMD::UInt::UInt(RValue<scalar::UInt> rhs)
+    : XYZW(this)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *vector = Nucleus::createBitCast(rhs.value(), SIMD::UInt::type());
@@ -5049,6 +5050,7 @@ Type *SIMD::UInt::type()
 }
 
 SIMD::Float::Float(RValue<scalar::Float> rhs)
+    : XYZW(this)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *vector = Nucleus::createBitCast(rhs.value(), SIMD::Float::type());
@@ -5331,7 +5333,5 @@ Type *SIMD::Float::type()
 {
 	return T(Ice::IceType_v4f32);
 }
-
-}  // namespace SIMD
 
 }  // namespace rr
