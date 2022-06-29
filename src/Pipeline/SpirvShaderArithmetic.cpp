@@ -173,7 +173,7 @@ SpirvShader::EmitResult SpirvShader::EmitPointerBitCast(Object::ID resultID, Ope
 	}
 	else  // Integer bits -> Pointer
 	{
-		SIMD::Pointer dst(nullptr, nullptr, nullptr, nullptr);
+		SIMD::Pointer dst;
 
 		if(sizeof(void *) == 4)  // 32-bit pointers
 		{

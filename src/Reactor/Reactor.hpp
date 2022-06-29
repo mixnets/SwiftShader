@@ -2260,6 +2260,11 @@ RValue<T> Load(Pointer<T> pointer, unsigned int alignment, bool atomic, std::mem
 [[deprecated]] void MaskedStore(RValue<Pointer<Float4>> base, RValue<Float4> val, RValue<Int4> mask, unsigned int alignment);
 [[deprecated]] void MaskedStore(RValue<Pointer<Int4>> base, RValue<Int4> val, RValue<Int4> mask, unsigned int alignment);
 
+//RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes = false);
+//RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes = false);
+//void Scatter(RValue<Pointer<Float>> base, RValue<Float4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+//void Scatter(RValue<Pointer<Int>> base, RValue<Int4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+
 template<typename T>
 void Store(RValue<T> value, RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
 {
@@ -2286,7 +2291,108 @@ enum class OutOfBoundsBehavior
 	UndefinedBehavior,   // Program may terminate.
 };
 
-RValue<Bool> AnyTrue(const RValue<Int4> &bools);
+struct Pointer4
+{
+	Pointer4(Pointer<Byte> base, Int limit);
+	Pointer4(Pointer<Byte> base, unsigned int limit);
+	Pointer4(Pointer<Byte> base, Int limit, Int4 offset);
+	Pointer4(Pointer<Byte> base, unsigned int limit, Int4 offset);
+	Pointer4(Pointer<Byte> p0, Pointer<Byte> p1, Pointer<Byte> p2, Pointer<Byte> p3);
+	Pointer4(std::array<Pointer<Byte>, 4> pointers);
+
+	Pointer4 &operator+=(Int4 i);
+	Pointer4 operator+(Int4 i);
+	Pointer4 &operator+=(int i);
+	Pointer4 operator+(int i);
+
+	Int4 offsets() const;
+
+	Int4 isInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const;
+
+	bool isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const;
+
+	Int limit() const;
+
+	// Returns true if all offsets are sequential
+	// (N+0*step, N+1*step, N+2*step, N+3*step)
+	Bool hasSequentialOffsets(unsigned int step) const;
+
+	// Returns true if all offsets are are compile-time static and
+	// sequential (N+0*step, N+1*step, N+2*step, N+3*step)
+	bool hasStaticSequentialOffsets(unsigned int step) const;
+
+	// Returns true if all offsets are equal (N, N, N, N)
+	Bool hasEqualOffsets() const;
+
+	// Returns true if all offsets are compile-time static and are equal
+	// (N, N, N, N)
+	bool hasStaticEqualOffsets() const;
+
+	template<typename T>
+	inline T Load(OutOfBoundsBehavior robustness, Int4 mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed, int alignment = sizeof(float));
+
+	template<typename T>
+	inline void Store(T val, OutOfBoundsBehavior robustness, Int4 mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed);
+
+	template<typename T>
+	inline void Store(RValue<T> val, OutOfBoundsBehavior robustness, Int4 mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed);
+
+	Pointer<Byte> getUniformPointer() const;
+	Pointer<Byte> getPointerForLane(int lane) const;
+	static Pointer4 IfThenElse(Int4 condition, const Pointer4 &lhs, const Pointer4 &rhs);
+
+	// 64-bit pointer bit cast utilities
+	void castFrom(UInt4 lowerBits, UInt4 upperBits);
+	void castTo(UInt4 &lowerBits, UInt4 &upperBits) const;
+
+	// 32-bit pointer bit cast utilities
+	void castFrom(UInt4 bits);
+	void castTo(UInt4 &bits) const;
+
+#ifdef ENABLE_RR_PRINT
+	std::vector<rr::Value *> getPrintValues() const;
+#endif
+
+private:
+	// Base address for the pointer, common across all lanes.
+	Pointer<Byte> base;
+	// Per-lane address for dealing with non-uniform data
+	std::array<Pointer<Byte>, 4> pointers;
+
+public:
+	// Upper (non-inclusive) limit for offsets from base.
+	Int dynamicLimit;  // If hasDynamicLimit is false, dynamicLimit is zero.
+	unsigned int staticLimit;
+
+	// Per lane offsets from base.
+	Int4 dynamicOffsets;  // If hasDynamicOffsets is false, all dynamicOffsets are zero.
+	std::array<int32_t, 4> staticOffsets;
+
+	bool hasDynamicLimit;    // True if dynamicLimit is non-zero.
+	bool hasDynamicOffsets;  // True if any dynamicOffsets are non-zero.
+	bool isBasePlusOffset;   // True if this uses base+offset. False if this is a collection of Pointers
+};
+
+template<typename T>
+struct Element
+{};
+template<>
+struct Element<Float4>
+{
+	using type = Float;
+};
+template<>
+struct Element<Int4>
+{
+	using type = Int;
+};
+template<>
+struct Element<UInt4>
+{
+	using type = UInt;
+};
+
+RValue<Bool> AnyTrue(const RValue<Int4> &bools);  ///deprecate
 RValue<Bool> AnyFalse(const RValue<Int4> &bools);
 RValue<Bool> AllTrue(const RValue<Int4> &bools);
 RValue<Bool> AllFalse(const RValue<Int4> &bools);
@@ -3097,7 +3203,7 @@ public:
 		         Void::type(),
 		         { ValueOf(args)... },
 		         { CToReactorT<Arguments>::type()... });
-	}
+	}  // namespace rr
 
 	static inline void Call(Pointer<Byte> fptr, CToReactorT<Arguments>... args)
 	{
