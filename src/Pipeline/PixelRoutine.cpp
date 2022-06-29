@@ -92,7 +92,6 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 
 		stencilTest(sBuffer, x, sMask, samples);
 
-		Float4 f;
 		Float4 rhwCentroid;
 
 		Float4 xxxx = Float4(Float(x)) + *Pointer<Float4>(primitive + OFFSET(Primitive, xQuad), 16);
@@ -105,14 +104,14 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 
 				if(state.enableMultiSampling)
 				{
-					x -= *Pointer<Float4>(constants + OFFSET(Constants, X) + q * sizeof(float4));
+					x -= Float4(*Pointer<Float>(constants + OFFSET(Constants, SampleLocationsX) + q * sizeof(float)));
 				}
 
 				z[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive, z), false, false);
 
 				if(state.depthBias)
 				{
-					z[q] += *Pointer<Float4>(primitive + OFFSET(Primitive, zBias), 16);
+					z[q] += Float4(*Pointer<Float>(primitive + OFFSET(Primitive, zBias)));
 				}
 
 				unclampedZ[q] = z[q];
@@ -675,7 +674,7 @@ void PixelRoutine::alphaToCoverage(Int cMask[4], const Float4 &alpha, const Samp
 
 	for(unsigned int q : samples)
 	{
-		Int4 coverage = CmpNLT(alpha, *Pointer<Float4>(data + a2c[q]));
+		SIMD::Int coverage = CmpNLT(alpha, SIMD::Float(*Pointer<Float>(data + a2c[q])));
 		Int aMask = SignMask(coverage);
 		cMask[q] &= aMask;
 	}
