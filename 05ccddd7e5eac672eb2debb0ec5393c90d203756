@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6bb0fb6_3288dff9",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-29T14:29:44Z",
+      "side": 1,
+      "message": "Note this duplicates `sw::SampleLocationsX[]` into `Constants::SampleLocationsX[]`, but the latter is non-static. This allows us to use relative addressing in Reactor, i.e. `*Pointer\u003cFloat\u003e(constants + OFFSET(Constants, SampleLocationX) + index * 4)`. \n\nOtherwise we\u0027d need to use `ConstantPointer()`, which produces 10-byte instructions for storing the static address.",
+      "range": {
+        "startLine": 125,
+        "startChar": 13,
+        "endLine": 125,
+        "endChar": 29
+      },
+      "revId": "05ccddd7e5eac672eb2debb0ec5393c90d203756",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
