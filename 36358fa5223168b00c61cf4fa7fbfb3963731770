@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1665e715_281f4250",
+        "filename": "src/Reactor/SIMD.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-30T12:56:36Z",
+      "side": 1,
+      "message": "Nit: I think a comment would help. I don\u0027t think it\u0027s immediately obvious that one is for 32-bit pointers and one is for 64-bit pointers.",
+      "range": {
+        "startLine": 134,
+        "startChar": 0,
+        "endLine": 135,
+        "endChar": 51
+      },
+      "revId": "36358fa5223168b00c61cf4fa7fbfb3963731770",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e19c7850_83ac278b",
+        "filename": "src/Reactor/SIMD.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-30T12:56:36Z",
+      "side": 1,
+      "message": "Same",
+      "range": {
+        "startLine": 178,
+        "startChar": 0,
+        "endLine": 179,
+        "endChar": 55
+      },
+      "revId": "36358fa5223168b00c61cf4fa7fbfb3963731770",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
