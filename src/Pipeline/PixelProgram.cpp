@@ -155,7 +155,7 @@ void PixelProgram::executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const
 	it = spirvShader->inputBuiltins.find(spv::BuiltInSampleMask);
 	if(it != spirvShader->inputBuiltins.end())
 	{
-		static_assert(SIMD::Width == 4, "Expects SIMD width to be 4");
+		ASSERT(SIMD::Width == 4);
 		SIMD::Int laneBits = SIMD::Int(1, 2, 4, 8);
 
 		SIMD::Int inputSampleMask = 0;

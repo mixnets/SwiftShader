@@ -490,7 +490,7 @@ SIMD::Float::Float(const SwizzleMask1<packed::Float4, T> &rhs)
 template<typename T>
 inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, SIMD::Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */, int alignment /* = sizeof(float) */)
 {
-	using EL = typename Scalar<T>::type;
+	using EL = typename Scalar<T>::Type;
 
 	if(!isBasePlusOffset)
 	{
@@ -626,7 +626,7 @@ inline SIMD::Pointer SIMD::Pointer::Load(OutOfBoundsBehavior robustness, SIMD::I
 template<typename T>
 inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, SIMD::Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */)
 {
-	using EL = typename Scalar<T>::type;
+	using EL = typename Scalar<T>::Type;
 	constexpr size_t alignment = sizeof(float);
 
 	if(!isBasePlusOffset)
