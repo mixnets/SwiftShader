@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31858992_6a7cde70",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-30T14:40:39Z",
+      "side": 1,
+      "message": "I\u0027m fine with the change, but it seems like there could\u0027ve been a way to hit those paths. In any case, this doesn\u0027t affect the new simplified version, so LGTM.",
+      "revId": "089522158dbc780463a0a378dc1af862c627a72f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
