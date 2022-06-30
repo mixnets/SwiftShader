@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d46d956d_f9f95c4e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 19
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-30T21:46:04Z",
+      "side": 1,
+      "message": "Ok, went through it, I think it\u0027s landable, if bots agree. The asserts should be enough to prevent us from shooting ourselves in the foot later.",
+      "revId": "3ea213e36ae7e512c60d8da35ade9ac4a9280766",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
