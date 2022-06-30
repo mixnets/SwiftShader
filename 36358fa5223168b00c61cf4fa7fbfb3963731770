@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5fea8565_22843e7e",
+        "filename": "src/Reactor/SIMD.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-30T14:04:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1665e715_281f4250",
+      "range": {
+        "startLine": 134,
+        "startChar": 0,
+        "endLine": 135,
+        "endChar": 51
+      },
+      "revId": "36358fa5223168b00c61cf4fa7fbfb3963731770",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e19c7850_83ac278b",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-06-30T12:56:36Z",
       "side": 1,
       "message": "Same",
+      "range": {
+        "startLine": 178,
+        "startChar": 0,
+        "endLine": 179,
+        "endChar": 55
+      },
+      "revId": "36358fa5223168b00c61cf4fa7fbfb3963731770",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5dc5ddf_55762790",
+        "filename": "src/Reactor/SIMD.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-30T14:04:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e19c7850_83ac278b",
       "range": {
         "startLine": 178,
         "startChar": 0,
