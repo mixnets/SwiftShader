@@ -16,6 +16,24 @@
       "message": "Ok, it might be a lot, but I feel like the \"    : XYZW(this)\" lines should be \"    : XYZW(this) // FIXME(b/...): This should be removed ASAP\" or something in that order of idea. This ends up moving the problem instead of solving it.\n\nMaybe this can work, though, did you think about just making swizzles work instead? \n\nAssuming a SIMD::Width of 8, it could make sense to have, for example:\n```\nSIMD::Float a;\na.xyzw; // Would actually mean xyzwxyzw (repeat the swizzle for each block of 4 components)\n  ```\nWDYT?",
       "revId": "457d0b443ff9f56d21038d5209a95d0179cc83e6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fab34756_e5b03217",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-30T20:52:49Z",
+      "side": 1,
+      "message": "It\u0027s an option I\u0027ve considered, but ultimately something like SIMD::Float represents a scalar Float, which just happens to be processed in parallel with some buddies. So xyzw swizzling doesn\u0027t make sense (cf. it\u0027s not valid to swizzle a scalar in a GPU shader, even though in practice it also gets processed together in a SIMD bundle).\n\nMy plan is to instead have something like a `SwizzleQuad()` intrinsic which is similar to how shaders acknowledge the existence of quads.\n\nI\u0027ll add the TODO comments.",
+      "parentUuid": "a29fc740_6576d3c2",
+      "revId": "457d0b443ff9f56d21038d5209a95d0179cc83e6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
