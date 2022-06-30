@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "117e2718_55c04ffe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-06-30T20:40:44Z",
+      "side": 1,
+      "message": "Isn\u0027t there a way to make this work by looping over using SIMD::Width / 4 iterations instead of asserting that SIMD::Width is 4?\n\nIs SIMD::Width ever going to not be a multiple of 4?",
+      "revId": "918fabf2c319a9c08cc09a2b1e983c1de48edc64",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
