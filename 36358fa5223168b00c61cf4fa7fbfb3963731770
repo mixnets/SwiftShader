@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "88011015_f8d8f570",
+        "filename": "src/Reactor/SIMD.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 874,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-30T14:13:38Z",
+      "side": 0,
+      "message": "FYI, this path never executes with any dEQP test, nor any of the PVR samples: https://swiftshader-review.googlesource.com/c/SwiftShader/+/66449",
+      "range": {
+        "startLine": 870,
+        "startChar": 1,
+        "endLine": 874,
+        "endChar": 2
+      },
+      "revId": "36358fa5223168b00c61cf4fa7fbfb3963731770",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46f130cc_394857d0",
+        "filename": "src/Reactor/SIMD.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 902,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-06-30T14:13:38Z",
+      "side": 0,
+      "message": "FYI, this path never executes with any dEQP test, nor any of the PVR samples: https://swiftshader-review.googlesource.com/c/SwiftShader/+/66450",
+      "range": {
+        "startLine": 898,
+        "startChar": 0,
+        "endLine": 902,
+        "endChar": 2
+      },
+      "revId": "36358fa5223168b00c61cf4fa7fbfb3963731770",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
