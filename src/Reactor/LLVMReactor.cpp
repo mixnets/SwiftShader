@@ -360,7 +360,7 @@ llvm::Value *lowerMulHigh(llvm::Value *x, llvm::Value *y, bool sext)
 
 namespace rr {
 
-const int SIMD::Width = 4;
+const int SIMD::Width = 8;
 
 std::string Caps::backendName()
 {
@@ -3773,6 +3773,23 @@ RValue<Int> pmovmskb(RValue<Byte8> x)
 	return RValue<Int>(createInstruction(llvm::Intrinsic::x86_sse2_pmovmskb_128, v)) & 0xFF;
 }
 
+RValue<Int> vmovmskps_256(RValue<SIMD::Float> x)
+{
+	ASSERT(SIMD::Width == 8);
+
+	Value *v = x.value();
+
+	// TODO(b/172238865): MemorySanitizer does not support movmsk instructions,
+	// which makes it look at the entire 128-bit input for undefined bits. Mask off
+	// just the sign bits to avoid false positives.
+	if(__has_feature(memory_sanitizer))
+	{
+		v = As<SIMD::Float>(As<SIMD::Int>(v) & SIMD::Int(0x80000000u)).value();
+	}
+
+	return RValue<Int>(createInstruction(llvm::Intrinsic::x86_avx_movmsk_ps_256, v));
+}
+
 }  // namespace x86
 #endif  // defined(__i386__) || defined(__x86_64__)
 
@@ -4272,6 +4289,25 @@ RValue<SIMD::Int> Insert128(RValue<SIMD::Int> val, RValue<Int4> element, int i)
 	llvm::Value *a = jit->builder->CreateBitCast(V(element.value()), llvm::IntegerType::get(*jit->context, 128));
 
 	return As<SIMD::Int>(V(jit->builder->CreateInsertElement(v128, a, i)));
+}
+
+RValue<scalar::Int> SignMask(RValue<SIMD::Int> x)
+{
+	if(SIMD::Width == 4)
+	{
+		return SignMask(As<Int4>(x));
+	}
+
+#if defined(__x86_64__)
+	if(SIMD::Width == 8)
+	{
+		return x86::vmovmskps_256(As<SIMD::Float>(x));
+	}
+#endif
+
+	ASSERT(SIMD::Width == 8);  // TODO(b/214583550): Optimize for wider SIMD.
+
+	return As<Int>(V(lowerSignMask(V(x.value()), T(Int::type()))));
 }
 
 Type *SIMD::Int::type()
