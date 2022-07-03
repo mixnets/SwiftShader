@@ -284,6 +284,7 @@ RValue<scalar::Int> Extract(RValue<SIMD::Int> val, int i);
 RValue<SIMD::Int> Insert(RValue<SIMD::Int> val, RValue<scalar::Int> element, int i);
 RValue<packed::Int4> Extract128(RValue<SIMD::Int> val, int i);
 RValue<SIMD::Int> Insert128(RValue<SIMD::Int> val, RValue<packed::Int4> element, int i);
+RValue<scalar::Int> SignMask(RValue<SIMD::Int> x);
 
 RValue<SIMD::UInt> operator+(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 RValue<SIMD::UInt> operator-(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
@@ -435,7 +436,7 @@ RValue<SIMD::Float> Log(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Exp2(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Log2(RValue<SIMD::Float> x);
 
-RValue<Int> SignMask(RValue<SIMD::Int> x);
+//RValue<Int> SignMask(RValue<SIMD::Int> x);
 RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef);
 RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> x, bool isZeroUndef);
 RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y);

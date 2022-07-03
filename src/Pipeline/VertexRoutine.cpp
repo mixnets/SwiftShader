@@ -104,11 +104,17 @@ void VertexRoutine::readInput(Pointer<UInt> &batch)
 				robustnessSize = *Pointer<UInt>(data + OFFSET(DrawData, robustnessSize) + sizeof(uint32_t) * (i / 4));
 			}
 
-			auto value = readStream(input, stride, state.input[i / 4], batch, state.robustBufferAccess, robustnessSize, baseVertex);
-			routine.inputs[i + 0] = value.x;
-			routine.inputs[i + 1] = value.y;
-			routine.inputs[i + 2] = value.z;
-			routine.inputs[i + 3] = value.w;
+			for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+			{
+				Vector4f value = readStream(input, stride, state.input[i / 4], batch, state.robustBufferAccess, robustnessSize, baseVertex);
+
+				routine.inputs[i + 0] = Insert128(routine.inputs[i + 0], value.x, lane128);
+				routine.inputs[i + 1] = Insert128(routine.inputs[i + 1], value.y, lane128);
+				routine.inputs[i + 2] = Insert128(routine.inputs[i + 2], value.z, lane128);
+				routine.inputs[i + 3] = Insert128(routine.inputs[i + 3], value.w, lane128);
+
+				batch = Pointer<UInt>(Pointer<Byte>(batch) + 4 * sizeof(int));
+			}
 		}
 	}
 }
@@ -568,140 +574,143 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 
 void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCache, Pointer<UInt> &batch)
 {
-	ASSERT(SIMD::Width == 4);
-
-	UInt index0 = batch[0];
-	UInt index1 = batch[1];
-	UInt index2 = batch[2];
-	UInt index3 = batch[3];
-
-	UInt cacheIndex0 = index0 & VertexCache::TAG_MASK;
-	UInt cacheIndex1 = index1 & VertexCache::TAG_MASK;
-	UInt cacheIndex2 = index2 & VertexCache::TAG_MASK;
-	UInt cacheIndex3 = index3 & VertexCache::TAG_MASK;
-
-	// We processed a SIMD group of vertices, with the first one being the one that missed the cache tag check.
-	// Write them out in reverse order here and below to ensure the first one is now guaranteed to be in the cache.
-	tagCache[cacheIndex3] = index3;
-	tagCache[cacheIndex2] = index2;
-	tagCache[cacheIndex1] = index1;
-	tagCache[cacheIndex0] = index0;
-
-	auto it = spirvShader->outputBuiltins.find(spv::BuiltInPosition);
-	if(it != spirvShader->outputBuiltins.end())
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
 	{
-		assert(it->second.SizeInComponents == 4);
-		auto &position = routine.getVariable(it->second.Id);
+		UInt index0 = batch[0];
+		UInt index1 = batch[1];
+		UInt index2 = batch[2];
+		UInt index3 = batch[3];
 
-		SIMD::Float4 pos;
-		pos.x = position[it->second.FirstComponent + 0];
-		pos.y = position[it->second.FirstComponent + 1];
-		pos.z = position[it->second.FirstComponent + 2];
-		pos.w = position[it->second.FirstComponent + 3];
+		UInt cacheIndex0 = index0 & VertexCache::TAG_MASK;
+		UInt cacheIndex1 = index1 & VertexCache::TAG_MASK;
+		UInt cacheIndex2 = index2 & VertexCache::TAG_MASK;
+		UInt cacheIndex3 = index3 & VertexCache::TAG_MASK;
 
-		// Projection and viewport transform.
-		SIMD::Float w = As<SIMD::Float>(As<SIMD::Int>(pos.w) | (As<SIMD::Int>(CmpEQ(pos.w, 0.0f)) & As<SIMD::Int>(SIMD::Float(1.0f))));
-		SIMD::Float rhw = 1.0f / w;
+		// We processed a SIMD group of vertices, with the first one being the one that missed the cache tag check.
+		// Write them out in reverse order here and below to ensure the first one is now guaranteed to be in the cache.
+		tagCache[cacheIndex3] = index3;
+		tagCache[cacheIndex2] = index2;
+		tagCache[cacheIndex1] = index1;
+		tagCache[cacheIndex0] = index0;
 
-		SIMD::Float4 proj;
-		proj.x = As<Float4>(RoundIntClamped(SIMD::Float(*Pointer<Float>(data + OFFSET(DrawData, X0xF))) + pos.x * rhw * SIMD::Float(*Pointer<Float>(data + OFFSET(DrawData, WxF)))));
-		proj.y = As<Float4>(RoundIntClamped(SIMD::Float(*Pointer<Float>(data + OFFSET(DrawData, Y0xF))) + pos.y * rhw * SIMD::Float(*Pointer<Float>(data + OFFSET(DrawData, HxF)))));
-		proj.z = pos.z * rhw;
-		proj.w = rhw;
-
-		Float4 pos_x = Extract128(pos.x, 0);
-		Float4 pos_y = Extract128(pos.y, 0);
-		Float4 pos_z = Extract128(pos.z, 0);
-		Float4 pos_w = Extract128(pos.w, 0);
-		transpose4x4(pos_x, pos_y, pos_z, pos_w);
-
-		*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, position), 16) = pos_w;
-		*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, position), 16) = pos_z;
-		*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, position), 16) = pos_y;
-		*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, position), 16) = pos_x;
-
-		*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 3);
-		*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 2);
-		*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 1);
-		*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 0);
-
-		Float4 proj_x = Extract128(proj.x, 0);
-		Float4 proj_y = Extract128(proj.y, 0);
-		Float4 proj_z = Extract128(proj.z, 0);
-		Float4 proj_w = Extract128(proj.w, 0);
-		transpose4x4(proj_x, proj_y, proj_z, proj_w);
-
-		*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, projected), 16) = proj_w;
-		*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, projected), 16) = proj_z;
-		*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, projected), 16) = proj_y;
-		*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, projected), 16) = proj_x;
-	}
-
-	it = spirvShader->outputBuiltins.find(spv::BuiltInPointSize);
-	if(it != spirvShader->outputBuiltins.end())
-	{
-		ASSERT(it->second.SizeInComponents == 1);
-		auto psize = routine.getVariable(it->second.Id)[it->second.FirstComponent];
-
-		*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, pointSize)) = Extract(psize, 3);
-		*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, pointSize)) = Extract(psize, 2);
-		*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, pointSize)) = Extract(psize, 1);
-		*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, pointSize)) = Extract(psize, 0);
-	}
-
-	it = spirvShader->outputBuiltins.find(spv::BuiltInClipDistance);
-	if(it != spirvShader->outputBuiltins.end())
-	{
-		auto count = spirvShader->getNumOutputClipDistances();
-		for(unsigned int i = 0; i < count; i++)
+		auto it = spirvShader->outputBuiltins.find(spv::BuiltInPosition);
+		if(it != spirvShader->outputBuiltins.end())
 		{
-			auto dist = routine.getVariable(it->second.Id)[it->second.FirstComponent + i];
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 3);
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 2);
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 1);
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 0);
-		}
-	}
+			assert(it->second.SizeInComponents == 4);
+			auto &position = routine.getVariable(it->second.Id);
 
-	it = spirvShader->outputBuiltins.find(spv::BuiltInCullDistance);
-	if(it != spirvShader->outputBuiltins.end())
-	{
-		auto count = spirvShader->getNumOutputCullDistances();
-		for(unsigned int i = 0; i < count; i++)
+			SIMD::Float4 pos;
+			pos.x = position[it->second.FirstComponent + 0];
+			pos.y = position[it->second.FirstComponent + 1];
+			pos.z = position[it->second.FirstComponent + 2];
+			pos.w = position[it->second.FirstComponent + 3];
+
+			// Projection and viewport transform.
+			SIMD::Float w = As<SIMD::Float>(As<SIMD::Int>(pos.w) | (As<SIMD::Int>(CmpEQ(pos.w, 0.0f)) & As<SIMD::Int>(SIMD::Float(1.0f))));
+			SIMD::Float rhw = 1.0f / w;
+
+			SIMD::Float4 proj;
+			proj.x = As<SIMD::Float>(RoundIntClamped(SIMD::Float(*Pointer<Float>(data + OFFSET(DrawData, X0xF))) + pos.x * rhw * SIMD::Float(*Pointer<Float>(data + OFFSET(DrawData, WxF)))));
+			proj.y = As<SIMD::Float>(RoundIntClamped(SIMD::Float(*Pointer<Float>(data + OFFSET(DrawData, Y0xF))) + pos.y * rhw * SIMD::Float(*Pointer<Float>(data + OFFSET(DrawData, HxF)))));
+			proj.z = pos.z * rhw;
+			proj.w = rhw;
+
+			Float4 pos_x = Extract128(pos.x, 0);
+			Float4 pos_y = Extract128(pos.y, 0);
+			Float4 pos_z = Extract128(pos.z, 0);
+			Float4 pos_w = Extract128(pos.w, 0);
+			transpose4x4(pos_x, pos_y, pos_z, pos_w);
+
+			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, position), 16) = pos_w;
+			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, position), 16) = pos_z;
+			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, position), 16) = pos_y;
+			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, position), 16) = pos_x;
+
+			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 3);
+			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 2);
+			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 1);
+			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 0);
+
+			Float4 proj_x = Extract128(proj.x, 0);
+			Float4 proj_y = Extract128(proj.y, 0);
+			Float4 proj_z = Extract128(proj.z, 0);
+			Float4 proj_w = Extract128(proj.w, 0);
+			transpose4x4(proj_x, proj_y, proj_z, proj_w);
+
+			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, projected), 16) = proj_w;
+			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, projected), 16) = proj_z;
+			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, projected), 16) = proj_y;
+			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, projected), 16) = proj_x;
+		}
+
+		it = spirvShader->outputBuiltins.find(spv::BuiltInPointSize);
+		if(it != spirvShader->outputBuiltins.end())
 		{
-			auto dist = routine.getVariable(it->second.Id)[it->second.FirstComponent + i];
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 3);
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 2);
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 1);
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 0);
+			ASSERT(it->second.SizeInComponents == 1);
+			auto psize = routine.getVariable(it->second.Id)[it->second.FirstComponent];
+
+			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, pointSize)) = Extract(psize, 3);
+			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, pointSize)) = Extract(psize, 2);
+			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, pointSize)) = Extract(psize, 1);
+			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, pointSize)) = Extract(psize, 0);
 		}
-	}
 
-	*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, cullMask)) = -((cullMask >> 3) & 1);
-	*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, cullMask)) = -((cullMask >> 2) & 1);
-	*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, cullMask)) = -((cullMask >> 1) & 1);
-	*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, cullMask)) = -((cullMask >> 0) & 1);
-
-	for(int i = 0; i < MAX_INTERFACE_COMPONENTS; i += 4)
-	{
-		if(spirvShader->outputs[i + 0].Type != SpirvShader::ATTRIBTYPE_UNUSED ||
-		   spirvShader->outputs[i + 1].Type != SpirvShader::ATTRIBTYPE_UNUSED ||
-		   spirvShader->outputs[i + 2].Type != SpirvShader::ATTRIBTYPE_UNUSED ||
-		   spirvShader->outputs[i + 3].Type != SpirvShader::ATTRIBTYPE_UNUSED)
+		it = spirvShader->outputBuiltins.find(spv::BuiltInClipDistance);
+		if(it != spirvShader->outputBuiltins.end())
 		{
-			Vector4f v;
-			v.x = Extract128(routine.outputs[i + 0], 0);
-			v.y = Extract128(routine.outputs[i + 1], 0);
-			v.z = Extract128(routine.outputs[i + 2], 0);
-			v.w = Extract128(routine.outputs[i + 3], 0);
-
-			transpose4x4(v.x, v.y, v.z, v.w);
-
-			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, v[i]), 16) = v.w;
-			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, v[i]), 16) = v.z;
-			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, v[i]), 16) = v.y;
-			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, v[i]), 16) = v.x;
+			auto count = spirvShader->getNumOutputClipDistances();
+			for(unsigned int i = 0; i < count; i++)
+			{
+				auto dist = routine.getVariable(it->second.Id)[it->second.FirstComponent + i];
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 3);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 2);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 1);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 0);
+			}
 		}
+
+		it = spirvShader->outputBuiltins.find(spv::BuiltInCullDistance);
+		if(it != spirvShader->outputBuiltins.end())
+		{
+			auto count = spirvShader->getNumOutputCullDistances();
+			for(unsigned int i = 0; i < count; i++)
+			{
+				auto dist = routine.getVariable(it->second.Id)[it->second.FirstComponent + i];
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 3);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 2);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 1);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 0);
+			}
+		}
+
+		*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, cullMask)) = -((cullMask >> 3) & 1);
+		*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, cullMask)) = -((cullMask >> 2) & 1);
+		*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, cullMask)) = -((cullMask >> 1) & 1);
+		*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, cullMask)) = -((cullMask >> 0) & 1);
+
+		for(int i = 0; i < MAX_INTERFACE_COMPONENTS; i += 4)
+		{
+			if(spirvShader->outputs[i + 0].Type != SpirvShader::ATTRIBTYPE_UNUSED ||
+			   spirvShader->outputs[i + 1].Type != SpirvShader::ATTRIBTYPE_UNUSED ||
+			   spirvShader->outputs[i + 2].Type != SpirvShader::ATTRIBTYPE_UNUSED ||
+			   spirvShader->outputs[i + 3].Type != SpirvShader::ATTRIBTYPE_UNUSED)
+			{
+				Vector4f v;
+				v.x = Extract128(routine.outputs[i + 0], 0);
+				v.y = Extract128(routine.outputs[i + 1], 0);
+				v.z = Extract128(routine.outputs[i + 2], 0);
+				v.w = Extract128(routine.outputs[i + 3], 0);
+
+				transpose4x4(v.x, v.y, v.z, v.w);
+
+				*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, v[i]), 16) = v.w;
+				*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, v[i]), 16) = v.z;
+				*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, v[i]), 16) = v.y;
+				*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, v[i]), 16) = v.x;
+			}
+		}
+
+		batch = Pointer<UInt>(Pointer<Byte>(batch) + 4 * sizeof(int));
 	}
 }
 

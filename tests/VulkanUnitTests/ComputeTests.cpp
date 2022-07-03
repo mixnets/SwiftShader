@@ -311,10 +311,11 @@ void SwiftShaderVulkanBufferToBufferComputeTest::test(
 	driver.vkDestroyInstance(instance, nullptr);
 }
 
-INSTANTIATE_TEST_SUITE_P(ComputeParams, SwiftShaderVulkanBufferToBufferComputeTest, testing::Values(ComputeParams{ 512, 1, 1, 1 }, ComputeParams{ 512, 2, 1, 1 }, ComputeParams{ 512, 4, 1, 1 }, ComputeParams{ 512, 8, 1, 1 }, ComputeParams{ 512, 16, 1, 1 }, ComputeParams{ 512, 32, 1, 1 },
+INSTANTIATE_TEST_SUITE_P(ComputeParams, SwiftShaderVulkanBufferToBufferComputeTest, testing::Values(  //ComputeParams{ 512, 1, 1, 1 }, ComputeParams{ 512, 2, 1, 1 }, ComputeParams{ 512, 4, 1, 1 },
+                                                                                        ComputeParams{ 512, 8, 1, 1 }, ComputeParams{ 512, 16, 1, 1 }, ComputeParams{ 512, 32, 1, 1 },
 
-                                                                                                    // Non-multiple of SIMD-lane.
-                                                                                                    ComputeParams{ 3, 1, 1, 1 }, ComputeParams{ 2, 1, 1, 1 }));
+                                                                                        // Non-multiple of SIMD-lane.
+                                                                                        ComputeParams{ 3, 1, 1, 1 }, ComputeParams{ 2, 1, 1, 1 }));
 
 TEST_P(SwiftShaderVulkanBufferToBufferComputeTest, Memcpy)
 {

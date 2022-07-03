@@ -96,6 +96,8 @@ RValue<Int4> pmaddwd(RValue<Short8> x, RValue<Short8> y);
 RValue<Int> movmskps(RValue<Float4> x);
 RValue<Int> pmovmskb(RValue<Byte8> x);
 
+RValue<Int> vmovmskps_256(RValue<SIMD::Float> x);
+
 }  // namespace x86
 }  // namespace rr
 

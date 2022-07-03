@@ -20,7 +20,7 @@
 class DrawTest : public testing::Test
 {
 };
-
+/*
 // Test that a vertex shader with no gl_Position works.
 // This was fixed in swiftshader-cl/51808
 TEST_F(DrawTest, VertexShaderNoPositionOutput)
@@ -74,3 +74,4 @@ TEST_F(DrawTest, VertexShaderNoPositionOutput)
 	tester.initialize();
 	tester.renderFrame();
 }
+*/

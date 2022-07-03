@@ -80,8 +80,9 @@ void VertexProgram::program(Pointer<UInt> &batch, UInt &vertexCount)
 	}
 
 	auto activeLaneMask = SIMD::Int(0xFFFFFFFF);
-	ASSERT(SIMD::Width == 4);
-	SIMD::Int storesAndAtomicsMask = CmpGE(SIMD::UInt(vertexCount), SIMD::UInt(1, 2, 3, 4));
+	std::vector<int> laneOrdinal;
+	for(int i = 1; i <= SIMD::Width; i++) { laneOrdinal.push_back(i); }  // 1, 2, 3, 4, ...
+	SIMD::Int storesAndAtomicsMask = CmpGE(SIMD::UInt(vertexCount), SIMD::UInt(laneOrdinal));
 	spirvShader->emit(&routine, activeLaneMask, storesAndAtomicsMask, descriptorSets);
 
 	spirvShader->emitEpilog(&routine);
