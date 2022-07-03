@@ -176,8 +176,9 @@ void ComputeProgram::emit(SpirvRoutine *routine)
 	{
 		auto subgroupIndex = firstSubgroup + i;
 
-		// TODO: Replace SIMD::Int(0, 1, 2, 3) with SIMD-width equivalent
-		auto localInvocationIndex = SIMD::Int(subgroupIndex * SIMD::Width) + SIMD::Int(0, 1, 2, 3);
+		std::vector<int> laneIndex;
+		for(int i = 0; i < SIMD::Width; i++) { laneIndex.push_back(i); }  // 0, 1, 2, 3, ...
+		auto localInvocationIndex = SIMD::Int(subgroupIndex * SIMD::Width) + SIMD::Int(laneIndex);
 
 		// Disable lanes where (invocationIDs >= invocationsPerWorkgroup)
 		auto activeLaneMask = CmpLT(localInvocationIndex, SIMD::Int(invocationsPerWorkgroup));
@@ -200,9 +201,9 @@ void ComputeProgram::run(
 	uint32_t workgroupSizeY = shader->getWorkgroupSizeY();
 	uint32_t workgroupSizeZ = shader->getWorkgroupSizeZ();
 
-	auto invocationsPerSubgroup = SIMD::Width;
-	auto invocationsPerWorkgroup = workgroupSizeX * workgroupSizeY * workgroupSizeZ;
-	auto subgroupsPerWorkgroup = (invocationsPerWorkgroup + invocationsPerSubgroup - 1) / invocationsPerSubgroup;
+	uint32_t invocationsPerSubgroup = SIMD::Width;
+	uint32_t invocationsPerWorkgroup = workgroupSizeX * workgroupSizeY * workgroupSizeZ;
+	uint32_t subgroupsPerWorkgroup = (invocationsPerWorkgroup + invocationsPerSubgroup - 1) / invocationsPerSubgroup;
 
 	Data data;
 	data.descriptorSets = descriptorSets;
@@ -221,7 +222,7 @@ void ComputeProgram::run(
 	marl::WaitGroup wg;
 	const uint32_t batchCount = 16;
 
-	auto groupCount = groupCountX * groupCountY * groupCountZ;
+	uint32_t groupCount = groupCountX * groupCountY * groupCountZ;
 
 	for(uint32_t batchID = 0; batchID < batchCount && batchID < groupCount; batchID++)
 	{
@@ -232,16 +233,16 @@ void ComputeProgram::run(
 
 			for(uint32_t groupIndex = batchID; groupIndex < groupCount; groupIndex += batchCount)
 			{
-				auto modulo = groupIndex;
-				auto groupOffsetZ = modulo / (groupCountX * groupCountY);
+				uint32_t modulo = groupIndex;
+				uint32_t groupOffsetZ = modulo / (groupCountX * groupCountY);
 				modulo -= groupOffsetZ * (groupCountX * groupCountY);
-				auto groupOffsetY = modulo / groupCountX;
+				uint32_t groupOffsetY = modulo / groupCountX;
 				modulo -= groupOffsetY * groupCountX;
-				auto groupOffsetX = modulo;
+				uint32_t groupOffsetX = modulo;
 
-				auto groupZ = baseGroupZ + groupOffsetZ;
-				auto groupY = baseGroupY + groupOffsetY;
-				auto groupX = baseGroupX + groupOffsetX;
+				uint32_t groupZ = baseGroupZ + groupOffsetZ;
+				uint32_t groupY = baseGroupY + groupOffsetY;
+				uint32_t groupX = baseGroupX + groupOffsetX;
 				MARL_SCOPED_EVENT("groupX: %d, groupY: %d, groupZ: %d", groupX, groupY, groupZ);
 
 				using Coroutine = std::unique_ptr<rr::Stream<SpirvShader::YieldResult>>;

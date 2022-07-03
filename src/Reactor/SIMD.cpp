@@ -57,6 +57,14 @@ SIMD::Int::Int(std::vector<int> v)
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
+SIMD::Int::Int(std::function<int(int)> LaneValueProducer)
+    : XYZW(this)
+{
+	std::vector<int64_t> constantVector;
+	for(int i = 0; i < SIMD::Width; i++) { constantVector.push_back(LaneValueProducer(i)); }
+	storeValue(Nucleus::createConstantVector(constantVector, type()));
+}
+
 SIMD::Int::Int(RValue<SIMD::Int> rhs)
     : XYZW(this)
 {
@@ -777,11 +785,11 @@ RValue<SIMD::Float> Log2(RValue<SIMD::Float> x)
 	return ScalarizeCall(log2f, x);
 }
 
-RValue<Int> SignMask(RValue<SIMD::Int> x)
-{
-	ASSERT(SIMD::Width == 4);
-	return SignMask(Extract128(x, 0));
-}
+//RValue<Int> SignMask(RValue<SIMD::Int> x)
+//{
+//	ASSERT(SIMD::Width == 4);
+//	return SignMask(Extract128(x, 0));
+//}
 
 RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef)
 {
@@ -813,14 +821,12 @@ RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 
 RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools)
 {
-	ASSERT(SIMD::Width == 4);
-	return AnyTrue(Extract128(bools, 0));
+	return SignMask(bools) != 0;
 }
 
 RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
 {
-	ASSERT(SIMD::Width == 4);
-	return AnyFalse(Extract128(bools, 0));
+	return SignMask(~bools) != 0;  // TODO(b/214588983): Compare against mask of 4 1's to avoid bitwise NOT.
 }
 
 RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)

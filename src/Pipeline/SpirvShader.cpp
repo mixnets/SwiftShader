@@ -2827,7 +2827,7 @@ void SpirvRoutine::setImmutableInputBuiltins(SpirvShader const *shader)
 {
 	setInputBuiltin(shader, spv::BuiltInSubgroupLocalInvocationId, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		ASSERT(builtin.SizeInComponents == 1);
-		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int(0, 1, 2, 3));
+		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int([](int i) { return i; }));
 	});
 
 	setInputBuiltin(shader, spv::BuiltInSubgroupEqMask, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
