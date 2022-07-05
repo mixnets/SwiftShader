@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2dee512_7b04c2f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-07-05T23:32:24Z",
+      "side": 1,
+      "message": "Works with Dawn end2end tests, ANGLE tests and VK-GL-CTS. PTAL.",
+      "revId": "c88dffbd67d87613bfadf14beb35815242e6ad8a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
