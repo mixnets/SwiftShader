@@ -419,10 +419,8 @@ void PixelRoutine::stencilTest(Byte8 &value, VkCompareOp stencilCompareMode, boo
 	}
 }
 
-Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &x, const SIMD::Float &z, const Int &sMask, Int &zMask, const Int &cMask)
+SIMD::Float PixelRoutine::getDepthValue32F(const Pointer<Byte> &zBuffer, int q, const Int &x) const
 {
-	SIMD::Float Z = z;
-
 	ASSERT(SIMD::Width == 4);
 	Pointer<Byte> buffer = zBuffer + 4 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
@@ -432,12 +430,65 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
 	}
 
+	ASSERT(SIMD::Width == 4);
+	return Float4(*Pointer<Float2>(buffer), *Pointer<Float2>(buffer + pitch));
+}
+
+SIMD::Float PixelRoutine::getDepthValue16(const Pointer<Byte> &zBuffer, int q, const Int &x) const
+{
+	ASSERT(SIMD::Width == 4);
+	Pointer<Byte> buffer = zBuffer + 2 * x;
+	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
+
+	if(q > 0)
+	{
+		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
+	}
+
+	ASSERT(SIMD::Width == 4);
+	UShort4 zValue16;
+	zValue16 = As<UShort4>(Insert(As<Int2>(zValue16), *Pointer<Int>(buffer), 0));
+	zValue16 = As<UShort4>(Insert(As<Int2>(zValue16), *Pointer<Int>(buffer + pitch), 1));
+	return Float4(zValue16);
+}
+
+SIMD::Float PixelRoutine::clampDepth(const SIMD::Float &z)
+{
+	if(!state.depthClamp)
+	{
+		return z;
+	}
+
+	return Min(Max(z, state.minDepthClamp), state.maxDepthClamp);
+}
+
+Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, const SIMD::Float &z, const Int &sMask, Int &zMask, const Int &cMask)
+{
+	if(!state.depthTestActive)
+	{
+		return true;
+	}
+
+	SIMD::Float Z;
 	SIMD::Float zValue;
 
 	if(state.depthCompareMode != VK_COMPARE_OP_NEVER || (state.depthCompareMode != VK_COMPARE_OP_ALWAYS && !state.depthWriteEnable))
 	{
-		ASSERT(SIMD::Width == 4);
-		zValue = Float4(*Pointer<Float2>(buffer), *Pointer<Float2>(buffer + pitch));
+		switch(state.depthFormat)
+		{
+		case VK_FORMAT_D16_UNORM:
+			Z = Min(Max(Round(z * 0xFFFF), 0.0f), 0xFFFF);
+			zValue = getDepthValue16(zBuffer, q, x);
+			break;
+		case VK_FORMAT_D32_SFLOAT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			Z = z;
+			zValue = getDepthValue32F(zBuffer, q, x);
+			break;
+		default:
+			UNSUPPORTED("Depth format: %d", int(state.depthFormat));
+			return false;
+		}
 	}
 
 	SIMD::Int zTest;
@@ -491,114 +542,6 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 	}
 
 	return zMask != 0;
-}
-
-Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x, const SIMD::Float &z, const Int &sMask, Int &zMask, const Int &cMask)
-{
-	ASSERT(SIMD::Width == 4);
-	Short4 Z = convertFixed16(Extract128(z, 0), true);
-
-	Pointer<Byte> buffer = zBuffer + 2 * x;
-	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
-
-	if(q > 0)
-	{
-		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
-	}
-
-	Short4 zValue;
-
-	if(state.depthCompareMode != VK_COMPARE_OP_NEVER || (state.depthCompareMode != VK_COMPARE_OP_ALWAYS && !state.depthWriteEnable))
-	{
-		zValue = As<Short4>(Insert(As<Int2>(zValue), *Pointer<Int>(buffer), 0));
-		zValue = As<Short4>(Insert(As<Int2>(zValue), *Pointer<Int>(buffer + pitch), 1));
-	}
-
-	Int4 zTest;
-
-	// Bias values to make unsigned compares out of Reactor's (due SSE's) signed compares only
-	zValue = zValue - Short4(0x8000u);
-	Z = Z - Short4(0x8000u);
-
-	switch(state.depthCompareMode)
-	{
-	case VK_COMPARE_OP_ALWAYS:
-		// Optimized
-		break;
-	case VK_COMPARE_OP_NEVER:
-		// Optimized
-		break;
-	case VK_COMPARE_OP_EQUAL:
-		zTest = Int4(CmpEQ(zValue, Z));
-		break;
-	case VK_COMPARE_OP_NOT_EQUAL:
-		zTest = ~Int4(CmpEQ(zValue, Z));
-		break;
-	case VK_COMPARE_OP_LESS:
-		zTest = Int4(CmpGT(zValue, Z));
-		break;
-	case VK_COMPARE_OP_GREATER_OR_EQUAL:
-		zTest = ~Int4(CmpGT(zValue, Z));
-		break;
-	case VK_COMPARE_OP_LESS_OR_EQUAL:
-		zTest = ~Int4(CmpGT(Z, zValue));
-		break;
-	case VK_COMPARE_OP_GREATER:
-		zTest = Int4(CmpGT(Z, zValue));
-		break;
-	default:
-		UNSUPPORTED("VkCompareOp: %d", int(state.depthCompareMode));
-	}
-
-	switch(state.depthCompareMode)
-	{
-	case VK_COMPARE_OP_ALWAYS:
-		zMask = cMask;
-		break;
-	case VK_COMPARE_OP_NEVER:
-		zMask = 0x0;
-		break;
-	default:
-		zMask = SignMask(zTest) & cMask;
-		break;
-	}
-
-	if(state.stencilActive)
-	{
-		zMask &= sMask;
-	}
-
-	return zMask != 0;
-}
-
-SIMD::Float PixelRoutine::clampDepth(const SIMD::Float &z)
-{
-	if(!state.depthClamp)
-	{
-		return z;
-	}
-
-	return Min(Max(z, state.minDepthClamp), state.maxDepthClamp);
-}
-
-Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, const SIMD::Float &z, const Int &sMask, Int &zMask, const Int &cMask)
-{
-	if(!state.depthTestActive)
-	{
-		return true;
-	}
-
-	switch(state.depthFormat)
-	{
-	case VK_FORMAT_D16_UNORM:
-		return depthTest16(zBuffer, q, x, z, sMask, zMask, cMask);
-	case VK_FORMAT_D32_SFLOAT:
-	case VK_FORMAT_D32_SFLOAT_S8_UINT:
-		return depthTest32F(zBuffer, q, x, z, sMask, zMask, cMask);
-	default:
-		UNSUPPORTED("Depth format: %d", int(state.depthFormat));
-		return false;
-	}
 }
 
 Int4 PixelRoutine::depthBoundsTest16(const Pointer<Byte> &zBuffer, int q, const Int &x)
