@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "037efa15_be0c7737",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-07-06T14:35:43Z",
+      "side": 1,
+      "message": "Yes, properly rounding the depth and adjusting the minimumResolvableDepthDifference  provide the required accuracy.",
+      "parentUuid": "08d583b1_a6d43c95",
+      "revId": "c88dffbd67d87613bfadf14beb35815242e6ad8a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "a2dee512_7b04c2f4",
@@ -54,6 +72,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "55c4c9c5_a5a7e812",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-07-06T14:35:43Z",
+      "side": 1,
+      "message": "I don\u0027t think so, we don\u0027t round floating point depth.",
+      "parentUuid": "b47bf9d3_5a6decc7",
+      "revId": "c88dffbd67d87613bfadf14beb35815242e6ad8a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c71ab902_dfbf37de",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 6
@@ -71,6 +107,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5d48b3ac_7dc5eef2",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-07-06T14:35:43Z",
+      "side": 1,
+      "message": "I\u0027ve kept them separate on purpose to show that each of these sections depend on SIMD::Width of 4, in order to not remove the assert after this is only half fixed. I can remove it if you think this is me being overly cautious.",
+      "parentUuid": "c71ab902_dfbf37de",
+      "revId": "c88dffbd67d87613bfadf14beb35815242e6ad8a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "db99f425_fd71f76c",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 6
@@ -82,6 +136,24 @@
       "writtenOn": "2022-07-06T14:27:22Z",
       "side": 1,
       "message": "Remove the 2nd SIMD::Width assert",
+      "revId": "c88dffbd67d87613bfadf14beb35815242e6ad8a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4178a80_00b94537",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-07-06T14:35:43Z",
+      "side": 1,
+      "message": "Same",
+      "parentUuid": "db99f425_fd71f76c",
       "revId": "c88dffbd67d87613bfadf14beb35815242e6ad8a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
