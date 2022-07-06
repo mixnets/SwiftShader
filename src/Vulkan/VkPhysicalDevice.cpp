@@ -1109,8 +1109,8 @@ static void getFloatControlsProperties(T *properties)
 	// or rounding controls.
 	properties->denormBehaviorIndependence = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE;
 	properties->roundingModeIndependence = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE;
-	properties->shaderSignedZeroInfNanPreserveFloat16 = VK_FALSE;
-	properties->shaderSignedZeroInfNanPreserveFloat32 = VK_FALSE;
+	properties->shaderSignedZeroInfNanPreserveFloat16 = VK_TRUE;
+	properties->shaderSignedZeroInfNanPreserveFloat32 = VK_TRUE;
 	properties->shaderSignedZeroInfNanPreserveFloat64 = VK_FALSE;
 	properties->shaderDenormPreserveFloat16 = VK_FALSE;
 	properties->shaderDenormPreserveFloat32 = VK_FALSE;
