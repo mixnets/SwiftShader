@@ -729,6 +729,7 @@ public:
 		bool StorageBufferArrayNonUniformIndexing : 1;
 		bool StorageTexelBufferArrayNonUniformIndexing : 1;
 		bool StorageTexelBufferArrayDynamicIndexing : 1;
+		bool UniformBufferArrayNonUniformIndex : 1;
 		bool PhysicalStorageBufferAddresses : 1;
 	};
 
