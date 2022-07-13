@@ -244,14 +244,14 @@ template<typename T>
 static void getPhysicalDeviceDescriptorIndexingFeatures(T *features)
 {
 	features->shaderInputAttachmentArrayDynamicIndexing = VK_FALSE;
-	features->shaderUniformTexelBufferArrayDynamicIndexing = VK_FALSE;
+	features->shaderUniformTexelBufferArrayDynamicIndexing = VK_TRUE;
 	features->shaderStorageTexelBufferArrayDynamicIndexing = VK_TRUE;
 	features->shaderUniformBufferArrayNonUniformIndexing = VK_FALSE;
 	features->shaderSampledImageArrayNonUniformIndexing = VK_FALSE;
 	features->shaderStorageBufferArrayNonUniformIndexing = VK_TRUE;
 	features->shaderStorageImageArrayNonUniformIndexing = VK_FALSE;
 	features->shaderInputAttachmentArrayNonUniformIndexing = VK_FALSE;
-	features->shaderUniformTexelBufferArrayNonUniformIndexing = VK_FALSE;
+	features->shaderUniformTexelBufferArrayNonUniformIndexing = VK_TRUE;
 	features->shaderStorageTexelBufferArrayNonUniformIndexing = VK_TRUE;
 	features->descriptorBindingUniformBufferUpdateAfterBind = VK_FALSE;
 	features->descriptorBindingSampledImageUpdateAfterBind = VK_FALSE;
