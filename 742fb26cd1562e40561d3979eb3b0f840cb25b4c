@@ -39,6 +39,23 @@
       "message": "Thanks for the patch! Does this attempt to link the X libraries, or just helps find the headers? We try to detect things dynamically: b/139491466.",
       "revId": "742fb26cd1562e40561d3979eb3b0f840cb25b4c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5843441f_461bf5b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101506
+      },
+      "writtenOn": "2022-07-20T17:52:17Z",
+      "side": 1,
+      "message": "Could we, please, not assume is_linux \u003d\u003d x11? I have system without X11, and almost everything is compiling successfully.",
+      "revId": "742fb26cd1562e40561d3979eb3b0f840cb25b4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
