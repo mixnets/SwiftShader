@@ -35,12 +35,14 @@ swiftshader_source_set("WSI") {
   ]
 
   if (is_linux) {
-    sources += [
-      "XcbSurfaceKHR.cpp",
-      "XcbSurfaceKHR.hpp",
-      "libXCB.cpp",
-      "libXCB.hpp",
-    ]
+    if (ozone_platform_x11) {
+      sources += [
+        "XcbSurfaceKHR.cpp",
+        "XcbSurfaceKHR.hpp",
+        "libXCB.cpp",
+        "libXCB.hpp",
+      ]
+    }
 
     if (ozone_platform_wayland) {
       sources += [
