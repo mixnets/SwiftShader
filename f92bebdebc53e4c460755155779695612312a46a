@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44bd83cc_e757ba38",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-21T04:15:22Z",
+      "side": 1,
+      "message": "Please add a bug reference (if you open one at http://crbug.com, use \"Bug: chromium:###\").",
+      "revId": "f92bebdebc53e4c460755155779695612312a46a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc153549_f39b077e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-21T04:15:22Z",
+      "side": 1,
+      "message": "Thanks for your contribution! Please provide a reference to a bug tracker.",
+      "revId": "f92bebdebc53e4c460755155779695612312a46a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
