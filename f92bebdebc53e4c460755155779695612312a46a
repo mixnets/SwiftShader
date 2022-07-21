@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7fed0f2_9d2e7da0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 101506
+      },
+      "writtenOn": "2022-07-21T16:03:47Z",
+      "side": 1,
+      "message": "Sorry, but I haven\u0027t opened any bugs - should I? There was no mention that it\u0027s required, in README.md",
+      "parentUuid": "44bd83cc_e757ba38",
+      "revId": "f92bebdebc53e4c460755155779695612312a46a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "fc153549_f39b077e",
