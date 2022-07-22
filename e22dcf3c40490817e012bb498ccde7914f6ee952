@@ -16,6 +16,24 @@
       "message": "There appears to be an issue with build_overrides/x11.gni not existing: https://ci.chromium.org/ui/p/chromium/builders/try/linux-swangle-try-tot-swiftshader-x64/1937/overview",
       "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72f4c0a1_46d532c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101506
+      },
+      "writtenOn": "2022-07-22T20:18:34Z",
+      "side": 1,
+      "message": "Oh, I thought, I can merge commit here, and then change Chromium... what is the best way to do it? Add x11.gni to chromium, wait until it will be merged, and only then continue this one? I think I can drop x11.gni - I thought, it\u0027s the best way to pass ozone vars from chromium",
+      "parentUuid": "c0a61ed3_43e9e3e6",
+      "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
