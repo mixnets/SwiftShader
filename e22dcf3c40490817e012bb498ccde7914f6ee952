@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0a61ed3_43e9e3e6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-22T01:30:50Z",
+      "side": 1,
+      "message": "There appears to be an issue with build_overrides/x11.gni not existing: https://ci.chromium.org/ui/p/chromium/builders/try/linux-swangle-try-tot-swiftshader-x64/1937/overview",
+      "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
