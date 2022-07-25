@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "50fb57a0_e13da128",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 10
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-25T20:04:04Z",
+      "side": 1,
+      "message": "This appears to be a flake. I\u0027ll keep an eye on it.",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 65
+      },
+      "revId": "767400bb298c0fe108909bfde02390208ca17cb4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "354783ce_f01b828c",
+        "filename": "tests/regres/testlists/vk-master-QUALITY_WARNING.txt",
+        "patchSetId": 10
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-25T20:04:04Z",
+      "side": 1,
+      "message": "Known flakes.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 96
+      },
+      "revId": "767400bb298c0fe108909bfde02390208ca17cb4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
