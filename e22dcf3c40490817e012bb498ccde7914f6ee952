@@ -70,6 +70,24 @@
       "parentUuid": "5d04e6c2_6c68d2b2",
       "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e788775_9f6564bf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-25T14:02:40Z",
+      "side": 1,
+      "message": "Yes, please make changes in chromium and/or other projects first to avoid issues \"rolling\" SwiftShader forward.\n\nI suggest perhaps reaching out to graphics-dev@chromium.org to discuss whether the addition of a new .gni file is the best approach.",
+      "parentUuid": "f6053c15_f8bddb1a",
+      "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
