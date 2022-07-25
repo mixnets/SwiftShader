@@ -3146,11 +3146,6 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 	}
 }
 
-UShort4 PixelRoutine::convertFixed16(const Float4 &cf, bool saturate)
-{
-	return UShort4(cf * 0xFFFF, saturate);
-}
-
 void PixelRoutine::sRGBtoLinear16_12_16(Vector4s &c)
 {
 	Pointer<Byte> LUT = constants + OFFSET(Constants, sRGBtoLinear12_16);
