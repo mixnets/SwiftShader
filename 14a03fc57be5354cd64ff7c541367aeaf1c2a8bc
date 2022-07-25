@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b91ed54_be574816",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-25T15:44:17Z",
+      "side": 1,
+      "message": "That doesn\u0027t seem to be true. See b/236958241#comment2 for details.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 61
+      },
+      "revId": "14a03fc57be5354cd64ff7c541367aeaf1c2a8bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a65e9011_bbc171a3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1064,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-25T15:44:17Z",
+      "side": 1,
+      "message": "Let\u0027s replace this with something like \"We currently don\u0027t perform any aggressive `fast-math` optimizations.\"",
+      "range": {
+        "startLine": 1064,
+        "startChar": 5,
+        "endLine": 1064,
+        "endChar": 76
+      },
+      "revId": "14a03fc57be5354cd64ff7c541367aeaf1c2a8bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f949a5a_bbab5d6a",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1114,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-25T15:44:17Z",
+      "side": 1,
+      "message": "I\u0027d be inclined to set this to true as well. The flag doesn\u0027t imply that 64-bit floating-point operations are actually supported. But when do support it at some point in the future, we\u0027ll want to assure the application that we support preserving these values.",
+      "range": {
+        "startLine": 1114,
+        "startChar": 53,
+        "endLine": 1114,
+        "endChar": 61
+      },
+      "revId": "14a03fc57be5354cd64ff7c541367aeaf1c2a8bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
