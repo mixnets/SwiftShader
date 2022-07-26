@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "05efc5b8_963bee3e",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 10
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-26T14:24:11Z",
+      "side": 1,
+      "message": "b/240267529",
+      "parentUuid": "50fb57a0_e13da128",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 65
+      },
+      "revId": "767400bb298c0fe108909bfde02390208ca17cb4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "354783ce_f01b828c",
         "filename": "tests/regres/testlists/vk-master-QUALITY_WARNING.txt",
         "patchSetId": 10
