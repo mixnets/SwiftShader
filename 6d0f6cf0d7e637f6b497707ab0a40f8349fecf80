@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dbfe84e9_b03dcabe",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-26T14:34:47Z",
+      "side": 1,
+      "message": "b/240270223",
+      "range": {
+        "startLine": 2,
+        "startChar": 37,
+        "endLine": 2,
+        "endChar": 60
+      },
+      "revId": "6d0f6cf0d7e637f6b497707ab0a40f8349fecf80",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ba911ab_9dd2e570",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-26T14:34:47Z",
+      "side": 1,
+      "message": "b/196822081",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 82
+      },
+      "revId": "6d0f6cf0d7e637f6b497707ab0a40f8349fecf80",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1444bc6d_0c2968c3",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-26T14:34:47Z",
+      "side": 1,
+      "message": "b/216982034",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 38
+      },
+      "revId": "6d0f6cf0d7e637f6b497707ab0a40f8349fecf80",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
