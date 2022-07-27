@@ -26,6 +26,8 @@ __pragma(warning(push))
     __pragma(warning(disable : 4146))  // unary minus operator applied to unsigned type, result still unsigned
 #endif
 
+#include "llvm/Bitcode/BitcodeReader.h"
+#include "llvm/Bitcode/BitcodeWriter.h"
 #include "llvm/ExecutionEngine/Orc/CompileUtils.h"
 #include "llvm/ExecutionEngine/Orc/IRCompileLayer.h"
 #include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
@@ -961,8 +963,26 @@ void JITBuilder::runPasses()
 
 std::shared_ptr<rr::Routine> JITBuilder::acquireRoutine(const char *name, llvm::Function **funcs, size_t count)
 {
-	ASSERT(module);
-	return std::make_shared<JITRoutine>(std::move(module), std::move(context), name, funcs, count);
+	llvm::SmallVector<char, 0> buffer;
+	llvm::BitcodeWriter writer(buffer);
+	writer.writeModule(*module);
+	writer.writeSymtab();
+	writer.writeStrtab();
+	module = nullptr;
+
+	auto modules = llvm::getBitcodeModuleList(llvm::MemoryBufferRef(llvm::StringRef(&buffer[0], buffer.size()), ""));
+
+	if(modules) {}
+
+	auto mm = modules.get()[0].parseModule(*context);
+
+	if(mm) {}
+
+	auto &mod = mm.get();
+	llvm::Function *f = &mod->getFunctionList().begin().operator*();
+
+	// ASSERT(module);
+	return std::make_shared<JITRoutine>(std::move(mod), std::move(context), name, &f, count);
 }
 
 }  // namespace rr
