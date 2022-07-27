@@ -45,7 +45,7 @@ VkResult CommandPool::allocateCommandBuffers(Device *device, VkCommandBufferLeve
 	for(uint32_t i = 0; i < commandBufferCount; i++)
 	{
 		// TODO(b/119409619): Allocate command buffers from the pool memory.
-		void *deviceMemory = vk::allocateHostMemory(sizeof(DispatchableCommandBuffer), REQUIRED_MEMORY_ALIGNMENT,
+		void *deviceMemory = vk::allocateHostMemory(sizeof(DispatchableCommandBuffer), MEMORY_ALLOCATION_ALIGNMENT,
 		                                            NULL_ALLOCATION_CALLBACKS, DispatchableCommandBuffer::GetAllocationScope());
 		ASSERT(deviceMemory);
 		DispatchableCommandBuffer *commandBuffer = new(deviceMemory) DispatchableCommandBuffer(device, level);

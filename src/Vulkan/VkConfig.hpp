@@ -35,7 +35,10 @@ constexpr uint32_t VENDOR_ID = 0x1AE0;  // Google, Inc.: https://pcisig.com/goog
 constexpr uint32_t DEVICE_ID = 0xC0DE;  // SwiftShader (placeholder)
 
 // Alignment of all Vulkan objects, pools, device memory, images, buffers, descriptors.
-constexpr VkDeviceSize REQUIRED_MEMORY_ALIGNMENT = 16;  // 16 bytes for 128-bit vector types.
+constexpr VkDeviceSize MEMORY_ALLOCATION_ALIGNMENT = 16;  // 16 bytes for 128-bit vector types.
+
+constexpr VkDeviceSize MEMORY_REQUIREMENTS_OFFSET_ALIGNMENT = 16;
+static_assert(MEMORY_ALLOCATION_ALIGNMENT >= MEMORY_REQUIREMENTS_OFFSET_ALIGNMENT);
 
 constexpr VkDeviceSize MIN_IMPORTED_HOST_POINTER_ALIGNMENT = 4096;
 
