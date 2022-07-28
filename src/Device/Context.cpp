@@ -449,7 +449,7 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 		depthBiasClamp = 0.0f;
 	}
 
-	if (!dynamicStateFlags.dynamicLineWidth)
+	if(!dynamicStateFlags.dynamicLineWidth)
 	{
 		lineWidth = rasterizationState->lineWidth;
 	}
