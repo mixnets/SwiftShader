@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35ce8507_691be722",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-28T15:51:44Z",
+      "side": 1,
+      "message": "The division here is inexact and probably rounds down. Addressing that with this 1.01 factor seems hacky, and possibly causes some unexpected results. The rounding error can instead be avoided by actually performing everything in the [0.0, 0xFFFF] range. That is, multiply the z value\u0027s interpolation (i.e. plane equation values) by 0xFFFF. This multiplication is exact.\n\nIt also has the benefit of not requiring per-pixel 0xFFFF multiplication. It requires also multiplying minDepth/maxDepth and related variables, but that seems like manageable complexity for the number of benefits we\u0027d get out of this.",
+      "range": {
+        "startLine": 366,
+        "startChar": 52,
+        "endLine": 366,
+        "endChar": 82
+      },
+      "revId": "1d6a1036bdb37072ea2f946df2bcbec367b99c3a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2e35f33_e3de8559",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 480,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-07-28T15:51:44Z",
+      "side": 1,
+      "message": "I see this preserves the clamp that previously happened in `depthTest16()`, but I don\u0027t think it is needed: b/154091643.",
+      "range": {
+        "startLine": 480,
+        "startChar": 7,
+        "endLine": 480,
+        "endChar": 14
+      },
+      "revId": "1d6a1036bdb37072ea2f946df2bcbec367b99c3a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
