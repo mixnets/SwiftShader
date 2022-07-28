@@ -4021,7 +4021,7 @@ void Nucleus::createCoroutine(Type *YieldType, const std::vector<Type *> &Params
 	auto promisePtrTy = promiseTy->getPointerTo();
 
 	jit->function = rr::createFunction("coroutine_begin", handleTy, T(Params));
-#if LLVM_VERSION_MAJOR >= 15
+#if LLVM_VERSION_MAJOR >= 16
 	jit->function->setPresplitCoroutine();
 #else
 	jit->function->addFnAttr("coroutine.presplit", "0");

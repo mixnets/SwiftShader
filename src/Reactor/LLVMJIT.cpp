@@ -36,6 +36,7 @@ __pragma(warning(push))
 #include "llvm/Support/Host.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Instrumentation/AddressSanitizer.h"
 #include "llvm/Transforms/Instrumentation/MemorySanitizer.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
@@ -929,6 +930,11 @@ void JITBuilder::runPasses()
 		pm.addPass(llvm::createModuleToFunctionPassAdaptor(llvm::MemorySanitizerPass(msanOpts)));
 	}
 
+	if(__has_feature(address_sanitizer))
+	{
+		pm.addPass(llvm::ModuleAddressSanitizerPass(llvm::AddressSanitizerOptions{}));
+	}
+
 	pm.run(*module, mam);
 #else  // Legacy pass manager
 	llvm::legacy::PassManager passManager;
@@ -953,6 +959,11 @@ void JITBuilder::runPasses()
 	{
 		llvm::MemorySanitizerOptions msanOpts(0 /* TrackOrigins */, false /* Recover */, false /* Kernel */);
 		passManager.add(llvm::createMemorySanitizerLegacyPassPass(msanOpts));
+	}
+
+	if(__has_feature(address_sanitizer))
+	{
+		passManager.add(llvm::createAddressSanitizerFunctionPass());
 	}
 
 	passManager.run(*module);
