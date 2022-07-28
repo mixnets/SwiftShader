@@ -36,6 +36,7 @@ __pragma(warning(push))
 #include "llvm/Support/Host.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Instrumentation/AddressSanitizer.h"
 #include "llvm/Transforms/Instrumentation/MemorySanitizer.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
@@ -75,6 +76,14 @@ extern "C" void _chkstk();
 #ifdef __ARM_EABI__
 extern "C" signed __aeabi_idivmod();
 #endif
+
+//extern "C" void __asan_init()
+//{
+//	static volatile int x = 0;
+//	x++;
+//}
+
+#include <dlfcn.h>  // dlsym()
 
 #if __has_feature(memory_sanitizer)
 
@@ -594,6 +603,9 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));
 			functions.try_emplace("msan_unpoison_param", reinterpret_cast<void *>(__msan_unpoison_param));
 #endif
+#if __has_feature(address_sanitizer)
+//			functions.try_emplace("asan_init", reinterpret_cast<void *>(__asan_init));
+#endif
 		}
 	};
 
@@ -632,7 +644,7 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 				continue;
 			}
 
-#if __has_feature(memory_sanitizer)
+#if __has_feature(memory_sanitizer) || __has_feature(address_sanitizer)
 			// MemorySanitizer uses a dynamically linked runtime. Instrumented routines reference
 			// some symbols from this library. Look them up dynamically in the default namespace.
 			// Note this approach should not be used for other symbols, since they might not be
@@ -815,8 +827,14 @@ public:
 			// This is where the actual compilation happens.
 			auto symbol = session.lookup({ &dylib }, functionNames[i]);
 
-			ASSERT_MSG(symbol, "Failed to lookup address of routine function %d: %s",
-			           (int)i, llvm::toString(symbol.takeError()).c_str());
+			if(!symbol)
+			{
+				auto s = llvm::toString(symbol.takeError());
+				const char *sym = s.c_str();
+
+				ASSERT_MSG(symbol, "Failed to lookup address of routine function %d: %s",
+				           (int)i, sym);
+			}
 
 			if(fatalCompileIssue)
 			{
@@ -929,6 +947,11 @@ void JITBuilder::runPasses()
 		pm.addPass(llvm::createModuleToFunctionPassAdaptor(llvm::MemorySanitizerPass(msanOpts)));
 	}
 
+	if(__has_feature(address_sanitizer))
+	{
+		pm.addPass(llvm::ModuleAddressSanitizerPass(llvm::AddressSanitizerOptions{}));
+	}
+
 	pm.run(*module, mam);
 #else  // Legacy pass manager
 	llvm::legacy::PassManager passManager;
@@ -953,6 +976,11 @@ void JITBuilder::runPasses()
 	{
 		llvm::MemorySanitizerOptions msanOpts(0 /* TrackOrigins */, false /* Recover */, false /* Kernel */);
 		passManager.add(llvm::createMemorySanitizerLegacyPassPass(msanOpts));
+	}
+
+	if(__has_feature(address_sanitizer))
+	{
+		passManager.add(llvm::createAddressSanitizerFunctionPass());
 	}
 
 	passManager.run(*module);
