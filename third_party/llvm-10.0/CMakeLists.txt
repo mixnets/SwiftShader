@@ -686,14 +686,16 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineSimplifyDemanded.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineVectorOps.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstructionCombining.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/AddressSanitizer.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/ControlHeightReduction.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/IndirectCallPromotion.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/InstrOrderFile.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/InstrProfiling.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/Instrumentation.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/MemorySanitizer.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/PGOInstrumentation.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/PGOMemOPSizeOpt.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/ValueProfileCollector.cpp
-    ${LLVM_DIR}/lib/Transforms/Instrumentation/MemorySanitizer.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/ArgumentPromotion.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/Attributor.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/BarrierNoopPass.cpp
