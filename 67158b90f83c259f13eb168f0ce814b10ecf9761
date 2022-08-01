@@ -33,6 +33,24 @@
       "message": "LGTM when you get the bots sorted out.",
       "revId": "67158b90f83c259f13eb168f0ce814b10ecf9761",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a4364ed_6796f317",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-01T15:43:39Z",
+      "side": 1,
+      "message": "Chromium bots can\u0027t apply these patches. See also b/141099969. All looks fine when Kokoro passes.\n\nI still need a CR vote on https://swiftshader-review.googlesource.com/c/SwiftShader/+/67171 though.",
+      "parentUuid": "603ea0af_2b7100e5",
+      "revId": "67158b90f83c259f13eb168f0ce814b10ecf9761",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
