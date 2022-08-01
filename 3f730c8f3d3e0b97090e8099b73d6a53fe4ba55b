@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0fcfadc9_8ed05003",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-01T18:19:30Z",
+      "side": 1,
+      "message": "\"Increase subTexelPrecisionBits from 4 to 8\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 28
+      },
+      "revId": "3f730c8f3d3e0b97090e8099b73d6a53fe4ba55b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "750ead8d_37619454",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-01T18:19:30Z",
+      "side": 1,
+      "message": "Also b/236958019, and mention that this is a Roadmap 2022 milestone requirement too above.",
+      "range": {
+        "startLine": 39,
+        "startChar": 5,
+        "endLine": 39,
+        "endChar": 16
+      },
+      "revId": "3f730c8f3d3e0b97090e8099b73d6a53fe4ba55b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
