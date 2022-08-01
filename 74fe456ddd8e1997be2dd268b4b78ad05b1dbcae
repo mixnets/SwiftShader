@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f227b83e_3819d0c1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2022-08-01T15:21:05Z",
+      "side": 1,
+      "message": "LGTM when you get the bots sorted out.",
+      "revId": "74fe456ddd8e1997be2dd268b4b78ad05b1dbcae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
