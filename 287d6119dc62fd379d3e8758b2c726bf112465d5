@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9dfe9eac_a22697ec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-01T18:03:31Z",
+      "side": 1,
+      "message": "Good to know that this is now required. I\u0027d like to have the \"subTexelPrecisionBits\" portion landed ASAP, since it simplifies the conformance submission by removing failures. Please separate this into 2 changes and send both for review. Thanks.",
+      "revId": "287d6119dc62fd379d3e8758b2c726bf112465d5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
