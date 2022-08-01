@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "01dc44a7_66d25218",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-01T21:55:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "24654b7d_10aacb08",
+      "range": {
+        "startLine": 7,
+        "startChar": 30,
+        "endLine": 7,
+        "endChar": 40
+      },
+      "revId": "02350f4a8c6ae070a6cd65d518dcbb5f92f42e3b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "69d6631e_caf499ae",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-07-28T16:14:37Z",
       "side": 1,
       "message": "The code change actually uses `{ 1, 3, 2, 0 }` ?\n\nFYI I don\u0027t have an opinion on which version to use. Whichever one is the easiest for us to make a conformance submission for is fine as this is just about 1.3 bragging rights.",
+      "range": {
+        "startLine": 19,
+        "startChar": 42,
+        "endLine": 19,
+        "endChar": 49
+      },
+      "revId": "02350f4a8c6ae070a6cd65d518dcbb5f92f42e3b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3934d092_b93ae2ea",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-01T21:55:32Z",
+      "side": 1,
+      "message": "Let\u0027s use 1.3.2.0. It seems more stable than 1.3.3.0 at the moment. Depending when we do the conformance run, we could always change it to 1.3.3.0 later.",
+      "parentUuid": "69d6631e_caf499ae",
       "range": {
         "startLine": 19,
         "startChar": 42,
