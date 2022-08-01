@@ -51,6 +51,24 @@
       "parentUuid": "603ea0af_2b7100e5",
       "revId": "67158b90f83c259f13eb168f0ce814b10ecf9761",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7260bab8_29123fa6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2022-08-01T15:46:16Z",
+      "side": 1,
+      "message": "LGTM, not a +2er though.",
+      "parentUuid": "0a4364ed_6796f317",
+      "revId": "67158b90f83c259f13eb168f0ce814b10ecf9761",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
