@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "731b2950_478bc39b",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-01T21:59:12Z",
+      "side": 1,
+      "message": "Noted, will try to follow-up on it tomorrow.",
+      "parentUuid": "35ce8507_691be722",
+      "range": {
+        "startLine": 366,
+        "startChar": 52,
+        "endLine": 366,
+        "endChar": 82
+      },
+      "revId": "1d6a1036bdb37072ea2f946df2bcbec367b99c3a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f2e35f33_e3de8559",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 8
@@ -37,6 +61,30 @@
       "writtenOn": "2022-07-28T15:51:44Z",
       "side": 1,
       "message": "I see this preserves the clamp that previously happened in `depthTest16()`, but I don\u0027t think it is needed: b/154091643.",
+      "range": {
+        "startLine": 480,
+        "startChar": 7,
+        "endLine": 480,
+        "endChar": 14
+      },
+      "revId": "1d6a1036bdb37072ea2f946df2bcbec367b99c3a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e76a6e68_a1e3ba8d",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 480,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-01T21:59:12Z",
+      "side": 1,
+      "message": "Noted, will try to investigate it tomorrow.",
+      "parentUuid": "f2e35f33_e3de8559",
       "range": {
         "startLine": 480,
         "startChar": 7,
