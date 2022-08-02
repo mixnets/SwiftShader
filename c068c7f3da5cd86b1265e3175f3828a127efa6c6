@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ea37abb_5673689e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-02T17:28:15Z",
+      "side": 1,
+      "message": "I\u0027m not sure I understand why we need to do this. Even if an application was trying to use memory from an IOSurface, it would still be responsible for locking and unlocking the memory properly and making sure the layout matched the layout exposed by the driver, so I don\u0027t know what issue could arise from this if SwiftShader is used in a spec compliant manner. I know you had mentioned that it\u0027s easy to make mistakes, but I\u0027m not convinced that it\u0027s worth adding platform specific complexity in SwiftShader.",
+      "revId": "c068c7f3da5cd86b1265e3175f3828a127efa6c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
