@@ -285,6 +285,14 @@ SIMD::UInt::UInt(std::vector<int> v)
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
+SIMD::UInt::UInt(std::function<int(int)> LaneValueProducer)
+    : XYZW(this)
+{
+	std::vector<int64_t> constantVector;
+	for(int i = 0; i < SIMD::Width; i++) { constantVector.push_back(LaneValueProducer(i)); }
+	storeValue(Nucleus::createConstantVector(constantVector, type()));
+}
+
 SIMD::UInt::UInt(RValue<SIMD::UInt> rhs)
     : XYZW(this)
 {
@@ -520,6 +528,14 @@ SIMD::Float::Float(std::vector<float> v)
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
+SIMD::Float::Float(std::function<float(int)> LaneValueProducer)
+    : XYZW(this)
+{
+	std::vector<double> constantVector;
+	for(int i = 0; i < SIMD::Width; i++) { constantVector.push_back(LaneValueProducer(i)); }
+	storeValue(Nucleus::createConstantVector(constantVector, type()));
+}
+
 SIMD::Float SIMD::Float::infinity()
 {
 	SIMD::Float result;
@@ -665,8 +681,13 @@ RValue<SIMD::Float> operator-(RValue<SIMD::Float> val)
 
 RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
 {
-	ASSERT(SIMD::Width == 4);
-	return SIMD::Float(Rcp(Extract128(x, 0), relaxedPrecision, exactAtPow2));
+	///////////////ASSERT(SIMD::Width == 4);
+	ASSERT(SIMD::Width == 8);  //////////////
+
+	SIMD::Float r;
+	r = Insert128(r, Rcp(Extract128(x, 0), relaxedPrecision, exactAtPow2), 0);
+	r = Insert128(r, Rcp(Extract128(x, 1), relaxedPrecision, exactAtPow2), 1);
+	return r;
 }
 
 RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision)
