@@ -2157,8 +2157,8 @@ size_t Format::bytes() const
 
 size_t Format::pitchB(int width, int border) const
 {
-	// Render targets require 2x2 quads
-	width = sw::align<2>(width + 2 * border);
+	// Render targets require 4x4 qquads
+	width = sw::align<4>(width + 2 * border);
 
 	switch(format)
 	{
@@ -2234,8 +2234,8 @@ size_t Format::pitchB(int width, int border) const
 
 size_t Format::sliceBUnpadded(int width, int height, int border) const
 {
-	// Render targets require 2x2 quads
-	height = sw::align<2>(height + 2 * border);
+	// Render targets require 4x4 qquads
+	height = sw::align<4>(height + 2 * border);
 
 	switch(format)
 	{
