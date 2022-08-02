@@ -16,6 +16,24 @@
       "message": "Have you done a test run on Chromium ASAN bots? The slowdown may cause failures and we may need to adjust some timeouts.",
       "revId": "fb05cb68568134a8c05f69137205247d62500fb5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe4bf577_99d32bf1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-02T14:27:26Z",
+      "side": 1,
+      "message": "This change only affects LLVM, and the Chromium bots still use Subzero for asan builds: https://cs.opensource.google/swiftshader/SwiftShader/+/master:src/Reactor/reactor.gni;drc\u003d1884ffdf7a9289c2ea8a04afcaa8b1c17aeb570e;l\u003d27\n\nI\u0027ll switch it to use LLVM in a separate change, so we can easily revert it in case of issues, without affecting other.",
+      "parentUuid": "08207efe_eeaad3dc",
+      "revId": "fb05cb68568134a8c05f69137205247d62500fb5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
