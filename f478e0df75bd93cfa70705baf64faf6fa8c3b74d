@@ -22,6 +22,30 @@
       },
       "revId": "f478e0df75bd93cfa70705baf64faf6fa8c3b74d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "02d07f33_09df5b9d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-02T21:07:30Z",
+      "side": 1,
+      "message": "Done, this has been split off into:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/67209",
+      "parentUuid": "a95e1131_769cdb65",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 19
+      },
+      "revId": "f478e0df75bd93cfa70705baf64faf6fa8c3b74d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
