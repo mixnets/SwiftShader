@@ -363,8 +363,13 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 			switch(attachments.depthBuffer->getFormat(VK_IMAGE_ASPECT_DEPTH_BIT))
 			{
 			case VK_FORMAT_D16_UNORM:
-				// Minimum is 1 unit, but account for potential floating-point rounding errors
-				data->minimumResolvableDepthDifference = 1.01f / 0xFFFF;
+				// According to the Vulkan spec:
+				// "For fixed-point depth attachment representations, r is constant throughout
+				//  the range of the entire depth attachment. Its value is implementation-dependent
+				//  but must be at most
+				//      r = 2 x 2^-n
+				//  for an n-bit buffer."
+				data->minimumResolvableDepthDifference = 2.0f / 0x10000; // 2 * 2^-16
 				break;
 			case VK_FORMAT_D32_SFLOAT:
 				// The minimum resolvable depth difference is determined per-polygon for floating-point depth
