@@ -477,7 +477,7 @@ Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, 
 		switch(state.depthFormat)
 		{
 		case VK_FORMAT_D16_UNORM:
-			Z = Min(Max(Round(z * 0xFFFF), 0.0f), 0xFFFF);
+			Z = Round(z * 0xFFFF);
 			zValue = readDepth16(zBuffer, q, x);
 			break;
 		case VK_FORMAT_D32_SFLOAT:
