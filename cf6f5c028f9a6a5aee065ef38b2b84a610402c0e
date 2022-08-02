@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "66c84085_2f7c043c",
+        "filename": "tests/regres/testlists/vk-master-ASSERT.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-02T13:51:07Z",
+      "side": 1,
+      "message": "https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3859",
+      "range": {
+        "startLine": 101,
+        "startChar": 8,
+        "endLine": 101,
+        "endChar": 22
+      },
+      "revId": "cf6f5c028f9a6a5aee065ef38b2b84a610402c0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e85e7886_cd241a72",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-02T13:51:07Z",
+      "side": 1,
+      "message": "b/196822081",
+      "range": {
+        "startLine": 38,
+        "startChar": 19,
+        "endLine": 38,
+        "endChar": 44
+      },
+      "revId": "cf6f5c028f9a6a5aee065ef38b2b84a610402c0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3593d802_5e264b57",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 264679,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-02T13:51:07Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/46648",
+      "range": {
+        "startLine": 264679,
+        "startChar": 16,
+        "endLine": 264679,
+        "endChar": 28
+      },
+      "revId": "cf6f5c028f9a6a5aee065ef38b2b84a610402c0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
