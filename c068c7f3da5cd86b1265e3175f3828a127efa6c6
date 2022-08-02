@@ -16,6 +16,24 @@
       "message": "I\u0027m not sure I understand why we need to do this. Even if an application was trying to use memory from an IOSurface, it would still be responsible for locking and unlocking the memory properly and making sure the layout matched the layout exposed by the driver, so I don\u0027t know what issue could arise from this if SwiftShader is used in a spec compliant manner. I know you had mentioned that it\u0027s easy to make mistakes, but I\u0027m not convinced that it\u0027s worth adding platform specific complexity in SwiftShader.",
       "revId": "c068c7f3da5cd86b1265e3175f3828a127efa6c6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a19f0f0_2f965d82",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-02T17:51:06Z",
+      "side": 1,
+      "message": "I think the pros far outweigh the cons. This extension enables nothing one can\u0027t achieve with copying memory. It\u0027s used purely for optimization purposes, and I think we should be really conscious about when and where it is being used. It\u0027s tricky to get the requirements right, especially since we may want to change them at some point (e.g. for Bunker where the host/device memory distinction becomes meaningful, or something out of our control may change like where GPU memory gets mapped into host visible memory).\n\nSo I\u0027d like to minimize its use while we still can. I\u0027m just starting with macOS since that\u0027s an easy one to disable platform-wide. The loss of consistency across platforms is a positive because it helps ensure applications have a fallback path.",
+      "parentUuid": "9ea37abb_5673689e",
+      "revId": "c068c7f3da5cd86b1265e3175f3828a127efa6c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
