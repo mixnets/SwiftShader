@@ -122,7 +122,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			x1 = Max(x1, Max(x1a, x1b));
 		}
 
-		SIMD::Float yyyy = SIMD::Float(Float(y)) + SIMD::Float(*Pointer<Float4>(primitive + OFFSET(Primitive, yQuad), 16));
+		SIMD::Float yyyy = SIMD::Float(Float(y)) + SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, yQuad))) + SIMD::Float([](int i) { return float((i & 0x2) >> 1 | (i & 0x8) >> 2); });
 
 		if(interpolateZ())
 		{
@@ -188,7 +188,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 				xRight[q] = Swizzle(xRight[q], 0x1133) - Short4(0, 1, 0, 1);
 			}
 
-			For(Int x = x0, x < x1, x += 2)
+			For(Int x = x0, x < x1, x += 4)  ///
 			{
 				Short4 xxxx = Short4(x);
 				Int cMask[4];

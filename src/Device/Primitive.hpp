@@ -39,8 +39,8 @@ struct Primitive
 	int yMin;
 	int yMax;
 
-	float4 xQuad;
-	float4 yQuad;
+	float4 xQuad;  ///
+	float4 yQuad;  ///
 
 	float pointCoordX;
 	float pointCoordY;
