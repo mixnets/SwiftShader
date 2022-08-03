@@ -56,7 +56,7 @@ protected:
 
 	void writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4f &color, const Int &sMask, const Int &zMask, const Int &cMask);
 	SIMD::Float4 alphaBlend(int index, const Pointer<Byte> &cBuffer, const SIMD::Float4 &sourceColor, const Int &x);
-	void writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &current, const Int &sMask, const Int &zMask, const Int &cMask);
+	void writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, const Vector4s &current, const Int &sMask, const Int &zMask, const Int &cMask);
 
 	bool isSRGB(int index) const;
 	void linearToSRGB12_16(Vector4s &c);

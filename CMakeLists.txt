@@ -200,7 +200,7 @@ option_if_not_defined(REACTOR_ENABLE_PRINT "Enable RR_PRINT macros" FALSE)
 option_if_not_defined(REACTOR_VERIFY_LLVM_IR "Check reactor-generated LLVM IR is valid even in release builds" FALSE)
 option_if_not_defined(SWIFTSHADER_LESS_DEBUG_INFO "Generate less debug info to reduce file size" FALSE)
 option_if_not_defined(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER "Enable Vulkan debugger support" FALSE)
-option_if_not_defined(SWIFTSHADER_ENABLE_ASTC "Enable ASTC compressed textures support" TRUE)  # TODO(b/150130101)
+option_if_not_defined(SWIFTSHADER_ENABLE_ASTC "Enable ASTC compressed textures support" FALSE)  # TODO(b/150130101)
 
 set_if_not_defined(SWIFTSHADER_BUILD_CPPDAP ${SWIFTSHADER_ENABLE_VULKAN_DEBUGGER})
 

@@ -97,12 +97,16 @@ VertexProcessor::RoutineType VertexProcessor::routine(const State &state,
 
 	if(!routine)  // Create one
 	{
+		//const_cast<int &>(SIMD::Width) = 8;
+
 		VertexRoutine *generator = new VertexProgram(state, pipelineLayout, vertexShader, descriptorSets);
 		generator->generate();
 		routine = (*generator)("VertexRoutine_%0.8X", state.shaderID);
 		delete generator;
 
 		routineCache->add(state, routine);
+
+		//const_cast<int &>(SIMD::Width) = 4;
 	}
 
 	return routine;

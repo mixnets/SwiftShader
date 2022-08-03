@@ -303,12 +303,16 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 				SIMD::Float4 colorf = alphaBlend(index, buffer, c[index], x);
 
 				/////////////				ASSERT(SIMD::Width == 4);
-				Vector4s color;
-				color.x = UShort4(Extract128(colorf.x, 0) * 0xFFFF, true);  // Saturating
-				color.y = UShort4(Extract128(colorf.y, 0) * 0xFFFF, true);  // Saturating
-				color.z = UShort4(Extract128(colorf.z, 0) * 0xFFFF, true);  // Saturating
-				color.w = UShort4(Extract128(colorf.w, 0) * 0xFFFF, true);  // Saturating
-				writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
+				for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+				{
+					Vector4s color;
+					color.x = UShort4(Extract128(colorf.x, lane128) * 0xFFFF, true);  // Saturating
+					color.y = UShort4(Extract128(colorf.y, lane128) * 0xFFFF, true);  // Saturating
+					color.z = UShort4(Extract128(colorf.z, lane128) * 0xFFFF, true);  // Saturating
+					color.w = UShort4(Extract128(colorf.w, lane128) * 0xFFFF, true);  // Saturating
+					writeColor(index, buffer, x + lane128 * 2, color, sMask[q], zMask[q], (cMask[q] >> (lane128 * 4)) & 0xF);
+					//	writeColor(index, buffer, x + lane128 * 2 + 2, color, sMask[q], zMask[q], (cMask[q] >> (lane128 * 8)) & 0xF);
+				}
 			}
 			break;
 		case VK_FORMAT_R16_SFLOAT:

@@ -589,12 +589,12 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 
 void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCache, Pointer<UInt> batch)
 {
-	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	for(int lane128 = (SIMD::Width / 4) - 1; lane128 >= 0; lane128--)
 	{
-		UInt index0 = batch[0];
-		UInt index1 = batch[1];
-		UInt index2 = batch[2];
-		UInt index3 = batch[3];
+		UInt index0 = batch[0 + lane128 * 4];
+		UInt index1 = batch[1 + lane128 * 4];
+		UInt index2 = batch[2 + lane128 * 4];
+		UInt index3 = batch[3 + lane128 * 4];
 
 		UInt cacheIndex0 = index0 & VertexCache::TAG_MASK;
 		UInt cacheIndex1 = index1 & VertexCache::TAG_MASK;
@@ -630,10 +630,10 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 			proj.z = pos.z * rhw;
 			proj.w = rhw;
 
-			Float4 pos_x = Extract128(pos.x, 0);
-			Float4 pos_y = Extract128(pos.y, 0);
-			Float4 pos_z = Extract128(pos.z, 0);
-			Float4 pos_w = Extract128(pos.w, 0);
+			Float4 pos_x = Extract128(pos.x, lane128);
+			Float4 pos_y = Extract128(pos.y, lane128);
+			Float4 pos_z = Extract128(pos.z, lane128);
+			Float4 pos_w = Extract128(pos.w, lane128);
 			transpose4x4(pos_x, pos_y, pos_z, pos_w);
 
 			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, position), 16) = pos_w;
@@ -646,10 +646,10 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 1);
 			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 0);
 
-			Float4 proj_x = Extract128(proj.x, 0);
-			Float4 proj_y = Extract128(proj.y, 0);
-			Float4 proj_z = Extract128(proj.z, 0);
-			Float4 proj_w = Extract128(proj.w, 0);
+			Float4 proj_x = Extract128(proj.x, lane128);
+			Float4 proj_y = Extract128(proj.y, lane128);
+			Float4 proj_z = Extract128(proj.z, lane128);
+			Float4 proj_w = Extract128(proj.w, lane128);
 			transpose4x4(proj_x, proj_y, proj_z, proj_w);
 
 			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, projected), 16) = proj_w;
@@ -711,10 +711,10 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 			   spirvShader->outputs[i + 3].Type != SpirvShader::ATTRIBTYPE_UNUSED)
 			{
 				Vector4f v;
-				v.x = Extract128(routine.outputs[i + 0], 0);
-				v.y = Extract128(routine.outputs[i + 1], 0);
-				v.z = Extract128(routine.outputs[i + 2], 0);
-				v.w = Extract128(routine.outputs[i + 3], 0);
+				v.x = Extract128(routine.outputs[i + 0], lane128);
+				v.y = Extract128(routine.outputs[i + 1], lane128);
+				v.z = Extract128(routine.outputs[i + 2], lane128);
+				v.w = Extract128(routine.outputs[i + 3], lane128);
 
 				transpose4x4(v.x, v.y, v.z, v.w);
 
@@ -724,8 +724,6 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 				*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, v[i]), 16) = v.x;
 			}
 		}
-
-		batch = Pointer<UInt>(Pointer<Byte>(batch) + 4 * sizeof(int));
 	}
 }
 
