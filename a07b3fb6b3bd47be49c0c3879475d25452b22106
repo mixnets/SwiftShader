@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34993128_18ab4d96",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5316
+      },
+      "writtenOn": "2022-08-03T13:27:57Z",
+      "side": 1,
+      "message": "this is causing a build failure on ANGLE CV:\n\n```\n../../third_party/SwiftShader/src/Reactor/LLVMJIT.cpp(67,11): fatal error: \u0027dlfcn.h\u0027 file not found\n#       include \u003cdlfcn.h\u003e  // dlsym()\n                ^~~~~~~~~\n```\n                \nhttps://chromium-review.googlesource.com/c/angle/angle/+/3807267\n\nhttps://ci.chromium.org/ui/p/angle/builders/try/win-asan-test/6238/overview",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 69,
+        "endChar": 0
+      },
+      "revId": "a07b3fb6b3bd47be49c0c3879475d25452b22106",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
