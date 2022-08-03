@@ -77,7 +77,7 @@ private:
 	void readInput(Pointer<UInt> &batch);
 	void computeClipFlags();
 	void computeCullMask();
-	void writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCache, Pointer<UInt> &batch);
+	void writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCache, Pointer<UInt> batch);
 	void writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cacheEntry);
 };
 

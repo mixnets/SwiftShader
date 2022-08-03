@@ -69,6 +69,8 @@ PixelRoutine::SampleSet PixelRoutine::getSampleSet(int invocation) const
 
 void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y)
 {
+	//	Breakpoint();
+
 	const bool earlyFragmentTests = !spirvShader || spirvShader->getExecutionModes().EarlyFragmentTests;
 
 	Int zMask[4];  // Depth mask
@@ -421,7 +423,7 @@ void PixelRoutine::stencilTest(Byte8 &value, VkCompareOp stencilCompareMode, boo
 
 SIMD::Float PixelRoutine::readDepth32F(const Pointer<Byte> &zBuffer, int q, const Int &x) const
 {
-	ASSERT(SIMD::Width == 4);
+/////	ASSERT(SIMD::Width == 4);
 	Pointer<Byte> buffer = zBuffer + 4 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -431,12 +433,12 @@ SIMD::Float PixelRoutine::readDepth32F(const Pointer<Byte> &zBuffer, int q, cons
 	}
 
 	Float4 zValue = Float4(*Pointer<Float2>(buffer), *Pointer<Float2>(buffer + pitch));
-	return SIMD::Float(zValue);
+	return Insert128(SIMD::Float(), zValue, 0);  //////////////////////
 }
 
 SIMD::Float PixelRoutine::readDepth16(const Pointer<Byte> &zBuffer, int q, const Int &x) const
 {
-	ASSERT(SIMD::Width == 4);
+	///	ASSERT(SIMD::Width == 4);
 	Pointer<Byte> buffer = zBuffer + 2 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -449,7 +451,7 @@ SIMD::Float PixelRoutine::readDepth16(const Pointer<Byte> &zBuffer, int q, const
 	zValue16 = As<UShort4>(Insert(As<Int2>(zValue16), *Pointer<Int>(buffer), 0));
 	zValue16 = As<UShort4>(Insert(As<Int2>(zValue16), *Pointer<Int>(buffer + pitch), 1));
 	Float4 zValue = Float4(zValue16);
-	return SIMD::Float(zValue);
+	return Insert128(SIMD::Float(), zValue, 0);  //////////////////////
 }
 
 SIMD::Float PixelRoutine::clampDepth(const SIMD::Float &z)
@@ -692,7 +694,7 @@ void PixelRoutine::writeDepth(Pointer<Byte> &zBuffer, const Int &x, const Int zM
 
 	for(unsigned int q : samples)
 	{
-		ASSERT(SIMD::Width == 4);
+		///////////////////ASSERT(SIMD::Width == 4);
 		switch(state.depthFormat)
 		{
 		case VK_FORMAT_D16_UNORM:
