@@ -58,23 +58,23 @@ void VertexRoutine::generate()
 	{
 		UInt index = *batch;
 		UInt cacheIndex = index & VertexCache::TAG_MASK;
-		// RR_WATCH(index, vertexCount);
+		//RR_WATCH(index, vertexCount);
 		If(tagCache[cacheIndex] != index)
 		{
 			////Breakpoint();
-			// Print("a\n");
+			//Print("a\n");
 
 			readInput(batch);
-			// Print("b\n");
+			//Print("b\n");
 			program(batch, vertexCount);
-			// Print("c\n");
+			//Print("c\n");
 			computeClipFlags();
-			// Print("d\n");
+			//Print("d\n");
 			computeCullMask();
-			// Print("e\n");
+			//Print("e\n");
 
 			writeCache(vertexCache, tagCache, batch);
-			// Print("f\n");
+			//Print("f\n");
 		}
 
 		Pointer<Byte> cacheEntry = vertexCache + cacheIndex * UInt((int)sizeof(Vertex));
@@ -86,14 +86,14 @@ void VertexRoutine::generate()
 			vertex += sizeof(Vertex);
 		}
 
-		// Print("g\n");
+		//Print("g\n");
 
 		batch = Pointer<UInt>(Pointer<Byte>(batch) + sizeof(uint32_t));
 		vertexCount--;
 	}
 	Until(vertexCount == 0);
 
-	// Print("h\n");
+	//Print("h\n");
 
 	Return();
 }
@@ -198,7 +198,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 	//  - Values from anywhere within the memory range(s) bound to the buffer (possibly including
 	//    bytes of memory past the end of the buffer, up to the end of the bound range)."
 	UInt4 offsets = (*Pointer<UInt4>(As<Pointer<UInt4>>(batch)) + As<UInt4>(Int4(baseVertex)));
-	// RR_WATCH(offsets);
+	//RR_WATCH(offsets);
 	offsets *= UInt4(stride);
 
 	Pointer<Byte> source0 = buffer + offsets.x;
@@ -589,12 +589,12 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 
 void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCache, Pointer<UInt> batch)
 {
-	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	for(int lane128 = SIMD::Width / 4 - 1; lane128 >= 0; lane128--)
 	{
-		UInt index0 = batch[0];
-		UInt index1 = batch[1];
-		UInt index2 = batch[2];
-		UInt index3 = batch[3];
+		UInt index0 = batch[0 + lane128 * 4];
+		UInt index1 = batch[1 + lane128 * 4];
+		UInt index2 = batch[2 + lane128 * 4];
+		UInt index3 = batch[3 + lane128 * 4];
 
 		UInt cacheIndex0 = index0 & VertexCache::TAG_MASK;
 		UInt cacheIndex1 = index1 & VertexCache::TAG_MASK;
@@ -724,8 +724,6 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 				*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, v[i]), 16) = v.x;
 			}
 		}
-
-		batch = Pointer<UInt>(Pointer<Byte>(batch) + 4 * sizeof(int));
 	}
 }
 
