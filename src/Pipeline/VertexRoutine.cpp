@@ -58,15 +58,23 @@ void VertexRoutine::generate()
 	{
 		UInt index = *batch;
 		UInt cacheIndex = index & VertexCache::TAG_MASK;
-
+		// RR_WATCH(index, vertexCount);
 		If(tagCache[cacheIndex] != index)
 		{
+			////Breakpoint();
+			// Print("a\n");
+
 			readInput(batch);
+			// Print("b\n");
 			program(batch, vertexCount);
+			// Print("c\n");
 			computeClipFlags();
+			// Print("d\n");
 			computeCullMask();
+			// Print("e\n");
 
 			writeCache(vertexCache, tagCache, batch);
+			// Print("f\n");
 		}
 
 		Pointer<Byte> cacheEntry = vertexCache + cacheIndex * UInt((int)sizeof(Vertex));
@@ -78,10 +86,14 @@ void VertexRoutine::generate()
 			vertex += sizeof(Vertex);
 		}
 
+		// Print("g\n");
+
 		batch = Pointer<UInt>(Pointer<Byte>(batch) + sizeof(uint32_t));
 		vertexCount--;
 	}
 	Until(vertexCount == 0);
+
+	// Print("h\n");
 
 	Return();
 }
@@ -104,16 +116,17 @@ void VertexRoutine::readInput(Pointer<UInt> &batch)
 				robustnessSize = *Pointer<UInt>(data + OFFSET(DrawData, robustnessSize) + sizeof(uint32_t) * (i / 4));
 			}
 
+			Pointer<UInt> indices = batch;
 			for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
 			{
-				Vector4f value = readStream(input, stride, state.input[i / 4], batch, state.robustBufferAccess, robustnessSize, baseVertex);
+				Vector4f value = readStream(input, stride, state.input[i / 4], indices, state.robustBufferAccess, robustnessSize, baseVertex);
 
 				routine.inputs[i + 0] = Insert128(routine.inputs[i + 0], value.x, lane128);
 				routine.inputs[i + 1] = Insert128(routine.inputs[i + 1], value.y, lane128);
 				routine.inputs[i + 2] = Insert128(routine.inputs[i + 2], value.z, lane128);
 				routine.inputs[i + 3] = Insert128(routine.inputs[i + 3], value.w, lane128);
 
-				batch = Pointer<UInt>(Pointer<Byte>(batch) + 4 * sizeof(int));
+				indices = Pointer<UInt>(Pointer<Byte>(indices) + 4 * sizeof(int));
 			}
 		}
 	}
@@ -184,7 +197,9 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 	// "Out-of-bounds buffer loads will return any of the following values :
 	//  - Values from anywhere within the memory range(s) bound to the buffer (possibly including
 	//    bytes of memory past the end of the buffer, up to the end of the bound range)."
-	UInt4 offsets = (*Pointer<UInt4>(As<Pointer<UInt4>>(batch)) + As<UInt4>(Int4(baseVertex))) * UInt4(stride);
+	UInt4 offsets = (*Pointer<UInt4>(As<Pointer<UInt4>>(batch)) + As<UInt4>(Int4(baseVertex)));
+	// RR_WATCH(offsets);
+	offsets *= UInt4(stride);
 
 	Pointer<Byte> source0 = buffer + offsets.x;
 	Pointer<Byte> source1 = buffer + offsets.y;
@@ -572,7 +587,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 	return v;
 }
 
-void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCache, Pointer<UInt> &batch)
+void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCache, Pointer<UInt> batch)
 {
 	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
 	{

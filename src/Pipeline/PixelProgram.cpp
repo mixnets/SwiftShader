@@ -302,7 +302,7 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 
 				SIMD::Float4 colorf = alphaBlend(index, buffer, c[index], x);
 
-				ASSERT(SIMD::Width == 4);
+				/////////////				ASSERT(SIMD::Width == 4);
 				Vector4s color;
 				color.x = UShort4(Extract128(colorf.x, 0) * 0xFFFF, true);  // Saturating
 				color.y = UShort4(Extract128(colorf.y, 0) * 0xFFFF, true);  // Saturating

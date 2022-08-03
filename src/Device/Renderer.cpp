@@ -537,7 +537,7 @@ void DrawCall::processVertices(vk::Device *device, DrawCall *draw, BatchData *ba
 {
 	MARL_SCOPED_EVENT("VERTEX draw %d, batch %d", draw->id, batch->id);
 
-	unsigned int triangleIndices[MaxBatchSize + 1][3];  // One extra for SIMD width overrun. TODO: Adjust to dynamic batch size.
+	unsigned int triangleIndices[MaxBatchSize + 3][3];  ///////////////// One extra for SIMD width overrun. TODO: Adjust to dynamic batch size.
 	{
 		MARL_SCOPED_EVENT("processPrimitiveVertices");
 		processPrimitiveVertices(
@@ -607,7 +607,7 @@ void Renderer::synchronize()
 }
 
 void DrawCall::processPrimitiveVertices(
-    unsigned int triangleIndicesOut[MaxBatchSize + 1][3],
+    unsigned int triangleIndicesOut[MaxBatchSize + 3][3],  ////////////////
     const void *primitiveIndices,
     VkIndexType indexType,
     unsigned int start,
@@ -654,9 +654,15 @@ void DrawCall::processPrimitiveVertices(
 	if(topology != VK_PRIMITIVE_TOPOLOGY_POINT_LIST)
 	{
 		// Repeat the last index to allow for SIMD width overrun.
-		triangleIndicesOut[triangleCount][0] = triangleIndicesOut[triangleCount - 1][2];
-		triangleIndicesOut[triangleCount][1] = triangleIndicesOut[triangleCount - 1][2];
-		triangleIndicesOut[triangleCount][2] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount + 0][0] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount + 0][1] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount + 0][2] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount + 1][0] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount + 1][1] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount + 1][2] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount + 2][0] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount + 2][1] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount + 2][2] = triangleIndicesOut[triangleCount - 1][2];
 	}
 }
 
