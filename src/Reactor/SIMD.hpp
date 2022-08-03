@@ -38,7 +38,7 @@ using Float4 = rr::Float4;
 
 namespace SIMD {
 
-extern const int Width;
+extern int Width;
 
 class Int;
 class UInt;
@@ -436,7 +436,7 @@ RValue<SIMD::Float> Log(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Exp2(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Log2(RValue<SIMD::Float> x);
 
-//RValue<Int> SignMask(RValue<SIMD::Int> x);
+// RValue<Int> SignMask(RValue<SIMD::Int> x);
 RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef);
 RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> x, bool isZeroUndef);
 RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y);

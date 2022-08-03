@@ -682,11 +682,14 @@ RValue<SIMD::Float> operator-(RValue<SIMD::Float> val)
 RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
 {
 	///////////////ASSERT(SIMD::Width == 4);
-	ASSERT(SIMD::Width == 8);  //////////////
+	/////ASSERT(SIMD::Width == 8);  //////////////
 
 	SIMD::Float r;
 	r = Insert128(r, Rcp(Extract128(x, 0), relaxedPrecision, exactAtPow2), 0);
-	r = Insert128(r, Rcp(Extract128(x, 1), relaxedPrecision, exactAtPow2), 1);
+	if(SIMD::Width == 8)
+	{
+		r = Insert128(r, Rcp(Extract128(x, 1), relaxedPrecision, exactAtPow2), 1);
+	}
 	return r;
 }
 
@@ -806,11 +809,11 @@ RValue<SIMD::Float> Log2(RValue<SIMD::Float> x)
 	return ScalarizeCall(log2f, x);
 }
 
-//RValue<Int> SignMask(RValue<SIMD::Int> x)
+// RValue<Int> SignMask(RValue<SIMD::Int> x)
 //{
 //	ASSERT(SIMD::Width == 4);
 //	return SignMask(Extract128(x, 0));
-//}
+// }
 
 RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef)
 {
@@ -849,12 +852,36 @@ RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
 {
 	return SignMask(~bools) != 0;  // TODO(b/214588983): Compare against mask of 4 1's to avoid bitwise NOT.
 }
+//
+// RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)
+//{
+//	ASSERT(SIMD::Width == 4);
+//	return Divergent(Extract128(ints, 0));
+//}
 
 RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)
 {
-	ASSERT(SIMD::Width == 4);
-	return Divergent(Extract128(ints, 0));
+	auto broadcastFirst = SIMD::Int(Extract(ints, 0));
+	return AnyTrue(CmpNEQ(broadcastFirst, ints));
 }
+//
+// RValue<Bool> Divergent(const RValue<Float4> &floats)
+//{
+//	auto broadcastFirst = Float4(Extract(floats, 0));
+//	return AnyTrue(CmpNEQ(broadcastFirst, floats));
+//}
+//
+// RValue<Bool> Uniform(const RValue<Int4> &ints)
+//{
+//	auto broadcastFirst = Int4(Extract(ints, 0));
+//	return AllFalse(CmpNEQ(broadcastFirst, ints));
+//}
+//
+// RValue<Bool> Uniform(const RValue<Float4> &floats)
+//{
+//	auto broadcastFirst = Float4(Extract(floats, 0));
+//	return AllFalse(CmpNEQ(broadcastFirst, floats));
+//}
 
 RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select)
 {

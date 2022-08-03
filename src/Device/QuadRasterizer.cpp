@@ -191,6 +191,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			For(Int x = x0, x < x1, x += 4)  ///
 			{
 				Short4 xxxx = Short4(x);
+				Short4 x2 = Short4(x + 2);
 				Int cMask[4];
 
 				for(unsigned int q = 0; q < state.multiSampleCount; q++)
@@ -199,10 +200,12 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 					{
 						unsigned int i = state.enableMultiSampling ? q : 0;
 						Short4 mask = CmpGT(xxxx, xLeft[i]) & CmpGT(xRight[i], xxxx);
-						cMask[q] = SignMask(PackSigned(mask, mask)) & 0x0000000F;
+						Short4 mask2 = CmpGT(x2, xLeft[i]) & CmpGT(xRight[i], x2);
+						cMask[q] = SignMask(PackSigned(mask, mask2));  // & 0x0000000F;
+						                                               ////RR_WATCH(cMask[q]);
 					}
 				}
-
+				// RR_WATCH(cMask[0]);
 				quad(cBuffer, zBuffer, sBuffer, cMask, x, y);
 			}
 		}
