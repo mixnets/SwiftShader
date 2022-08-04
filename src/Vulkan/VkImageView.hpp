@@ -148,7 +148,7 @@ private:
 	const VkComponentMapping components = {};
 	const VkImageSubresourceRange subresourceRange = {};
 
-	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
+	//const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
 
 public:
 	const Identifier id;

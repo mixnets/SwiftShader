@@ -4,16 +4,36 @@
       "name": "x64-Debug",
       "generator": "Ninja",
       "configurationType": "Debug",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "inheritEnvironments": [ "clang_cl_x64_x64" ],
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "-v",
+      "cmakeCommandArgs": "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL",
+      "buildCommandArgs": "-v -j50",
       "ctestCommandArgs": "",
       "variables": [
         {
           "name": "REACTOR_BACKEND",
-          "value": "Subzero",
+          "value": "LLVM",
+          "type": "STRING"
+        },
+        {
+          "name": "SWIFTSHADER_ASAN",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "SWIFTSHADER_ENABLE_ASTC",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "CMAKE_MSVC_RUNTIME_LIBRARY",
+          "value": "MultiThreadedDLL",
+          "type": "STRING"
+        },
+        {
+          "name": "LLVM_USE_CRT_DEBUG",
+          "value": "MD",
           "type": "STRING"
         }
       ]
@@ -49,7 +69,14 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x64_x64" ]
+      "inheritEnvironments": [ "clang_cl_x64_x64" ],
+      "variables": [
+        {
+          "name": "SWIFTSHADER_ASAN",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
     }
   ]
 }

@@ -40,7 +40,7 @@ struct SubmitInfo;
 
 class Queue
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
+	[[maybe_unused]] VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
 
 public:
 	Queue(Device *device, marl::Scheduler *scheduler);

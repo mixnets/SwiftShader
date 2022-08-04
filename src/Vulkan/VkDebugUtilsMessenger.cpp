@@ -17,9 +17,9 @@
 namespace vk {
 
 DebugUtilsMessenger::DebugUtilsMessenger(const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, void *mem)
-    : messageSeverity(pCreateInfo->messageSeverity)
-    , messageType(pCreateInfo->messageType)
-    , pfnUserCallback(pCreateInfo->pfnUserCallback)
+    :  //messageSeverity(pCreateInfo->messageSeverity)
+       //, messageType(pCreateInfo->messageType)
+    pfnUserCallback(pCreateInfo->pfnUserCallback)
     , pUserData(pCreateInfo->pUserData)
 {
 }

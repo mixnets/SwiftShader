@@ -64,7 +64,7 @@ private:
 	DescriptorSet descriptorSets[MAX_BOUND_DESCRIPTOR_SETS];
 
 	const uint32_t descriptorSetCount = 0;
-	const uint32_t pushConstantRangeCount = 0;
+	//const uint32_t pushConstantRangeCount = 0;
 	VkPushConstantRange *pushConstantRanges = nullptr;
 
 	std::atomic<uint32_t> refCount{ 0 };

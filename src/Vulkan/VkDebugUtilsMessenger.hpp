@@ -32,8 +32,8 @@ public:
 	void submitMessage(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData);
 
 private:
-	VkDebugUtilsMessageSeverityFlagsEXT messageSeverity = (VkDebugUtilsMessageSeverityFlagsEXT)0;
-	VkDebugUtilsMessageTypeFlagsEXT messageType = (VkDebugUtilsMessageTypeFlagsEXT)0;
+	//[[maybe_unsused]] VkDebugUtilsMessageSeverityFlagsEXT messageSeverity = (VkDebugUtilsMessageSeverityFlagsEXT)0;
+	//VkDebugUtilsMessageTypeFlagsEXT messageType = (VkDebugUtilsMessageTypeFlagsEXT)0;
 	PFN_vkDebugUtilsMessengerCallbackEXT pfnUserCallback = nullptr;
 	void *pUserData = nullptr;
 };

@@ -51,7 +51,7 @@ private:
 	VkBufferCreateFlags flags = 0;
 	VkDeviceSize size = 0;
 	VkBufferUsageFlags usage = 0;
-	VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	//VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t queueFamilyIndexCount = 0;
 	uint32_t *queueFamilyIndices = nullptr;
 	uint64_t opaqueCaptureAddress = 0;

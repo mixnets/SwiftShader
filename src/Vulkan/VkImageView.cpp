@@ -126,7 +126,7 @@ ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const 
     , format(GetImageViewFormat(pCreateInfo))
     , components(ResolveComponentMapping(pCreateInfo->components, format))
     , subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image))
-    , ycbcrConversion(ycbcrConversion)
+    //, ycbcrConversion(ycbcrConversion)
     , id(pCreateInfo)
 {
 }

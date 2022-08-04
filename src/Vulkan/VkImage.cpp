@@ -188,7 +188,7 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
     , mipLevels(pCreateInfo->mipLevels)
     , arrayLayers(pCreateInfo->arrayLayers)
     , samples(pCreateInfo->samples)
-    , tiling(pCreateInfo->tiling)
+    //, tiling(pCreateInfo->tiling)
     , usage(pCreateInfo->usage)
 {
 	if(format.isCompressed())

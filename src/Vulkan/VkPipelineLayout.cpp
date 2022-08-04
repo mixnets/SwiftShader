@@ -24,7 +24,7 @@ static std::atomic<uint32_t> layoutIdentifierSerial = { 1 };  // Start at 1. 0 i
 PipelineLayout::PipelineLayout(const VkPipelineLayoutCreateInfo *pCreateInfo, void *mem)
     : identifier(layoutIdentifierSerial++)
     , descriptorSetCount(pCreateInfo->setLayoutCount)
-    , pushConstantRangeCount(pCreateInfo->pushConstantRangeCount)
+//, pushConstantRangeCount(pCreateInfo->pushConstantRangeCount)
 {
 	Binding *bindingStorage = reinterpret_cast<Binding *>(mem);
 	uint32_t dynamicOffsetIndex = 0;

@@ -399,9 +399,11 @@ macro(set_linker_flag FLAG)
         set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAG}")
     endif()
 endmacro()
+add_definitions(-D_DISABLE_VECTOR_ANNOTATION) 
 
 if(MSVC)
-    set_cpp_flag("/MP")
+    #set_cpp_flag("/MP")
+    set_cpp_flag("/MD")
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
     add_definitions(-D_SBCS)  # Single Byte Character Set (ASCII)
@@ -438,7 +440,11 @@ if(MSVC)
         "/we4838" # conversion from 'type_1' to 'type_2' requires a narrowing conversion
         "/we5038" # data member 'member1' will be initialized after data member 'member2' data member 'member' will be initialized after base class 'base_class'
         "/we4101" # 'identifier' : unreferenced local variable
+        "/fsanitize=address"
     )
+
+    set_cpp_flag("-fsanitize=address")
+        set_linker_flag("-fsanitize=address")
 else()
     # Explicitly enable these warnings.
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS

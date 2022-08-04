@@ -76,9 +76,9 @@ private:
 	uint32_t viewMask = 0;
 	uint32_t colorAttachmentCount = 0;
 	VkRenderingAttachmentInfo colorAttachments[sw::MAX_COLOR_BUFFERS] = { {} };
-	bool hasDepthAttachment = false;
+	//bool hasDepthAttachment = false;
 	VkRenderingAttachmentInfo depthAttachment = {};
-	bool hasStencilAttachment = false;
+	//bool hasStencilAttachment = false;
 	VkRenderingAttachmentInfo stencilAttachment = {};
 	VkRenderingFlags flags = VkRenderingFlags(0);
 };
@@ -232,7 +232,7 @@ public:
 private:
 	void resetState();
 	template<typename T, typename... Args>
-	void addCommand(Args &&... args);
+	void addCommand(Args &&...args);
 
 	enum State
 	{
@@ -243,7 +243,7 @@ private:
 		INVALID
 	};
 
-	Device *const device;
+	//Device *const device;
 	State state = INITIAL;
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 

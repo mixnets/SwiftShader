@@ -36,7 +36,7 @@ class cpp
 	static_assert(version >= 2017, "SwiftShader requires at least C++17");
 };
 
-void check_cpp_version()
+[[maybe_unused]] void check_cpp_version()
 {
 	cpp<CPP_VERSION / 100>();
 	(void)&check_cpp_version;  // Unused reference to avoid unreferenced function warning.

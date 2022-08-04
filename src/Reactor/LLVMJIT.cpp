@@ -63,8 +63,10 @@ __pragma(warning(push))
     __pragma(warning(pop))
 #endif
 
-#if __has_feature(memory_sanitizer) || __has_feature(address_sanitizer)
-#	include <dlfcn.h>  // dlsym()
+#if !defined(_MSC_VER)
+#	if __has_feature(memory_sanitizer) || __has_feature(address_sanitizer)
+#		include <dlfcn.h>  // dlsym()
+#	endif
 #endif
 
 #ifndef REACTOR_ASM_EMIT_DIR
@@ -636,7 +638,8 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 				continue;
 			}
 
-#if __has_feature(memory_sanitizer) || __has_feature(address_sanitizer)
+#if !defined(_MSC_VER)
+#	if __has_feature(memory_sanitizer) || __has_feature(address_sanitizer)
 			// Sanitizers use a dynamically linked runtime. Instrumented routines reference some
 			// symbols from this library. Look them up dynamically in the default namespace.
 			// Note this approach should not be used for other symbols, since they might not be
@@ -653,6 +656,7 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 
 				continue;
 			}
+#	endif
 #endif
 
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)

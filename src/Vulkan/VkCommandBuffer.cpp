@@ -393,7 +393,7 @@ class CmdSetViewport : public vk::CommandBuffer::Command
 public:
 	CmdSetViewport(const VkViewport &viewport, uint32_t viewportID)
 	    : viewport(viewport)
-	    , viewportID(viewportID)
+	//, viewportID(viewportID)
 	{
 	}
 
@@ -406,7 +406,7 @@ public:
 
 private:
 	const VkViewport viewport;
-	const uint32_t viewportID;
+	//const uint32_t viewportID;
 };
 
 class CmdSetScissor : public vk::CommandBuffer::Command
@@ -414,7 +414,7 @@ class CmdSetScissor : public vk::CommandBuffer::Command
 public:
 	CmdSetScissor(const VkRect2D &scissor, uint32_t scissorID)
 	    : scissor(scissor)
-	    , scissorID(scissorID)
+	//, scissorID(scissorID)
 	{
 	}
 
@@ -427,7 +427,7 @@ public:
 
 private:
 	const VkRect2D scissor;
-	const uint32_t scissorID;
+	//const uint32_t scissorID;
 };
 
 class CmdSetLineWidth : public vk::CommandBuffer::Command
@@ -1400,7 +1400,7 @@ class CmdResetEvent : public vk::CommandBuffer::Command
 public:
 	CmdResetEvent(vk::Event *ev, VkPipelineStageFlags2 stageMask)
 	    : ev(ev)
-	    , stageMask(stageMask)
+	//, stageMask(stageMask)
 	{
 	}
 
@@ -1413,7 +1413,7 @@ public:
 
 private:
 	vk::Event *const ev;
-	const VkPipelineStageFlags2 stageMask;  // FIXME(b/117835459): We currently ignore the flags and reset the event at the last stage
+	//const VkPipelineStageFlags2 stageMask;  // FIXME(b/117835459): We currently ignore the flags and reset the event at the last stage
 };
 
 class CmdWaitEvent : public vk::CommandBuffer::Command
@@ -1724,8 +1724,8 @@ void DynamicRendering::getAttachments(Attachments *attachments) const
 }
 
 CommandBuffer::CommandBuffer(Device *device, VkCommandBufferLevel pLevel)
-    : device(device)
-    , level(pLevel)
+    :  //device(device)
+    level(pLevel)
 {
 }
 

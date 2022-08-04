@@ -46,7 +46,6 @@ private:
 	const HWND hwnd;
 
 	HDC windowContext = {};
-	HDC bitmapContext = {};
 };
 
 }  // namespace vk
