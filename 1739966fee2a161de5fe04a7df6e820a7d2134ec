@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "509db0a8_7625502b",
+        "filename": "tests/regres/testlists/vk-master-ASSERT.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-04T18:41:55Z",
+      "side": 1,
+      "message": "http://b/241436291",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 100,
+        "endChar": 39
+      },
+      "revId": "1739966fee2a161de5fe04a7df6e820a7d2134ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
