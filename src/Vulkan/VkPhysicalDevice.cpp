@@ -247,7 +247,7 @@ static void getPhysicalDeviceDescriptorIndexingFeatures(T *features)
 	features->shaderUniformTexelBufferArrayDynamicIndexing = VK_TRUE;
 	features->shaderStorageTexelBufferArrayDynamicIndexing = VK_TRUE;
 	features->shaderUniformBufferArrayNonUniformIndexing = VK_TRUE;
-	features->shaderSampledImageArrayNonUniformIndexing = VK_FALSE;
+	features->shaderSampledImageArrayNonUniformIndexing = VK_TRUE;
 	features->shaderStorageBufferArrayNonUniformIndexing = VK_TRUE;
 	features->shaderStorageImageArrayNonUniformIndexing = VK_FALSE;
 	features->shaderInputAttachmentArrayNonUniformIndexing = VK_FALSE;
@@ -377,7 +377,7 @@ static void getPhysicalDeviceVulkan12Features(T *features)
 	getPhysicalDevice8BitStorageFeaturesKHR(features);
 	getPhysicalDeviceShaderAtomicInt64Features(features);
 	getPhysicalDeviceShaderFloat16Int8Features(features);
-	features->descriptorIndexing = VK_FALSE;
+	features->descriptorIndexing = VK_TRUE;
 	getPhysicalDeviceDescriptorIndexingFeatures(features);
 	features->samplerFilterMinmax = VK_FALSE;
 	getPhysicalDeviceScalarBlockLayoutFeatures(features);
