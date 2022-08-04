@@ -22,6 +22,30 @@
       },
       "revId": "a07b3fb6b3bd47be49c0c3879475d25452b22106",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14e81420_4b2601fd",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-04T17:46:28Z",
+      "side": 1,
+      "message": "Thanks for the heads-up! https://swiftshader-review.googlesource.com/c/SwiftShader/+/67308 should get things back on the tracks.",
+      "parentUuid": "34993128_18ab4d96",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 69,
+        "endChar": 0
+      },
+      "revId": "a07b3fb6b3bd47be49c0c3879475d25452b22106",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
