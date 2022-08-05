@@ -641,10 +641,10 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, position), 16) = pos_y;
 			*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, position), 16) = pos_x;
 
-			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 3);
-			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 2);
-			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 1);
-			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 0);
+			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 3 + lane128 * 4);
+			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 2 + lane128 * 4);
+			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 1 + lane128 * 4);
+			*Pointer<Int>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, clipFlags)) = Extract(clipFlags, 0 + lane128 * 4);
 
 			Float4 proj_x = Extract128(proj.x, lane128);
 			Float4 proj_y = Extract128(proj.y, lane128);
@@ -664,10 +664,10 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 			ASSERT(it->second.SizeInComponents == 1);
 			auto psize = routine.getVariable(it->second.Id)[it->second.FirstComponent];
 
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, pointSize)) = Extract(psize, 3);
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, pointSize)) = Extract(psize, 2);
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, pointSize)) = Extract(psize, 1);
-			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, pointSize)) = Extract(psize, 0);
+			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, pointSize)) = Extract(psize, 3 + lane128 * 4);
+			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, pointSize)) = Extract(psize, 2 + lane128 * 4);
+			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, pointSize)) = Extract(psize, 1 + lane128 * 4);
+			*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, pointSize)) = Extract(psize, 0 + lane128 * 4);
 		}
 
 		it = spirvShader->outputBuiltins.find(spv::BuiltInClipDistance);
@@ -677,10 +677,10 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 			for(unsigned int i = 0; i < count; i++)
 			{
 				auto dist = routine.getVariable(it->second.Id)[it->second.FirstComponent + i];
-				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 3);
-				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 2);
-				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 1);
-				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 0);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 3 + lane128 * 4);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 2 + lane128 * 4);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 1 + lane128 * 4);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, clipDistance[i])) = Extract(dist, 0 + lane128 * 4);
 			}
 		}
 
@@ -691,10 +691,10 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 			for(unsigned int i = 0; i < count; i++)
 			{
 				auto dist = routine.getVariable(it->second.Id)[it->second.FirstComponent + i];
-				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 3);
-				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 2);
-				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 1);
-				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 0);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex3 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 3 + lane128 * 4);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex2 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 2 + lane128 * 4);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 1 + lane128 * 4);
+				*Pointer<Float>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, cullDistance[i])) = Extract(dist, 0 + lane128 * 4);
 			}
 		}
 

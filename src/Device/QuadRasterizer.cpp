@@ -111,16 +111,16 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 
 		x0 &= 0xFFFFFFFE;
 
-		Int x1a = Int(*Pointer<Short>(primitive + OFFSET(Primitive, outline->right) + (y + 0) * sizeof(Primitive::Span)));
-		Int x1b = Int(*Pointer<Short>(primitive + OFFSET(Primitive, outline->right) + (y + 1) * sizeof(Primitive::Span)));
-		Int x1 = Max(x1a, x1b);
+		//Int x1a = Int(*Pointer<Short>(primitive + OFFSET(Primitive, outline->right) + (y + 0) * sizeof(Primitive::Span)));
+		//Int x1b = Int(*Pointer<Short>(primitive + OFFSET(Primitive, outline->right) + (y + 1) * sizeof(Primitive::Span)));
+		//Int x1 = Max(x1a, x1b);
 
-		for(unsigned int q = 1; q < state.multiSampleCount; q++)
-		{
-			x1a = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline->right) + (y + 0) * sizeof(Primitive::Span)));
-			x1b = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline->right) + (y + 1) * sizeof(Primitive::Span)));
-			x1 = Max(x1, Max(x1a, x1b));
-		}
+		//for(unsigned int q = 1; q < state.multiSampleCount; q++)
+		//{
+		//	x1a = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline->right) + (y + 0) * sizeof(Primitive::Span)));
+		//	x1b = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline->right) + (y + 1) * sizeof(Primitive::Span)));
+		//	x1 = Max(x1, Max(x1a, x1b));
+		//}
 
 		SIMD::Float yyyy = SIMD::Float(Float(y)) + SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, yQuad))) + SIMD::Float([](int i) { return float((i & 0x2) >> 1 | (i & 0x8) >> 2); });
 
@@ -139,7 +139,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			}
 		}
 
-		If(x0 < x1)
+		//If(x0 < x1)
 		{
 			if(interpolateW())
 			{
@@ -188,26 +188,40 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 				xRight[q] = Swizzle(xRight[q], 0x1133) - Short4(0, 1, 0, 1);
 			}
 
-			For(Int x = x0, x < x1, x += 4)  ///
+			Int x = x0;
+			Int mask;
+
+			//For(Int x = x0, x < x1, x += 4)  ///
+			Do
 			{
 				Short4 xxxx = Short4(x);
 				Short4 x2 = Short4(x + 2);
 				Int cMask[4];
+				mask = 0xFFFFFFFF;
 
 				for(unsigned int q = 0; q < state.multiSampleCount; q++)
 				{
 					if(state.multiSampleMask & (1 << q))
 					{
 						unsigned int i = state.enableMultiSampling ? q : 0;
-						Short4 mask = CmpGT(xxxx, xLeft[i]) & CmpGT(xRight[i], xxxx);
+						Short4 mask1 = CmpGT(xxxx, xLeft[i]) & CmpGT(xRight[i], xxxx);
 						Short4 mask2 = CmpGT(x2, xLeft[i]) & CmpGT(xRight[i], x2);
-						cMask[q] = SignMask(PackSigned(mask, mask2));  // & 0x0000000F;
-						                                               ////RR_WATCH(cMask[q]);
+						cMask[q] = SignMask(PackSigned(mask1, mask2));  // & 0x0000000F;
+						                                                ////RR_WATCH(cMask[q]);
+						mask &= cMask[q];
 					}
 				}
-				// RR_WATCH(cMask[0]);
-				quad(cBuffer, zBuffer, sBuffer, cMask, x, y);
+
+				If(mask != 0)
+				{
+					// RR_WATCH(cMask[0]);
+					quad(cBuffer, zBuffer, sBuffer, cMask, x, y);
+
+					ASSERT(SIMD::Width == 4 || SIMD::Width == 8);
+					x += SIMD::Width / 2;
+				}
 			}
+			Until(mask == 0);
 		}
 
 		for(int index = 0; index < MAX_COLOR_BUFFERS; index++)

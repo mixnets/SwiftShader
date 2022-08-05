@@ -1984,11 +1984,13 @@ RValue<Short4> Swizzle(RValue<Short4> x, uint16_t select)
 
 RValue<Short4> Insert(RValue<Short4> val, RValue<Short> element, int i)
 {
+	ASSERT(i >= 0 && i < 4);
 	return RValue<Short4>(Nucleus::createInsertElement(val.value(), element.value(), i));
 }
 
 RValue<Short> Extract(RValue<Short4> val, int i)
 {
+	ASSERT(i >= 0 && i < 4);
 	return RValue<Short>(Nucleus::createExtractElement(val.value(), Short::type(), i));
 }
 
@@ -3085,11 +3087,13 @@ RValue<Short4> UnpackHigh(RValue<Int2> x, RValue<Int2> y)
 
 RValue<Int> Extract(RValue<Int2> val, int i)
 {
+	ASSERT(i >= 0 && i < 2);
 	return RValue<Int>(Nucleus::createExtractElement(val.value(), Int::type(), i));
 }
 
 RValue<Int2> Insert(RValue<Int2> val, RValue<Int> element, int i)
 {
+	ASSERT(i >= 0 && i < 2);
 	return RValue<Int2>(Nucleus::createInsertElement(val.value(), element.value(), i));
 }
 
@@ -3236,11 +3240,13 @@ RValue<UInt2> operator~(RValue<UInt2> val)
 
 RValue<UInt> Extract(RValue<UInt2> val, int i)
 {
+	ASSERT(i >= 0 && i < 2);
 	return RValue<UInt>(Nucleus::createExtractElement(val.value(), UInt::type(), i));
 }
 
 RValue<UInt2> Insert(RValue<UInt2> val, RValue<UInt> element, int i)
 {
+	ASSERT(i >= 0 && i < 2);
 	return RValue<UInt2>(Nucleus::createInsertElement(val.value(), element.value(), i));
 }
 
@@ -3481,11 +3487,13 @@ RValue<Int4> operator~(RValue<Int4> val)
 
 RValue<Int> Extract(RValue<Int4> x, int i)
 {
+	ASSERT(i >= 0 && i < 4);
 	return RValue<Int>(Nucleus::createExtractElement(x.value(), Int::type(), i));
 }
 
 RValue<Int4> Insert(RValue<Int4> x, RValue<Int> element, int i)
 {
+	ASSERT(i >= 0 && i < 4);
 	return RValue<Int4>(Nucleus::createInsertElement(x.value(), element.value(), i));
 }
 
@@ -3723,11 +3731,13 @@ RValue<UInt4> operator~(RValue<UInt4> val)
 
 RValue<UInt> Extract(RValue<UInt4> x, int i)
 {
+	ASSERT(i >= 0 && i < 4);
 	return RValue<UInt>(Nucleus::createExtractElement(x.value(), Int::type(), i));
 }
 
 RValue<UInt4> Insert(RValue<UInt4> x, RValue<UInt> element, int i)
 {
+	ASSERT(i >= 0 && i < 4);
 	return RValue<UInt4>(Nucleus::createInsertElement(x.value(), element.value(), i));
 }
 
@@ -4221,11 +4231,13 @@ RValue<Float4> operator-(RValue<Float4> val)
 
 RValue<Float4> Insert(RValue<Float4> x, RValue<Float> element, int i)
 {
+	ASSERT(i >= 0 && i < 4);
 	return RValue<Float4>(Nucleus::createInsertElement(x.value(), element.value(), i));
 }
 
 RValue<Float> Extract(RValue<Float4> x, int i)
 {
+	ASSERT(i >= 0 && i < 4);
 	return RValue<Float>(Nucleus::createExtractElement(x.value(), Float::type(), i));
 }
 
