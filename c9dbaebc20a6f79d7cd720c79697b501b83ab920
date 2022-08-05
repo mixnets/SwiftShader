@@ -16,6 +16,24 @@
       "message": "The new version checks VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT in vkGetPhysicalDeviceFeatures2, making every test unsupported.",
       "revId": "c9dbaebc20a6f79d7cd720c79697b501b83ab920",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bbca79e2_54dd27e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-05T14:01:23Z",
+      "side": 1,
+      "message": "So this is https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3879, but with an example of a different structure?",
+      "parentUuid": "ffe727c2_ebc9d070",
+      "revId": "c9dbaebc20a6f79d7cd720c79697b501b83ab920",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
