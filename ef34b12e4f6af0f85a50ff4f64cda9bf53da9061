@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9ce5e06_579b39f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-05T20:36:09Z",
+      "side": 1,
+      "message": "LGTM assuming the expected Regres tests pass again.",
+      "revId": "ef34b12e4f6af0f85a50ff4f64cda9bf53da9061",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e9646e2_41f8f246",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 593,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-05T20:36:09Z",
+      "side": 1,
+      "message": "Please add `// TODO(b/216982034): Revert to UNSUPPORTED() when https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3879 is fixed.`",
+      "revId": "ef34b12e4f6af0f85a50ff4f64cda9bf53da9061",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
