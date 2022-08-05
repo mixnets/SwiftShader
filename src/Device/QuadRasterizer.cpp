@@ -139,7 +139,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			}
 		}
 
-		If(x0 < x1)
+		//If(x0 < x1)
 		{
 			if(interpolateW())
 			{
