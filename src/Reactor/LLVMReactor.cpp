@@ -4580,6 +4580,7 @@ RValue<SIMD::Float> Ceil(RValue<SIMD::Float> x)
 
 RValue<Float4> Extract128(RValue<SIMD::Float> val, int i)
 {
+	ASSERT(i >= 0 && i < SIMD::Width / 4);
 	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
 
 	return As<Float4>(V(jit->builder->CreateExtractElement(v128, i)));
@@ -4587,6 +4588,7 @@ RValue<Float4> Extract128(RValue<SIMD::Float> val, int i)
 
 RValue<SIMD::Float> Insert128(RValue<SIMD::Float> val, RValue<Float4> element, int i)
 {
+	ASSERT(i >= 0 && i < SIMD::Width / 4);
 	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
 	llvm::Value *a = jit->builder->CreateBitCast(V(element.value()), llvm::IntegerType::get(*jit->context, 128));
 

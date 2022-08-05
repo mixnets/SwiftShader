@@ -310,7 +310,7 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 					color.y = UShort4(Extract128(colorf.y, lane128) * 0xFFFF, true);  // Saturating
 					color.z = UShort4(Extract128(colorf.z, lane128) * 0xFFFF, true);  // Saturating
 					color.w = UShort4(Extract128(colorf.w, lane128) * 0xFFFF, true);  // Saturating
-					writeColor(index, buffer, x + lane128 * 2, color, sMask[q], zMask[q], (cMask[q] >> (lane128 * 4)) & 0xF);
+					writeColor(index, buffer, x + lane128 * 2, color, (sMask[q] >> (lane128 * 4)) & 0xF, (zMask[q] >> (lane128 * 4)) & 0xF, (cMask[q] >> (lane128 * 4)) & 0xF);
 					//	writeColor(index, buffer, x + lane128 * 2 + 2, color, sMask[q], zMask[q], (cMask[q] >> (lane128 * 8)) & 0xF);
 				}
 			}

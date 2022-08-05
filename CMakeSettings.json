@@ -49,7 +49,14 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x64_x64" ]
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": [
+        {
+          "name": "SWIFTSHADER_BUILD_PVR",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
     }
   ]
 }

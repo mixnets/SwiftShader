@@ -125,7 +125,7 @@ const Configuration &getConfiguration()
 
 marl::Scheduler::Config getSchedulerConfiguration(const Configuration &config)
 {
-	uint32_t threadCount = 1;
+	uint32_t threadCount = 16;
 	auto affinity = getAffinityFromMask(config.affinityMask);
 	auto affinityPolicy = getAffinityPolicy(std::move(affinity), config.affinityPolicy);
 
