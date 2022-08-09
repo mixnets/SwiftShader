@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "941d6161_97b36864",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-09T23:01:19Z",
+      "side": 1,
+      "message": "Doesn\u0027t look like this was a valid spec interpretation. Needs clarification: https://gitlab.khronos.org/vulkan/vulkan/-/issues/2445#note_370737",
+      "revId": "1572e0bc78fc00770785bc55edfcb4eba1d331f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
