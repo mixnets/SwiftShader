@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "814253e2_31faacba",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-10T23:47:25Z",
+      "side": 1,
+      "message": "I don\u0027t think we\u0027d ever notice this performance-wise, but is a CmpNEQ really faster than 2 shifts? Just curious if CmpNEQ always only takes a single cycle also.",
+      "range": {
+        "startLine": 47,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 14
+      },
+      "revId": "b565ca1adff74db03a9ed691892685eba91eef2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
