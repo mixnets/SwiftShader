@@ -94,7 +94,9 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 
 		SIMD::Float rhwCentroid;
 
-		xFragment = Float4(Float(x)) + *Pointer<Float4>(primitive + OFFSET(Primitive, xQuad), 16);
+		// Compute the x coordinate of each fragment in the SIMD group.
+		const auto ox = SIMD::Float([](int i) { return float((i & 0x1) | (i & 0x4) >> 1); });  // 0, 1, 0, 1, 2, 3, 2, 3, 0, 1, 0, 1, 2, 3, 2, 3
+		xFragment = SIMD::Float(Float(x)) + ox - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, x0)));
 
 		if(interpolateZ())
 		{

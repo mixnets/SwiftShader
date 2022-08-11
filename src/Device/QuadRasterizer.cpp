@@ -122,7 +122,9 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			x1 = Max(x1, Max(x1a, x1b));
 		}
 
-		yFragment = SIMD::Float(Float(y)) + SIMD::Float(*Pointer<Float4>(primitive + OFFSET(Primitive, yQuad), 16));
+		// Compute the y coordinate of each fragment in the SIMD group.
+		const auto oy = SIMD::Float([](int i) { return float((i & 0x2) >> 1 | (i & 0x8) >> 2); });  // 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3
+		yFragment = SIMD::Float(Float(y)) + oy - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, y0)));
 
 		if(interpolateZ())
 		{
