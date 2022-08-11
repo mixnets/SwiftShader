@@ -22,6 +22,30 @@
       },
       "revId": "b565ca1adff74db03a9ed691892685eba91eef2f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b6668c7_9c7a3c5c",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-11T02:56:02Z",
+      "side": 1,
+      "message": "Actually on Intel Skylake it takes \"half\" a cycle, since there are two execution ports for vector compare instructions. On AMD Zen 4 there are four execution ports that can take the 128-bit instruction, two for 256-bit.\n\nShifting is at best the same performance, but slower in some cases. Worst of all there is no 128-bit SSE instruction which takes per-lane shift values.",
+      "parentUuid": "814253e2_31faacba",
+      "range": {
+        "startLine": 47,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 14
+      },
+      "revId": "b565ca1adff74db03a9ed691892685eba91eef2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
