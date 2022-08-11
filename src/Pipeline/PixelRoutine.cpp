@@ -94,13 +94,13 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 
 		SIMD::Float rhwCentroid;
 
-		SIMD::Float xxxx = Float4(Float(x)) + *Pointer<Float4>(primitive + OFFSET(Primitive, xQuad), 16);
+		fx = SIMD::Float(Float(x)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, x0))) + SIMD::Float([](int i) { return float((i & 0x1) | (i & 0x4) >> 1); });
 
 		if(interpolateZ())
 		{
 			for(unsigned int q : samples)
 			{
-				SIMD::Float x = xxxx;
+				SIMD::Float x = fx;
 
 				if(state.enableMultiSampling)
 				{
@@ -140,9 +140,6 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 				occlusionSampleCount(zMask, sMask, samples);
 			}
 
-			ASSERT(SIMD::Width == 4);
-			SIMD::Float yyyy = SIMD::Float(Float(y)) + SIMD::Float(*Pointer<Float4>(primitive + OFFSET(Primitive, yQuad), 16));
-
 			// Centroid locations
 			SIMD::Float XXXX = 0.0f;
 			SIMD::Float YYYY = 0.0f;
@@ -163,13 +160,13 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 				XXXX *= WWWW;
 				YYYY *= WWWW;
 
-				XXXX += xxxx;
-				YYYY += yyyy;
+				XXXX += fx;
+				YYYY += fy;
 			}
 
 			if(interpolateW())
 			{
-				w = interpolate(xxxx, Dw, rhw, primitive + OFFSET(Primitive, w), false, false);
+				w = interpolate(fx, Dw, rhw, primitive + OFFSET(Primitive, w), false, false);
 				rhw = reciprocal(w, false, true);
 
 				if(state.centroid || shaderContainsInterpolation)  // TODO(b/194714095)
@@ -184,8 +181,8 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 				{
 					routine.interpolationData.primitive = primitive;
 
-					routine.interpolationData.x = xxxx;
-					routine.interpolationData.y = yyyy;
+					routine.interpolationData.x = fx;
+					routine.interpolationData.y = fy;
 					routine.interpolationData.rhw = rhw;
 
 					routine.interpolationData.xCentroid = XXXX;
@@ -195,8 +192,8 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 
 				if(perSampleShading && (state.multiSampleCount > 1))
 				{
-					xxxx += SampleLocationsX[samples[0]];
-					yyyy += SampleLocationsY[samples[0]];
+					fx += SampleLocationsX[samples[0]];
+					fy += SampleLocationsY[samples[0]];
 				}
 
 				int packedInterpolant = 0;
@@ -216,14 +213,14 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 						else if(perSampleShading)
 						{
 							routine.inputs[interfaceInterpolant] =
-							    SpirvRoutine::interpolateAtXY(xxxx, yyyy, rhw,
+							    SpirvRoutine::interpolateAtXY(fx, fy, rhw,
 							                                  primitive + OFFSET(Primitive, V[packedInterpolant]),
 							                                  routine.inputsInterpolation[packedInterpolant]);
 						}
 						else
 						{
 							routine.inputs[interfaceInterpolant] =
-							    interpolate(xxxx, Dv[interfaceInterpolant], rhw,
+							    interpolate(fx, Dv[interfaceInterpolant], rhw,
 							                primitive + OFFSET(Primitive, V[packedInterpolant]),
 							                input.Flat, !input.NoPerspective);
 						}
@@ -235,7 +232,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 
 				for(uint32_t i = 0; i < state.numClipDistances; i++)
 				{
-					auto distance = interpolate(xxxx, DclipDistance[i], rhw,
+					auto distance = interpolate(fx, DclipDistance[i], rhw,
 					                            primitive + OFFSET(Primitive, clipDistance[i]),
 					                            false, true);
 
@@ -271,7 +268,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 							if(i < it->second.SizeInComponents)
 							{
 								routine.getVariable(it->second.Id)[it->second.FirstComponent + i] =
-								    interpolate(xxxx, DcullDistance[i], rhw,
+								    interpolate(fx, DcullDistance[i], rhw,
 								                primitive + OFFSET(Primitive, cullDistance[i]),
 								                false, true);
 							}
