@@ -33,6 +33,11 @@ public:
 protected:
 	Pointer<Byte> constants;
 
+	// Fragment coordinates relative to the polygon's origin
+	SIMD::Float fx;
+	SIMD::Float fy;
+
+	// B * y + C term of interpolants plane equations
 	SIMD::Float Dz[4];
 	SIMD::Float Dw;
 	SIMD::Float Dv[MAX_INTERFACE_COMPONENTS];
