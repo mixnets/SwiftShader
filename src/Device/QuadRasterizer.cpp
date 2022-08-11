@@ -122,7 +122,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			x1 = Max(x1, Max(x1a, x1b));
 		}
 
-		SIMD::Float yyyy = SIMD::Float(Float(y)) + SIMD::Float(*Pointer<Float4>(primitive + OFFSET(Primitive, yQuad), 16));
+		SIMD::Float yyyy = SIMD::Float(Float(y)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, y0))) + SIMD::Float([](int i) { return float((i & 0x2) >> 1 | (i & 0x8) >> 2); });
 
 		if(interpolateZ())
 		{

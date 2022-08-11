@@ -94,7 +94,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 
 		SIMD::Float rhwCentroid;
 
-		SIMD::Float xxxx = Float4(Float(x)) + *Pointer<Float4>(primitive + OFFSET(Primitive, xQuad), 16);
+		SIMD::Float xxxx = SIMD::Float(Float(x)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, x0))) + SIMD::Float([](int i) { return float((i & 0x1) | (i & 0x4) >> 1); });
 
 		if(interpolateZ())
 		{
@@ -140,8 +140,8 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 				occlusionSampleCount(zMask, sMask, samples);
 			}
 
-			ASSERT(SIMD::Width == 4);
-			SIMD::Float yyyy = SIMD::Float(Float(y)) + SIMD::Float(*Pointer<Float4>(primitive + OFFSET(Primitive, yQuad), 16));
+			/////////////////// already computed at QuadRasterizer
+			SIMD::Float yyyy = SIMD::Float(Float(y)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, y0))) + SIMD::Float([](int i) { return float((i & 0x2) >> 1 | (i & 0x8) >> 2); });
 
 			// Centroid locations
 			SIMD::Float XXXX = 0.0f;
