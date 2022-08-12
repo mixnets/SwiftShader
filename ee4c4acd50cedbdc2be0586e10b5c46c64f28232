@@ -16,6 +16,75 @@
       "message": "Looks like a good update. I\u0027ll file bugs for the new non-passing tests.",
       "revId": "ee4c4acd50cedbdc2be0586e10b5c46c64f28232",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2cee524a_24670a70",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-12T06:27:58Z",
+      "side": 1,
+      "message": "b/242205326",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 94
+      },
+      "revId": "ee4c4acd50cedbdc2be0586e10b5c46c64f28232",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa50ab5c_9ce69906",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-12T06:27:58Z",
+      "side": 1,
+      "message": "b/198667115",
+      "range": {
+        "startLine": 1,
+        "startChar": 24,
+        "endLine": 1,
+        "endChar": 58
+      },
+      "revId": "ee4c4acd50cedbdc2be0586e10b5c46c64f28232",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a84ad1c5_4895cf1d",
+        "filename": "tests/regres/testlists/vk-master-TIMEOUT.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-12T06:27:58Z",
+      "side": 1,
+      "message": "b/242206116",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 56
+      },
+      "revId": "ee4c4acd50cedbdc2be0586e10b5c46c64f28232",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
