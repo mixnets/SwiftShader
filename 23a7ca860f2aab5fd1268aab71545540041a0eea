@@ -16,6 +16,24 @@
       "message": "I think Chrome may be relying on this extension for WebGL.\n\nMac Swangle is failing to initialize the WebGL context.\nhttps://ci.chromium.org/ui/p/chromium/builders/ci/mac-swangle-chromium-x64/29949/blamelist\n\ncan we revert until there\u0027s an alternative in Chrome?",
       "revId": "23a7ca860f2aab5fd1268aab71545540041a0eea",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c3775537_06c13684",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-12T14:35:56Z",
+      "side": 1,
+      "message": "Thanks! Following up at https://bugs.chromium.org/p/chromium/issues/detail?id\u003d1352481",
+      "parentUuid": "cdc2430e_0c0713fc",
+      "revId": "23a7ca860f2aab5fd1268aab71545540041a0eea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
