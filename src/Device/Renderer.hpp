@@ -173,6 +173,7 @@ struct DrawCall
 	sw::CountedEvent *events;
 
 	vk::Query *occlusionQuery;
+	vk::Query *primitivesGeneratedQuery;
 
 	DrawData *data;
 
@@ -211,8 +212,8 @@ public:
 	          CountedEvent *events, int instanceID, int layer, void *indexBuffer, const VkRect2D &renderArea,
 	          vk::Pipeline::PushConstantStorage const &pushConstants, bool update = true);
 
-	void addQuery(vk::Query *query);
-	void removeQuery(vk::Query *query);
+	void addQuery(VkQueryType queryType, vk::Query *query);
+	void removeQuery(VkQueryType queryType, vk::Query *query);
 
 	void synchronize();
 
@@ -223,6 +224,7 @@ private:
 	std::atomic<int> nextDrawID = { 0 };
 
 	vk::Query *occlusionQuery = nullptr;
+	vk::Query *primitivesGeneratedQuery = nullptr;
 	marl::Ticket::Queue drawTickets;
 	marl::Ticket::Queue clusterQueues[MaxClusterCount];
 

@@ -1541,8 +1541,7 @@ public:
 		}
 
 		// The renderer accumulates the result into a single query.
-		ASSERT(queryPool->getType() == VK_QUERY_TYPE_OCCLUSION);
-		executionState.renderer->addQuery(queryPool->getQuery(query));
+		executionState.renderer->addQuery(queryPool->getType(), queryPool->getQuery(query));
 	}
 
 	std::string description() override { return "vkCmdBeginQuery()"; }
@@ -1565,8 +1564,7 @@ public:
 	void execute(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		// The renderer accumulates the result into a single query.
-		ASSERT(queryPool->getType() == VK_QUERY_TYPE_OCCLUSION);
-		executionState.renderer->removeQuery(queryPool->getQuery(query));
+		executionState.renderer->removeQuery(queryPool->getType(), queryPool->getQuery(query));
 
 		// "implementations may write the total result to the first query and write zero to the other queries."
 		for(uint32_t i = 1; i < executionState.viewCount(); i++)

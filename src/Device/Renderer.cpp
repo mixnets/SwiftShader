@@ -256,6 +256,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 
 	DrawData *data = draw->data;
 	draw->occlusionQuery = occlusionQuery;
+	draw->primitivesGeneratedQuery = primitivesGeneratedQuery;
 	draw->batchDataPool = &batchDataPool;
 	draw->numPrimitives = count;
 	draw->numPrimitivesPerBatch = numPrimitivesPerBatch;
@@ -451,6 +452,10 @@ void DrawCall::setup()
 	{
 		occlusionQuery->start();
 	}
+	if(primitivesGeneratedQuery != nullptr)
+	{
+		primitivesGeneratedQuery->start();
+	}
 
 	if(events)
 	{
@@ -473,6 +478,11 @@ void DrawCall::teardown(vk::Device *device)
 			occlusionQuery->add(data->occlusion[cluster]);
 		}
 		occlusionQuery->finish();
+	}
+	if(primitivesGeneratedQuery != nullptr)
+	{
+		primitivesGeneratedQuery->add(numPrimitives);
+		primitivesGeneratedQuery->finish();
 	}
 
 	vertexRoutine = {};
@@ -1217,20 +1227,38 @@ bool DrawCall::setupPoint(vk::Device *device, Primitive &primitive, Triangle &tr
 	return false;
 }
 
-void Renderer::addQuery(vk::Query *query)
+void Renderer::addQuery(VkQueryType queryType, vk::Query *query)
 {
-	ASSERT(query->getType() == VK_QUERY_TYPE_OCCLUSION);
-	ASSERT(!occlusionQuery);
-
-	occlusionQuery = query;
+	switch(queryType)
+	{
+	case VK_QUERY_TYPE_OCCLUSION:
+		ASSERT(!occlusionQuery);
+		occlusionQuery = query;
+		break;
+	case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+		ASSERT(!primitivesGeneratedQuery);
+		primitivesGeneratedQuery = query;
+		break;
+	default:
+		UNREACHABLE("Query type %u not supported\n", queryType);
+	}
 }
 
-void Renderer::removeQuery(vk::Query *query)
+void Renderer::removeQuery(VkQueryType queryType, vk::Query *query)
 {
-	ASSERT(query->getType() == VK_QUERY_TYPE_OCCLUSION);
-	ASSERT(occlusionQuery == query);
-
-	occlusionQuery = nullptr;
+	switch(queryType)
+	{
+	case VK_QUERY_TYPE_OCCLUSION:
+		ASSERT(occlusionQuery == query);
+		occlusionQuery = nullptr;
+		break;
+	case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+		ASSERT(primitivesGeneratedQuery == query);
+		primitivesGeneratedQuery = nullptr;
+		break;
+	default:
+		UNREACHABLE("Query type %u not supported\n", queryType);
+	}
 }
 
 }  // namespace sw

@@ -377,6 +377,14 @@ static void getPhysicalDevicePrimitiveTopologyListRestartFeatures(T *features)
 }
 
 template<typename T>
+static void getPhysicalDevicePrimitivesGeneratedQueryFeatures(T *features)
+{
+	features->primitivesGeneratedQuery = VK_TRUE;
+	features->primitivesGeneratedQueryWithRasterizerDiscard = VK_TRUE;
+	features->primitivesGeneratedQueryWithNonZeroStreams = VK_FALSE;
+}
+
+template<typename T>
 static void getPhysicalDeviceVulkan12Features(T *features)
 {
 	features->samplerMirrorClampToEdge = VK_TRUE;
@@ -600,6 +608,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT:
 			getPhysicalDeviceDepthClipControlFeaturesExt(reinterpret_cast<struct VkPhysicalDeviceDepthClipControlFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT:
+			getPhysicalDevicePrimitivesGeneratedQueryFeatures(reinterpret_cast<struct VkPhysicalDevicePrimitivesGeneratedQueryFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT:
 			// TODO(b/216982034): Workaround for a test bug (see https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3879)
@@ -1583,6 +1594,15 @@ bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDevicePrimitiveTopology
 
 	return CheckFeature(requested, supported, primitiveTopologyListRestart) &&
 	       CheckFeature(requested, supported, primitiveTopologyPatchListRestart);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDevicePrimitivesGeneratedQueryFeaturesEXT *requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, primitivesGeneratedQuery) &&
+	       CheckFeature(requested, supported, primitivesGeneratedQueryWithRasterizerDiscard) &&
+	       CheckFeature(requested, supported, primitivesGeneratedQueryWithNonZeroStreams);
 }
 #undef CheckFeature
 
