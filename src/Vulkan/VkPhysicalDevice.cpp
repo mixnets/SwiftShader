@@ -370,6 +370,13 @@ static void getPhysicalDeviceMaintenance4Features(T *features)
 }
 
 template<typename T>
+static void getPhysicalDevicePrimitiveTopologyListRestartFeatures(T *features)
+{
+	features->primitiveTopologyListRestart = VK_TRUE;
+	features->primitiveTopologyPatchListRestart = VK_FALSE;
+}
+
+template<typename T>
 static void getPhysicalDeviceVulkan12Features(T *features)
 {
 	features->samplerMirrorClampToEdge = VK_TRUE;
@@ -578,6 +585,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES:
 			getPhysicalDeviceMaintenance4Features(reinterpret_cast<struct VkPhysicalDeviceMaintenance4Features *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT:
+			getPhysicalDevicePrimitiveTopologyListRestartFeatures(reinterpret_cast<struct VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT:
 			// Workaround for a test bug (see https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3564)
