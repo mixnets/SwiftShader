@@ -16,6 +16,24 @@
       "message": "Nicolas on https://swiftshader-review.googlesource.com/c/SwiftShader/+/63009/comments/67df0eb7_996276b5:\n\n\u003e Here in `computeClipFlags()` we should just account for the difference in near plane position.\n\n@Nicolas, is that not what this code is already doing? Do you expect this to be handled differently?",
       "revId": "fac28f5b4ab4840246c36d9cff1806b7fc625d75",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4dda1b82_376ba9da",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-14T08:54:38Z",
+      "side": 1,
+      "message": "This should alter the comparisons (i.e. symmetrical like e.g. `posX` at lines 128 and 130).",
+      "parentUuid": "50f71795_19de399c",
+      "revId": "fac28f5b4ab4840246c36d9cff1806b7fc625d75",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
