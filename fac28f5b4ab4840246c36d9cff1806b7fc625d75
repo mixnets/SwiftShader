@@ -34,6 +34,24 @@
       "parentUuid": "50f71795_19de399c",
       "revId": "fac28f5b4ab4840246c36d9cff1806b7fc625d75",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "20b2dbf3_c089f940",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-15T23:42:37Z",
+      "side": 1,
+      "message": "Done. Also fixed the transformation bug here which wasn\u0027t caught by the VK CTS: https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3891",
+      "parentUuid": "4dda1b82_376ba9da",
+      "revId": "fac28f5b4ab4840246c36d9cff1806b7fc625d75",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
