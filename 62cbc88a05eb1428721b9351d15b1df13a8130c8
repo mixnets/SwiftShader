@@ -57,6 +57,30 @@
       },
       "revId": "62cbc88a05eb1428721b9351d15b1df13a8130c8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c526bfe_dbc8acfc",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-16T14:55:38Z",
+      "side": 1,
+      "message": "Done. I _think_ I got it right",
+      "parentUuid": "b92c7abd_bea8130f",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 32
+      },
+      "revId": "62cbc88a05eb1428721b9351d15b1df13a8130c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
