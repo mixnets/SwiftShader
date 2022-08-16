@@ -81,6 +81,30 @@
       },
       "revId": "62cbc88a05eb1428721b9351d15b1df13a8130c8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05e56a8e_44253ce5",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-16T22:03:06Z",
+      "side": 1,
+      "message": "So there are three places that look like need a change. Here (A), below in `VertexRoutine::writeCache` (B), and `depthRange`/`depthNear` in `Renderer::draw` (C).\n\nThe change in (C) makes sense, not sure about (A) and (B). However, the only way I see both the ANGLE and CTS pass is if only (A) exists. With (C)+(B), ANGLE tests pass but not the CTS. If you have any ideas, I\u0027d appreciate a pointer.",
+      "parentUuid": "3c526bfe_dbc8acfc",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 32
+      },
+      "revId": "62cbc88a05eb1428721b9351d15b1df13a8130c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
