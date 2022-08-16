@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9772b768_7d2f168d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-16T09:11:20Z",
+      "side": 0,
+      "message": "Thanks for moving these to the right section!",
+      "range": {
+        "startLine": 333,
+        "startChar": 87,
+        "endLine": 333,
+        "endChar": 88
+      },
+      "revId": "2438c1b18a5eeabb3240c229cbe24cabf25f16ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
