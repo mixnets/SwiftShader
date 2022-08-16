@@ -447,6 +447,18 @@ static void getPhysicalDevice4444FormatsFeaturesExt(VkPhysicalDevice4444FormatsF
 	features->formatA4B4G4R4 = VK_TRUE;
 }
 
+static void getPhysicalDeviceYcbcr2Plane444FormatsFeaturesExt(VkPhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT *features)
+{
+	features->ycbcr2plane444Formats = VK_FALSE;
+}
+
+static void getPhysicalDeviceExtendedDynamicState2FeaturesExt(VkPhysicalDeviceExtendedDynamicState2FeaturesEXT *features)
+{
+	features->extendedDynamicState2 = VK_FALSE;
+	features->extendedDynamicState2LogicOp = VK_FALSE;
+	features->extendedDynamicState2PatchControlPoints = VK_FALSE;
+}
+
 void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 {
 	features->features = getFeatures();
@@ -596,6 +608,12 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT:
 			// TODO(b/216982034): Workaround for a test bug (see https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3879)
 			reinterpret_cast<struct VkPhysicalDeviceSubpassMergeFeedbackFeaturesEXT *>(curExtension)->subpassMergeFeedback = VK_FALSE;
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT:
+			getPhysicalDeviceYcbcr2Plane444FormatsFeaturesExt(reinterpret_cast<struct VkPhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT:
+			getPhysicalDeviceExtendedDynamicState2FeaturesExt(reinterpret_cast<struct VkPhysicalDeviceExtendedDynamicState2FeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_MAX_ENUM:  // TODO(b/176893525): This may not be legal. dEQP tests that this value is ignored.
 			break;
@@ -1576,6 +1594,23 @@ bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDevicePrimitiveTopology
 	return CheckFeature(requested, supported, primitiveTopologyListRestart) &&
 	       CheckFeature(requested, supported, primitiveTopologyPatchListRestart);
 }
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT *requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, ycbcr2plane444Formats);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceExtendedDynamicState2FeaturesEXT *requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, extendedDynamicState2) &&
+		   CheckFeature(requested, supported, extendedDynamicState2LogicOp) &&
+		   CheckFeature(requested, supported, extendedDynamicState2PatchControlPoints);
+}
+
 #undef CheckFeature
 
 void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFormatProperties)

@@ -55,6 +55,8 @@ public:
 	bool hasExtendedFeatures(const VkPhysicalDeviceShaderIntegerDotProductFeatures *features) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures *requested) const;
 	bool hasExtendedFeatures(const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *requested) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT *requested) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceExtendedDynamicState2FeaturesEXT *requested) const;
 
 	const VkPhysicalDeviceProperties &getProperties() const;
 	void getProperties(VkPhysicalDeviceIDProperties *properties) const;
