@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1042a82_0a2708bd",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 452,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-17T02:53:38Z",
+      "side": 1,
+      "message": "This is part of Vulkan 1.3, so we do support this.",
+      "range": {
+        "startLine": 452,
+        "startChar": 35,
+        "endLine": 452,
+        "endChar": 43
+      },
+      "revId": "6f9c4fd1865bc8b5bca7d88b2a0ba81601ff6363",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca2a4e10_8b2c2777",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 457,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-17T02:53:38Z",
+      "side": 1,
+      "message": "This is part of Vulkan 1.3, so we do support this.",
+      "range": {
+        "startLine": 457,
+        "startChar": 35,
+        "endLine": 457,
+        "endChar": 43
+      },
+      "revId": "6f9c4fd1865bc8b5bca7d88b2a0ba81601ff6363",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b895f91_1770e8bb",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1053,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-17T02:53:38Z",
+      "side": 1,
+      "message": "It\u0027s a bit weird to handle the feature structs without exposing the extensions. Maybe we should just expose these extensions, for consistency.",
+      "range": {
+        "startLine": 1053,
+        "startChar": 7,
+        "endLine": 1053,
+        "endChar": 79
+      },
+      "revId": "6f9c4fd1865bc8b5bca7d88b2a0ba81601ff6363",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
