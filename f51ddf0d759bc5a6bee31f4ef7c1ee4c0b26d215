@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a13164da_4e26ecc9",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 508,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-17T13:11:39Z",
+      "side": 1,
+      "message": "Might as well do `(pCreateInfo-\u003eflags \u0026 ~VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR) !\u003d 0`, but I wouldn\u0027t know your style",
+      "revId": "f51ddf0d759bc5a6bee31f4ef7c1ee4c0b26d215",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
