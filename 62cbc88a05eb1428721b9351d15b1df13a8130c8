@@ -105,6 +105,30 @@
       },
       "revId": "62cbc88a05eb1428721b9351d15b1df13a8130c8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e698ee2_76da2078",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-17T04:40:33Z",
+      "side": 1,
+      "message": "On further inspection, it looks like only (C) should be necessary. My understanding is that the code runs as such:\n\n```\n- VertexRoutine runs first, then SetupRoutine, then PixelRoutine\n- VertexRoutine:\n * Run VS\n * Clip depth\n  * Uses position (not projected)\n * Write to cache\n  * Generates projection\n- SetupRoutine:\n * Viewport transformation done on projected position\n```\n\nand that seems to match the spec just fine. It also looks like this passes the VK CTS, and generally runs ANGLE fine. Except, `dEQP-GLES3.functional.clipping.*` fail in ANGLE. It looks to be a mismatch between how Vulkan and GL do clipping, but I have to verify. Potentially relevant is this: https://gitlab.khronos.org/vulkan/vulkan/-/merge_requests/4741/",
+      "parentUuid": "05e56a8e_44253ce5",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 32
+      },
+      "revId": "62cbc88a05eb1428721b9351d15b1df13a8130c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
