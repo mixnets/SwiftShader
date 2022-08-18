@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6ffd575_9129c924",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-18T20:47:29Z",
+      "side": 1,
+      "message": "I\u0027m not convinced this is the correct solution to the flakiness. The 1.01f factor was already a (hacky) way to ensure sufficient margin of error. Floating-point calculations don\u0027t behave randomly for a reason that\u0027s fixed by increasing margins. A larger margin might make it harder to root cause the issue though.\n\nI suggest to instead avoid rounding errors using an un-normalized representation (https://swiftshader-review.googlesource.com/c/SwiftShader/+/66888/comments/35ce8507_691be722).",
+      "range": {
+        "startLine": 372,
+        "startChar": 45,
+        "endLine": 372,
+        "endChar": 49
+      },
+      "revId": "71f9ee72046d523eaf9a5c7cc5c97927ecf75702",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
