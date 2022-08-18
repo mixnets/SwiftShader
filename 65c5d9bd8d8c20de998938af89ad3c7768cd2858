@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc14dd8b_e00fb645",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-18T14:30:40Z",
+      "side": 1,
+      "message": "As discussed, this avoids regressions in the GL CTS.\n\nOne reason is that line and point rendering use the original vertex positions to construct a polygon around them. Each new vertex of this polygon gets its clip flags computed using `Clipper::ComputeClipFlags()`, instead of using the ones computed by the vertex routine (because e.g. a point with a center vertex slightly outside the viewport may still have visible pixel fragments).\n\nTriangle rendering has a similar issue. If the clip flags don\u0027t indicate an edge intersects the near plane then we don\u0027t touch it, so the change at line 141 suffices, but when an edge does need clipping we use the wrong near clip plane position.\n\nBoth `Clipper::ComputeClipFlags()` and `Clipper::clipNear()` need to be made aware of `depthClipNegativeOneToOne`. See also https://swiftshader-review.googlesource.com/c/SwiftShader/+/63009/2",
+      "range": {
+        "startLine": 615,
+        "startChar": 3,
+        "endLine": 615,
+        "endChar": 34
+      },
+      "revId": "65c5d9bd8d8c20de998938af89ad3c7768cd2858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
