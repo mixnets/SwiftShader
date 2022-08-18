@@ -22,6 +22,30 @@
       },
       "revId": "71f9ee72046d523eaf9a5c7cc5c97927ecf75702",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4eba22b_69ebe0f5",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-18T21:22:44Z",
+      "side": 1,
+      "message": "This was more an attempt to use a clear specification based threshold, rather than an arbitrary one.\nI still don\u0027t understand how any floating point value could be causing flakiness here. This is a constant value affecting math in a constant way. Either the tests would pass or they wouldn\u0027t. I don\u0027t understand how this makes the computations randomly tilt one way or another.",
+      "parentUuid": "c6ffd575_9129c924",
+      "range": {
+        "startLine": 372,
+        "startChar": 45,
+        "endLine": 372,
+        "endChar": 49
+      },
+      "revId": "71f9ee72046d523eaf9a5c7cc5c97927ecf75702",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
