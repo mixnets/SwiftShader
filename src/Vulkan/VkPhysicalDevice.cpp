@@ -377,6 +377,12 @@ static void getPhysicalDevicePrimitiveTopologyListRestartFeatures(T *features)
 }
 
 template<typename T>
+static void getPhysicalDeviceGlobalPriorityQueryFeatures(T *features)
+{
+	features->globalPriorityQuery = VK_TRUE;
+}
+
+template<typename T>
 static void getPhysicalDeviceVulkan12Features(T *features)
 {
 	features->samplerMirrorClampToEdge = VK_TRUE;
@@ -588,6 +594,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT:
 			getPhysicalDevicePrimitiveTopologyListRestartFeatures(reinterpret_cast<struct VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR:
+			getPhysicalDeviceGlobalPriorityQueryFeatures(reinterpret_cast<struct VkPhysicalDeviceGlobalPriorityQueryFeaturesKHR *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT:
 			// Workaround for a test bug (see https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3564)
@@ -1576,6 +1585,13 @@ bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDevicePrimitiveTopology
 	return CheckFeature(requested, supported, primitiveTopologyListRestart) &&
 	       CheckFeature(requested, supported, primitiveTopologyPatchListRestart);
 }
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceGlobalPriorityQueryFeaturesKHR *requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, globalPriorityQuery);
+}
 #undef CheckFeature
 
 void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFormatProperties)
@@ -2142,12 +2158,51 @@ void PhysicalDevice::getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount
 	}
 }
 
+void PhysicalDevice::getQueueFamilyGlobalPriorityProperties(VkQueueFamilyGlobalPriorityPropertiesKHR *pQueueFamilyGlobalPriorityProperties) const
+{
+	pQueueFamilyGlobalPriorityProperties->priorityCount = 2;
+	pQueueFamilyGlobalPriorityProperties->priorities[0] = VK_QUEUE_GLOBAL_PRIORITY_LOW_KHR;
+	pQueueFamilyGlobalPriorityProperties->priorities[1] = VK_QUEUE_GLOBAL_PRIORITY_MEDIUM_KHR;
+}
+
+bool PhysicalDevice::validateQueueGlobalPriority(VkQueueGlobalPriorityKHR queueGlobalPriority) const
+{
+	VkQueueFamilyGlobalPriorityPropertiesKHR queueFamilyGlobalPriorityProperties;
+	getQueueFamilyGlobalPriorityProperties(&queueFamilyGlobalPriorityProperties);
+
+	for(uint32_t i = 0; i < queueFamilyGlobalPriorityProperties.priorityCount; ++i)
+	{
+		if(queueGlobalPriority == queueFamilyGlobalPriorityProperties.priorities[i])
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void PhysicalDevice::getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount,
                                               VkQueueFamilyProperties2 *pQueueFamilyProperties) const
 {
 	for(uint32_t i = 0; i < pQueueFamilyPropertyCount; i++)
 	{
 		pQueueFamilyProperties[i].queueFamilyProperties = getQueueFamilyProperties();
+
+		auto extInfo = reinterpret_cast<VkBaseOutStructure *>(pQueueFamilyProperties[i].pNext);
+		while(extInfo)
+		{
+			switch(extInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR:
+				getQueueFamilyGlobalPriorityProperties(reinterpret_cast<VkQueueFamilyGlobalPriorityPropertiesKHR *>(extInfo));
+				break;
+			default:
+				UNSUPPORTED("pQueueFamilyProperties->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
+				break;
+			}
+
+			extInfo = extInfo->pNext;
+		}
 	}
 }
 
