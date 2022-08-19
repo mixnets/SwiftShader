@@ -90,7 +90,7 @@ void Blitter::clear(const void *pixel, vk::Format format, vk::Image *dest, const
 		return;
 	}
 
-	State state(format, dstFormat, 1, dest->getSampleCountFlagBits(), Options{ 0xF });
+	State state(format, dstFormat, 1, dest->getSampleCount(), Options{ 0xF });
 	auto blitRoutine = getBlitRoutine(state);
 	if(!blitRoutine)
 	{
@@ -1866,10 +1866,10 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit2KHR region,
 	bool doFilter = (filter != VK_FILTER_NEAREST);
 	bool allowSRGBConversion =
 	    doFilter ||
-	    (src->getSampleCountFlagBits() > 1) ||
+	    (src->getSampleCount() > 1) ||
 	    (srcFormat.isSRGBformat() != dstFormat.isSRGBformat());
 
-	State state(srcFormat, dstFormat, src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
+	State state(srcFormat, dstFormat, src->getSampleCount(), dst->getSampleCount(),
 	            Options{ doFilter, allowSRGBConversion });
 	state.clampToEdge = (region.srcOffsets[0].x < 0) ||
 	                    (region.srcOffsets[0].y < 0) ||
@@ -2124,7 +2124,7 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve2K
 	uint8_t *dest = reinterpret_cast<uint8_t *>(dst->getTexelPointer({ 0, 0, 0 }, dstSubresource));
 
 	auto format = src->getFormat();
-	auto samples = src->getSampleCountFlagBits();
+	auto samples = src->getSampleCount();
 	auto extent = src->getExtent();
 
 	int width = extent.width;
