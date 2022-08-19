@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b72483aa_c5bfcbe7",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-19T11:31:31Z",
+      "side": 0,
+      "message": "b/196822081 - flaky",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 67
+      },
+      "revId": "1c3dfde53353d5e13ca25eb52aa208d450b5e980",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "893c2de3_a52a85cc",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-19T11:31:31Z",
+      "side": 1,
+      "message": "b/240267529 - flaky",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 65
+      },
+      "revId": "7d7013144b10b401c0eba4b59639753cfab09831",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "22929c43_f8c86a88",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 158791,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-19T11:31:31Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/67488",
+      "range": {
+        "startLine": 158791,
+        "startChar": 43,
+        "endLine": 158791,
+        "endChar": 60
+      },
+      "revId": "7d7013144b10b401c0eba4b59639753cfab09831",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8d8d6f7_1934968c",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 159192,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-19T11:31:31Z",
+      "side": 1,
+      "message": "b/242205326",
+      "range": {
+        "startLine": 159192,
+        "startChar": 45,
+        "endLine": 159192,
+        "endChar": 58
+      },
+      "revId": "7d7013144b10b401c0eba4b59639753cfab09831",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
