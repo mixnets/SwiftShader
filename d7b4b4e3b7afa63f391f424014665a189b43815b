@@ -95,6 +95,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "41ce5882_02304011",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-19T21:15:25Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/67670",
+      "parentUuid": "a299b53e_1c243db8",
+      "range": {
+        "startLine": 652,
+        "startChar": 41,
+        "endLine": 652,
+        "endChar": 42
+      },
+      "revId": "d7b4b4e3b7afa63f391f424014665a189b43815b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "99017a5a_425091ef",
