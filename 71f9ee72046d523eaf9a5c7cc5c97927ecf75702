@@ -46,6 +46,30 @@
       },
       "revId": "71f9ee72046d523eaf9a5c7cc5c97927ecf75702",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf85f552_96b79302",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-19T14:45:10Z",
+      "side": 1,
+      "message": "The maximum of 2 was introduced as part of https://gitlab.khronos.org/vulkan/vulkan/-/issues/2455 to have \"some\" absolute upper limit and make it testable to avoid major regressions. It is by no means intended as an indication of a what would constitute a good implementation. The spec instead wants us to use the minimum that still produces resolvable depth differences. That should also avoid the most artifacts when apps use depth bias for things like shadow maps.\n\nLet\u0027s have an offline brainstorming session to come up with a theory why we\u0027re observing flakiness in the depth bias tests.",
+      "parentUuid": "e4eba22b_69ebe0f5",
+      "range": {
+        "startLine": 372,
+        "startChar": 45,
+        "endLine": 372,
+        "endChar": 49
+      },
+      "revId": "71f9ee72046d523eaf9a5c7cc5c97927ecf75702",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
