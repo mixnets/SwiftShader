@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f803611_3aceef9b",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 650,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-19T15:49:49Z",
+      "side": 1,
+      "message": "This seems to not support DEPTH and STENCIL specified at the same time.\n\nHow about:\n\n```\nconstexpr VkPipelineDepthStencilStateCreateFlagBits kAcceptedFlags \u003d VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT \u0026 VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT;\nif ((depthStencilState-\u003eflags \u0026 ~kAcceptedFlags) !\u003d 0)\n```",
+      "range": {
+        "startLine": 648,
+        "startChar": 4,
+        "endLine": 650,
+        "endChar": 124
+      },
+      "revId": "d7b4b4e3b7afa63f391f424014665a189b43815b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3830cfd_39862f94",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-19T15:49:49Z",
+      "side": 1,
+      "message": "nit: While you\u0027re here, might as well output `%#x`",
+      "range": {
+        "startLine": 652,
+        "startChar": 41,
+        "endLine": 652,
+        "endChar": 42
+      },
+      "revId": "d7b4b4e3b7afa63f391f424014665a189b43815b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "99017a5a_425091ef",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 676,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-19T15:49:49Z",
+      "side": 1,
+      "message": "Same",
+      "range": {
+        "startLine": 676,
+        "startChar": 39,
+        "endLine": 676,
+        "endChar": 40
+      },
+      "revId": "d7b4b4e3b7afa63f391f424014665a189b43815b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
