@@ -39,7 +39,6 @@ struct Clipper
 		CLIP_FINITE = 1 << 7,  // All position coordinates are finite
 	};
 
-	static unsigned int ComputeClipFlags(const float4 &v, bool depthClipEnable);
 	static bool Clip(Polygon &polygon, int clipFlagsOr, const DrawCall &draw);
 };
 
