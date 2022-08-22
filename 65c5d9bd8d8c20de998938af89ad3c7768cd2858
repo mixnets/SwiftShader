@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2cbaa1a_8a80e6d6",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-22T21:44:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ebb59e52_d028b259",
+      "range": {
+        "startLine": 91,
+        "startChar": 1,
+        "endLine": 91,
+        "endChar": 32
+      },
+      "revId": "65c5d9bd8d8c20de998938af89ad3c7768cd2858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dc14dd8b_e00fb645",
@@ -61,6 +85,30 @@
       "side": 1,
       "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/67649 gets rid of `Clipper::ComputeClipFlags()` so if we land that first there\u0027s only `Clipper::clipNear()` to adjust + plumbing.",
       "parentUuid": "dc14dd8b_e00fb645",
+      "range": {
+        "startLine": 615,
+        "startChar": 3,
+        "endLine": 615,
+        "endChar": 34
+      },
+      "revId": "65c5d9bd8d8c20de998938af89ad3c7768cd2858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3852bd38_3aad5fe0",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-22T21:44:57Z",
+      "side": 1,
+      "message": "Nice, it worked :)",
+      "parentUuid": "356f2539_7fe00450",
       "range": {
         "startLine": 615,
         "startChar": 3,
