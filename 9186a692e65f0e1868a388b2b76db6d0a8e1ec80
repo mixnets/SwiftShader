@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb451410_0673adc0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-23T19:42:11Z",
+      "side": 1,
+      "message": "At this time dEQP-VK only tests the original ARM extension, as verified by https://swiftshader-review.googlesource.com/c/SwiftShader/+/67671 (which only adds the extension string), but it seems safe to go ahead and land this and keep an eye on when the CTS is adjusted.",
+      "revId": "9186a692e65f0e1868a388b2b76db6d0a8e1ec80",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
