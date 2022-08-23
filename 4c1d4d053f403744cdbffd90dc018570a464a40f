@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90fc370d_0c7cd773",
+        "filename": "src/Device/Clipper.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-23T19:16:15Z",
+      "side": 1,
+      "message": "This factor can be eliminated since `clipEdge()` only cares about the relative distances.",
+      "range": {
+        "startLine": 49,
+        "startChar": 23,
+        "endLine": 49,
+        "endChar": 29
+      },
+      "revId": "4c1d4d053f403744cdbffd90dc018570a464a40f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c107df9a_9c86c42b",
+        "filename": "src/Device/Clipper.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-23T19:16:15Z",
+      "side": 1,
+      "message": "Not needed.",
+      "range": {
+        "startLine": 91,
+        "startChar": 2,
+        "endLine": 101,
+        "endChar": 3
+      },
+      "revId": "4c1d4d053f403744cdbffd90dc018570a464a40f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
