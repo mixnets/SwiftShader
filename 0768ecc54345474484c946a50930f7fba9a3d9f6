@@ -16,6 +16,24 @@
       "message": "Excellent, thanks!",
       "revId": "0768ecc54345474484c946a50930f7fba9a3d9f6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d5314b7_922eeb1a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-24T13:52:47Z",
+      "side": 1,
+      "message": "Thanks for your patience!",
+      "parentUuid": "d5c5737b_5577228c",
+      "revId": "0768ecc54345474484c946a50930f7fba9a3d9f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
