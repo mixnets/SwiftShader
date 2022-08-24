@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "beee8d9f_fdc17be7",
+        "filename": "src/Device/Clipper.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-24T00:28:11Z",
+      "side": 1,
+      "message": "Ok, that was not clear from the implementation.\n\nDone.",
+      "parentUuid": "90fc370d_0c7cd773",
+      "range": {
+        "startLine": 49,
+        "startChar": 23,
+        "endLine": 49,
+        "endChar": 29
+      },
+      "revId": "4c1d4d053f403744cdbffd90dc018570a464a40f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c107df9a_9c86c42b",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-08-23T19:16:15Z",
       "side": 1,
       "message": "Not needed.",
+      "range": {
+        "startLine": 91,
+        "startChar": 2,
+        "endLine": 101,
+        "endChar": 3
+      },
+      "revId": "4c1d4d053f403744cdbffd90dc018570a464a40f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43c55af8_8baffed9",
+        "filename": "src/Device/Clipper.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-08-24T00:28:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c107df9a_9c86c42b",
       "range": {
         "startLine": 91,
         "startChar": 2,
