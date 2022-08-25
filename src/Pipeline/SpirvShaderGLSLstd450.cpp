@@ -547,7 +547,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 				auto in = significand.Float(i);
 				auto significandExponent = Exponent(in);
 				auto combinedExponent = exponent.Int(i) + significandExponent;
-				auto isSignificandZero = SIMD::UInt(CmpEQ(significand.Int(i), SIMD::Int(0)));
+				auto isSignificandNotZero = SIMD::UInt(CmpNEQ(significand.Int(i), SIMD::Int(0)));
 				auto isSignificandInf = SIMD::UInt(IsInf(in));
 				auto isSignificandNaN = SIMD::UInt(IsNan(in));
 				auto isExponentNotTooSmall = SIMD::UInt(CmpGE(combinedExponent, SIMD::Int(-126)));
@@ -562,10 +562,11 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 				v |= significand.UInt(i) & SIMD::UInt(0x80000000);     // Add sign bit.
 				v |= ~isExponentNotTooLarge & SIMD::UInt(0x7F800000);  // Mark as inf if the exponent is too great.
 
-				// If the input significand is zero, inf or nan, just return the
-				// input significand.
-				auto passthrough = isSignificandZero | isSignificandInf | isSignificandNaN;
+				// If the input significand is Inf or NaN, just return the input significand.
+				auto passthrough = isSignificandInf | isSignificandNaN;
 				v = (v & ~passthrough) | (significand.UInt(i) & passthrough);
+				// If the input significant compares equal to zero (could be subnormal), return zero.
+				v &= isSignificandNotZero;
 
 				dst.move(i, As<SIMD::Float>(v));
 			}
