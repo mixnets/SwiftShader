@@ -19,6 +19,7 @@
 #include "VkFence.hpp"
 #include "VkQueue.hpp"
 #include "VkSemaphore.hpp"
+#include "VkStringify.hpp"
 #include "VkTimelineSemaphore.hpp"
 #include "Debug/Context.hpp"
 #include "Debug/Server.hpp"
@@ -362,6 +363,38 @@ void Device::getDescriptorSetLayoutSupport(const VkDescriptorSetLayoutCreateInfo
 
 	// We have no "strange" limitations to enforce beyond the device limits, so we can safely always claim support.
 	pSupport->supported = VK_TRUE;
+
+	if(pCreateInfo->bindingCount > 0)
+	{
+		const auto &highestNumberedBinding = pCreateInfo->pBindings[pCreateInfo->bindingCount - 1];
+
+		VkBaseOutStructure *layoutSupport = reinterpret_cast<VkBaseOutStructure *>(pSupport->pNext);
+		while(layoutSupport)
+		{
+			if(layoutSupport->sType == VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT)
+			{
+				VkDescriptorSetVariableDescriptorCountLayoutSupport *variableDescriptorCountLayoutSupport =
+				    reinterpret_cast<VkDescriptorSetVariableDescriptorCountLayoutSupport *>(layoutSupport);
+				// According to the spec:
+				// "The value of descriptorCount is treated as an upper bound on the size of the binding."
+				variableDescriptorCountLayoutSupport->maxVariableDescriptorCount =
+				    highestNumberedBinding.descriptorCount;
+
+				// For uniform blocks, descriptor count shouldn't exceed MAX_INLINE_UNIFORM_BLOCK_SIZE
+				if((highestNumberedBinding.descriptorType == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK) &&
+				   (highestNumberedBinding.descriptorCount > vk::MAX_INLINE_UNIFORM_BLOCK_SIZE))
+				{
+					variableDescriptorCountLayoutSupport->maxVariableDescriptorCount = vk::MAX_INLINE_UNIFORM_BLOCK_SIZE;
+				}
+			}
+			else
+			{
+				UNSUPPORTED("layoutSupport->sType = %s", vk::Stringify(layoutSupport->sType).c_str());
+			}
+
+			layoutSupport = layoutSupport->pNext;
+		}
+	}
 }
 
 void Device::updateDescriptorSets(uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites,
