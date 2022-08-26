@@ -16,6 +16,52 @@
       "message": "LGTM. Thanks!",
       "revId": "981d937ef7eab26e5d4b43a0aaa2713f5207b11b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24c0c6e4_1de2238c",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-26T14:09:15Z",
+      "side": 1,
+      "message": "nit: \"multiplied twice by two raised to the exponent split into reduced-range terms\"",
+      "range": {
+        "startLine": 543,
+        "startChar": 25,
+        "endLine": 543,
+        "endChar": 64
+      },
+      "revId": "981d937ef7eab26e5d4b43a0aaa2713f5207b11b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0807acc2_8a2a3ea7",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 547,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-26T14:09:15Z",
+      "side": 1,
+      "message": "Please quote it somewhere in full (the commit message or the issue tracker) in case that link breaks.",
+      "range": {
+        "startLine": 546,
+        "startChar": 4,
+        "endLine": 547,
+        "endChar": 53
+      },
+      "revId": "981d937ef7eab26e5d4b43a0aaa2713f5207b11b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
