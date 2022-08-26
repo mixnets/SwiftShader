@@ -76,6 +76,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "593745ee_c4f82c5d",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 101121
+      },
+      "writtenOn": "2022-08-26T16:45:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "24c0c6e4_1de2238c",
+      "range": {
+        "startLine": 543,
+        "startChar": 25,
+        "endLine": 543,
+        "endChar": 64
+      },
+      "revId": "981d937ef7eab26e5d4b43a0aaa2713f5207b11b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0807acc2_8a2a3ea7",
@@ -89,6 +113,30 @@
       "writtenOn": "2022-08-26T14:09:15Z",
       "side": 1,
       "message": "Please quote it somewhere in full (the commit message or the issue tracker) in case that link breaks.",
+      "range": {
+        "startLine": 546,
+        "startChar": 4,
+        "endLine": 547,
+        "endChar": 53
+      },
+      "revId": "981d937ef7eab26e5d4b43a0aaa2713f5207b11b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65ab26b7_ff7ffa37",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 547,
+      "author": {
+        "id": 101121
+      },
+      "writtenOn": "2022-08-26T16:45:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0807acc2_8a2a3ea7",
       "range": {
         "startLine": 546,
         "startChar": 4,

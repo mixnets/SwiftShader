@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d08e60ca_98b1f8cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101121
+      },
+      "writtenOn": "2022-08-26T16:45:09Z",
+      "side": 1,
+      "message": "I\u0027ve written an explanation of the algorithm, so we don\u0027t need to rely on the Mesa reference to understand it.",
+      "revId": "a88d033fe18177bbaabb29acb1dce2994ebe8647",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
