@@ -31,11 +31,10 @@ import (
 	"sync"
 	"time"
 
-	"../cause"
-	"../cov"
-	"../shell"
-	"../testlist"
-	"../util"
+	"swiftshader.googlesource.com/SwiftShader/tests/regres/cov"
+	"swiftshader.googlesource.com/SwiftShader/tests/regres/shell"
+	"swiftshader.googlesource.com/SwiftShader/tests/regres/testlist"
+	"swiftshader.googlesource.com/SwiftShader/tests/regres/util"
 )
 
 const dataVersion = 1
@@ -101,7 +100,7 @@ func (r TestResult) String() string {
 func LoadResults(path string) (*Results, error) {
 	f, err := os.Open(path)
 	if err != nil {
-		return nil, cause.Wrap(err, "Couldn't open '%s' for loading test results", path)
+		return nil, fmt.Errorf("failed to open '%s' for loading test results: %w", path, err)
 	}
 	defer f.Close()
 
@@ -118,19 +117,19 @@ func LoadResults(path string) (*Results, error) {
 // Save saves (caches) test results to disk.
 func (r *Results) Save(path string) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0777); err != nil {
-		return cause.Wrap(err, "couldn't make '%s' for saving test results", filepath.Dir(path))
+		return fmt.Errorf("failed to make '%s' for saving test results: %w", filepath.Dir(path), err)
 	}
 
 	f, err := os.Create(path)
 	if err != nil {
-		return cause.Wrap(err, "Couldn't open '%s' for saving test results", path)
+		return fmt.Errorf("failed to open '%s' for saving test results: %w", path, err)
 	}
 	defer f.Close()
 
 	enc := json.NewEncoder(f)
 	enc.SetIndent("", "  ")
 	if err := enc.Encode(r); err != nil {
-		return cause.Wrap(err, "Couldn't encode test results")
+		return fmt.Errorf("failed to encode test results: %w", err)
 	}
 
 	return nil
@@ -143,7 +142,7 @@ func (c *Config) Run() (*Results, error) {
 	if c.TempDir == "" {
 		dir, err := ioutil.TempDir("", "deqp")
 		if err != nil {
-			return nil, cause.Wrap(err, "Could not generate temporary directory")
+			return nil, fmt.Errorf("failed to generate temporary directory: %w", err)
 		}
 		c.TempDir = dir
 	}
@@ -174,7 +173,7 @@ func (c *Config) Run() (*Results, error) {
 			return nil, fmt.Errorf("Unknown API '%v'", list.API)
 		}
 		if !util.IsFile(exe) {
-			return nil, fmt.Errorf("Couldn't find dEQP executable at '%s'", exe)
+			return nil, fmt.Errorf("failed to find dEQP executable at '%s'", exe)
 		}
 
 		// Build a chan for the test names to be run.
