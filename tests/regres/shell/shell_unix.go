@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//go:build darwin || linux
 // +build darwin linux
 
 package shell
@@ -26,8 +27,6 @@ import (
 	"strconv"
 	"syscall"
 	"time"
-
-	"../cause"
 )
 
 func init() {
@@ -56,7 +55,7 @@ func init() {
 		}
 		if limit > 0 {
 			if err := syscall.Setrlimit(syscall.RLIMIT_AS, &syscall.Rlimit{Cur: limit, Max: limit}); err != nil {
-				log.Fatalln(cause.Wrap(err, "Setrlimit").Error())
+				log.Fatalln(fmt.Errorf("Setrlimit: %w", err))
 			}
 		}
 		cmd := exec.Command(exe, os.Args[4:]...)
