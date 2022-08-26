@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3a5430bd_3d035574",
+        "filename": "tests/regres/run.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-26T18:40:55Z",
+      "side": 1,
+      "message": "This puts the cache directory under tests/regres/. I found it rather convenient to have it at the root of the project. Any specific reason for making this change?",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 15
+      },
+      "revId": "47c4b7d4fa02927028e51790057f7352fac08151",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
