@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bef764a4_423bd0e0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101121
+      },
+      "writtenOn": "2022-08-26T13:45:28Z",
+      "side": 1,
+      "message": "Requesting that the order of the multiplies is made clear.\n",
+      "revId": "a7e8f4f17411d81bc422ccc38adbfa71d8d3921d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94ba6f43_2a2cb957",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 101121
+      },
+      "writtenOn": "2022-08-26T13:45:28Z",
+      "side": 1,
+      "message": "We have to make sure that this associates to the left.\nThat is, it has to be:\n\n  (significand.Float(i) * fltA) * fltB\n  \nIf it associates to the right, computing fltA * fltB first, then it will overflow.\n\nPlease make that clear, e.g. by parenthesizing. And add a comment about this tactic.  It\u0027s the reason the algorithm uses two multiplies.",
+      "range": {
+        "startLine": 563,
+        "startChar": 16,
+        "endLine": 563,
+        "endChar": 50
+      },
+      "revId": "a7e8f4f17411d81bc422ccc38adbfa71d8d3921d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
