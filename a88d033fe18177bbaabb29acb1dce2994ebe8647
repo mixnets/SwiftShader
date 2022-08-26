@@ -16,6 +16,23 @@
       "message": "I\u0027ve written an explanation of the algorithm, so we don\u0027t need to rely on the Mesa reference to understand it.",
       "revId": "a88d033fe18177bbaabb29acb1dce2994ebe8647",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46dd898a_2d58f885",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-08-26T17:48:10Z",
+      "side": 1,
+      "message": "Extremely well described. Great job!",
+      "revId": "a88d033fe18177bbaabb29acb1dce2994ebe8647",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
