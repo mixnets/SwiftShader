@@ -539,35 +539,31 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 		break;
 	case GLSLstd450Ldexp:
 		{
+			// This implementation borrows the algorithm used by mesa, where
+			// the significand is multiplied twice by the exponent halved.
+			// This approach correctly handles flushing to zero (if enabled),
+			// handling of subnormals and extremities of the exponent values.
+			// See: https://gitlab.freedesktop.org/mesa/mesa/-/blob/1eb7a85b55f0c7c2de6f5dac7b5f6209a6eb401c/src/compiler/nir/nir_opt_algebraic.py#L2241
+			// for a thorougher explanation of how this works.
+			const auto minExp = SIMD::Int(-254);
+			const auto maxExp = SIMD::Int(254);
 			auto significand = Operand(this, state, insn.word(5));
 			auto exponent = Operand(this, state, insn.word(6));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				// Assumes IEEE 754
-				auto in = significand.Float(i);
-				auto significandExponent = Exponent(in);
-				auto combinedExponent = exponent.Int(i) + significandExponent;
-				auto isSignificandZero = SIMD::UInt(CmpEQ(significand.Int(i), SIMD::Int(0)));
-				auto isSignificandInf = SIMD::UInt(IsInf(in));
-				auto isSignificandNaN = SIMD::UInt(IsNan(in));
-				auto isExponentNotTooSmall = SIMD::UInt(CmpGE(combinedExponent, SIMD::Int(-126)));
-				auto isExponentNotTooLarge = SIMD::UInt(CmpLE(combinedExponent, SIMD::Int(128)));
-				auto isExponentInBounds = isExponentNotTooSmall & isExponentNotTooLarge;
-
-				SIMD::UInt v;
-				v = significand.UInt(i) & SIMD::UInt(0x7FFFFF);                          // Add significand.
-				v |= (SIMD::UInt(combinedExponent + SIMD::Int(126)) << SIMD::UInt(23));  // Add exponent.
-				v &= isExponentInBounds;                                                 // Clear v if the exponent is OOB.
-
-				v |= significand.UInt(i) & SIMD::UInt(0x80000000);     // Add sign bit.
-				v |= ~isExponentNotTooLarge & SIMD::UInt(0x7F800000);  // Mark as inf if the exponent is too great.
-
-				// If the input significand is zero, inf or nan, just return the
-				// input significand.
-				auto passthrough = isSignificandZero | isSignificandInf | isSignificandNaN;
-				v = (v & ~passthrough) | (significand.UInt(i) & passthrough);
-
-				dst.move(i, As<SIMD::Float>(v));
+				// Clamp exponent to limits
+				auto exp = Min(Max(exponent.Int(i), minExp), maxExp);
+				// Split exponent into two parts
+				auto expA = exp >> 1;
+				auto expB = exp - expA;
+				// Construct two floats with the exponents above
+				auto fltA = As<SIMD::Float>((expA + 127) << 23);
+				auto fltB = As<SIMD::Float>((expB + 127) << 23);
+				// Multiply the input value by the two floats to get the final number.
+				// Note that multiplying fltA and fltB together may result in an 
+				// overflow, so ensure that significand is multiplied by fltA, *then*
+				// the result of that with fltB.
+				dst.move(i, (significand.Float(i) * fltA) * fltB);
 			}
 		}
 		break;
