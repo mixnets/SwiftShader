@@ -459,6 +459,11 @@ static void getPhysicalDeviceDepthClipControlFeaturesExt(VkPhysicalDeviceDepthCl
 	features->depthClipControl = VK_TRUE;
 }
 
+static void getPhysicalDeviceMultisampledRenderToSingleSampledFeaturesExt(VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT *features)
+{
+	features->multisampledRenderToSingleSampled = VK_TRUE;
+}
+
 void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 {
 	features->features = getFeatures();
@@ -610,6 +615,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT:
 			getPhysicalDeviceDepthClipControlFeaturesExt(reinterpret_cast<struct VkPhysicalDeviceDepthClipControlFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT:
+			getPhysicalDeviceMultisampledRenderToSingleSampledFeaturesExt(reinterpret_cast<struct VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT:
 			// TODO(b/216982034): Workaround for a test bug (see https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3879)

@@ -192,6 +192,15 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo2KHR *pCreateInfo, void *mem)
 					}
 				}
 				break;
+			case VK_STRUCTURE_TYPE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT:
+				{
+					const auto *ext = reinterpret_cast<const VkMultisampledRenderToSingleSampledInfoEXT *>(extension);
+					if (ext->multisampledRenderToSingleSampledEnable)
+					{
+						msrtssSamples = ext->rasterizationSamples;
+					}
+				}
+				break;
 			default:
 				UNSUPPORTED("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
 				            i, vk::Stringify(extension->sType).c_str());
@@ -408,6 +417,8 @@ size_t RenderPass::ComputeRequiredAllocationSize(const VkRenderPassCreateInfo2KH
 						requiredMemory += sizeof(VkAttachmentReference2);
 					}
 				}
+				break;
+			case VK_STRUCTURE_TYPE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT:
 				break;
 			default:
 				UNSUPPORTED("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",

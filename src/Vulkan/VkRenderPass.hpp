@@ -93,6 +93,8 @@ public:
 		return attachmentViewMasks[attachmentIndex];
 	}
 
+	uint32_t getMsrtssSamples() const { return msrtssSamples; }
+
 private:
 	uint32_t attachmentCount = 0;
 	VkAttachmentDescription *attachments = nullptr;
@@ -104,6 +106,7 @@ private:
 	int *attachmentFirstUse = nullptr;
 	uint32_t *viewMasks = nullptr;
 	uint32_t *attachmentViewMasks = nullptr;
+	uint32_t msrtssSamples = 0;
 
 	void MarkFirstUse(int attachment, int subpass);
 	template<class T>

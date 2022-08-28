@@ -604,6 +604,21 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 				setDepthStencilState(depthStencilState);
 			}
 
+			if (renderPass->getMsrtssSamples() > 0)
+			{
+				// Hack to test ANGLE.  Actually disable multisampling because the
+				// attachments are single sampled.  A proper implementation would
+				// require SwiftShader to allocate a temporary multisampled image,
+				// replicate the single sampled attachment into it and resolve at
+				// the end, but that would perform worse than if MSRTSS was not
+				// exposed and real multisampling was done.
+				sampleCount = 1;
+				sampleShadingEnable = false;
+				sampleMask = ~0;
+				alphaToCoverage = false;
+				multiSampleMask = 1;
+			}
+
 			// Ignore pColorBlendState when "the subpass of the render pass the pipeline
 			// is created against does not use any color attachments"
 			for(uint32_t i = 0; i < subpass.colorAttachmentCount; i++)
