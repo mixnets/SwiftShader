@@ -16,6 +16,139 @@
       "message": "So the related tests already passed before, but didn\u0027t use the descriptorBindingVariableDescriptorCount feature. Since no test broke, it looks like the feature works properly.",
       "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bae451b1_27976c33",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-29T18:18:51Z",
+      "side": 1,
+      "message": "Thanks for pointing that out. It\u0027s unconventional though not to have isolated tests for a separate feature. It seems like this might have insufficient test coverage; the `vktBindingDescriptorSetRandomTests.cpp` file doesn\u0027t appear to do anything with `descriptorBindingVariableDescriptorCount` other than add a flag.\n\nCould you test that it is really exercised, and if not file a CTS request?",
+      "parentUuid": "0d3f5c56_021fdcfb",
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f2ca031_71f35700",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-29T18:18:51Z",
+      "side": 1,
+      "message": "uint32_t *",
+      "range": {
+        "startLine": 69,
+        "startChar": 7,
+        "endLine": 69,
+        "endChar": 11
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a5ed88e_2255e931",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-29T18:18:51Z",
+      "side": 1,
+      "message": "Where is it specified that the array of variable descriptor counts gets ignored when these sizes don\u0027t match?",
+      "range": {
+        "startLine": 70,
+        "startChar": 46,
+        "endLine": 70,
+        "endChar": 123
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0ecf02a_d525085d",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-29T18:18:51Z",
+      "side": 1,
+      "message": "Does the spec say 0 is not allowed? Perhaps we should add an assert against that so we can reliably use it internally to indicate a fixed-size binding.",
+      "range": {
+        "startLine": 88,
+        "startChar": 47,
+        "endLine": 88,
+        "endChar": 48
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1436e89b_55787deb",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-29T18:18:51Z",
+      "side": 1,
+      "message": "I think we can avoid this and other instances of passing it around as a parameter by making it a member field of `DescriptorSetHeader`.",
+      "range": {
+        "startLine": 109,
+        "startChar": 45,
+        "endLine": 109,
+        "endChar": 79
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5591d5b6_5d7c71db",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-29T18:18:51Z",
+      "side": 1,
+      "message": "Assert on unknown sType",
+      "range": {
+        "startLine": 388,
+        "startChar": 3,
+        "endLine": 388,
+        "endChar": 4
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
