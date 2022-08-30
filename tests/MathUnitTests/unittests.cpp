@@ -43,17 +43,18 @@ float _frexp(float val, int *exp)
 	auto isNotZero = (val != 0.0f) ? 0xFFFFFFFF : 0x00000000;
 	auto v = bit_cast<unsigned int>(val);
 
-	//auto isNotZero = (v & 0x7FFFFFFF) != 0 ? 0xFFFFFFFF : 0x00000000;
+	auto fac = ((127 + 64) << 23) - ((v & 0x7F000000) >> 1);
+	float factor = bit_cast<float>(fac);
 
-	auto significand = bit_cast<float>((v & 0x807FFFFF) | (0x3F000000 & isNotZero));
+	float ff = val * factor;
+	auto vvv = bit_cast<unsigned int>(ff);
 
-	//auto zeroSign = v & 0x80000000 & ~isNotZero;
-	//auto significand = bit_cast<float>((((v & 0x807FFFFF) | 0x3F000000) & isNotZero) | zeroSign);
+	auto exponent3 = (((int)((vvv & 0x7F800000) - fac) >> 23) + 1) & isNotZero;
 
-	auto exponent = (((v >> 23) & 0xFF) - 126) & isNotZero;
+	auto significand2 = bit_cast<float>((vvv & 0x807FFFFF) | (0x3F000000 & isNotZero));
 
-	*exp = exponent;
-	return significand;
+	*exp = exponent3;
+	return significand2;
 }
 
 TEST(MathTest, Frexp)
@@ -79,6 +80,10 @@ TEST(MathTest, Frexp)
 			-FLT_MIN / 2,
 			FLT_MIN / 3,
 			-FLT_MIN / 3,
+			FLT_MAX,
+			-FLT_MAX,
+			//FLT_MAX * 2,
+			//-FLT_MAX * 2,
 		};
 
 		for(int i = 0; i < a.size(); i++)
@@ -95,6 +100,8 @@ TEST(MathTest, Frexp)
 			assert(_sig == sig);
 		}
 	}
+
+	return;
 }
 
 // Returns the whole-number ULP error of `a` relative to `x`.
