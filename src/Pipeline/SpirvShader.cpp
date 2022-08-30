@@ -2180,7 +2180,7 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 	case spv::OpImageDrefGather:
 	case spv::OpImageFetch:
 	case spv::OpImageQueryLod:
-		return EmitImageSample(ImageInstruction(insn, *this), state);
+		return EmitImageSample(ImageInstruction(insn, *this, state), state);
 
 	case spv::OpImageQuerySizeLod:
 		return EmitImageQuerySizeLod(insn, state);
@@ -2195,13 +2195,13 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 		return EmitImageQuerySamples(insn, state);
 
 	case spv::OpImageRead:
-		return EmitImageRead(ImageInstruction(insn, *this), state);
+		return EmitImageRead(ImageInstruction(insn, *this, state), state);
 
 	case spv::OpImageWrite:
-		return EmitImageWrite(ImageInstruction(insn, *this), state);
+		return EmitImageWrite(ImageInstruction(insn, *this, state), state);
 
 	case spv::OpImageTexelPointer:
-		return EmitImageTexelPointer(ImageInstruction(insn, *this), state);
+		return EmitImageTexelPointer(ImageInstruction(insn, *this, state), state);
 
 	case spv::OpSampledImage:
 	case spv::OpImage:
@@ -2646,6 +2646,11 @@ SpirvShader::EmitResult SpirvShader::EmitCopyObject(InsnIterator insn, EmitState
 	if(src.isPointer())
 	{
 		state->createPointer(insn.resultId(), src.Pointer(0));
+		Object::ID samplerId = state->getSampler(insn.word(3));
+		if(samplerId != 0)
+		{
+			state->createSampler(insn.resultId(), samplerId);
+		}
 	}
 	else
 	{
