@@ -16,6 +16,24 @@
       "message": "Can we double check if the fact that there\u0027s no update to `tests/regres/testlists/vk-default/pipeline/*` again is expected or if it means that the script needs to be fixed?",
       "revId": "05ce00e77879ba2b79d44b5823e8070cfa0f5a47",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "40728836_9f7ebeda",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-30T14:01:18Z",
+      "side": 1,
+      "message": "Yes, that\u0027s still broken. Thanks for the reminder! I\u0027ll add another comment on b/201453797 and run a manual update.",
+      "parentUuid": "d275ad01_81bedde2",
+      "revId": "05ce00e77879ba2b79d44b5823e8070cfa0f5a47",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
