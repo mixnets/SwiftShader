@@ -23,6 +23,94 @@
 
 using namespace sw;
 
+float old_frexp(float val, int *exp)
+{
+	auto v = bit_cast<unsigned int>(val);
+	auto isNotZero = ((v & 0x7FFFFFFF) != 0) ? 0xFFFFFFFF : 0x00000000;
+
+	auto zeroSign = v & 0x80000000 & ~isNotZero;
+	auto significand = bit_cast<float>((((v & 0x807FFFFF) | 0x3F000000) & isNotZero) | zeroSign);
+
+	auto exponent = (((v >> 23) & 0xFF) - 126) & isNotZero;
+
+	*exp = exponent;
+	return significand;
+}
+
+float _frexp(float val, int *exp)
+{
+	auto isNotZero = (val != 0.0f) ? 0xFFFFFFFF : 0x00000000;
+	auto v = bit_cast<unsigned int>(val);
+	int isInfOrNaN = (v & 0x7F800000) == 0x7F800000 ? 0xFFFFFFFF : 0x00000000;
+
+	auto fac = ((127 + 23) << 23) - (v & 0x3F800000);
+	float factor = bit_cast<float>(fac);
+
+	float ff = val * factor;
+	auto vvv = bit_cast<unsigned int>(ff);
+
+	auto exponent = (((int)((vvv & 0x7F800000) - fac) >> 23) + 1) & isNotZero;
+
+	auto significand = bit_cast<float>((vvv & 0x807FFFFF) | (0x3F000000 & isNotZero) | (0x7F800000 & isInfOrNaN));
+
+	*exp = exponent;
+	return significand;
+}
+
+TEST(MathTest, Frexp)
+{
+	for(int normal = 0; normal < 2; normal++)
+	{
+		CPUID::setDenormalsAreZero(normal == 0);
+		CPUID::setFlushToZero(normal == 0);
+
+		std::vector<float> a = {
+			2.3f,
+			0.1f,
+			0.7f,
+			1.7f,
+			0.0f,
+			-2.3f,
+			-0.1f,
+			-0.7f,
+			-1.7f,
+			FLT_MIN,
+			-FLT_MIN,
+			FLT_MIN / 2,
+			-FLT_MIN / 2,
+			FLT_MIN / 3,
+			-FLT_MIN / 3,
+			FLT_MAX,
+			-FLT_MAX,
+			FLT_TRUE_MIN,
+			-FLT_TRUE_MIN,
+			FLT_MAX * 2,        // +Inf
+			-FLT_MAX * 2,       // -Inf
+			(FLT_MAX * 2) * 0,  // NaN
+		};
+
+		for(int i = 0; i < a.size(); i++)
+		{
+			float f = a[i];
+
+			int exp = -1;
+			float sig = std::frexp(f, &exp);
+
+			int _exp = -1;
+			float _sig = _frexp(f, &_exp);
+
+			assert((_sig == sig) || (isnan(_sig) && isnan(sig)));
+
+			if(!isinf(f) && !isnan(f))
+			{
+				assert(_exp == exp);
+			}
+		}
+	}
+
+	return;
+}
+
 // Returns the whole-number ULP error of `a` relative to `x`.
 // Use the doouble-precision version below. This just illustrates the principle.
 [[deprecated]] float ULP_32(float x, float a)
