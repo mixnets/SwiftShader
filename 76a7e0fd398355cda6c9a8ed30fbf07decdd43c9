@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "00958335_af8f41d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-30T20:33:04Z",
+      "side": 1,
+      "message": "Yes, I already checked that the code was getting exercised properly. It is being used. There are a lot of cases, so I didn\u0027t go through all of them, so the only things I\u0027d say might be missing is an example where DescriptorSetLayout::getDescriptorSetDataSize() is called with a `variableDescriptorCount` smaller than the `descriptorCount`. All the examples I\u0027ve seen use the same value for both (although, that works fine with this change).",
+      "parentUuid": "bae451b1_27976c33",
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4f2ca031_71f35700",
         "filename": "src/Vulkan/VkDescriptorPool.cpp",
         "patchSetId": 1
@@ -49,6 +67,30 @@
       "writtenOn": "2022-08-29T18:18:51Z",
       "side": 1,
       "message": "uint32_t *",
+      "range": {
+        "startLine": 69,
+        "startChar": 7,
+        "endLine": 69,
+        "endChar": 11
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f899b244_321e6f64",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-30T20:33:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4f2ca031_71f35700",
       "range": {
         "startLine": 69,
         "startChar": 7,
@@ -82,6 +124,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0b5afad_9eb3da6a",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-30T20:33:04Z",
+      "side": 1,
+      "message": "The spec text about `VkDescriptorSetVariableDescriptorCountAllocateInfo::descriptorSetCount` says:\n\"If descriptorSetCount is not zero, descriptorSetCount must equal VkDescriptorSetAllocateInfo::descriptorSetCount\"\n\nSo, here, `VkDescriptorSetVariableDescriptorCountAllocateInfo::descriptorSetCount` can only have 2 possible values, either it\u0027s `descriptorSetCount` or it\u0027s `0`. So either there are `descriptorSetCount` descriptor counts, or there are none.",
+      "parentUuid": "4a5ed88e_2255e931",
+      "range": {
+        "startLine": 70,
+        "startChar": 46,
+        "endLine": 70,
+        "endChar": 123
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d0ecf02a_d525085d",
@@ -95,6 +161,30 @@
       "writtenOn": "2022-08-29T18:18:51Z",
       "side": 1,
       "message": "Does the spec say 0 is not allowed? Perhaps we should add an assert against that so we can reliably use it internally to indicate a fixed-size binding.",
+      "range": {
+        "startLine": 88,
+        "startChar": 47,
+        "endLine": 88,
+        "endChar": 48
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc4c8a04_729c1d59",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-30T20:33:04Z",
+      "side": 1,
+      "message": "0 is allowed, it means we aren\u0027t using variable descriptor counts. For the purpose of verifying sizes prior to allocation, we don\u0027t use variable descriptor counts. The count provided is the upper bound. The exact spec text is:\n\"VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT indicates that this is a variable-sized descriptor binding whose size will be specified when a descriptor set is allocated using this layout. The value of descriptorCount is treated as an upper bound on the size of the binding.\"",
+      "parentUuid": "d0ecf02a_d525085d",
       "range": {
         "startLine": 88,
         "startChar": 47,
@@ -130,6 +220,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b74f0f4f_33f65d3e",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-30T20:33:04Z",
+      "side": 1,
+      "message": "We don\u0027t need this information past the allocation phase, so I\u0027m not sure the best approach would be to store it permanently in the structure.\nAlso, we need this information before we\u0027ve actually allocated the header.",
+      "parentUuid": "1436e89b_55787deb",
+      "range": {
+        "startLine": 109,
+        "startChar": 45,
+        "endLine": 109,
+        "endChar": 79
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5591d5b6_5d7c71db",
         "filename": "src/Vulkan/VkDevice.cpp",
         "patchSetId": 1
@@ -141,6 +255,30 @@
       "writtenOn": "2022-08-29T18:18:51Z",
       "side": 1,
       "message": "Assert on unknown sType",
+      "range": {
+        "startLine": 388,
+        "startChar": 3,
+        "endLine": 388,
+        "endChar": 4
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d9df11b_f63633b3",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-30T20:33:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5591d5b6_5d7c71db",
       "range": {
         "startLine": 388,
         "startChar": 3,
