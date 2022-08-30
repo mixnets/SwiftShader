@@ -74,7 +74,7 @@ static vk::Format SpirvFormatToVulkanFormat(spv::ImageFormat format)
 	}
 }
 
-SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvShader &spirv)
+SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvShader &spirv, EmitState *state)
     : ImageInstructionSignature(parseVariantAndMethod(insn))
     , position(insn.distanceFrom(spirv.begin()))
 {
@@ -97,11 +97,11 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
 		{
 			Object::ID sampledImageId = insn.word(3);
 			const Object &sampledImage = spirv.getObject(sampledImageId);
+			samplerId = state->getSampler(sampledImageId);
 
-			if(sampledImage.opcode() == spv::OpSampledImage)
+			if(samplerId != 0)  // spv::OpSampledImage
 			{
 				imageId = sampledImage.definition.word(3);
-				samplerId = sampledImage.definition.word(4);
 			}
 			else  // Combined image/sampler
 			{
@@ -1546,13 +1546,26 @@ SpirvShader::EmitResult SpirvShader::EmitImageTexelPointer(const ImageInstructio
 
 SpirvShader::EmitResult SpirvShader::EmitSampledImageCombineOrSplit(InsnIterator insn, EmitState *state) const
 {
-	// Propagate the image pointer in both cases.
-	// Consumers of OpSampledImage will look through to find the sampler pointer.
+	// Propagate the image pointer.
 
 	Object::ID resultId = insn.word(2);
 	Object::ID imageId = insn.word(3);
 
 	state->createPointer(resultId, state->getPointer(imageId));
+
+	if(insn.opcode() == spv::OpSampledImage)
+	{
+		Object::ID samplerId = insn.word(4);
+		state->createSampler(resultId, samplerId);
+	}
+	else  // spv::OpImage
+	{
+		Object::ID id = state->getSampler(imageId);
+		if(id != 0)
+		{
+			state->createSampler(resultId, id);
+		}
+	}
 
 	return EmitResult::Continue;
 }
