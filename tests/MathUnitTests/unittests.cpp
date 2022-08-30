@@ -19,9 +19,83 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <cmath>
 #include <cstdlib>
 
 using namespace sw;
+
+float old_frexp(float val, int *exp)
+{
+	auto v = bit_cast<unsigned int>(val);
+	auto isNotZero = ((v & 0x7FFFFFFF) != 0) ? 0xFFFFFFFF : 0x00000000;
+
+	auto zeroSign = v & 0x80000000 & ~isNotZero;
+	auto significand = bit_cast<float>((((v & 0x807FFFFF) | 0x3F000000) & isNotZero) | zeroSign);
+
+	auto exponent = (((v >> 23) & 0xFF) - 126) & isNotZero;
+
+	*exp = exponent;
+	return significand;
+}
+
+float _frexp(float val, int *exp)
+{
+	auto isNotZero = (val != 0.0f) ? 0xFFFFFFFF : 0x00000000;
+	auto v = bit_cast<unsigned int>(val);
+
+	//auto isNotZero = (v & 0x7FFFFFFF) != 0 ? 0xFFFFFFFF : 0x00000000;
+
+	auto significand = bit_cast<float>((v & 0x807FFFFF) | (0x3F000000 & isNotZero));
+
+	//auto zeroSign = v & 0x80000000 & ~isNotZero;
+	//auto significand = bit_cast<float>((((v & 0x807FFFFF) | 0x3F000000) & isNotZero) | zeroSign);
+
+	auto exponent = (((v >> 23) & 0xFF) - 126) & isNotZero;
+
+	*exp = exponent;
+	return significand;
+}
+
+TEST(MathTest, Frexp)
+{
+	for(int normal = 0; normal < 2; normal++)
+	{
+		CPUID::setDenormalsAreZero(normal == 0);
+		CPUID::setFlushToZero(normal == 0);
+
+		std::vector<float> a = {
+			2.3f,
+			0.1f,
+			0.7f,
+			1.7f,
+			0.0f,
+			-2.3f,
+			-0.1f,
+			-0.7f,
+			-1.7f,
+			FLT_MIN,
+			-FLT_MIN,
+			FLT_MIN / 2,
+			-FLT_MIN / 2,
+			FLT_MIN / 3,
+			-FLT_MIN / 3,
+		};
+
+		for(int i = 0; i < a.size(); i++)
+		{
+			float f = a[i];
+
+			int exp = -1;
+			float sig = std::frexp(f, &exp);
+
+			int _exp = -1;
+			float _sig = _frexp(f, &_exp);
+
+			assert(_exp == exp);
+			assert(_sig == sig);
+		}
+	}
+}
 
 // Returns the whole-number ULP error of `a` relative to `x`.
 // Use the doouble-precision version below. This just illustrates the principle.
