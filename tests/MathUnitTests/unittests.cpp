@@ -42,15 +42,17 @@ float _frexp(float val, int *exp)
 {
 	auto isNotZero = (val != 0.0f) ? 0xFFFFFFFF : 0x00000000;
 	auto v = bit_cast<unsigned int>(val);
+	int isInfOrNaN = (v & 0x7F800000) == 0x7F800000 ? 0xFFFFFFFF : 0x00000000;
 
-	//auto isNotZero = (v & 0x7FFFFFFF) != 0 ? 0xFFFFFFFF : 0x00000000;
+	auto fac = ((127 + 23) << 23) - (v & 0x3F800000);
+	float factor = bit_cast<float>(fac);
 
-	auto significand = bit_cast<float>((v & 0x807FFFFF) | (0x3F000000 & isNotZero));
+	float ff = val * factor;
+	auto vvv = bit_cast<unsigned int>(ff);
 
-	//auto zeroSign = v & 0x80000000 & ~isNotZero;
-	//auto significand = bit_cast<float>((((v & 0x807FFFFF) | 0x3F000000) & isNotZero) | zeroSign);
+	auto exponent = (((int)((vvv & 0x7F800000) - fac) >> 23) + 1) & isNotZero;
 
-	auto exponent = (((v >> 23) & 0xFF) - 126) & isNotZero;
+	auto significand = bit_cast<float>((vvv & 0x807FFFFF) | (0x3F000000 & isNotZero) | (0x7F800000 & isInfOrNaN));
 
 	*exp = exponent;
 	return significand;
@@ -79,6 +81,14 @@ TEST(MathTest, Frexp)
 			-FLT_MIN / 2,
 			FLT_MIN / 3,
 			-FLT_MIN / 3,
+			FLT_MAX,
+			-FLT_MAX,
+			FLT_TRUE_MIN,
+			-FLT_TRUE_MIN,
+			FLT_MAX * 2,
+			-FLT_MAX * 2,
+			(FLT_MAX * 2) * 0,
+			-(FLT_MAX * 2) * 0,
 		};
 
 		for(int i = 0; i < a.size(); i++)
@@ -91,10 +101,16 @@ TEST(MathTest, Frexp)
 			int _exp = -1;
 			float _sig = _frexp(f, &_exp);
 
-			assert(_exp == exp);
-			assert(_sig == sig);
+			assert((_sig == sig) || (isnan(_sig) && isnan(sig)));
+
+			if(!isinf(f) && !isnan(f))
+			{
+				assert(_exp == exp);
+			}
 		}
 	}
+
+	return;
 }
 
 // Returns the whole-number ULP error of `a` relative to `x`.
