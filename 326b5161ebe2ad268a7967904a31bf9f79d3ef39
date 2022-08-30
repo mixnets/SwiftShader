@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "81f7f164_e10a2f52",
+        "filename": "tests/regres/testlists/vk-master-ASSERT.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-30T18:20:15Z",
+      "side": 1,
+      "message": "b/241436291",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 50
+      },
+      "revId": "326b5161ebe2ad268a7967904a31bf9f79d3ef39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "daa48ea7_3d3c3243",
+        "filename": "tests/regres/testlists/vk-master-UNREACHABLE.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-30T18:20:15Z",
+      "side": 1,
+      "message": "b/244332223",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 50
+      },
+      "revId": "326b5161ebe2ad268a7967904a31bf9f79d3ef39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5aab9304_dc1d3d72",
+        "filename": "tests/regres/testlists/vk-master-ASSERT.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-30T18:20:15Z",
+      "side": 0,
+      "message": "https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3859",
+      "range": {
+        "startLine": 101,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 87
+      },
+      "revId": "476165cc7c0c7247869c13f7f80dd25ec1fd2b03",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1cc6f3e4_05921ae9",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-30T18:20:15Z",
+      "side": 0,
+      "message": "b/198667115",
+      "revId": "476165cc7c0c7247869c13f7f80dd25ec1fd2b03",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc462dee_702ea40a",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-30T18:20:15Z",
+      "side": 0,
+      "message": "b/240267529 - flaky",
+      "range": {
+        "startLine": 6,
+        "startChar": 24,
+        "endLine": 6,
+        "endChar": 34
+      },
+      "revId": "476165cc7c0c7247869c13f7f80dd25ec1fd2b03",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d5be215_491ddb59",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-30T18:20:15Z",
+      "side": 0,
+      "message": "b/242264480",
+      "revId": "476165cc7c0c7247869c13f7f80dd25ec1fd2b03",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "591bd7ba_33eb3345",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-30T18:20:15Z",
+      "side": 0,
+      "message": "b/196822081 - flaky",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 67
+      },
+      "revId": "476165cc7c0c7247869c13f7f80dd25ec1fd2b03",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
