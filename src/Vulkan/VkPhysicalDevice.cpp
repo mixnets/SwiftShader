@@ -384,7 +384,7 @@ static void getPhysicalDeviceVulkan12Features(T *features)
 	getPhysicalDevice8BitStorageFeaturesKHR(features);
 	getPhysicalDeviceShaderAtomicInt64Features(features);
 	getPhysicalDeviceShaderFloat16Int8Features(features);
-	features->descriptorIndexing = VK_FALSE;
+	features->descriptorIndexing = VK_TRUE;
 	getPhysicalDeviceDescriptorIndexingFeatures(features);
 	features->samplerFilterMinmax = VK_FALSE;
 	getPhysicalDeviceScalarBlockLayoutFeatures(features);
