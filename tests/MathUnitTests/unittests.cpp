@@ -43,17 +43,19 @@ float _frexp(float val, int *exp)
 	auto isNotZero = (val != 0.0f) ? 0xFFFFFFFF : 0x00000000;
 	auto v = bit_cast<unsigned int>(val);
 
-	//auto isNotZero = (v & 0x7FFFFFFF) != 0 ? 0xFFFFFFFF : 0x00000000;
+	int vv = (int)(((v >> 23) & 0xFF) - 127);
+	int v2 = vv >> 1;
+	auto v3 = -v2 + 127;
+	float factor = bit_cast<float>(v3 << 23);
+	float ff = val * factor;
+	auto vvv = bit_cast<unsigned int>(ff);
 
-	auto significand = bit_cast<float>((v & 0x807FFFFF) | (0x3F000000 & isNotZero));
+	auto exponent3 = (((vvv >> 23) & 0xFF) - 126 + v2) & isNotZero;
 
-	//auto zeroSign = v & 0x80000000 & ~isNotZero;
-	//auto significand = bit_cast<float>((((v & 0x807FFFFF) | 0x3F000000) & isNotZero) | zeroSign);
+	auto significand2 = bit_cast<float>((vvv & 0x807FFFFF) | (0x3F000000 & isNotZero));
 
-	auto exponent = (((v >> 23) & 0xFF) - 126) & isNotZero;
-
-	*exp = exponent;
-	return significand;
+	*exp = exponent3;
+	return significand2;
 }
 
 TEST(MathTest, Frexp)
@@ -64,6 +66,7 @@ TEST(MathTest, Frexp)
 		CPUID::setFlushToZero(normal == 0);
 
 		std::vector<float> a = {
+			FLT_MAX,
 			2.3f,
 			0.1f,
 			0.7f,
@@ -95,6 +98,8 @@ TEST(MathTest, Frexp)
 			assert(_sig == sig);
 		}
 	}
+
+	return;
 }
 
 // Returns the whole-number ULP error of `a` relative to `x`.
