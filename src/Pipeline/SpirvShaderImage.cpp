@@ -348,20 +348,58 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(const ImageInstruction &ins
 
 void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, const ImageInstruction &instruction, EmitState *state) const
 {
-	Pointer<Byte> imageDescriptor = state->getImage(instruction.imageId).getUniformPointer();  // vk::SampledImageDescriptor*
+	auto decorations = GetDecorationsForId(instruction.imageId);
 
-	Pointer<Byte> samplerFunction = lookupSamplerFunction(imageDescriptor, instruction, state);
+	if(decorations.NonUniform)
+	{
+		SIMD::Int activeLaneMask = state->activeLaneMask();
+		SIMD::Pointer imagePointer = state->getImage(instruction.imageId);
+		// PerLane output
+		for(int laneIdx = 0; laneIdx < SIMD::Width; laneIdx++)
+		{
+			Array<SIMD::Float> laneOut(out.getArraySize());
+			If(Extract(activeLaneMask, laneIdx) != 0)
+			{
+				Pointer<Byte> imageDescriptor = imagePointer.getPointerForLane(laneIdx);  // vk::SampledImageDescriptor*
 
-	callSamplerFunction(samplerFunction, out, imageDescriptor, instruction, state);
+				Pointer<Byte> samplerFunction = lookupSamplerFunction(imageDescriptor, instruction, laneIdx, state);
+
+				callSamplerFunction(samplerFunction, laneOut, imageDescriptor, instruction, state);
+			}
+
+			for(int outIdx = 0; outIdx < out.getArraySize(); outIdx++)
+			{
+				out[outIdx] = Insert(out[outIdx], Extract(laneOut[outIdx], laneIdx), laneIdx);
+			}
+		}
+	}
+	else
+	{
+		Pointer<Byte> imageDescriptor = state->getImage(instruction.imageId).getUniformPointer();  // vk::SampledImageDescriptor*
+
+		Pointer<Byte> samplerFunction = lookupSamplerFunction(imageDescriptor, instruction, UNIFORM_POINTER, state);
+
+		callSamplerFunction(samplerFunction, out, imageDescriptor, instruction, state);
+	}
 }
 
-Pointer<Byte> SpirvShader::lookupSamplerFunction(Pointer<Byte> imageDescriptor, const ImageInstruction &instruction, EmitState *state) const
+Pointer<Byte> SpirvShader::lookupSamplerFunction(Pointer<Byte> imageDescriptor, const ImageInstruction &instruction, int laneIdx, EmitState *state) const
 {
 	Int samplerId = 0;
 
 	if(instruction.samplerId != 0)
 	{
-		Pointer<Byte> samplerDescriptor = state->getPointer(instruction.samplerId).getUniformPointer();  // vk::SampledImageDescriptor*
+		Pointer<Byte> samplerDescriptor;
+
+		if(instruction.samplerId == instruction.imageId)
+		{
+			samplerDescriptor = imageDescriptor;
+		}
+		else
+		{
+			SIMD::Pointer samplerPointer = state->getImage(instruction.samplerId);
+			samplerDescriptor = (laneIdx == UNIFORM_POINTER) ? samplerPointer.getUniformPointer() : samplerPointer.getPointerForLane(laneIdx);  // vk::SampledImageDescriptor*
+		}
 
 		samplerId = *Pointer<rr::Int>(samplerDescriptor + OFFSET(vk::SampledImageDescriptor, samplerId));  // vk::Sampler::id
 	}
@@ -1254,7 +1292,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 
 		if(imageFormat == VK_FORMAT_UNDEFINED)  // spv::ImageFormatUnknown
 		{
-			Pointer<Byte> samplerFunction = lookupSamplerFunction(descriptor, instruction, state);
+			Pointer<Byte> samplerFunction = lookupSamplerFunction(descriptor, instruction, UNIFORM_POINTER, state);
 
 			Call<ImageSampler>(samplerFunction, descriptor, &coord, &texelAndMask, state->routine->constants);
 		}
@@ -1273,7 +1311,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 			Pointer<Byte> descriptor = ptr.getPointerForLane(j);
 			if(imageFormat == VK_FORMAT_UNDEFINED)  // spv::ImageFormatUnknown
 			{
-				Pointer<Byte> samplerFunction = lookupSamplerFunction(descriptor, instruction, state);
+				Pointer<Byte> samplerFunction = lookupSamplerFunction(descriptor, instruction, j, state);
 
 				Call<ImageSampler>(samplerFunction, descriptor, &coord, &texelAndMask, state->routine->constants);
 			}
