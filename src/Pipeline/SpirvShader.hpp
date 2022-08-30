@@ -153,6 +153,8 @@ private:
 
 class SpirvShader
 {
+	class EmitState;
+
 public:
 	SpirvBinary insns;
 
@@ -606,7 +608,7 @@ public:
 
 	struct ImageInstruction : public ImageInstructionSignature
 	{
-		ImageInstruction(InsnIterator insn, const SpirvShader &spirv);
+		ImageInstruction(InsnIterator insn, const SpirvShader &spirv, EmitState *state);
 
 		const uint32_t position;
 
@@ -1169,9 +1171,22 @@ private:
 			return it->second;
 		}
 
+		void createSampler(Object::ID id, Object::ID sampler)
+		{
+			bool added = samplers.emplace(id, sampler).second;
+			ASSERT_MSG(added, "Sampler %d created twice", id.value());
+		}
+
+		Object::ID getSampler(Object::ID id) const
+		{
+			auto it = samplers.find(id);
+			return (it == samplers.end()) ? Object::ID(0) : it->second;
+		}
+
 	private:
 		std::unordered_map<Object::ID, Intermediate> intermediates;
 		std::unordered_map<Object::ID, SIMD::Pointer> pointers;
+		std::unordered_map<Object::ID, Object::ID> samplers;
 
 		const unsigned int multiSampleCount;
 	};
@@ -1382,7 +1397,8 @@ private:
 	EmitResult EmitImageTexelPointer(const ImageInstruction &instruction, EmitState *state) const;
 	EmitResult EmitAtomicOp(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitAtomicCompareExchange(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitSampledImageCombineOrSplit(InsnIterator insn, EmitState *state) const;
+	EmitResult EmitImage(InsnIterator insn, EmitState *state) const;
+	EmitResult EmitSampledImage(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitCopyObject(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitCopyMemory(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitControlBarrier(InsnIterator insn, EmitState *state) const;
