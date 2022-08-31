@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5cd40a47_3282ac93",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-31T19:50:54Z",
+      "side": 1,
+      "message": "I don\u0027t understand why this would involve deep copies when the definition explicitly says `There are no dereferences involved`. The problem being solved here is that we don\u0027t have an internal image+sampler object. That\u0027s another option, but it\u0027s a bit more involved, as this require having a custom object mixed in with native SPIR-V objects. Maybe a simpler way to try to handle this is to add a samplerId to SpirvShader::Object. That would be fairly simple, if adding some extra information to the base SpirvShader::Object class is acceptable.",
+      "parentUuid": "70d10842_da438aec",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 25
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ae05f6a0_d4e5d548",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1
