@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "49c88ff4_d3f3d531",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-31T15:43:43Z",
+      "side": 1,
+      "message": "OpCopyObject\u0027s definition is:\n`Make a copy of Operand. There are no dereferences involved`\nMy understanding is that it works for any operand and OpTypeSampledImage is a type of operand.\n\nAlso, it\u0027s legal to do something like:\nimage_plus_sampler \u003d OpSampledImage inputs\nimage_plus_sampler2 \u003d OpImage image_plus_sampler\n\nAnd, currently, the sampler isn\u0027t propagated when using the OpImage instruction on the result of an OpSampledImage instruction.",
+      "parentUuid": "a04c06b4_61e9683d",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 25
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ae05f6a0_d4e5d548",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2022-08-31T14:40:15Z",
       "side": 1,
       "message": "`EmitState` is meant to hold Reactor variables corresponding to SPIR-V objects. This map is just a logical association, so I think we should store that in `SpirvShader`.",
+      "range": {
+        "startLine": 1189,
+        "startChar": 0,
+        "endLine": 1189,
+        "endChar": 54
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58517556_57a26597",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1189,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-31T15:43:43Z",
+      "side": 1,
+      "message": "I can\u0027t do that, because this map is modified in functions like:\nSpirvShader::EmitCopyObject()\nSpirvShader::EmitSampledImageCombineOrSplit()\nwhich are const functions.",
+      "parentUuid": "ae05f6a0_d4e5d548",
       "range": {
         "startLine": 1189,
         "startChar": 0,
@@ -72,6 +120,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "58826897_a2e46ddf",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-31T15:43:43Z",
+      "side": 1,
+      "message": "It might, we may want to open a VK-GL-CTS issue to request coverage for this case.",
+      "parentUuid": "d9ae001d_3267a5af",
+      "range": {
+        "startLine": 117,
+        "startChar": 40,
+        "endLine": 117,
+        "endChar": 48
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7ba49c51_414f7521",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 1
@@ -83,6 +155,30 @@
       "writtenOn": "2022-08-31T14:40:15Z",
       "side": 1,
       "message": "Since this now behaves different for each opcode let\u0027s split it into `EmitSampledImage` and `EmitImage`.",
+      "range": {
+        "startLine": 1547,
+        "startChar": 37,
+        "endLine": 1547,
+        "endChar": 67
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "156bf0fe_86c61c0a",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1547,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-31T15:43:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ba49c51_414f7521",
       "range": {
         "startLine": 1547,
         "startChar": 37,
