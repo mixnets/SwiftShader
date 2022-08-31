@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "78ba72a6_2808f05f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-08-31T15:53:05Z",
+      "side": 1,
+      "message": "Just curious: what happens in the negative zero case?",
+      "revId": "b77fc284da1f2a28b3645c2e6493a705a844ab9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
