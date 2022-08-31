@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8635a787_9e33b747",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-31T19:36:57Z",
+      "side": 1,
+      "message": "This change is great for solving the issue at hand but let\u0027s have an offline discussion about the broader design decision of which direction to take on copying various objects before moving forward:",
+      "revId": "a9c019b1ee70e534032aa2dd4b39b1f7ededefb5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

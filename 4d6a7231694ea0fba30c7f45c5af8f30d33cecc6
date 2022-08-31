@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "70d10842_da438aec",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-31T19:36:57Z",
+      "side": 1,
+      "message": "Yeah, the more I look at it, the more it seems `OpCopyObject` and to a large extent `OpCopyLogical` just create aliases. One can substitute their result ID for the operand ID everywhere it\u0027s being used, and the program remains the same. It\u0027s a bit surprising that SPIRV-Tools\u0027 optimizer doesn\u0027t eliminate them all. It uses `OpCopyObject` a lot to replace instructions which have essentially become no-op. I guess the pass that cleans them up doesn\u0027t always run last...\n\nAnyway, for integer, floating-point, and pointer type objects we actually create a deep copy. This works fine and avoids having to deal with IDs potentially being aliases of one another (and in the case of `OpCopyLogical` their types actually *not* being aliases). What this change currently (PS3) does is add an associative map for just sampler ID aliases, which creates some inconsistency. We already know we should also handle image object copies. And I suspect we\u0027re not properly handling copying of structures which could contain pointers (if not currently allowed, we\u0027re likely to need it in the future).\n\nSo we should take a broader look at the design decisions. Either we start treating all copies as aliases, or represent opaque types in ways that support deep copying, or we conclude a hybrid approach is best.",
+      "parentUuid": "49c88ff4_d3f3d531",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 25
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ae05f6a0_d4e5d548",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1
@@ -97,6 +121,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "32487305_c5cfa7fc",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1189,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-31T19:36:57Z",
+      "side": 1,
+      "message": "I was thinking of populating the map during the first pass which takes place during the `SprivShader` constructor. This pass already calls non-const methods like `DeclareType()`.",
+      "parentUuid": "58517556_57a26597",
+      "range": {
+        "startLine": 1189,
+        "startChar": 0,
+        "endLine": 1189,
+        "endChar": 54
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d9ae001d_3267a5af",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 1
@@ -132,6 +180,30 @@
       "side": 1,
       "message": "It might, we may want to open a VK-GL-CTS issue to request coverage for this case.",
       "parentUuid": "d9ae001d_3267a5af",
+      "range": {
+        "startLine": 117,
+        "startChar": 40,
+        "endLine": 117,
+        "endChar": 48
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9175aa8_24271598",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-31T19:36:57Z",
+      "side": 1,
+      "message": "It\u0027s quite probable that the CTS does cover this but since we\u0027re always running the SPIRV-Tools optimizer most `OpCopyObject` instructions get eliminated.",
+      "parentUuid": "58826897_a2e46ddf",
       "range": {
         "startLine": 117,
         "startChar": 40,
