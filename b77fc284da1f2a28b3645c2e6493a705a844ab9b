@@ -16,6 +16,24 @@
       "message": "Just curious: what happens in the negative zero case?",
       "revId": "b77fc284da1f2a28b3645c2e6493a705a844ab9b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9bb42040_0234e383",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-31T16:56:15Z",
+      "side": 1,
+      "message": "In that case `isNotZero` is also `0x00000000`, so with `v \u003d 0x80000000` or a negative subnormal `(v \u0026 0x807FFFFF) | (0x3F000000 \u0026 isNotZero)` does nothing and the sign gets retained.",
+      "parentUuid": "78ba72a6_2808f05f",
+      "revId": "b77fc284da1f2a28b3645c2e6493a705a844ab9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
