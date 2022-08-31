@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38e205e5_2f2b1279",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-31T17:49:36Z",
+      "side": 1,
+      "message": "I think this is supposed to return the maximum we can support:\n\n\"`maxVariableDescriptorCount` is set to the maximum size of that descriptor that *can* be successfully created (which is greater than or equal to the requested size passed in)\"\n\n\"For the purposes of this command, a variable-sized descriptor binding with a `descriptorCount` of zero is treated as if the `descriptorCount` is one, and thus the binding is not ignored and the maximum descriptor count will be returned. If the layout is not supported, then the value written to `maxVariableDescriptorCount` is undefined.\"",
+      "range": {
+        "startLine": 380,
+        "startChar": 42,
+        "endLine": 381,
+        "endChar": 46
+      },
+      "revId": "5e73059a46c418d821be02e360e71303b5848040",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b3b1488_522a31bf",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-31T17:49:36Z",
+      "side": 1,
+      "message": "I don\u0027t think this part is needed.",
+      "range": {
+        "startLine": 385,
+        "startChar": 7,
+        "endLine": 385,
+        "endChar": 83
+      },
+      "revId": "5e73059a46c418d821be02e360e71303b5848040",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

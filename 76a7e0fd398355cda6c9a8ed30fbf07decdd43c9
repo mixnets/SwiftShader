@@ -54,6 +54,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "270b534c_cbe3a300",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-31T17:49:36Z",
+      "side": 1,
+      "message": "Thanks. Looks like I missed the dEQP code covering this when I first took a peek, but now I noticed variable `pDescriptorCounts` get exercised when supported. Seems sufficient.",
+      "parentUuid": "00958335_af8f41d5",
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4f2ca031_71f35700",
@@ -232,6 +250,30 @@
       "side": 1,
       "message": "We don\u0027t need this information past the allocation phase, so I\u0027m not sure the best approach would be to store it permanently in the structure.\nAlso, we need this information before we\u0027ve actually allocated the header.",
       "parentUuid": "1436e89b_55787deb",
+      "range": {
+        "startLine": 109,
+        "startChar": 45,
+        "endLine": 109,
+        "endChar": 79
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6206f5d8_8b55ac6c",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-08-31T17:49:36Z",
+      "side": 1,
+      "message": "Strictly speaking we don\u0027t need `DescriptorSetHeader` at all, at least not as part of the descriptor set allocation itself. But it has proven helpful for easy access to metadata, in particular for late JIT compilation. Also note we keep the layout around for longer than what the application must guarantee (b/155664177). So I\u0027m not worried about the extra overhead of one more variable per descriptor set. Knowing the size of variable descriptor binding arrays is useful even just for debugging or validating out-of-bounds accesses.",
+      "parentUuid": "b74f0f4f_33f65d3e",
       "range": {
         "startLine": 109,
         "startChar": 45,
