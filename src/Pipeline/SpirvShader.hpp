@@ -935,6 +935,7 @@ public:
 	uint32_t getWorkgroupSizeZ() const;
 
 	bool containsImageWrite() const { return imageWriteEmitted; }
+	bool getRobustBufferAccess() const { return robustBufferAccess; }
 
 	using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
 	std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> inputBuiltins;
