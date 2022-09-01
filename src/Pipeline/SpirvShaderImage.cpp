@@ -74,7 +74,7 @@ static vk::Format SpirvFormatToVulkanFormat(spv::ImageFormat format)
 	}
 }
 
-SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvShader &spirv)
+SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvShader &spirv, EmitState *state)
     : ImageInstructionSignature(parseVariantAndMethod(insn))
     , position(insn.distanceFrom(spirv.begin()))
 {
@@ -96,12 +96,12 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
 		else
 		{
 			Object::ID sampledImageId = insn.word(3);
-			const Object &sampledImage = spirv.getObject(sampledImageId);
 
-			if(sampledImage.opcode() == spv::OpSampledImage)
+			if(state->isSampledImage(sampledImageId))
 			{
-				imageId = sampledImage.definition.word(3);
-				samplerId = sampledImage.definition.word(4);
+				const SampledImage &sampledImage = state->getSampledImage(sampledImageId);
+				imageId = spirv.getObject(sampledImageId).definition.word(3);
+				samplerId = sampledImage.samplerId;
 			}
 			else  // Combined image/sampler
 			{
@@ -348,7 +348,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(const ImageInstruction &ins
 
 void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, const ImageInstruction &instruction, EmitState *state) const
 {
-	Pointer<Byte> imageDescriptor = state->getPointer(instruction.imageId).getUniformPointer();  // vk::SampledImageDescriptor*
+	Pointer<Byte> imageDescriptor = state->getImage(instruction.imageId).getUniformPointer();  // vk::SampledImageDescriptor*
 
 	Pointer<Byte> samplerFunction = lookupSamplerFunction(imageDescriptor, instruction, state);
 
@@ -1552,7 +1552,17 @@ SpirvShader::EmitResult SpirvShader::EmitSampledImageCombineOrSplit(InsnIterator
 	Object::ID resultId = insn.word(2);
 	Object::ID imageId = insn.word(3);
 
-	state->createPointer(resultId, state->getPointer(imageId));
+	if(insn.opcode() == spv::OpSampledImage)
+	{
+		// Create a sampled image, containing both a sampler and an image
+		Object::ID samplerId = insn.word(4);
+		state->createSampledImage(resultId, { state->getPointer(imageId), samplerId });
+	}
+	else // spv::OpImage
+	{
+		// Extract the image from a sampled image.
+		state->createPointer(resultId, state->getImage(imageId));
+	}
 
 	return EmitResult::Continue;
 }

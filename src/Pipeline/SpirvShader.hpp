@@ -153,6 +153,8 @@ private:
 
 class SpirvShader
 {
+	class EmitState;
+
 public:
 	SpirvBinary insns;
 
@@ -380,12 +382,22 @@ public:
 			// Pointer held by SpirvRoutine::pointers
 			Pointer,
 
+			// Combination of an image pointer and a sampler ID
+			SampledImage,
+
 			// A pointer to a vk::DescriptorSet*.
 			// Pointer held by SpirvRoutine::pointers.
 			DescriptorSet,
 		};
 
 		Kind kind = Kind::Unknown;
+	};
+
+	class SampledImage : public SIMD::Pointer
+	{
+	public:
+		SampledImage(SIMD::Pointer image, Object::ID sampler) : SIMD::Pointer(image), samplerId(sampler) {}
+		Object::ID samplerId;
 	};
 
 	// Block is an interval of SPIR-V instructions, starting with the
@@ -606,7 +618,7 @@ public:
 
 	struct ImageInstruction : public ImageInstructionSignature
 	{
-		ImageInstruction(InsnIterator insn, const SpirvShader &spirv);
+		ImageInstruction(InsnIterator insn, const SpirvShader &spirv, EmitState *state);
 
 		const uint32_t position;
 
@@ -1170,9 +1182,33 @@ private:
 			return it->second;
 		}
 
+		void createSampledImage(Object::ID id, SampledImage ptr)
+		{
+			bool added = sampledImages.emplace(id, ptr).second;
+			ASSERT_MSG(added, "Sampled image %d created twice", id.value());
+		}
+
+		SampledImage const &getSampledImage(Object::ID id) const
+		{
+			auto it = sampledImages.find(id);
+			ASSERT_MSG(it != sampledImages.end(), "Unknown sampled image %d", id.value());
+			return it->second;
+		}
+
+		bool isSampledImage(Object::ID id) const
+		{
+			return sampledImages.find(id) != sampledImages.end();
+		}
+
+		SIMD::Pointer const &getImage(Object::ID id) const
+		{
+			return isSampledImage(id) ? getSampledImage(id) : getPointer(id);
+		}
+
 	private:
 		std::unordered_map<Object::ID, Intermediate> intermediates;
 		std::unordered_map<Object::ID, SIMD::Pointer> pointers;
+		std::unordered_map<Object::ID, SampledImage> sampledImages;
 
 		const unsigned int multiSampleCount;
 	};
@@ -1239,6 +1275,18 @@ private:
 			return (pointer != nullptr);
 		}
 
+		const SampledImage &GetSampledImage(uint32_t i) const
+		{
+			ASSERT(intermediate == nullptr);
+
+			return sampledImage[i];
+		}
+
+		bool isSampledImage() const
+		{
+			return (sampledImage != nullptr);
+		}
+
 	private:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
 
@@ -1248,6 +1296,7 @@ private:
 		const uint32_t *constant;
 		const Intermediate *intermediate;
 		const SIMD::Pointer *pointer;
+		const SampledImage *sampledImage;
 
 	public:
 		const uint32_t componentCount;
