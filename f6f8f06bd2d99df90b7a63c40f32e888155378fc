@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d401ce60_d7fee2e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-01T16:16:09Z",
+      "side": 1,
+      "message": "Makes sense to me but I wonder if there was a specific reason for formatting only staged files. Sean do you recall?",
+      "revId": "f6f8f06bd2d99df90b7a63c40f32e888155378fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
