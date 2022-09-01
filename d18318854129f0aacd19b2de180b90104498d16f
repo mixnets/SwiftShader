@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95ff6c03_1a8a3102",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 278465,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-01T15:59:58Z",
+      "side": 1,
+      "message": "Requires running Regres on a system with libwayland-dev: cl/471541178",
+      "range": {
+        "startLine": 278465,
+        "startChar": 12,
+        "endLine": 278465,
+        "endChar": 19
+      },
+      "revId": "d18318854129f0aacd19b2de180b90104498d16f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "349fbf74_4b2bebf0",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-01T15:59:58Z",
+      "side": 1,
+      "message": "b/242264488",
+      "range": {
+        "startLine": 1,
+        "startChar": 17,
+        "endLine": 1,
+        "endChar": 48
+      },
+      "revId": "d18318854129f0aacd19b2de180b90104498d16f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
