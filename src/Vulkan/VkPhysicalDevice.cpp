@@ -447,6 +447,13 @@ static void getPhysicalDeviceExtendedDynamicStateFeaturesEXT(VkPhysicalDeviceExt
 	features->extendedDynamicState = VK_TRUE;
 }
 
+static void getPhysicalDeviceExtendedDynamicState2FeaturesEXT(VkPhysicalDeviceExtendedDynamicState2FeaturesEXT *features)
+{
+	features->extendedDynamicState2 = VK_TRUE;
+	features->extendedDynamicState2LogicOp = VK_FALSE;
+	features->extendedDynamicState2PatchControlPoints = VK_FALSE;
+}
+
 static void getPhysicalDevice4444FormatsFeaturesEXT(VkPhysicalDevice4444FormatsFeaturesEXT *features)
 {
 	features->formatA4R4G4B4 = VK_TRUE;
@@ -573,6 +580,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT:
 			getPhysicalDeviceExtendedDynamicStateFeaturesEXT(reinterpret_cast<VkPhysicalDeviceExtendedDynamicStateFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT:
+			getPhysicalDeviceExtendedDynamicState2FeaturesEXT(reinterpret_cast<VkPhysicalDeviceExtendedDynamicState2FeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES:
 			getPhysicalDevicePrivateDataFeatures(reinterpret_cast<VkPhysicalDevicePrivateDataFeatures *>(curExtension));
@@ -1567,6 +1577,15 @@ bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceExtendedDynamicSt
 	auto supported = getSupportedFeatures(requested);
 
 	return CheckFeature(requested, supported, extendedDynamicState);
+}
+
+bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDeviceExtendedDynamicState2FeaturesEXT *requested) const
+{
+	auto supported = getSupportedFeatures(requested);
+
+	return CheckFeature(requested, supported, extendedDynamicState2) &&
+	       CheckFeature(requested, supported, extendedDynamicState2LogicOp) &&
+	       CheckFeature(requested, supported, extendedDynamicState2PatchControlPoints);
 }
 
 bool PhysicalDevice::hasExtendedFeatures(const VkPhysicalDevicePrivateDataFeatures *requested) const
