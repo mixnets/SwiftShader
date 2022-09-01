@@ -506,6 +506,14 @@ static const std::vector<std::pair<const char *, std::unordered_map<std::string,
 	        MAKE_VULKAN_DEVICE_ENTRY(vkCmdSetStencilTestEnableEXT),
 	        MAKE_VULKAN_DEVICE_ENTRY(vkCmdSetViewportWithCountEXT),
 	    } },
+	// VK_EXT_extended_dynamic_state2
+	{
+	    VK_EXT_EXTENDED_DYNAMIC_STATE_2_EXTENSION_NAME,
+	    {
+	        MAKE_VULKAN_DEVICE_ENTRY(vkCmdSetRasterizerDiscardEnableEXT),
+	        MAKE_VULKAN_DEVICE_ENTRY(vkCmdSetDepthBiasEnableEXT),
+	        MAKE_VULKAN_DEVICE_ENTRY(vkCmdSetPrimitiveRestartEnableEXT),
+	    } },
 	// VK_EXT_line_rasterization
 	{
 	    VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME,
