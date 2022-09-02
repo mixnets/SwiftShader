@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "13048d10_5b62d758",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-02T18:21:47Z",
+      "side": 1,
+      "message": "There is, it\u0027s \"dEQP-VK.dynamic_rendering.primary_cmd_buff.random.seed*\" (mentioned in the description), but those still fail because of https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3877 (there\u0027s a fix under review, https://gerrit.khronos.org/c/vk-gl-cts/+/10043, which I was validating locally)",
+      "parentUuid": "7afb641b_3c830e45",
+      "revId": "4fe1d63250621e0b828b6d36b6d55fa2547169ad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f1845262_bc4773a1",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-09-02T18:13:20Z",
       "side": 1,
       "message": "Did an `ImageView::clear()` overload become unused now?",
+      "range": {
+        "startLine": 153,
+        "startChar": 17,
+        "endLine": 153,
+        "endChar": 22
+      },
+      "revId": "4fe1d63250621e0b828b6d36b6d55fa2547169ad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03c5415b_6b3e8ae8",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-02T18:21:47Z",
+      "side": 1,
+      "message": "No, it\u0027s still used in Framebuffer::executeLoadOp()",
+      "parentUuid": "f1845262_bc4773a1",
       "range": {
         "startLine": 153,
         "startChar": 17,
