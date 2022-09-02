@@ -16,6 +16,24 @@
       "message": "Makes sense to me but I wonder if there was a specific reason for formatting only staged files. Sean do you recall?",
       "revId": "f6f8f06bd2d99df90b7a63c40f32e888155378fc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21091d7e_08604fb1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2022-09-02T20:59:52Z",
+      "side": 1,
+      "message": "I can\u0027t recollect why I did it that way. It might\u0027ve been to avoid failing a commit because you had edited files that weren\u0027t in the commit? But it probably wasn\u0027t a strong reason.",
+      "parentUuid": "d401ce60_d7fee2e9",
+      "revId": "f6f8f06bd2d99df90b7a63c40f32e888155378fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ],
   "submitRequirementResults": [
