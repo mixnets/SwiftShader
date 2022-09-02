@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7afb641b_3c830e45",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-02T18:13:20Z",
+      "side": 1,
+      "message": "It appears there\u0027s no test coverage for this?",
+      "revId": "4fe1d63250621e0b828b6d36b6d55fa2547169ad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1845262_bc4773a1",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-02T18:13:20Z",
+      "side": 1,
+      "message": "Did an `ImageView::clear()` overload become unused now?",
+      "range": {
+        "startLine": 153,
+        "startChar": 17,
+        "endLine": 153,
+        "endChar": 22
+      },
+      "revId": "4fe1d63250621e0b828b6d36b6d55fa2547169ad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
