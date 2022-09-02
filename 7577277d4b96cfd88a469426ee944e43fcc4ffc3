@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e43a61a_526d8305",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-02T13:20:50Z",
+      "side": 1,
+      "message": "I\u0027m not sure there\u0027s much value in implementing that level of granularity at this point. If I understand correctly Chrome only has a use for pipelines which either have full robustness or no robustness enabled. I just want to make sure we\u0027re not adding unnecessary complexity.\n\nEven from the point of view of providing run-time detection of undefined behavior I think we have bigger fish to fry in the short term, for features that are known to be in use at Google.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 13
+      },
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fab19b1c_6d8c8f7c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-02T13:20:50Z",
+      "side": 1,
+      "message": "Add the line \"Tests: dEQP-VK.robustness.pipeline_robustness*\" to have Regres run these additional tests.",
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db971f6f_37aeca2e",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1355,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-02T13:20:50Z",
+      "side": 1,
+      "message": "Please add \"// TODO(b/162327166): Only provide robustness when requested.\"",
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b98b4837_9a221525",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-02T13:20:50Z",
+      "side": 1,
+      "message": "[[fallthrough]];",
+      "range": {
+        "startLine": 281,
+        "startChar": 63,
+        "endLine": 281,
+        "endChar": 64
+      },
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
