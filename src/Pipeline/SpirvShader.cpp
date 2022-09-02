@@ -2648,7 +2648,7 @@ SpirvShader::EmitResult SpirvShader::EmitCopyObject(InsnIterator insn, EmitState
 	auto src = Operand(this, state, insn.word(3));
 	if(src.isPointer())
 	{
-		state->createPointer(insn.resultId(), src.Pointer(0));
+		state->createPointer(insn.resultId(), src.Pointer());
 	}
 	else
 	{

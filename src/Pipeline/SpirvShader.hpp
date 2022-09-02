@@ -1227,11 +1227,11 @@ private:
 			return SIMD::UInt(constant[i]);
 		}
 
-		const SIMD::Pointer &Pointer(uint32_t i) const
+		const SIMD::Pointer &Pointer() const
 		{
 			ASSERT(intermediate == nullptr);
 
-			return pointer[i];
+			return *pointer;
 		}
 
 		bool isPointer() const
