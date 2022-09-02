@@ -1267,11 +1267,11 @@ private:
 			return SIMD::UInt(constant[i]);
 		}
 
-		const SIMD::Pointer &Pointer(uint32_t i) const
+		const SIMD::Pointer &Pointer() const
 		{
 			ASSERT(intermediate == nullptr);
 
-			return pointer[i];
+			return *pointer;
 		}
 
 		bool isPointer() const
@@ -1279,11 +1279,11 @@ private:
 			return (pointer != nullptr);
 		}
 
-		const SampledImagePointer &SampledImage(uint32_t i) const
+		const SampledImagePointer &SampledImage() const
 		{
 			ASSERT(intermediate == nullptr);
 
-			return sampledImage[i];
+			return *sampledImage;
 		}
 
 		bool isSampledImage() const
