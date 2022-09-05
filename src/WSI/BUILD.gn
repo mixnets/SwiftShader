@@ -14,6 +14,7 @@
 
 import("../swiftshader.gni")
 import("//build_overrides/wayland.gni")
+import("//build/config/ozone.gni")
 
 config("WSI_metal_weak_framework") {
   if (is_mac) {
@@ -34,7 +35,7 @@ swiftshader_source_set("WSI") {
     "VkSwapchainKHR.hpp",
   ]
 
-  if (is_linux) {
+  if (is_linux && ozone_platform_x11) {
     sources += [
       "XcbSurfaceKHR.cpp",
       "XcbSurfaceKHR.hpp",
