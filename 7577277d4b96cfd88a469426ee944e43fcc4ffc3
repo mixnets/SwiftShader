@@ -83,6 +83,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4930c524_e85456bb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-06T14:08:24Z",
+      "side": 1,
+      "message": "I assume you\u0027ve tested them locally? Seems fine to me to land this before the tests are merged, if we keep an eye on it.",
+      "parentUuid": "0c923967_1c8628e9",
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "db971f6f_37aeca2e",
@@ -155,6 +173,30 @@
       "side": 1,
       "message": "Is this a new style? fallthrough is only used elsewhere in SwiftShader when there\u0027s code before the fallthrough.",
       "parentUuid": "b98b4837_9a221525",
+      "range": {
+        "startLine": 281,
+        "startChar": 63,
+        "endLine": 281,
+        "endChar": 64
+      },
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a573621_3f260c8f",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-06T14:08:24Z",
+      "side": 1,
+      "message": "You\u0027re right, no need for `[[fallthrough]]` between consecutive cases. However, I think we should not have the `default` case result in the inherited behavior. In fact if we implemented `VK_EXT_robustness2` it would silently handle `VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_2_EXT` incorrectly.\n\nPlease make `default` result in `UNSUPPORTED()` and return `true` as the most conservative just-in-case Release build behavior.",
+      "parentUuid": "44bacebc_7092783d",
       "range": {
         "startLine": 281,
         "startChar": 63,
