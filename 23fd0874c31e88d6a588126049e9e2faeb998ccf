@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d484519d_88cd302c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-06T21:37:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "54732d64_75757c69",
+      "range": {
+        "startLine": 9,
+        "startChar": 8,
+        "endLine": 9,
+        "endChar": 19
+      },
+      "revId": "23fd0874c31e88d6a588126049e9e2faeb998ccf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "aab299b8_d509e959",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-09-06T15:17:21Z",
       "side": 1,
       "message": "The use of this sentinel value is a bit hacky. Can we instead separate determining the descriptor(s) from the cache lookup below? Perhaps using helper functions, one for the uniform case and one for the dynamically indexed case?",
+      "range": {
+        "startLine": 401,
+        "startChar": 35,
+        "endLine": 401,
+        "endChar": 50
+      },
+      "revId": "23fd0874c31e88d6a588126049e9e2faeb998ccf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e43dfb08_35d9a3c5",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-06T21:37:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aab299b8_d509e959",
       "range": {
         "startLine": 401,
         "startChar": 35,
