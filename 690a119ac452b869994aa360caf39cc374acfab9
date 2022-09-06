@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "367ac798_ed977771",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2817,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-06T14:46:47Z",
+      "side": 1,
+      "message": "spaces",
+      "range": {
+        "startLine": 2817,
+        "startChar": 0,
+        "endLine": 2817,
+        "endChar": 1
+      },
+      "revId": "690a119ac452b869994aa360caf39cc374acfab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8bd37733_98bb3d53",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1278,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-06T14:46:47Z",
+      "side": 1,
+      "message": "nit: Drop the `Get`. Other getters of this class also don\u0027t have an explicit \"get\", for succinctness and because `Operand` simply \"is\" one of these types instead of a collection of them that can all be retrieved.",
+      "range": {
+        "startLine": 1278,
+        "startChar": 22,
+        "endLine": 1278,
+        "endChar": 25
+      },
+      "revId": "690a119ac452b869994aa360caf39cc374acfab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d49b3e2_57648e29",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-06T14:46:47Z",
+      "side": 1,
+      "message": "This could use a comment which explains that `sampledImageId` is either the result of an `OpSampledImage` instruction or an externally combined sampler and image.\n\nAnother way to avoid this somewhat confusing distinction made here would be to add externally combined sampler/image to the `sampledImages` map as well. That may even be necessary for correctly dealing with `OpCopyObject` of these sampled images as well?",
+      "revId": "690a119ac452b869994aa360caf39cc374acfab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d551a920_e118ca7a",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1555,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-06T14:46:47Z",
+      "side": 1,
+      "message": "I think this was clearer when split into two methods.",
+      "range": {
+        "startLine": 1555,
+        "startChar": 18,
+        "endLine": 1555,
+        "endChar": 20
+      },
+      "revId": "690a119ac452b869994aa360caf39cc374acfab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
