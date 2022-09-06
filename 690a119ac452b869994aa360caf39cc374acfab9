@@ -47,6 +47,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4aa1b43_f2e623d9",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1278,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-06T21:36:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8bd37733_98bb3d53",
+      "range": {
+        "startLine": 1278,
+        "startChar": 22,
+        "endLine": 1278,
+        "endChar": 25
+      },
+      "revId": "690a119ac452b869994aa360caf39cc374acfab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9d49b3e2_57648e29",
@@ -64,6 +88,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc722e35_6af1eee5",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-06T21:36:51Z",
+      "side": 1,
+      "message": "AFAIK, as long as the imageId and samplerId match, they both use the same pointer and we don\u0027t have to do anything specific in this case, so I\u0027m not sure we\u0027d gain anything from adding them to the map. I\u0027ll add a comment for onw.",
+      "parentUuid": "9d49b3e2_57648e29",
+      "revId": "690a119ac452b869994aa360caf39cc374acfab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d551a920_e118ca7a",
@@ -77,6 +119,30 @@
       "writtenOn": "2022-09-06T14:46:47Z",
       "side": 1,
       "message": "I think this was clearer when split into two methods.",
+      "range": {
+        "startLine": 1555,
+        "startChar": 18,
+        "endLine": 1555,
+        "endChar": 20
+      },
+      "revId": "690a119ac452b869994aa360caf39cc374acfab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1aa13ccd_b3cd2aa1",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1555,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-06T21:36:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d551a920_e118ca7a",
       "range": {
         "startLine": 1555,
         "startChar": 18,
