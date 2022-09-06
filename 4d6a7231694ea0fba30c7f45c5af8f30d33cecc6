@@ -120,6 +120,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b428b28d_481f62b7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-06T21:38:59Z",
+      "side": 1,
+      "message": "New version.",
+      "parentUuid": "54d39865_fad69cf1",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 25
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ae05f6a0_d4e5d548",
@@ -181,6 +205,30 @@
       "side": 1,
       "message": "I was thinking of populating the map during the first pass which takes place during the `SprivShader` constructor. This pass already calls non-const methods like `DeclareType()`.",
       "parentUuid": "58517556_57a26597",
+      "range": {
+        "startLine": 1189,
+        "startChar": 0,
+        "endLine": 1189,
+        "endChar": 54
+      },
+      "revId": "4d6a7231694ea0fba30c7f45c5af8f30d33cecc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d87d29c8_c6cd8b02",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1189,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-06T21:38:59Z",
+      "side": 1,
+      "message": "New version.",
+      "parentUuid": "32487305_c5cfa7fc",
       "range": {
         "startLine": 1189,
         "startChar": 0,
