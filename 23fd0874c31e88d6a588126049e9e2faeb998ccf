@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54732d64_75757c69",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-06T15:17:21Z",
+      "side": 1,
+      "message": "This could use a bit of clarification of how it\u0027s implemented, namely by repeating the sampling operation per lane, leaving room for future optimization when some of them or all of them don\u0027t diverge.",
+      "range": {
+        "startLine": 9,
+        "startChar": 8,
+        "endLine": 9,
+        "endChar": 19
+      },
+      "revId": "23fd0874c31e88d6a588126049e9e2faeb998ccf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aab299b8_d509e959",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-06T15:17:21Z",
+      "side": 1,
+      "message": "The use of this sentinel value is a bit hacky. Can we instead separate determining the descriptor(s) from the cache lookup below? Perhaps using helper functions, one for the uniform case and one for the dynamically indexed case?",
+      "range": {
+        "startLine": 401,
+        "startChar": 35,
+        "endLine": 401,
+        "endChar": 50
+      },
+      "revId": "23fd0874c31e88d6a588126049e9e2faeb998ccf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
