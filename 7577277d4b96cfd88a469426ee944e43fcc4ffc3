@@ -101,6 +101,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6be3090_a692b47a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-06T18:36:22Z",
+      "side": 1,
+      "message": "I\u0027ve tested them with ANGLE: https://chromium-review.googlesource.com/c/angle/angle/+/3872507\n\nIt caught an ANGLE bug. There\u0027s still an x86 failure, which I haven\u0027t looked into, but it\u0027s on the same test that found the ANGLE bug (so maybe something still left to do).\n\nI haven\u0027t tested with the Vulkan CTS though, no. It doesn\u0027t merge cleanly. I\u0027ve followed up with the CTS folks to get that merged, but I\u0027ll do it if there\u0027s no progress on that front.",
+      "parentUuid": "4930c524_e85456bb",
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "db971f6f_37aeca2e",
@@ -197,6 +215,30 @@
       "side": 1,
       "message": "You\u0027re right, no need for `[[fallthrough]]` between consecutive cases. However, I think we should not have the `default` case result in the inherited behavior. In fact if we implemented `VK_EXT_robustness2` it would silently handle `VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_2_EXT` incorrectly.\n\nPlease make `default` result in `UNSUPPORTED()` and return `true` as the most conservative just-in-case Release build behavior.",
       "parentUuid": "44bacebc_7092783d",
+      "range": {
+        "startLine": 281,
+        "startChar": 63,
+        "endLine": 281,
+        "endChar": 64
+      },
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "34bb6ea4_7efe03c3",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-06T18:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a573621_3f260c8f",
       "range": {
         "startLine": 281,
         "startChar": 63,
