@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6145c8f_bfac8796",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-07T19:03:16Z",
+      "side": 1,
+      "message": "IIUC, VkGraphicsPipelineCreateInfo can be extended with VkPipelineLibraryCreateInfoKHR, so shouldn\u0027t VK_STRUCTURE_TYPE_PIPELINE_LIBRARY_CREATE_INFO_KHR be handled in GraphicsState::GraphicsState()?",
+      "revId": "7a9591613e92816c76900fdc39093ae3a95143bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
