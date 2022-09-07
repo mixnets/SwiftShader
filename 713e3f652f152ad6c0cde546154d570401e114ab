@@ -16,6 +16,52 @@
       "message": "New version. PTAL.",
       "revId": "713e3f652f152ad6c0cde546154d570401e114ab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3f61219_4314f69c",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T13:47:48Z",
+      "side": 1,
+      "message": "You can just set it to `true` if `VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT` is encountered and early-out of this loop with a `break` instead of adding it to the loop condition.",
+      "range": {
+        "startLine": 381,
+        "startChar": 32,
+        "endLine": 381,
+        "endChar": 34
+      },
+      "revId": "713e3f652f152ad6c0cde546154d570401e114ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b21ac598_30198a49",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T13:47:48Z",
+      "side": 1,
+      "message": "`vk::MAX_UPDATE_AFTER_BIND_DESCRIPTORS` - see https://swiftshader-review.googlesource.com/c/SwiftShader/+/67811/6/src/Vulkan/VkPhysicalDevice.cpp#1172",
+      "range": {
+        "startLine": 405,
+        "startChar": 159,
+        "endLine": 405,
+        "endChar": 169
+      },
+      "revId": "713e3f652f152ad6c0cde546154d570401e114ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }

@@ -308,6 +308,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d08c9c04_6c356a94",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T13:47:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1429c476_9dba8784",
+      "range": {
+        "startLine": 109,
+        "startChar": 45,
+        "endLine": 109,
+        "endChar": 79
+      },
+      "revId": "76a7e0fd398355cda6c9a8ed30fbf07decdd43c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5591d5b6_5d7c71db",
