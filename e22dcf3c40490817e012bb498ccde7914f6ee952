@@ -140,6 +140,24 @@
       "parentUuid": "78317696_9fa11a11",
       "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71632694_ffc313eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101506
+      },
+      "writtenOn": "2022-09-07T15:14:58Z",
+      "side": 1,
+      "message": "Although, if import(\"//build/config/ozone.gni\") will pass tests of standalone swiftshader, I can drop x11.gni, and use ozone.gni",
+      "parentUuid": "7f083050_9d5b365e",
+      "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
