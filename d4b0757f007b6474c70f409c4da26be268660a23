@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d287b0e3_3b6b2fa5",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1172,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T13:47:37Z",
+      "side": 1,
+      "message": "Let\u0027s put this in a `VkConfig.hpp` constant (`vk::MAX_UPDATE_AFTER_BIND_DESCRIPTORS`) and also use it as the reported maximum in https://swiftshader-review.googlesource.com/c/SwiftShader/+/67748",
+      "range": {
+        "startLine": 1172,
+        "startChar": 55,
+        "endLine": 1172,
+        "endChar": 61
+      },
+      "revId": "d4b0757f007b6474c70f409c4da26be268660a23",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
