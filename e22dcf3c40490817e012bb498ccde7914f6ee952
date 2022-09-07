@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "72d293c4_c41e2366",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T14:31:06Z",
+      "side": 1,
+      "message": "\"Bug: chromium:578890\" too, see https://swiftshader-review.googlesource.com/c/SwiftShader/+/68008",
+      "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "c0a61ed3_43e9e3e6",
@@ -86,6 +103,23 @@
       "side": 1,
       "message": "Yes, please make changes in chromium and/or other projects first to avoid issues \"rolling\" SwiftShader forward.\n\nI suggest perhaps reaching out to graphics-dev@chromium.org to discuss whether the addition of a new .gni file is the best approach.",
       "parentUuid": "f6053c15_f8bddb1a",
+      "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "78317696_9fa11a11",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T14:31:06Z",
+      "side": 1,
+      "message": "Yaroslav are you still working on this?",
       "revId": "e22dcf3c40490817e012bb498ccde7914f6ee952",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
