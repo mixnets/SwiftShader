@@ -231,7 +231,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 		const vk::Attachments attachments = pipeline->getAttachments();
 
 		vertexState = vertexProcessor.update(pipelineState, vertexShader, inputs);
-		vertexRoutine = vertexProcessor.routine(vertexState, pipelineState.getPipelineLayout(), vertexShader, inputs.getDescriptorSets());
+		vertexRoutine = vertexProcessor.routine(vertexState, preRasterizationState->getPipelineLayout(), vertexShader, inputs.getDescriptorSets());
 
 		if(!hasRasterizerDiscard)
 		{
@@ -239,7 +239,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 			setupRoutine = setupProcessor.routine(setupState);
 
 			pixelState = pixelProcessor.update(pipelineState, fragmentShader, vertexShader, attachments, hasOcclusionQuery());
-			pixelRoutine = pixelProcessor.routine(pixelState, pipelineState.getPipelineLayout(), fragmentShader, inputs.getDescriptorSets());
+			pixelRoutine = pixelProcessor.routine(pixelState, fragmentState->getPipelineLayout(), fragmentShader, inputs.getDescriptorSets());
 		}
 	}
 
@@ -264,7 +264,8 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	draw->indexType = pipeline->getIndexBuffer().getIndexType();
 	draw->lineRasterizationMode = preRasterizationState->getLineRasterizationMode();
 	draw->descriptorSetObjects = inputs.getDescriptorSetObjects();
-	draw->pipelineLayout = pipelineState.getPipelineLayout();
+	draw->preRasterizationPipelineLayout = preRasterizationState->getPipelineLayout();
+	draw->fragmentPipelineLayout = fragmentState->getPipelineLayout();
 	draw->depthClipEnable = preRasterizationState->getDepthClipEnable();
 	draw->depthClipNegativeOneToOne = preRasterizationState->getDepthClipNegativeOneToOne();
 	data->lineWidth = preRasterizationState->getLineWidth();
@@ -287,6 +288,8 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	data->baseVertex = baseVertex;
 
 	draw->vertexRoutine = vertexRoutine;
+
+	vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->preRasterizationPipelineLayout, device);
 
 	// Viewport
 	{
@@ -467,6 +470,11 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 				data->stencilSliceB = attachments.stencilBuffer->slicePitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
 			}
 		}
+
+		if(draw->fragmentPipelineLayout != draw->preRasterizationPipelineLayout)
+		{
+			vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->fragmentPipelineLayout, device);
+		}
 	}
 
 	// Push constants
@@ -475,8 +483,6 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	}
 
 	draw->events = events;
-
-	vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->pipelineLayout, device);
 
 	DrawCall::run(device, draw, &drawTickets, clusterQueues);
 }
@@ -508,7 +514,7 @@ void DrawCall::teardown(vk::Device *device)
 
 	if(preRasterizationContainsImageWrite)
 	{
-		vk::DescriptorSet::ContentsChanged(descriptorSetObjects, pipelineLayout, device);
+		vk::DescriptorSet::ContentsChanged(descriptorSetObjects, preRasterizationPipelineLayout, device);
 	}
 
 	if(!data->rasterizerDiscard)
@@ -530,10 +536,12 @@ void DrawCall::teardown(vk::Device *device)
 			}
 		}
 
-		// If pre-rasterization also contains image writes, don't double-notify the descriptor set.
-		if(fragmentContainsImageWrite && !preRasterizationContainsImageWrite)
+		// If pre-rasterization and fragment use the same pipeline, and pre-rasterization
+		// also contains image writes, don't double-notify the descriptor set.
+		const bool descSetAlreadyNotified = preRasterizationContainsImageWrite && fragmentPipelineLayout == preRasterizationPipelineLayout;
+		if(fragmentContainsImageWrite && !descSetAlreadyNotified)
 		{
-			vk::DescriptorSet::ContentsChanged(descriptorSetObjects, pipelineLayout, device);
+			vk::DescriptorSet::ContentsChanged(descriptorSetObjects, fragmentPipelineLayout, device);
 		}
 	}
 }
