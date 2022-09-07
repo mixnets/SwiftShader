@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a1935de_f4471a36",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1288,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T13:25:06Z",
+      "side": 1,
+      "message": "Can also be a `SampledImageDescriptor` now.",
+      "range": {
+        "startLine": 1288,
+        "startChar": 62,
+        "endLine": 1288,
+        "endChar": 84
+      },
+      "revId": "bcb13b9039c7c18b30f4ac7cd9c4c47dbaeb4d6d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96ff0933_87edcfb8",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1288,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T13:25:06Z",
+      "side": 1,
+      "message": "nit: `imageDescriptor` would be a helpful distinction now.",
+      "range": {
+        "startLine": 1288,
+        "startChar": 16,
+        "endLine": 1288,
+        "endChar": 27
+      },
+      "revId": "bcb13b9039c7c18b30f4ac7cd9c4c47dbaeb4d6d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e84c2492_9d3b2d98",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1309,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T13:25:06Z",
+      "side": 1,
+      "message": "nit: imageDescriptor",
+      "range": {
+        "startLine": 1309,
+        "startChar": 17,
+        "endLine": 1309,
+        "endChar": 28
+      },
+      "revId": "bcb13b9039c7c18b30f4ac7cd9c4c47dbaeb4d6d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

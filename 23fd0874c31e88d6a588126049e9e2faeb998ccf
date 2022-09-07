@@ -93,6 +93,30 @@
       },
       "revId": "23fd0874c31e88d6a588126049e9e2faeb998ccf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd8cedf6_07dc1efd",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T13:25:06Z",
+      "side": 1,
+      "message": "Thanks, looks much better!",
+      "parentUuid": "e43dfb08_35d9a3c5",
+      "range": {
+        "startLine": 401,
+        "startChar": 35,
+        "endLine": 401,
+        "endChar": 50
+      },
+      "revId": "23fd0874c31e88d6a588126049e9e2faeb998ccf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
