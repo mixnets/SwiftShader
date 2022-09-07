@@ -16,6 +16,24 @@
       "message": "IIUC, VkGraphicsPipelineCreateInfo can be extended with VkPipelineLibraryCreateInfoKHR, so shouldn\u0027t VK_STRUCTURE_TYPE_PIPELINE_LIBRARY_CREATE_INFO_KHR be handled in GraphicsState::GraphicsState()?",
       "revId": "7a9591613e92816c76900fdc39093ae3a95143bc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c244994_7922ad0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-07T19:10:08Z",
+      "side": 1,
+      "message": "But that\u0027s not useful until paired with VK_EXT_graphics_pipeline_library. Like what could SwiftShader do with `VkPipelineLibraryCreateInfoKHR`? I don\u0027t think accepting it and not doing anything is meaningful either.\n\nPoint is, there is no mechanism to create libraries yet, so this extension (pre-requisite somehow) that allows the libraries to be _used_ is no-op until the other is done.",
+      "parentUuid": "a6145c8f_bfac8796",
+      "revId": "7a9591613e92816c76900fdc39093ae3a95143bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
