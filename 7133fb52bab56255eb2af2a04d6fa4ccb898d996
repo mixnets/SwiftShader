@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0d8bdf3_123891ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-07T18:34:31Z",
+      "side": 1,
+      "message": "Kokoro failure is a Mac flake.",
+      "revId": "7133fb52bab56255eb2af2a04d6fa4ccb898d996",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
