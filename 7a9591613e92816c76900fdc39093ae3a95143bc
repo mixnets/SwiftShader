@@ -52,6 +52,24 @@
       "parentUuid": "0c244994_7922ad0d",
       "revId": "7a9591613e92816c76900fdc39093ae3a95143bc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd553c40_f301977c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-07T19:28:24Z",
+      "side": 1,
+      "message": "and we usually don\u0027t expose an extension if the corresponding structure(s), if any, aren\u0027t handled (even if they do nothing).",
+      "parentUuid": "fab1ecd3_acd2ea63",
+      "revId": "7a9591613e92816c76900fdc39093ae3a95143bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
