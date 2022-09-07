@@ -160,7 +160,8 @@ struct DrawCall
 	VertexProcessor::RoutineType vertexRoutine;
 	SetupProcessor::RoutineType setupRoutine;
 	PixelProcessor::RoutineType pixelRoutine;
-	bool containsImageWrite;
+	bool preRasterizationContainsImageWrite;
+	bool fragmentContainsImageWrite;
 
 	SetupFunction setupPrimitives;
 	SetupProcessor::State setupState;
@@ -169,7 +170,8 @@ struct DrawCall
 	vk::ImageView *depthBuffer;
 	vk::ImageView *stencilBuffer;
 	vk::DescriptorSet::Array descriptorSetObjects;
-	const vk::PipelineLayout *pipelineLayout;
+	const vk::PipelineLayout *preRasterizationPipelineLayout;
+	const vk::PipelineLayout *fragmentPipelineLayout;
 	sw::CountedEvent *events;
 
 	vk::Query *occlusionQuery;

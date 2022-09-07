@@ -320,21 +320,52 @@ Pipeline::Pipeline(PipelineLayout *layout, Device *device, bool robustBufferAcce
     , device(device)
     , robustBufferAccess(robustBufferAccess)
 {
-	layout->incRefCount();
+	if(layout)
+	{
+		layout->incRefCount();
+	}
 }
 
 void Pipeline::destroy(const VkAllocationCallbacks *pAllocator)
 {
 	destroyPipeline(pAllocator);
 
-	vk::release(static_cast<VkPipelineLayout>(*layout), pAllocator);
+	if(layout)
+	{
+		vk::release(static_cast<VkPipelineLayout>(*layout), pAllocator);
+	}
 }
 
 GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateInfo, void *mem, Device *device)
     : Pipeline(vk::Cast(pCreateInfo->layout), device, getPipelineRobustBufferAccess(pCreateInfo->pNext, device))
     , state(device, pCreateInfo, layout)
-    , inputs(pCreateInfo->pVertexInputState)
 {
+	// Either the vertex input interface comes from a pipeline library, or the
+	// VkGraphicsPipelineCreateInfo itself.  Same with shaders.
+	const auto *libraryCreateInfo = GetExtendedStruct<VkPipelineLibraryCreateInfoKHR>(pCreateInfo->pNext, VK_STRUCTURE_TYPE_PIPELINE_LIBRARY_CREATE_INFO_KHR);
+	if(libraryCreateInfo)
+	{
+		for(uint32_t i = 0; i < libraryCreateInfo->libraryCount; ++i)
+		{
+			const auto *library = static_cast<const vk::GraphicsPipeline *>(vk::Cast(libraryCreateInfo->pLibraries[i]));
+			if(library->state.hasVertexInputInterfaceState())
+			{
+				inputs = library->inputs;
+			}
+			if(library->state.hasPreRasterizationState())
+			{
+				vertexShader = library->vertexShader;
+			}
+			if(library->state.hasFragmentState())
+			{
+				fragmentShader = library->fragmentShader;
+			}
+		}
+	}
+	else if(state.hasVertexInputInterfaceState())
+	{
+		inputs.initialize(pCreateInfo->pVertexInputState);
+	}
 }
 
 void GraphicsPipeline::destroyPipeline(const VkAllocationCallbacks *pAllocator)
@@ -357,10 +388,14 @@ void GraphicsPipeline::getIndexBuffers(const vk::DynamicState &dynamicState, uin
 	indexBuffer.getIndexBuffers(topology, count, first, indexed, hasPrimitiveRestartEnable, indexBuffers);
 }
 
-bool GraphicsPipeline::containsImageWrite() const
+bool GraphicsPipeline::preRasterizationContainsImageWrite() const
 {
-	return (vertexShader.get() && vertexShader->containsImageWrite()) ||
-	       (fragmentShader.get() && fragmentShader->containsImageWrite());
+	return vertexShader.get() && vertexShader->containsImageWrite();
+}
+
+bool GraphicsPipeline::fragmentContainsImageWrite() const
+{
+	return fragmentShader.get() && fragmentShader->containsImageWrite();
 }
 
 void GraphicsPipeline::setShader(const VkShaderStageFlagBits &stage, const std::shared_ptr<sw::SpirvShader> spirvShader)
