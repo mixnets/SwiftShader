@@ -50,6 +50,24 @@
       "message": "can I submit to CQ myself, then?",
       "revId": "8e79abc1b86314476d7599622a0be1066dddb911",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b50abaae_718a6793",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T18:12:48Z",
+      "side": 1,
+      "message": "Yes, I\u0027ve provided you with submit privileges so please go ahead. Let me know if you encounter issues. Thanks for the contribution!",
+      "parentUuid": "83394f07_3e8a43d6",
+      "revId": "8e79abc1b86314476d7599622a0be1066dddb911",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
