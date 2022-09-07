@@ -57,6 +57,7 @@ public:
 	bool hasExtendedFeatures(const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *requested) const;
 	bool hasExtendedFeatures(const VkPhysicalDeviceDescriptorIndexingFeatures *requested) const;
 	bool hasExtendedFeatures(const VkPhysicalDevicePipelineRobustnessFeaturesEXT *requested) const;
+	bool hasExtendedFeatures(const VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT *requested) const;
 
 	const VkPhysicalDeviceProperties &getProperties() const;
 	void getProperties(VkPhysicalDeviceIDProperties *properties) const;
@@ -92,6 +93,7 @@ public:
 	void getProperties(VkPhysicalDeviceTexelBufferAlignmentProperties *properties) const;
 	void getProperties(VkPhysicalDeviceShaderIntegerDotProductProperties *properties) const;
 	void getProperties(VkPhysicalDevicePipelineRobustnessPropertiesEXT *properties) const;
+	void getProperties(VkPhysicalDeviceGraphicsPipelineLibraryPropertiesEXT *properties) const;
 	void getProperties(VkPhysicalDeviceVulkan11Properties *properties) const;
 	void getProperties(VkPhysicalDeviceVulkan12Properties *properties) const;
 	void getProperties(VkPhysicalDeviceVulkan13Properties *properties) const;
