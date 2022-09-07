@@ -22,6 +22,30 @@
       },
       "revId": "61d6baa74e9462a74332046f7c40876b692c848c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "528d61e3_ec2dccaa",
+        "filename": "src/WSI/BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 7273
+      },
+      "writtenOn": "2022-09-07T05:10:07Z",
+      "side": 1,
+      "message": "\u003e This also skips adding Wayland source files at line 47. Is that intentional? \nOh, my fault. it is not intentional.\n\n\u003e https://swiftshader-review.googlesource.com/c/SwiftShader/+/67008\nWill close my CL in favor of that one.",
+      "parentUuid": "eb2b8f02_560a7683",
+      "range": {
+        "startLine": 38,
+        "startChar": 14,
+        "endLine": 38,
+        "endChar": 36
+      },
+      "revId": "61d6baa74e9462a74332046f7c40876b692c848c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
