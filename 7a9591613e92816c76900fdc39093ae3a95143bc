@@ -34,6 +34,24 @@
       "parentUuid": "a6145c8f_bfac8796",
       "revId": "7a9591613e92816c76900fdc39093ae3a95143bc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fab1ecd3_acd2ea63",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-07T19:26:17Z",
+      "side": 1,
+      "message": "I only meant that this will return UNSUPPORTED at the moment instead of being ignored:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Device/Context.cpp;l\u003d490",
+      "parentUuid": "0c244994_7922ad0d",
+      "revId": "7a9591613e92816c76900fdc39093ae3a95143bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
