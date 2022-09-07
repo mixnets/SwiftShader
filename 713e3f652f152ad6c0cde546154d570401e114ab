@@ -91,6 +91,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0dec45b2_8e503455",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T14:15:24Z",
+      "side": 1,
+      "message": "Yes but it looks very weird here in my opinion. The outer while is fine.",
+      "parentUuid": "d473f765_881be757",
+      "range": {
+        "startLine": 381,
+        "startChar": 32,
+        "endLine": 381,
+        "endChar": 34
+      },
+      "revId": "713e3f652f152ad6c0cde546154d570401e114ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b21ac598_30198a49",
         "filename": "src/Vulkan/VkDevice.cpp",
         "patchSetId": 3
@@ -149,6 +173,30 @@
       "writtenOn": "2022-09-07T14:15:12Z",
       "side": 1,
       "message": "Done",
+      "parentUuid": "229001bf_7968b5c2",
+      "range": {
+        "startLine": 405,
+        "startChar": 159,
+        "endLine": 405,
+        "endChar": 169
+      },
+      "revId": "713e3f652f152ad6c0cde546154d570401e114ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3d1e026_df81e645",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T14:15:24Z",
+      "side": 1,
+      "message": "My understanding is that \"bindless\" resource management always uses this variable descriptor array feature to create lots of them. It\u0027s the same limit as far as I can know.\n\nThe spec states that this is the \" maximum size of that descriptor that can be successfully created\" which I\u0027m interpreting as an expectation that it will successfully allocate (unless we\u0027re already close to out-of-memory). So `UINT32_MAX` won\u0027t work if applications try to get as many as they can.",
       "parentUuid": "229001bf_7968b5c2",
       "range": {
         "startLine": 405,
