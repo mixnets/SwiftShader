@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7ae0d59_e84873dc",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1170,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-07T14:41:32Z",
+      "side": 1,
+      "message": "nit: Could be moved to `VkConfig.hpp`",
+      "range": {
+        "startLine": 1170,
+        "startChar": 4,
+        "endLine": 1170,
+        "endChar": 9
+      },
+      "revId": "b0255cd6cf36e3d249f7cd4047bdb3d3616d0d3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
