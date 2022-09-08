@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fb81424_3f999dcc",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-08T19:59:56Z",
+      "side": 1,
+      "message": "This should be an assertion IMO",
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
