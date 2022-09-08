@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58ac157d_dcc47650",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-08T23:19:21Z",
+      "side": 1,
+      "message": "How does dEQP deal with it if we just silently ignore them instead (a la https://gitlab.khronos.org/vulkan/vulkan/-/issues/2442) ?",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 6
+      },
+      "revId": "1598a35a4c2fa1aa0797375d6a2f2fd2dfb3d159",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91d0138b_62b82c79",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-08T23:19:21Z",
+      "side": 1,
+      "message": "Just b/242264488",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 16
+      },
+      "revId": "1598a35a4c2fa1aa0797375d6a2f2fd2dfb3d159",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "094b764b_1780dac5",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 616,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-08T23:19:21Z",
+      "side": 1,
+      "message": "We don\u0027t support this.",
+      "range": {
+        "startLine": 616,
+        "startChar": 118,
+        "endLine": 616,
+        "endChar": 125
+      },
+      "revId": "1598a35a4c2fa1aa0797375d6a2f2fd2dfb3d159",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
