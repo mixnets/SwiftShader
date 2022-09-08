@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7cd40ed_8de0eef6",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 58075,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-08T12:44:08Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/67748 - note these tests are specific to use-after-bind support (aka. bindless).",
+      "range": {
+        "startLine": 58075,
+        "startChar": 38,
+        "endLine": 58075,
+        "endChar": 50
+      },
+      "revId": "ca0be349dbf2cb130064715a344fbc9725c65942",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d2e45a5_353e0a8c",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 79557,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-08T12:44:08Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/67811",
+      "range": {
+        "startLine": 79557,
+        "startChar": 8,
+        "endLine": 79557,
+        "endChar": 27
+      },
+      "revId": "ca0be349dbf2cb130064715a344fbc9725c65942",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
