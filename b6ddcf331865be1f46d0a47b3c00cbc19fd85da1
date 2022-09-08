@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bed8ce1f_e084162d",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-08T15:21:55Z",
+      "side": 0,
+      "message": "Fixed by https://gerrit.khronos.org/c/vk-gl-cts/+/9951\nRelated issue: https://b.corp.google.com/issues/202873887",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 112
+      },
+      "revId": "b6ddcf331865be1f46d0a47b3c00cbc19fd85da1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
