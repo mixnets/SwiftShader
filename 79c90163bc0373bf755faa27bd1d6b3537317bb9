@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2064b4fa_eb694178",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-08T21:10:59Z",
+      "side": 1,
+      "message": "The change is mostly fine, I just have one discussion point for Nicolas regarding the GetExtendedStruct() helper function.",
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7fb81424_3f999dcc",
@@ -14,6 +31,47 @@
       "writtenOn": "2022-09-08T19:59:56Z",
       "side": 1,
       "message": "This should be an assertion IMO",
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b72f046d_3c5837e4",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-08T21:10:59Z",
+      "side": 1,
+      "message": "You can change it to an assert.",
+      "parentUuid": "7fb81424_3f999dcc",
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a02d123_b5258f65",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-08T21:10:59Z",
+      "side": 1,
+      "message": "The one danger with this is that these structures are usually pre-parsed in libVulkan.cpp to make sure we aren\u0027t receiving an unexpected pNext pointer, so by the time we query them for a specific pNext pointer, we already know that there\u0027s no funny business going on in here. It is just a helper function, though, and as it is used now, it\u0027s fine. Nicolas, WDYT?",
+      "range": {
+        "startLine": 168,
+        "startChar": 9,
+        "endLine": 168,
+        "endChar": 26
+      },
       "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
