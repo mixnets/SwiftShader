@@ -119,6 +119,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1792172d_2902b588",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-09T14:57:46Z",
+      "side": 1,
+      "message": "Does the offer still stand to merge this before the CTS (+ keep an eye)? It\u0027ll help generate less conflict with the rest of my work.",
+      "parentUuid": "c6be3090_a692b47a",
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "db971f6f_37aeca2e",
