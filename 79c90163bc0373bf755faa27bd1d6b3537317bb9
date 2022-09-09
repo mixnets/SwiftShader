@@ -58,6 +58,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "89122415_2430c4c9",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 627,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-09T13:47:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aef0ae19_fb79d06a",
+      "range": {
+        "startLine": 627,
+        "startChar": 3,
+        "endLine": 627,
+        "endChar": 7
+      },
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7fb81424_3f999dcc",
@@ -107,6 +131,24 @@
       "side": 1,
       "message": "Yes, please do. `VUID-VkWriteDescriptorSet-descriptorType-02221` mandates this struct and we shouldn\u0027t silently ignore it when it\u0027s missing.",
       "parentUuid": "b72f046d_3c5837e4",
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00989c07_74591bd0",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-09T13:47:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b407549b_503d1baa",
       "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
