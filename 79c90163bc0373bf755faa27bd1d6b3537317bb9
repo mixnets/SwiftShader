@@ -74,6 +74,30 @@
       },
       "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5720d8fb_fa500d31",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-09T02:07:28Z",
+      "side": 1,
+      "message": "I specifically didn\u0027t touch places that go through the entire pNext chain (and also assert when there\u0027s something unexpected). This helper is used in a few bits of code that go through the pNext chain and look for a (potentially) optional struct. It\u0027s refactoring existing duplicate code for this purpose.",
+      "parentUuid": "1a02d123_b5258f65",
+      "range": {
+        "startLine": 168,
+        "startChar": 9,
+        "endLine": 168,
+        "endChar": 26
+      },
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
