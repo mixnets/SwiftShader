@@ -48,6 +48,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b31b231_fd8b8604",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-09T19:25:18Z",
+      "side": 1,
+      "message": "Looks like we can\u0027t just ignore the structures based on the Regres results.",
+      "parentUuid": "b837e87c_b87b9730",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 6
+      },
+      "revId": "1598a35a4c2fa1aa0797375d6a2f2fd2dfb3d159",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "91d0138b_62b82c79",
