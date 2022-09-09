@@ -18,6 +18,46 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "49e691b0_6cc8374c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-09T03:35:16Z",
+      "side": 1,
+      "message": "Very nice refactoring, thanks Shabi!",
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aef0ae19_fb79d06a",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 627,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-09T03:35:16Z",
+      "side": 1,
+      "message": "nit: I find it useful to add the `*` modifier to auto pointer types. It makes it clearer that no deep copy is made, what `if(renderingCreateInfo)` means, and why `-\u003e` must be used.",
+      "range": {
+        "startLine": 627,
+        "startChar": 3,
+        "endLine": 627,
+        "endChar": 7
+      },
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7fb81424_3f999dcc",
@@ -49,6 +89,24 @@
       "side": 1,
       "message": "You can change it to an assert.",
       "parentUuid": "7fb81424_3f999dcc",
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b407549b_503d1baa",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-09T03:35:16Z",
+      "side": 1,
+      "message": "Yes, please do. `VUID-VkWriteDescriptorSet-descriptorType-02221` mandates this struct and we shouldn\u0027t silently ignore it when it\u0027s missing.",
+      "parentUuid": "b72f046d_3c5837e4",
       "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
@@ -90,6 +148,30 @@
       "side": 1,
       "message": "I specifically didn\u0027t touch places that go through the entire pNext chain (and also assert when there\u0027s something unexpected). This helper is used in a few bits of code that go through the pNext chain and look for a (potentially) optional struct. It\u0027s refactoring existing duplicate code for this purpose.",
       "parentUuid": "1a02d123_b5258f65",
+      "range": {
+        "startLine": 168,
+        "startChar": 9,
+        "endLine": 168,
+        "endChar": 26
+      },
+      "revId": "79c90163bc0373bf755faa27bd1d6b3537317bb9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46f0cc14_8a27eb7a",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-09T03:35:16Z",
+      "side": 1,
+      "message": "I think this is perfectly fine. Cases where we handle all the extension structs and cases where we look for a specific one are quite distinct. `pNext` chains are fundamental to Vulkan and well understood by any contributor so I don\u0027t think we risk seeing repeated `GetExtendedStruct()` calls to handle all known extension structs.",
+      "parentUuid": "5720d8fb_fa500d31",
       "range": {
         "startLine": 168,
         "startChar": 9,
