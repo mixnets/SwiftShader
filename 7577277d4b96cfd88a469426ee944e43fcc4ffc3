@@ -137,6 +137,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b829862_0b10abf8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-09T15:11:35Z",
+      "side": 1,
+      "message": "Yes, if you judge it less likely to require follow-up in the longer term than conflict in the short term this seems okay to me to land.",
+      "parentUuid": "1792172d_2902b588",
+      "revId": "7577277d4b96cfd88a469426ee944e43fcc4ffc3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "db971f6f_37aeca2e",

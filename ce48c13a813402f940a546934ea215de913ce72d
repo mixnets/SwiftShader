@@ -16,6 +16,24 @@
       "message": "@Nicolas, you added Alexis as reviewer a while back, but also gave +2. Should I wait for his review / will you review Alexis?",
       "revId": "ce48c13a813402f940a546934ea215de913ce72d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f697d79_beb0743f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-09T15:11:35Z",
+      "side": 1,
+      "message": "Further review after a +2 has been given is optional.",
+      "parentUuid": "993e0c95_6903a275",
+      "revId": "ce48c13a813402f940a546934ea215de913ce72d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
