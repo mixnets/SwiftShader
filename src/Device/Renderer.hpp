@@ -109,6 +109,8 @@ struct DrawData
 	float a2c3;
 
 	vk::Pipeline::PushConstantStorage pushConstants;
+
+	bool rasterizerDiscard;
 };
 
 struct DrawCall
