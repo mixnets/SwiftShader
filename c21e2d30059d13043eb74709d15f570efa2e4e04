@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b72c218_73a61fa2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-12T18:46:56Z",
+      "side": 1,
+      "message": "As elaborated on at https://issuetracker.google.com/204502923#comment14 I think it\u0027s a slippery slope to expose extensions as a means to work around false assumptions.",
+      "range": {
+        "startLine": 10,
+        "startChar": 46,
+        "endLine": 11,
+        "endChar": 33
+      },
+      "revId": "c21e2d30059d13043eb74709d15f570efa2e4e04",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "7ef03957_0d645a30",
