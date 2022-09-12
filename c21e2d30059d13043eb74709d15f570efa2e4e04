@@ -16,6 +16,24 @@
       "message": "I\u0027m fine with the code change itself, but isn\u0027t this a bit backward? Shouldn\u0027t we start by fixing ANGLE and the CTS to do the right thing before doing this fix in SwiftShader? (Not the dynamic state primitive restart fix, that\u0027s fine, only the part exposing VK_EXT_extended_dynamic_state2).",
       "revId": "c21e2d30059d13043eb74709d15f570efa2e4e04",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75397265_1f01ac0b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-12T15:54:12Z",
+      "side": 1,
+      "message": "The implementations generally implement extensions first, and then hook in support for newer Vulkan versions. Users also end up using the exts before promotions is done. So it\u0027s both commonplace for implementations to always have the ext exposed, and applications to expect to deal with extensions alone.\n\nWe could fix ANGLE and CTS, but many other apps are bound to fall into this pitfall",
+      "parentUuid": "7ef03957_0d645a30",
+      "revId": "c21e2d30059d13043eb74709d15f570efa2e4e04",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
