@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c88dc0b_396557a4",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-12T17:25:14Z",
+      "side": 1,
+      "message": "These can never be null, so why return pointers? Why not return const references?",
+      "range": {
+        "startLine": 404,
+        "startChar": 0,
+        "endLine": 407,
+        "endChar": 118
+      },
+      "revId": "71f28ce7827d9ab2b77ccf3b3ab51785ca038da1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
