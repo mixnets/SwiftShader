@@ -493,14 +493,14 @@ void SpirvShader::EmitLoop(EmitState *state) const
 	}
 }
 
-SpirvShader::EmitResult SpirvShader::EmitBranch(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitBranch(InsnIterator insn)
 {
 	auto target = Block::ID(insn.word(1));
 	state->addActiveLaneMaskEdge(state->block, target, state->activeLaneMask());
 	return EmitResult::Terminator;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitBranchConditional(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitBranchConditional(InsnIterator insn)
 {
 	auto &function = getFunction(state->function);
 	auto block = function.getBlock(state->block);
@@ -510,7 +510,7 @@ SpirvShader::EmitResult SpirvShader::EmitBranchConditional(InsnIterator insn, Em
 	auto trueBlockId = Block::ID(block.branchInstruction.word(2));
 	auto falseBlockId = Block::ID(block.branchInstruction.word(3));
 
-	auto cond = Operand(this, state, condId);
+	auto cond = Operand(*this, *state, condId);
 	ASSERT_MSG(getObjectType(condId).componentCount == 1, "Condition must be a Boolean type scalar");
 
 	// TODO: Optimize for case where all lanes take same path.
@@ -521,7 +521,7 @@ SpirvShader::EmitResult SpirvShader::EmitBranchConditional(InsnIterator insn, Em
 	return EmitResult::Terminator;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitSwitch(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitSwitch(InsnIterator insn)
 {
 	auto &function = getFunction(state->function);
 	auto block = function.getBlock(state->block);
@@ -529,7 +529,7 @@ SpirvShader::EmitResult SpirvShader::EmitSwitch(InsnIterator insn, EmitState *st
 
 	auto selId = Object::ID(block.branchInstruction.word(1));
 
-	auto sel = Operand(this, state, selId);
+	auto sel = Operand(*this, *state, selId);
 	ASSERT_MSG(sel.componentCount == 1, "Selector must be a scalar");
 	SPIRV_SHADER_DBG("switch({0})", sel);
 
@@ -559,27 +559,27 @@ SpirvShader::EmitResult SpirvShader::EmitSwitch(InsnIterator insn, EmitState *st
 	return EmitResult::Terminator;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitUnreachable(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitUnreachable(InsnIterator insn)
 {
 	// TODO: Log something in this case?
 	SetActiveLaneMask(SIMD::Int(0), state);
 	return EmitResult::Terminator;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitReturn(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitReturn(InsnIterator insn)
 {
 	SetActiveLaneMask(SIMD::Int(0), state);
 	return EmitResult::Terminator;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitTerminateInvocation(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitTerminateInvocation(InsnIterator insn)
 {
 	state->routine->discardMask |= SignMask(state->activeLaneMask());
 	SetActiveLaneMask(SIMD::Int(0), state);
 	return EmitResult::Terminator;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitDemoteToHelperInvocation(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitDemoteToHelperInvocation(InsnIterator insn)
 {
 	state->routine->helperInvocation |= state->activeLaneMask();
 	state->routine->discardMask |= SignMask(state->activeLaneMask());
@@ -587,7 +587,7 @@ SpirvShader::EmitResult SpirvShader::EmitDemoteToHelperInvocation(InsnIterator i
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitIsHelperInvocation(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitIsHelperInvocation(InsnIterator insn)
 {
 	auto &type = getType(insn.resultTypeId());
 	auto &dst = state->createIntermediate(insn.resultId(), type.componentCount);
@@ -595,7 +595,7 @@ SpirvShader::EmitResult SpirvShader::EmitIsHelperInvocation(InsnIterator insn, E
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitFunctionCall(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitFunctionCall(InsnIterator insn)
 {
 	auto functionId = Function::ID(insn.word(3));
 	const auto &functionIt = functions.find(functionId);
@@ -635,7 +635,7 @@ SpirvShader::EmitResult SpirvShader::EmitFunctionCall(InsnIterator insn, EmitSta
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitControlBarrier(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitControlBarrier(InsnIterator insn)
 {
 	auto executionScope = spv::Scope(GetConstScalarInt(insn.word(1)));
 	auto semantics = spv::MemorySemanticsMask(GetConstScalarInt(insn.word(3)));
@@ -659,7 +659,7 @@ SpirvShader::EmitResult SpirvShader::EmitControlBarrier(InsnIterator insn, EmitS
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitPhi(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitPhi(InsnIterator insn)
 {
 	auto &function = getFunction(state->function);
 	auto currentBlock = function.getBlock(state->block);
@@ -674,7 +674,7 @@ SpirvShader::EmitResult SpirvShader::EmitPhi(InsnIterator insn, EmitState *state
 	return EmitResult::Continue;
 }
 
-void SpirvShader::LoadPhi(InsnIterator insn, EmitState *state) const
+void SpirvShader::LoadPhi(InsnIterator insn)
 {
 	auto typeId = Type::ID(insn.word(1));
 	auto type = getType(typeId);
@@ -713,7 +713,7 @@ void SpirvShader::StorePhi(Block::ID currentBlock, InsnIterator insn, EmitState 
 		}
 
 		auto mask = GetActiveLaneMaskEdge(state, blockId, currentBlock);
-		auto in = Operand(this, state, varId);
+		auto in = Operand(*this, *state, varId);
 
 		for(uint32_t i = 0; i < type.componentCount; i++)
 		{
@@ -734,7 +734,7 @@ void SpirvShader::Yield(YieldResult res) const
 	rr::Yield(RValue<Int>(int(res)));
 }
 
-void SpirvShader::SetActiveLaneMask(RValue<SIMD::Int> mask, EmitState *state) const
+void SpirvShader::SetActiveLaneMask(RValue<SIMD::Int> mask, EmitState *state) const  //////////////////////////////
 {
 	state->activeLaneMaskValue = mask.value();
 	dbgUpdateActiveLaneMask(mask, state);

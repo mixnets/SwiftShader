@@ -1082,17 +1082,25 @@ private:
 
 	void ProcessInterfaceVariable(Object &object);
 
+	// EmitResult is an enumerator of result values from the Emit functions.
+	enum class EmitResult
+	{
+		Continue,    // No termination instructions.
+		Terminator,  // Reached a termination instruction.
+	};
+
 	// EmitState holds control-flow state for the emit() pass.
 	class EmitState
 	{
 	public:
-		EmitState(SpirvRoutine *routine,
+		EmitState(const SpirvShader &shader,
+			SpirvRoutine *routine,
 		          Function::ID function,
 		          RValue<SIMD::Int> activeLaneMask,
 		          RValue<SIMD::Int> storesAndAtomicsMask,
 		          const vk::DescriptorSet::Bindings &descriptorSets,
 		          unsigned int multiSampleCount)
-		    : routine(routine)
+		    :shader(shader), routine(routine)
 		    , function(function)
 		    , activeLaneMaskValue(activeLaneMask.value())
 		    , storesAndAtomicsMaskValue(storesAndAtomicsMask.value())
@@ -1144,7 +1152,8 @@ private:
 		// they will be ORed together.
 		void addActiveLaneMaskEdge(Block::ID from, Block::ID to, RValue<SIMD::Int> mask);
 
-		SpirvRoutine *routine = nullptr;                 // The current routine being built.
+		const SpirvShader &shader;
+		SpirvRoutine *const routine;                 // The current routine being built.
 		Function::ID function;                           // The current function being built.
 		Block::ID block;                                 // The current block being built.
 		rr::Value *activeLaneMaskValue = nullptr;        // The current active lane mask.
@@ -1209,19 +1218,68 @@ private:
 			return isSampledImage(id) ? getSampledImage(id) : getPointer(id);
 		}
 
+		EmitResult EmitVariable(InsnIterator insn);
+		EmitResult EmitLoad(InsnIterator insn);
+		EmitResult EmitStore(InsnIterator insn);
+		EmitResult EmitAccessChain(InsnIterator insn);
+		EmitResult EmitCompositeConstruct(InsnIterator insn);
+		EmitResult EmitCompositeInsert(InsnIterator insn);
+		EmitResult EmitCompositeExtract(InsnIterator insn);
+		EmitResult EmitVectorShuffle(InsnIterator insn);
+		EmitResult EmitVectorTimesScalar(InsnIterator insn);
+		EmitResult EmitMatrixTimesVector(InsnIterator insn);
+		EmitResult EmitVectorTimesMatrix(InsnIterator insn);
+		EmitResult EmitMatrixTimesMatrix(InsnIterator insn);
+		EmitResult EmitOuterProduct(InsnIterator insn);
+		EmitResult EmitTranspose(InsnIterator insn);
+		EmitResult EmitVectorExtractDynamic(InsnIterator insn);
+		EmitResult EmitVectorInsertDynamic(InsnIterator insn);
+		EmitResult EmitUnaryOp(InsnIterator insn);
+		EmitResult EmitBinaryOp(InsnIterator insn);
+		EmitResult EmitDot(InsnIterator insn);
+		EmitResult EmitSelect(InsnIterator insn);
+		EmitResult EmitExtendedInstruction(InsnIterator insn);
+		EmitResult EmitExtGLSLstd450(InsnIterator insn);
+		EmitResult EmitOpenCLDebugInfo100(InsnIterator insn);
+		EmitResult EmitLine(InsnIterator insn);
+		EmitResult EmitAny(InsnIterator insn);
+		EmitResult EmitAll(InsnIterator insn);
+		EmitResult EmitBranch(InsnIterator insn);
+		EmitResult EmitBranchConditional(InsnIterator insn);
+		EmitResult EmitSwitch(InsnIterator insn);
+		EmitResult EmitUnreachable(InsnIterator insn);
+		EmitResult EmitReturn(InsnIterator insn);
+		EmitResult EmitTerminateInvocation(InsnIterator insn);
+		EmitResult EmitDemoteToHelperInvocation(InsnIterator insn);
+		EmitResult EmitIsHelperInvocation(InsnIterator insn);
+		EmitResult EmitFunctionCall(InsnIterator insn);
+		EmitResult EmitPhi(InsnIterator insn);
+		EmitResult EmitImageSample(const ImageInstruction &instruction);
+		EmitResult EmitImageQuerySizeLod(InsnIterator insn);
+		EmitResult EmitImageQuerySize(InsnIterator insn);
+		EmitResult EmitImageQueryLevels(InsnIterator insn);
+		EmitResult EmitImageQuerySamples(InsnIterator insn);
+		EmitResult EmitImageRead(const ImageInstruction &instruction);
+		EmitResult EmitImageWrite(const ImageInstruction &instruction);
+		EmitResult EmitImageTexelPointer(const ImageInstruction &instruction);
+		EmitResult EmitAtomicOp(InsnIterator insn);
+		EmitResult EmitAtomicCompareExchange(InsnIterator insn);
+		EmitResult EmitSampledImage(InsnIterator insn);
+		EmitResult EmitImage(InsnIterator insn);
+		EmitResult EmitCopyObject(InsnIterator insn);
+		EmitResult EmitCopyMemory(InsnIterator insn);
+		EmitResult EmitControlBarrier(InsnIterator insn);
+		EmitResult EmitMemoryBarrier(InsnIterator insn);
+		EmitResult EmitGroupNonUniform(InsnIterator insn);
+		EmitResult EmitArrayLength(InsnIterator insn);
+		////////////////////////EmitResult EmitPointerBitCast(Object::ID resultID, Operand &src, EmitState *state) const;
+
 	private:
 		std::unordered_map<Object::ID, Intermediate> intermediates;
 		std::unordered_map<Object::ID, SIMD::Pointer> pointers;
 		std::unordered_map<Object::ID, SampledImagePointer> sampledImages;
 
 		const unsigned int multiSampleCount;
-	};
-
-	// EmitResult is an enumerator of result values from the Emit functions.
-	enum class EmitResult
-	{
-		Continue,    // No termination instructions.
-		Terminator,  // Reached a termination instruction.
 	};
 
 	// Generic wrapper over either per-lane intermediate value, or a constant.
@@ -1231,7 +1289,7 @@ private:
 	class Operand
 	{
 	public:
-		Operand(const SpirvShader *shader, const EmitState *state, SpirvShader::Object::ID objectId);
+		Operand(const SpirvShader &shader, const EmitState &state, SpirvShader::Object::ID objectId);
 		Operand(const Intermediate &value);
 
 		RValue<SIMD::Float> Float(uint32_t i) const
@@ -1295,12 +1353,12 @@ private:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
 
 		// Delegate constructor
-		Operand(const EmitState *state, const Object &object);
+		Operand(const EmitState &state, const Object &object);
 
-		const uint32_t *constant;
-		const Intermediate *intermediate;
-		const SIMD::Pointer *pointer;
-		const SampledImagePointer *sampledImage;
+		const uint32_t *constant = nullptr;
+		const Intermediate *intermediate = nullptr;
+		const SIMD::Pointer *pointer = nullptr;
+		const SampledImagePointer *sampledImage = nullptr;
 
 	public:
 		const uint32_t componentCount;
@@ -1389,62 +1447,8 @@ private:
 	void EmitInstructions(InsnIterator begin, InsnIterator end, EmitState *state) const;
 	EmitResult EmitInstruction(InsnIterator insn, EmitState *state) const;
 
-	// Emit pass instructions:
-	EmitResult EmitVariable(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitLoad(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitStore(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitAccessChain(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitCompositeConstruct(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitCompositeInsert(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitCompositeExtract(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitVectorShuffle(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitVectorTimesScalar(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitMatrixTimesVector(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitVectorTimesMatrix(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitMatrixTimesMatrix(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitOuterProduct(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitTranspose(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitVectorExtractDynamic(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitVectorInsertDynamic(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitUnaryOp(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitBinaryOp(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitDot(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitSelect(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitExtendedInstruction(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitExtGLSLstd450(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitLine(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitAny(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitAll(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitBranch(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitBranchConditional(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitSwitch(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitUnreachable(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitReturn(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitTerminateInvocation(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitDemoteToHelperInvocation(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitIsHelperInvocation(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitFunctionCall(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageSample(const ImageInstruction &instruction, EmitState *state) const;
-	EmitResult EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageQuerySize(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageQueryLevels(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageQuerySamples(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageRead(const ImageInstruction &instruction, EmitState *state) const;
-	EmitResult EmitImageWrite(const ImageInstruction &instruction, EmitState *state) const;
-	EmitResult EmitImageTexelPointer(const ImageInstruction &instruction, EmitState *state) const;
-	EmitResult EmitAtomicOp(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitAtomicCompareExchange(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitSampledImage(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImage(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitCopyObject(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitCopyMemory(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitControlBarrier(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitMemoryBarrier(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitPointerBitCast(Object::ID resultID, Operand &src, EmitState *state) const;
+		EmitResult EmitPointerBitCast(Object::ID resultID, Operand &src, EmitState *state) const;/////////////////////////////
+
 
 	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
 	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, const ImageInstruction &instruction, EmitState *state) const;

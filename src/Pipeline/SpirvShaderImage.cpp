@@ -419,7 +419,7 @@ void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD:
 {
 	Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
 
-	auto coordinate = Operand(this, state, instruction.coordinateId);
+	auto coordinate = Operand(*this, *state, instruction.coordinateId);
 
 	uint32_t i = 0;
 	for(; i < instruction.coordinates; i++)
@@ -436,7 +436,7 @@ void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD:
 
 	if(instruction.isDref())
 	{
-		auto drefValue = Operand(this, state, instruction.drefId);
+		auto drefValue = Operand(*this, *state, instruction.drefId);
 
 		if(instruction.isProj())
 		{
@@ -452,14 +452,14 @@ void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD:
 
 	if(instruction.lodOrBiasId != 0)
 	{
-		auto lodValue = Operand(this, state, instruction.lodOrBiasId);
+		auto lodValue = Operand(*this, *state, instruction.lodOrBiasId);
 		in[i] = lodValue.Float(0);
 		i++;
 	}
 	else if(instruction.gradDxId != 0)
 	{
-		auto dxValue = Operand(this, state, instruction.gradDxId);
-		auto dyValue = Operand(this, state, instruction.gradDyId);
+		auto dxValue = Operand(*this, *state, instruction.gradDxId);
+		auto dyValue = Operand(*this, *state, instruction.gradDyId);
 		ASSERT(dxValue.componentCount == dxValue.componentCount);
 
 		for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
@@ -483,7 +483,7 @@ void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD:
 
 	if(instruction.offsetId != 0)
 	{
-		auto offsetValue = Operand(this, state, instruction.offsetId);
+		auto offsetValue = Operand(*this, *state, instruction.offsetId);
 
 		for(uint32_t j = 0; j < offsetValue.componentCount; j++, i++)
 		{
@@ -493,7 +493,7 @@ void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD:
 
 	if(instruction.sample)
 	{
-		auto sampleValue = Operand(this, state, instruction.sampleId);
+		auto sampleValue = Operand(*this, *state, instruction.sampleId);
 		in[i] = As<SIMD::Float>(sampleValue.Int(0));
 	}
 
@@ -566,7 +566,7 @@ void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultT
 
 	if(lodId != 0)
 	{
-		auto lodVal = Operand(this, state, lodId);
+		auto lodVal = Operand(*this, *state, lodId);
 		ASSERT(lodVal.componentCount == 1);
 		auto lod = lodVal.Int(0);
 		auto one = SIMD::Int(1);
@@ -841,7 +841,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 	ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
 	auto dim = static_cast<spv::Dim>(instruction.dim);
 
-	auto coordinate = Operand(this, state, instruction.coordinateId);
+	auto coordinate = Operand(*this, *state, instruction.coordinateId);
 	const DescriptorDecorations &d = descriptorDecorations.at(instruction.imageId);
 
 	// For subpass data, format in the instruction is spv::ImageFormatUnknown. Get it from
@@ -876,7 +876,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(const ImageInstruction &instr
 	}
 	if(instruction.sample)
 	{
-		sample = Operand(this, state, instruction.sampleId).Int(0);
+		sample = Operand(*this, *state, instruction.sampleId).Int(0);
 	}
 
 	// Gather packed texel data. Texels larger than 4 bytes occupy multiple SIMD::Int elements.
@@ -1257,8 +1257,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 	ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
 	ASSERT(static_cast<spv::Dim>(instruction.dim) != spv::DimSubpassData);  // "Its Dim operand must not be SubpassData."
 
-	auto coordinate = Operand(this, state, instruction.coordinateId);
-	auto texel = Operand(this, state, instruction.texelId);
+	auto coordinate = Operand(*this, *state, instruction.coordinateId);
+	auto texel = Operand(*this, *state, instruction.texelId);
 
 	Array<SIMD::Int> coord(5);  // uvwa & sample
 
@@ -1270,7 +1270,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(const ImageInstruction &inst
 
 	if(instruction.sample)
 	{
-		coord[i] = Operand(this, state, instruction.sampleId).Int(0);
+		coord[i] = Operand(*this, *state, instruction.sampleId).Int(0);
 	}
 
 	Array<SIMD::Int> texelAndMask(5);
@@ -1556,7 +1556,7 @@ void SpirvShader::WriteImage(ImageInstructionSignature instruction, Pointer<Byte
 
 SpirvShader::EmitResult SpirvShader::EmitImageTexelPointer(const ImageInstruction &instruction, EmitState *state) const
 {
-	auto coordinate = Operand(this, state, instruction.coordinateId);
+	auto coordinate = Operand(*this, *state, instruction.coordinateId);
 
 	Pointer<Byte> descriptor = state->getPointer(instruction.imageId).getUniformPointer();  // vk::StorageImageDescriptor*
 
@@ -1572,7 +1572,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageTexelPointer(const ImageInstructio
 		uvwa[i] = coordinate.Int(i);
 	}
 
-	SIMD::Int sample = Operand(this, state, instruction.sampleId).Int(0);
+	SIMD::Int sample = Operand(*this, *state, instruction.sampleId).Int(0);
 
 	auto ptr = GetTexelAddress(instruction, descriptor, uvwa, sample, imageFormat, robustness, state);
 

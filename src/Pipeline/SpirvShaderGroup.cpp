@@ -27,18 +27,18 @@ struct SpirvShader::Impl::Group
 	// and returns a new RValue<TYPE> corresponding to the operation's result.
 	template<typename TYPE, typename I, typename APPLY>
 	static void BinaryOperation(
-	    const SpirvShader *shader,
+	    const SpirvShader &shader,
 	    const SpirvShader::InsnIterator &insn,
-	    const SpirvShader::EmitState *state,
+	    const SpirvShader::EmitState &state,
 	    Intermediate &dst,
 	    const I identityValue,
 	    APPLY &&apply)
 	{
 		SpirvShader::Operand value(shader, state, insn.word(5));
-		auto &type = shader->getType(SpirvShader::Type::ID(insn.word(1)));
+		auto &type = shader.getType(SpirvShader::Type::ID(insn.word(1)));
 		for(auto i = 0u; i < type.componentCount; i++)
 		{
-			auto mask = As<SIMD::UInt>(state->activeLaneMask());  // Considers helper invocations active. See b/151137030
+			auto mask = As<SIMD::UInt>(state.activeLaneMask());  // Considers helper invocations active. See b/151137030
 			auto identity = TYPE(identityValue);
 			SIMD::UInt v_uint = (value.UInt(i) & mask) | (As<SIMD::UInt>(identity) & ~mask);
 			TYPE v = As<TYPE>(v_uint);
@@ -76,7 +76,7 @@ struct SpirvShader::Impl::Group
 	}
 };
 
-SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator insn)
 {
 	ASSERT(SIMD::Width == 4);  // EmitGroupNonUniform makes many assumptions that the SIMD vector width is 4
 
@@ -104,21 +104,21 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 
 	case spv::OpGroupNonUniformAll:
 		{
-			Operand predicate(this, state, insn.word(4));
+			Operand predicate(*this, *state, insn.word(4));
 			dst.move(0, AndAll(predicate.UInt(0) | ~As<SIMD::UInt>(state->activeLaneMask())));  // Considers helper invocations active. See b/151137030
 		}
 		break;
 
 	case spv::OpGroupNonUniformAny:
 		{
-			Operand predicate(this, state, insn.word(4));
+			Operand predicate(*this, *state, insn.word(4));
 			dst.move(0, OrAll(predicate.UInt(0) & As<SIMD::UInt>(state->activeLaneMask())));  // Considers helper invocations active. See b/151137030
 		}
 		break;
 
 	case spv::OpGroupNonUniformAllEqual:
 		{
-			Operand value(this, state, insn.word(4));
+			Operand value(*this, *state, insn.word(4));
 			auto res = SIMD::UInt(0xffffffff);
 			SIMD::UInt active = As<SIMD::UInt>(state->activeLaneMask());  // Considers helper invocations active. See b/151137030
 			SIMD::UInt inactive = ~active;
@@ -140,7 +140,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 		{
 			auto valueId = Object::ID(insn.word(4));
 			auto idId = Object::ID(insn.word(5));
-			Operand value(this, state, valueId);
+			Operand value(*this, *state, valueId);
 
 			// Decide between the fast path for constants and the slow path for
 			// intermediates.
@@ -155,7 +155,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			}
 			else
 			{
-				Operand id(this, state, idId);
+				Operand id(*this, *state, idId);
 
 				SIMD::UInt active = As<SIMD::UInt>(state->activeLaneMask());  // Considers helper invocations active. See b/151137030
 				SIMD::UInt inactive = ~active;
@@ -179,7 +179,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 	case spv::OpGroupNonUniformBroadcastFirst:
 		{
 			auto valueId = Object::ID(insn.word(4));
-			Operand value(this, state, valueId);
+			Operand value(*this, *state, valueId);
 			// Result is true only in the active invocation with the lowest id
 			// in the group, otherwise result is false.
 			SIMD::Int active = state->activeLaneMask();  // Considers helper invocations active. See b/151137030
@@ -197,11 +197,11 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 	case spv::OpGroupNonUniformQuadBroadcast:
 		{
 			auto valueId = Object::ID(insn.word(4));
-			Operand value(this, state, valueId);
+			Operand value(*this, *state, valueId);
 
 			ASSERT(getType(getObject(insn.word(5))).componentCount == 1);
 			auto indexId = Object::ID(insn.word(5));
-			SIMD::Int index = Operand(this, state, indexId).Int(0);
+			SIMD::Int index = Operand(*this, *state, indexId).Int(0);
 
 			SIMD::Int active = state->activeLaneMask();
 			// Populate all lanes in index with the same value. Index is required to be
@@ -222,7 +222,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			// SPIR-V spec: Drection must be a scalar of integer type and come from a constant instruction
 			int direction = GetConstScalarInt(insn.word(5));
 
-			Operand value(this, state, valueId);
+			Operand value(*this, *state, valueId);
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
 				SIMD::Int v = value.Int(i);
@@ -250,7 +250,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 	case spv::OpGroupNonUniformBallot:
 		{
 			ASSERT(type.componentCount == 4);
-			Operand predicate(this, state, insn.word(4));
+			Operand predicate(*this, *state, insn.word(4));
 			dst.move(0, SIMD::Int(SignMask(state->activeLaneMask() & predicate.Int(0))));  // Considers helper invocations active. See b/151137030
 			dst.move(1, SIMD::Int(0));
 			dst.move(2, SIMD::Int(0));
@@ -263,7 +263,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			auto valueId = Object::ID(insn.word(4));
 			ASSERT(type.componentCount == 1);
 			ASSERT(getObjectType(valueId).componentCount == 4);
-			Operand value(this, state, valueId);
+			Operand value(*this, *state, valueId);
 			auto bit = (value.Int(0) >> SIMD::Int(0, 1, 2, 3)) & SIMD::Int(1);
 			dst.move(0, -bit);
 		}
@@ -276,8 +276,8 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			ASSERT(type.componentCount == 1);
 			ASSERT(getObjectType(valueId).componentCount == 4);
 			ASSERT(getObjectType(indexId).componentCount == 1);
-			Operand value(this, state, valueId);
-			Operand index(this, state, indexId);
+			Operand value(*this, *state, valueId);
+			Operand index(*this, *state, indexId);
 			auto vecIdx = index.Int(0) / SIMD::Int(32);
 			auto bitIdx = index.Int(0) & SIMD::Int(31);
 			auto bits = (value.Int(0) & CmpEQ(vecIdx, SIMD::Int(0))) |
@@ -294,7 +294,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			auto valueId = Object::ID(insn.word(5));
 			ASSERT(type.componentCount == 1);
 			ASSERT(getObjectType(valueId).componentCount == 4);
-			Operand value(this, state, valueId);
+			Operand value(*this, *state, valueId);
 			switch(operation)
 			{
 			case spv::GroupOperationReduce:
@@ -317,7 +317,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			auto valueId = Object::ID(insn.word(4));
 			ASSERT(type.componentCount == 1);
 			ASSERT(getObjectType(valueId).componentCount == 4);
-			Operand value(this, state, valueId);
+			Operand value(*this, *state, valueId);
 			dst.move(0, Cttz(value.UInt(0) & SIMD::UInt(15), true));
 		}
 		break;
@@ -327,15 +327,15 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			auto valueId = Object::ID(insn.word(4));
 			ASSERT(type.componentCount == 1);
 			ASSERT(getObjectType(valueId).componentCount == 4);
-			Operand value(this, state, valueId);
+			Operand value(*this, *state, valueId);
 			dst.move(0, SIMD::UInt(31) - Ctlz(value.UInt(0) & SIMD::UInt(15), false));
 		}
 		break;
 
 	case spv::OpGroupNonUniformShuffle:
 		{
-			Operand value(this, state, insn.word(4));
-			Operand id(this, state, insn.word(5));
+			Operand value(*this, *state, insn.word(4));
+			Operand id(*this, *state, insn.word(5));
 			auto x = CmpEQ(SIMD::Int(0), id.Int(0));
 			auto y = CmpEQ(SIMD::Int(1), id.Int(0));
 			auto z = CmpEQ(SIMD::Int(2), id.Int(0));
@@ -350,8 +350,8 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 
 	case spv::OpGroupNonUniformShuffleXor:
 		{
-			Operand value(this, state, insn.word(4));
-			Operand mask(this, state, insn.word(5));
+			Operand value(*this, *state, insn.word(4));
+			Operand mask(*this, *state, insn.word(5));
 			auto x = CmpEQ(SIMD::Int(0), SIMD::Int(0, 1, 2, 3) ^ mask.Int(0));
 			auto y = CmpEQ(SIMD::Int(1), SIMD::Int(0, 1, 2, 3) ^ mask.Int(0));
 			auto z = CmpEQ(SIMD::Int(2), SIMD::Int(0, 1, 2, 3) ^ mask.Int(0));
@@ -366,8 +366,8 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 
 	case spv::OpGroupNonUniformShuffleUp:
 		{
-			Operand value(this, state, insn.word(4));
-			Operand delta(this, state, insn.word(5));
+			Operand value(*this, *state, insn.word(4));
+			Operand delta(*this, *state, insn.word(5));
 			auto d0 = CmpEQ(SIMD::Int(0), delta.Int(0));
 			auto d1 = CmpEQ(SIMD::Int(1), delta.Int(0));
 			auto d2 = CmpEQ(SIMD::Int(2), delta.Int(0));
@@ -382,8 +382,8 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 
 	case spv::OpGroupNonUniformShuffleDown:
 		{
-			Operand value(this, state, insn.word(4));
-			Operand delta(this, state, insn.word(5));
+			Operand value(*this, *state, insn.word(4));
+			Operand delta(*this, *state, insn.word(5));
 			auto d0 = CmpEQ(SIMD::Int(0), delta.Int(0));
 			auto d1 = CmpEQ(SIMD::Int(1), delta.Int(0));
 			auto d2 = CmpEQ(SIMD::Int(2), delta.Int(0));
@@ -398,85 +398,85 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 
 	case spv::OpGroupNonUniformIAdd:
 		Impl::Group::BinaryOperation<SIMD::Int>(
-		    this, insn, state, dst, 0,
+		    *this, insn, *state, dst, 0,
 		    [](auto a, auto b) { return a + b; });
 		break;
 
 	case spv::OpGroupNonUniformFAdd:
 		Impl::Group::BinaryOperation<SIMD::Float>(
-		    this, insn, state, dst, 0.0f,
+		    *this, insn, *state, dst, 0.0f,
 		    [](auto a, auto b) { return a + b; });
 		break;
 
 	case spv::OpGroupNonUniformIMul:
 		Impl::Group::BinaryOperation<SIMD::Int>(
-		    this, insn, state, dst, 1,
+		    *this, insn, *state, dst, 1,
 		    [](auto a, auto b) { return a * b; });
 		break;
 
 	case spv::OpGroupNonUniformFMul:
 		Impl::Group::BinaryOperation<SIMD::Float>(
-		    this, insn, state, dst, 1.0f,
+		    *this, insn, *state, dst, 1.0f,
 		    [](auto a, auto b) { return a * b; });
 		break;
 
 	case spv::OpGroupNonUniformBitwiseAnd:
 		Impl::Group::BinaryOperation<SIMD::UInt>(
-		    this, insn, state, dst, ~0u,
+		    *this, insn, *state, dst, ~0u,
 		    [](auto a, auto b) { return a & b; });
 		break;
 
 	case spv::OpGroupNonUniformBitwiseOr:
 		Impl::Group::BinaryOperation<SIMD::UInt>(
-		    this, insn, state, dst, 0,
+		    *this, insn, *state, dst, 0,
 		    [](auto a, auto b) { return a | b; });
 		break;
 
 	case spv::OpGroupNonUniformBitwiseXor:
 		Impl::Group::BinaryOperation<SIMD::UInt>(
-		    this, insn, state, dst, 0,
+		    *this, insn, *state, dst, 0,
 		    [](auto a, auto b) { return a ^ b; });
 		break;
 
 	case spv::OpGroupNonUniformSMin:
 		Impl::Group::BinaryOperation<SIMD::Int>(
-		    this, insn, state, dst, INT32_MAX,
+		    *this, insn, *state, dst, INT32_MAX,
 		    [](auto a, auto b) { return Min(a, b); });
 		break;
 
 	case spv::OpGroupNonUniformUMin:
 		Impl::Group::BinaryOperation<SIMD::UInt>(
-		    this, insn, state, dst, ~0u,
+		    *this, insn, *state, dst, ~0u,
 		    [](auto a, auto b) { return Min(a, b); });
 		break;
 
 	case spv::OpGroupNonUniformFMin:
 		Impl::Group::BinaryOperation<SIMD::Float>(
-		    this, insn, state, dst, SIMD::Float::infinity(),
+		    *this, insn, *state, dst, SIMD::Float::infinity(),
 		    [](auto a, auto b) { return NMin(a, b); });
 		break;
 
 	case spv::OpGroupNonUniformSMax:
 		Impl::Group::BinaryOperation<SIMD::Int>(
-		    this, insn, state, dst, INT32_MIN,
+		    *this, insn, *state, dst, INT32_MIN,
 		    [](auto a, auto b) { return Max(a, b); });
 		break;
 
 	case spv::OpGroupNonUniformUMax:
 		Impl::Group::BinaryOperation<SIMD::UInt>(
-		    this, insn, state, dst, 0,
+		    *this, insn, *state, dst, 0,
 		    [](auto a, auto b) { return Max(a, b); });
 		break;
 
 	case spv::OpGroupNonUniformFMax:
 		Impl::Group::BinaryOperation<SIMD::Float>(
-		    this, insn, state, dst, -SIMD::Float::infinity(),
+		    *this, insn, *state, dst, -SIMD::Float::infinity(),
 		    [](auto a, auto b) { return NMax(a, b); });
 		break;
 
 	case spv::OpGroupNonUniformLogicalAnd:
 		Impl::Group::BinaryOperation<SIMD::UInt>(
-		    this, insn, state, dst, ~0u,
+		    *this, insn, *state, dst, ~0u,
 		    [](auto a, auto b) {
 			    SIMD::UInt zero = SIMD::UInt(0);
 			    return CmpNEQ(a, zero) & CmpNEQ(b, zero);
@@ -485,7 +485,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 
 	case spv::OpGroupNonUniformLogicalOr:
 		Impl::Group::BinaryOperation<SIMD::UInt>(
-		    this, insn, state, dst, 0,
+		    *this, insn, *state, dst, 0,
 		    [](auto a, auto b) {
 			    SIMD::UInt zero = SIMD::UInt(0);
 			    return CmpNEQ(a, zero) | CmpNEQ(b, zero);
@@ -494,7 +494,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 
 	case spv::OpGroupNonUniformLogicalXor:
 		Impl::Group::BinaryOperation<SIMD::UInt>(
-		    this, insn, state, dst, 0,
+		    *this, insn, *state, dst, 0,
 		    [](auto a, auto b) {
 			    SIMD::UInt zero = SIMD::UInt(0);
 			    return CmpNEQ(a, zero) ^ CmpNEQ(b, zero);

@@ -2794,7 +2794,7 @@ void SpirvShader::DefineOpenCLDebugInfo100(const InsnIterator &insn)
 	dbg->process(insn, nullptr, Impl::Debugger::Pass::Define);
 }
 
-SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitOpenCLDebugInfo100(InsnIterator insn)
 {
 	if(auto dbg = impl.debugger)
 	{
@@ -2823,12 +2823,12 @@ void SpirvShader::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId
 
 void SpirvShader::DefineOpenCLDebugInfo100(const InsnIterator &insn) {}
 
-SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitOpenCLDebugInfo100(InsnIterator insn)
 {
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitLine(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitLine(InsnIterator insn)
 {
 	return EmitResult::Continue;
 }

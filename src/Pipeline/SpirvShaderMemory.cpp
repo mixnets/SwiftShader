@@ -23,7 +23,7 @@
 
 namespace sw {
 
-SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResultSpirvShader::EmitState::EmitLoad(InsnIterator insn)
 {
 	bool atomic = (insn.opcode() == spv::OpAtomicLoad);
 	Object::ID resultId = insn.word(2);
@@ -81,7 +81,7 @@ SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *stat
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResultSpirvShader::EmitState::EmitStore(InsnIterator insn)
 {
 	bool atomic = (insn.opcode() == spv::OpAtomicStore);
 	Object::ID pointerId = insn.word(1);
@@ -95,14 +95,14 @@ SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *sta
 		memoryOrder = MemoryOrder(memorySemantics);
 	}
 
-	const auto &value = Operand(this, state, objectId);
+	const auto &value = Operand(*this, *state, objectId);
 
 	Store(pointerId, value, atomic, memoryOrder, state);
 
 	return EmitResult::Continue;
 }
 
-void SpirvShader::Store(Object::ID pointerId, const Operand &value, bool atomic, std::memory_order memoryOrder, EmitState *state) const
+void SpirvShader::Store(Object::ID pointerId, const Operand &value, bool atomic, std::memory_order memoryOrder)
 {
 	auto &pointer = getObject(pointerId);
 	auto &pointerTy = getType(pointer);
@@ -138,7 +138,7 @@ void SpirvShader::Store(Object::ID pointerId, const Operand &value, bool atomic,
 	}
 }
 
-SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResultSpirvShader::EmitState::EmitVariable(InsnIterator insn)
 {
 	auto routine = state->routine;
 	Object::ID resultId = insn.word(2);
@@ -245,7 +245,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			{
 				bool interleavedByLane = IsStorageInterleavedByLane(objectTy.storageClass);
 				auto ptr = GetPointerToData(resultId, 0, false, state);
-				Operand initialValue(this, state, initializerId);
+				Operand initialValue(*this, *state, initializerId);
 				VisitMemoryObject(resultId, false, [&](const MemoryElement &el) {
 					auto p = GetElementPointer(ptr, el.offset, interleavedByLane);
 					auto robustness = OutOfBoundsBehavior::UndefinedBehavior;  // Local variables are always within bounds.
@@ -267,7 +267,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitCopyMemory(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResultSpirvShader::EmitState::EmitCopyMemory(InsnIterator insn)
 {
 	Object::ID dstPtrId = insn.word(1);
 	Object::ID srcPtrId = insn.word(2);
@@ -302,7 +302,7 @@ SpirvShader::EmitResult SpirvShader::EmitCopyMemory(InsnIterator insn, EmitState
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitMemoryBarrier(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResultSpirvShader::EmitState::EmitMemoryBarrier(InsnIterator insn)
 {
 	auto semantics = spv::MemorySemanticsMask(GetConstScalarInt(insn.word(2)));
 	// TODO(b/176819536): We probably want to consider the memory scope here.
