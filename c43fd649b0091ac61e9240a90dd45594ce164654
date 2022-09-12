@@ -1,6 +1,52 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "44ad895e_ef696726",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-12T18:44:22Z",
+      "side": 1,
+      "message": "I\u0027m all for avoiding footguns, but how is this ensured by this change?",
+      "range": {
+        "startLine": 13,
+        "startChar": 40,
+        "endLine": 14,
+        "endChar": 17
+      },
+      "revId": "c43fd649b0091ac61e9240a90dd45594ce164654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0b58f7e_2a591319",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-12T18:44:22Z",
+      "side": 1,
+      "message": "Thanks for making this less hacky! Please try to split this off into a separate change. These things tend to be tricky so it\u0027s best to keep it isolated in case of unexpected issues down the road.",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 72
+      },
+      "revId": "c43fd649b0091ac61e9240a90dd45594ce164654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "86ad3add_4f5b2135",
