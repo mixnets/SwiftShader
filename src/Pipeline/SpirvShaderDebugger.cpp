@@ -965,7 +965,7 @@ struct SpirvShader::Impl::Debugger : public vk::dbg::ClientEventListener
 	// registers them in the objects map.
 	// For the Emit pass, process() populates the fields of ::debug objects and
 	// potentially emits instructions for the shader program.
-	void process(const InsnIterator &insn, EmitState *state, Pass pass);
+	void process(const InsnIterator &insn, Pass pass);
 
 	// finalize() must be called after all shader instruction have been emitted.
 	// finalize() allocates the trap memory and registers the Debugger for
@@ -982,8 +982,8 @@ struct SpirvShader::Impl::Debugger : public vk::dbg::ClientEventListener
 
 	// setLocation() sets the current codegen source location to the given file
 	// and line.
-	void setLocation(EmitState *state, const std::shared_ptr<vk::dbg::File> &, int line);
-	void setLocation(EmitState *state, const char *file, int line);
+	void setLocation(, const std::shared_ptr<vk::dbg::File> &, int line);
+	void setLocation(, const char *file, int line);
 
 	using SpirvInstruction = const void *;
 
@@ -1416,7 +1416,7 @@ void SpirvShader::Impl::Debugger::setScope(debug::SourceScope *scope)
 	lastSetScope = scope;
 }
 
-void SpirvShader::Impl::Debugger::setLocation(EmitState *state, const std::shared_ptr<vk::dbg::File> &file, int line)
+void SpirvShader::Impl::Debugger::setLocation(, const std::shared_ptr<vk::dbg::File> &file, int line)
 {
 	vk::dbg::Location location{ file, line };
 
@@ -1449,19 +1449,19 @@ void SpirvShader::Impl::Debugger::setLocation(EmitState *state, const std::share
 		// Emit the shader logic to test the trap value (either through via
 		// Debugger::State::traps[] or Debugger::State::alwaysTrap), and call
 		// Debugger::State::trap() if either are true.
-		auto dbgState = state->routine->dbgState;
+		auto dbgState = routine->dbgState;
 		auto alwaysTrap = *Pointer<Byte>(dbgState + OFFSET(Impl::Debugger::State, alwaysTrap));
 		auto traps = *Pointer<Pointer<Byte>>(dbgState + OFFSET(Impl::Debugger::State, traps));
 		auto trap = Pointer<Byte>(traps)[index];
 		If(alwaysTrap != Byte(0) || trap != Byte(0))
 		{
-			rr::Call(&State::trap, state->routine->dbgState, index);
+			rr::Call(&State::trap, routine->dbgState, index);
 		}
 		nextSetLocationIsSteppable = false;
 	}
 }
 
-void SpirvShader::Impl::Debugger::setLocation(EmitState *state, const char *path, int line)
+void SpirvShader::Impl::Debugger::setLocation(, const char *path, int line)
 {
 	auto lock = ctx->lock();
 	auto file = lock.findFile(path);
@@ -1571,7 +1571,7 @@ void SpirvShader::Impl::Debugger::defineOrEmit(InsnIterator insn, Pass pass, F &
 	}
 }
 
-void SpirvShader::Impl::Debugger::process(const InsnIterator &insn, EmitState *state, Pass pass)
+void SpirvShader::Impl::Debugger::process(const InsnIterator &insn, Pass pass)
 {
 	auto extInstIndex = insn.word(4);
 	switch(extInstIndex)
@@ -1831,7 +1831,7 @@ void SpirvShader::Impl::Debugger::process(const InsnIterator &insn, EmitState *s
 			}
 
 			rr::Pointer<rr::Pointer<Byte>> lastReachedArray = *rr::Pointer<rr::Pointer<rr::Pointer<Byte>>>(
-			    state->routine->dbgState + OFFSET(Impl::Debugger::State, lastReachedDebugValues));
+			    routine->dbgState + OFFSET(Impl::Debugger::State, lastReachedDebugValues));
 			rr::Pointer<rr::Pointer<Byte>> lastReached = &lastReachedArray[node->debugValueIndex];
 			*lastReached = rr::ConstantPointer(value);
 		});
@@ -1939,7 +1939,7 @@ T *SpirvShader::Impl::Debugger::getOrNull(SpirvID<T> id) const
 ////////////////////////////////////////////////////////////////////////////////
 // SpirvShader::Impl::Debugger::Shadow methods
 ////////////////////////////////////////////////////////////////////////////////
-void SpirvShader::Impl::Debugger::Shadow::create(const SpirvShader *shader, const EmitState *state, Object::ID objId)
+void SpirvShader::Impl::Debugger::Shadow::create(const SpirvShader *shader, const, Object::ID objId)
 {
 	ASSERT_MSG(entries.find(objId) == entries.end(),
 	           "Object %%%d already has shadow memory allocated?", (int)objId.value());
@@ -1947,12 +1947,12 @@ void SpirvShader::Impl::Debugger::Shadow::create(const SpirvShader *shader, cons
 	Entry entry{};
 	entry.offset = size;
 
-	rr::Pointer<Byte> base = *rr::Pointer<rr::Pointer<Byte>>(state->routine->dbgState + OFFSET(Impl::Debugger::State, shadow));
+	rr::Pointer<Byte> base = *rr::Pointer<rr::Pointer<Byte>>(routine->dbgState + OFFSET(Impl::Debugger::State, shadow));
 	base += entry.offset;
 
 	auto &obj = shader->getObject(objId);
 	auto &objTy = shader->getType(obj.typeId());
-	auto mask = state->activeLaneMask();
+	auto mask = activeLaneMask();
 	switch(obj.kind)
 	{
 	case Object::Kind::Constant:
@@ -1973,7 +1973,7 @@ void SpirvShader::Impl::Debugger::Shadow::create(const SpirvShader *shader, cons
 	case Object::Kind::InterfaceVariable:
 		{
 			size += sizeof(void *) + sizeof(uint32_t) * SIMD::Width;
-			auto ptr = state->getPointer(objId);
+			auto ptr = getPointer(objId);
 			store(base, ptr.getUniformPointer());
 			store(base + sizeof(void *), ptr.offsets());
 			entry.kind = Entry::Kind::Pointer;
@@ -2547,12 +2547,12 @@ SpirvShader::Impl::Debugger::State::Data::buildSpirvValue(State *state, Shadow::
 ////////////////////////////////////////////////////////////////////////////////
 // sw::SpirvShader methods
 ////////////////////////////////////////////////////////////////////////////////
-void SpirvShader::dbgInit(const std::shared_ptr<vk::dbg::Context> &ctx)
+void SpirvShader::EmitState::dbgInit(const std::shared_ptr<vk::dbg::Context> &ctx)
 {
 	impl.debugger = new Impl::Debugger(this, ctx);
 }
 
-void SpirvShader::dbgTerm()
+void SpirvShader::EmitState::dbgTerm()
 {
 	if(impl.debugger)
 	{
@@ -2560,7 +2560,7 @@ void SpirvShader::dbgTerm()
 	}
 }
 
-void SpirvShader::dbgCreateFile()
+void SpirvShader::EmitState::dbgCreateFile()
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
@@ -2594,20 +2594,18 @@ void SpirvShader::dbgCreateFile()
 	dbg->spirvFile = dbg->ctx->lock().createVirtualFile(name.c_str(), source.c_str());
 }
 
-void SpirvShader::dbgBeginEmit(EmitState *state) const
+void SpirvShader::EmitState::dbgBeginEmit() const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
 
 	dbg->shaderHasDebugInfo = extensionsImported.count(Extension::OpenCLDebugInfo100) > 0;
 
-	auto routine = state->routine;
-
 	auto dbgState = rr::Call(&Impl::Debugger::State::create, dbg);
 
 	routine->dbgState = dbgState;
 
-	SetActiveLaneMask(state->activeLaneMask(), state);
+	SetActiveLaneMask(activeLaneMask(), state);
 
 	for(int i = 0; i < SIMD::Width; i++)
 	{
@@ -2654,17 +2652,17 @@ void SpirvShader::dbgBeginEmit(EmitState *state) const
 	}
 }
 
-void SpirvShader::dbgEndEmit(EmitState *state) const
+void SpirvShader::EmitState::dbgEndEmit() const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
 
 	dbg->finalize();
 
-	rr::Call(&Impl::Debugger::State::destroy, state->routine->dbgState);
+	rr::Call(&Impl::Debugger::State::destroy, routine->dbgState);
 }
 
-void SpirvShader::dbgBeginEmitInstruction(InsnIterator insn, EmitState *state) const
+void SpirvShader::EmitState::dbgBeginEmitInstruction(InsnIterator insn) const
 {
 #	if PRINT_EACH_EMITTED_INSTRUCTION
 	{
@@ -2718,7 +2716,7 @@ void SpirvShader::dbgBeginEmitInstruction(InsnIterator insn, EmitState *state) c
 	}
 }
 
-void SpirvShader::dbgEndEmitInstruction(InsnIterator insn, EmitState *state) const
+void SpirvShader::EmitState::dbgEndEmitInstruction(InsnIterator insn) const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
@@ -2744,17 +2742,17 @@ void SpirvShader::dbgEndEmitInstruction(InsnIterator insn, EmitState *state) con
 	}
 }
 
-void SpirvShader::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask, EmitState *state) const
+void SpirvShader::EmitState::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask) const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
 
-	auto dbgState = state->routine->dbgState;
+	auto dbgState = routine->dbgState;
 	auto globals = dbgState + OFFSET(Impl::Debugger::State, globals);
 	store(globals + OFFSET(Impl::Debugger::State::Globals, activeLaneMask), mask);
 }
 
-void SpirvShader::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const
+void SpirvShader::EmitState::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
@@ -2762,7 +2760,7 @@ void SpirvShader::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId
 	dbg->results.emplace(insn.data(), resultId);
 }
 
-SpirvShader::EmitResult SpirvShader::EmitLine(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitLine(InsnIterator insn) const
 {
 	if(auto dbg = impl.debugger)
 	{
@@ -2794,7 +2792,7 @@ void SpirvShader::DefineOpenCLDebugInfo100(const InsnIterator &insn)
 	dbg->process(insn, nullptr, Impl::Debugger::Pass::Define);
 }
 
-SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitOpenCLDebugInfo100(InsnIterator insn)
 {
 	if(auto dbg = impl.debugger)
 	{
@@ -2810,25 +2808,25 @@ SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, E
 // Stub implementations of the dbgXXX functions.
 namespace sw {
 
-void SpirvShader::dbgInit(const std::shared_ptr<vk::dbg::Context> &dbgctx) {}
-void SpirvShader::dbgTerm() {}
-void SpirvShader::dbgCreateFile() {}
-void SpirvShader::dbgBeginEmit(EmitState *state) const {}
-void SpirvShader::dbgEndEmit(EmitState *state) const {}
-void SpirvShader::dbgBeginEmitInstruction(InsnIterator insn, EmitState *state) const {}
-void SpirvShader::dbgEndEmitInstruction(InsnIterator insn, EmitState *state) const {}
-void SpirvShader::dbgExposeIntermediate(Object::ID id, EmitState *state) const {}
-void SpirvShader::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask, EmitState *state) const {}
-void SpirvShader::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const {}
+void SpirvShader::EmitState::dbgInit(const std::shared_ptr<vk::dbg::Context> &dbgctx) {}
+void SpirvShader::EmitState::dbgTerm() {}
+void SpirvShader::EmitState::dbgCreateFile() {}
+void SpirvShader::EmitState::dbgBeginEmit() const {}
+void SpirvShader::EmitState::dbgEndEmit() const {}
+void SpirvShader::EmitState::dbgBeginEmitInstruction(InsnIterator insn) const {}
+void SpirvShader::EmitState::dbgEndEmitInstruction(InsnIterator insn) const {}
+void SpirvShader::EmitState::dbgExposeIntermediate(Object::ID id) const {}
+void SpirvShader::EmitState::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask) const {}
+void SpirvShader::EmitState::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const {}
 
 void SpirvShader::DefineOpenCLDebugInfo100(const InsnIterator &insn) {}
 
-SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitOpenCLDebugInfo100(InsnIterator insn)
 {
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitLine(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitState::EmitLine(InsnIterator insn)
 {
 	return EmitResult::Continue;
 }
