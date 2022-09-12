@@ -16,6 +16,23 @@
       "message": "Split change",
       "revId": "c7698e12a061d12faaf3b5301fa51f1a155c8139",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a889102a_274f2704",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-12T19:58:22Z",
+      "side": 1,
+      "message": "Will let Nicolas +2 since he requested it.",
+      "revId": "c7698e12a061d12faaf3b5301fa51f1a155c8139",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
