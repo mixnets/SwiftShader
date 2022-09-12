@@ -34,6 +34,24 @@
       "parentUuid": "7ef03957_0d645a30",
       "revId": "c21e2d30059d13043eb74709d15f570efa2e4e04",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58e9ef9e_469a221b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-12T16:01:28Z",
+      "side": 1,
+      "message": "I understand the practical impact, but it\u0027s weird having to do this, rather than just \"being spec compliant\". We shouldn\u0027t have to do something that\u0027s not required simply because apps are using it incorrectly. ANGLE and CTS should definitely be fixed. Again, not opposed to doing this, I would just do it in a different order, fixing ANGLE and CTS first.",
+      "parentUuid": "75397265_1f01ac0b",
+      "revId": "c21e2d30059d13043eb74709d15f570efa2e4e04",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
