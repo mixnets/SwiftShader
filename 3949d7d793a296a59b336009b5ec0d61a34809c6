@@ -35,6 +35,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "00eac571_f050dbaf",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-12T23:16:04Z",
+      "side": 1,
+      "message": "Done, sorry I missed these (spoiled by ANGLE\u0027s more aggressive reformat)",
+      "parentUuid": "944b2f97_f9303126",
+      "revId": "3949d7d793a296a59b336009b5ec0d61a34809c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "322bcac1_b1d7a5bb",
@@ -48,6 +66,24 @@
       "writtenOn": "2022-09-12T20:44:25Z",
       "side": 1,
       "message": "uber-nit: No blank line after `private`",
+      "revId": "3949d7d793a296a59b336009b5ec0d61a34809c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2bcd945_971907fc",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-12T23:16:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "322bcac1_b1d7a5bb",
       "revId": "3949d7d793a296a59b336009b5ec0d61a34809c6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
@@ -69,6 +105,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d205ab3e_1c34f99e",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-12T23:16:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "df659087_e7d715ae",
+      "revId": "3949d7d793a296a59b336009b5ec0d61a34809c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "53ce3dd4_5bc020f9",
@@ -82,6 +136,30 @@
       "writtenOn": "2022-09-12T20:44:25Z",
       "side": 1,
       "message": "This is not currently considered so I think this comment could be confused for an expectation. I don\u0027t think we lose anything by simply deleting this part. But feel free to open tracker issues with ideas you consider worth discussing as future direction.",
+      "range": {
+        "startLine": 413,
+        "startChar": 71,
+        "endLine": 416,
+        "endChar": 20
+      },
+      "revId": "3949d7d793a296a59b336009b5ec0d61a34809c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a56ab0c_ceec58d1",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-12T23:16:04Z",
+      "side": 1,
+      "message": "Removed (it was left over from an earlier design, that you\u0027re right, isn\u0027t really relevant anymore)",
+      "parentUuid": "53ce3dd4_5bc020f9",
       "range": {
         "startLine": 413,
         "startChar": 71,
