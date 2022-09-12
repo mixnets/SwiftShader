@@ -22,6 +22,30 @@
       },
       "revId": "71f28ce7827d9ab2b77ccf3b3ab51785ca038da1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1323ffe_f33edefb",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-12T19:51:53Z",
+      "side": 1,
+      "message": "Done (leftover from a previous design)",
+      "parentUuid": "0c88dc0b_396557a4",
+      "range": {
+        "startLine": 404,
+        "startChar": 0,
+        "endLine": 407,
+        "endChar": 118
+      },
+      "revId": "71f28ce7827d9ab2b77ccf3b3ab51785ca038da1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
