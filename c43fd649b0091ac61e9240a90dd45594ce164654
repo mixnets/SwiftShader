@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "86ad3add_4f5b2135",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-12T17:17:37Z",
+      "side": 1,
+      "message": "Nice change. 1 detail:",
+      "revId": "c43fd649b0091ac61e9240a90dd45594ce164654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "370a2db0_49b191a6",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-12T17:17:37Z",
+      "side": 1,
+      "message": "IIUC, this also needs to be updated to take rasterizer discard into consideration, otherwise, it may mark content as changed erroneously in DrawCall::teardown() below. Currently, this takes both vertex and fragment shaders into consideration, but in the case of rasterizer discard, this function should only check the vertex shader (hasRasterizerDiscard could be an input argument to GraphicsPipeline::containsImageWrite())",
+      "range": {
+        "startLine": 231,
+        "startChar": 38,
+        "endLine": 231,
+        "endChar": 58
+      },
+      "revId": "c43fd649b0091ac61e9240a90dd45594ce164654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
