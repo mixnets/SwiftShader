@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5cdb8f4b_cca390b2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-12T19:44:29Z",
+      "side": 1,
+      "message": "Previously, if the fragment state was used by accident you\u0027d get a set of 0s. Now you get a crash.\n\nI reworded this, that\u0027s not _exactly_ the primary purpose. It\u0027s just part of the restructuring that would hopefully later make it cleaner to do JIT based on subset of state, like by making sure the other state is just not available at all. Not sure if I\u0027m explaining myself well.",
+      "parentUuid": "44ad895e_ef696726",
+      "range": {
+        "startLine": 13,
+        "startChar": 40,
+        "endLine": 14,
+        "endChar": 17
+      },
+      "revId": "c43fd649b0091ac61e9240a90dd45594ce164654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b0b58f7e_2a591319",
         "filename": "/COMMIT_MSG",
         "patchSetId": 4
@@ -37,6 +61,30 @@
       "writtenOn": "2022-09-12T18:44:22Z",
       "side": 1,
       "message": "Thanks for making this less hacky! Please try to split this off into a separate change. These things tend to be tricky so it\u0027s best to keep it isolated in case of unexpected issues down the road.",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 72
+      },
+      "revId": "c43fd649b0091ac61e9240a90dd45594ce164654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "90142884_c08a592a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-12T19:44:29Z",
+      "side": 1,
+      "message": "Done (though the hack is moved, I didn\u0027t actually (know how to) fix it :S)",
+      "parentUuid": "b0b58f7e_2a591319",
       "range": {
         "startLine": 22,
         "startChar": 0,
@@ -77,6 +125,30 @@
       "writtenOn": "2022-09-12T17:17:37Z",
       "side": 1,
       "message": "IIUC, this also needs to be updated to take rasterizer discard into consideration, otherwise, it may mark content as changed erroneously in DrawCall::teardown() below. Currently, this takes both vertex and fragment shaders into consideration, but in the case of rasterizer discard, this function should only check the vertex shader (hasRasterizerDiscard could be an input argument to GraphicsPipeline::containsImageWrite())",
+      "range": {
+        "startLine": 231,
+        "startChar": 38,
+        "endLine": 231,
+        "endChar": 58
+      },
+      "revId": "c43fd649b0091ac61e9240a90dd45594ce164654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5c89d3b7_411d5b33",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-12T19:44:29Z",
+      "side": 1,
+      "message": "Thanks, I actually had to separate vertex and fragment queries for this in a later change, so I moved that forward to here.",
+      "parentUuid": "370a2db0_49b191a6",
       "range": {
         "startLine": 231,
         "startChar": 38,
