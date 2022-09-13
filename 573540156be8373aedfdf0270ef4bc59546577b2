@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15c6dad4_9bb0983e",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-13T14:07:44Z",
+      "side": 1,
+      "message": "This could use a new name since it\u0027s not just a getter of the pipeline\u0027s state. `getCombinedState`?\n\n\"modified\" might work too, since that\u0027s the wording used by https://registry.khronos.org/vulkan/specs/1.3-extensions/html/vkspec.html#pipelines-dynamic-state, but it seems less clear out of context",
+      "range": {
+        "startLine": 98,
+        "startChar": 15,
+        "endLine": 98,
+        "endChar": 23
+      },
+      "revId": "573540156be8373aedfdf0270ef4bc59546577b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d38e34e_0c3adf6a",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-13T14:07:44Z",
+      "side": 1,
+      "message": "`getState` ?\n\nbase/static/fixed/immutable/pipeline/red/blue/...",
+      "range": {
+        "startLine": 99,
+        "startChar": 22,
+        "endLine": 99,
+        "endChar": 33
+      },
+      "revId": "573540156be8373aedfdf0270ef4bc59546577b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6145c62e_6a59f316",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 2286,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-13T14:07:44Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 2286,
+        "startChar": 0,
+        "endLine": 2286,
+        "endChar": 70
+      },
+      "revId": "573540156be8373aedfdf0270ef4bc59546577b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ad502fe_638d7d9b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 3704,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-13T14:07:44Z",
+      "side": 1,
+      "message": "`auto *`",
+      "range": {
+        "startLine": 3704,
+        "startChar": 4,
+        "endLine": 3704,
+        "endChar": 8
+      },
+      "revId": "573540156be8373aedfdf0270ef4bc59546577b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
