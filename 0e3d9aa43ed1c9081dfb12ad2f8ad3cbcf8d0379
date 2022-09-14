@@ -3,6 +3,29 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "b562f0af_1a0334c3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-14T12:57:24Z",
+      "side": 1,
+      "message": "supporting opinion: While consistency is a strong motivation in itself, I think applying the right-to-left type parsing argument everywhere is a bit flawed because we do tend to read parts of a type as left-to-right. For example `unsigned int *` can in theory be written as `int unsigned *` but that would hurt readability since `unsigned int` is commonly read left-to-right. I think the same argument applies to `const`. Of course there are a few cases where one needs to pay attention to the right-to-left application of qualifiers and modifiers but I don\u0027t think it justifies using a less natural order elsewhere.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 11
+      },
+      "revId": "0e3d9aa43ed1c9081dfb12ad2f8ad3cbcf8d0379",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "80339f6d_53d30049",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -14,6 +37,23 @@
       "writtenOn": "2022-09-14T02:28:48Z",
       "side": 1,
       "message": "It took only a second, so I did it, but I don\u0027t know if you care about this at all.",
+      "revId": "0e3d9aa43ed1c9081dfb12ad2f8ad3cbcf8d0379",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c31e928c_86ce5ece",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-14T12:57:24Z",
+      "side": 1,
+      "message": "Thanks!",
       "revId": "0e3d9aa43ed1c9081dfb12ad2f8ad3cbcf8d0379",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
