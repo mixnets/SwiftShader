@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed3c2e2a_70385003",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-14T02:06:28Z",
+      "side": 1,
+      "message": "Done. Went with `getCombinedState`",
+      "parentUuid": "15c6dad4_9bb0983e",
+      "range": {
+        "startLine": 98,
+        "startChar": 15,
+        "endLine": 98,
+        "endChar": 23
+      },
+      "revId": "573540156be8373aedfdf0270ef4bc59546577b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7d38e34e_0c3adf6a",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-09-13T14:07:44Z",
       "side": 1,
       "message": "`getState` ?\n\nbase/static/fixed/immutable/pipeline/red/blue/...",
+      "range": {
+        "startLine": 99,
+        "startChar": 22,
+        "endLine": 99,
+        "endChar": 33
+      },
+      "revId": "573540156be8373aedfdf0270ef4bc59546577b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37af9712_3065dfe9",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-14T02:06:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7d38e34e_0c3adf6a",
       "range": {
         "startLine": 99,
         "startChar": 22,
@@ -70,6 +118,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4d8dd7e_555aebd9",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 2286,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-14T02:06:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6145c62e_6a59f316",
+      "range": {
+        "startLine": 2286,
+        "startChar": 0,
+        "endLine": 2286,
+        "endChar": 70
+      },
+      "revId": "573540156be8373aedfdf0270ef4bc59546577b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4ad502fe_638d7d9b",
@@ -83,6 +155,30 @@
       "writtenOn": "2022-09-13T14:07:44Z",
       "side": 1,
       "message": "`auto *`",
+      "range": {
+        "startLine": 3704,
+        "startChar": 4,
+        "endLine": 3704,
+        "endChar": 8
+      },
+      "revId": "573540156be8373aedfdf0270ef4bc59546577b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb39cc9e_823efa00",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 3704,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-14T02:06:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ad502fe_638d7d9b",
       "range": {
         "startLine": 3704,
         "startChar": 4,
