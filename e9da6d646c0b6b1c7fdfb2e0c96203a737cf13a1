@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc75e8a1_7e38e321",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-14T12:34:43Z",
+      "side": 1,
+      "message": "This could use a bit of argumentation here. My comment from the other CL would do.",
+      "revId": "e9da6d646c0b6b1c7fdfb2e0c96203a737cf13a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "acd1584d_50e07965",
@@ -14,6 +31,23 @@
       "writtenOn": "2022-09-14T02:27:58Z",
       "side": 1,
       "message": "Follow up from an `auto *` comment on the previous change",
+      "revId": "e9da6d646c0b6b1c7fdfb2e0c96203a737cf13a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0cd6b054_221964fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-14T12:34:43Z",
+      "side": 1,
+      "message": "Thanks!",
       "revId": "e9da6d646c0b6b1c7fdfb2e0c96203a737cf13a1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
