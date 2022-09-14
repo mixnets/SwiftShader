@@ -1114,7 +1114,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 			UNSUPPORTED("pCreateInfo->pQueueCreateInfos[%d]->flags 0x%08X", i, queueCreateInfo.flags);
 		}
 
-		auto extInfo = reinterpret_cast<VkBaseInStructure const *>(queueCreateInfo.pNext);
+		const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(queueCreateInfo.pNext);
 		while(extInfo)
 		{
 			UNSUPPORTED("pCreateInfo->pQueueCreateInfos[%d].pNext sType = %s", i, vk::Stringify(extInfo->sType).c_str());
@@ -1421,7 +1421,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetDeviceMemoryCommitment(VkDevice pDevice, VkDevic
 	TRACE("(VkDevice device = %p, VkDeviceMemory memory = %p, VkDeviceSize* pCommittedMemoryInBytes = %p)",
 	      pDevice, static_cast<void *>(pMemory), pCommittedMemoryInBytes);
 
-	auto memory = vk::Cast(pMemory);
+	auto *memory = vk::Cast(pMemory);
 
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 	const auto &memoryProperties = vk::PhysicalDevice::GetMemoryProperties();
@@ -1716,7 +1716,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateEvent(VkDevice device, const VkEventCreat
 		UNSUPPORTED("pCreateInfo->flags 0x%08X", int(pCreateInfo->flags));
 	}
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
 	while(extInfo)
 	{
 		// Vulkan 1.2: "pNext must be NULL"
@@ -1771,7 +1771,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateQueryPool(VkDevice device, const VkQueryP
 		UNSUPPORTED("pCreateInfo->flags 0x%08X", int(pCreateInfo->flags));
 	}
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pCreateInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -1869,7 +1869,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBufferView(VkDevice device, const VkBuffe
 		UNSUPPORTED("pCreateInfo->flags 0x%08X", int(pCreateInfo->flags));
 	}
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pCreateInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -2137,7 +2137,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineCache(VkDevice device, const VkPi
 		UNSUPPORTED("pCreateInfo->flags 0x%08X", int(pCreateInfo->flags));
 	}
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pCreateInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -2425,7 +2425,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorPool(VkDevice device, const VkD
 	TRACE("(VkDevice device = %p, const VkDescriptorPoolCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkDescriptorPool* pDescriptorPool = %p)",
 	      device, pCreateInfo, pAllocator, pDescriptorPool);
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
 	while(extInfo)
 	{
 		switch(extInfo->sType)
@@ -2471,7 +2471,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateDescriptorSets(VkDevice device, const V
 
 	const VkDescriptorSetVariableDescriptorCountAllocateInfo *variableDescriptorCountAllocateInfo = nullptr;
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pAllocateInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pAllocateInfo->pNext);
 	while(extInfo)
 	{
 		switch(extInfo->sType)
@@ -3328,7 +3328,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory2(VkDevice device, uint32_t bin
 
 	for(uint32_t i = 0; i < bindInfoCount; i++)
 	{
-		auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pBindInfos[i].pNext);
+		const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pBindInfos[i].pNext);
 		while(extInfo)
 		{
 			UNSUPPORTED("pBindInfos[%d].pNext sType = %s", i, vk::Stringify(extInfo->sType).c_str());
@@ -3369,7 +3369,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 		vk::DeviceMemory *memory = vk::Cast(pBindInfos[i].memory);
 		VkDeviceSize offset = pBindInfos[i].memoryOffset;
 
-		auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pBindInfos[i].pNext);
+		const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pBindInfos[i].pNext);
 		while(extInfo)
 		{
 			switch(extInfo->sType)
@@ -3381,7 +3381,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 #ifndef __ANDROID__
 			case VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR:
 				{
-					auto swapchainInfo = reinterpret_cast<VkBindImageMemorySwapchainInfoKHR const *>(extInfo);
+					const auto *swapchainInfo = reinterpret_cast<VkBindImageMemorySwapchainInfoKHR const *>(extInfo);
 					memory = vk::Cast(swapchainInfo->swapchain)->getImage(swapchainInfo->imageIndex).getImageMemory();
 					offset = 0;
 				}
@@ -3445,7 +3445,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageMemoryRequirements2(VkDevice device, const 
 	TRACE("(VkDevice device = %p, const VkImageMemoryRequirementsInfo2* pInfo = %p, VkMemoryRequirements2* pMemoryRequirements = %p)",
 	      device, pInfo, pMemoryRequirements);
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pInfo->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -3460,7 +3460,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetBufferMemoryRequirements2(VkDevice device, const
 	TRACE("(VkDevice device = %p, const VkBufferMemoryRequirementsInfo2* pInfo = %p, VkMemoryRequirements2* pMemoryRequirements = %p)",
 	      device, pInfo, pMemoryRequirements);
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pInfo->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -3474,7 +3474,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetBufferMemoryRequirements2(VkDevice device, const
 		{
 		case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS:
 			{
-				auto requirements = reinterpret_cast<VkMemoryDedicatedRequirements *>(extensionRequirements);
+				auto *requirements = reinterpret_cast<VkMemoryDedicatedRequirements *>(extensionRequirements);
 				vk::Cast(device)->getRequirements(requirements);
 			}
 			break;
@@ -3494,14 +3494,14 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageSparseMemoryRequirements2(VkDevice device, 
 	TRACE("(VkDevice device = %p, const VkImageSparseMemoryRequirementsInfo2* pInfo = %p, uint32_t* pSparseMemoryRequirementCount = %p, VkSparseImageMemoryRequirements2* pSparseMemoryRequirements = %p)",
 	      device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pInfo->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
 		extInfo = extInfo->pNext;
 	}
 
-	auto extensionRequirements = reinterpret_cast<VkBaseInStructure const *>(pSparseMemoryRequirements->pNext);
+	const auto *extensionRequirements = reinterpret_cast<VkBaseInStructure const *>(pSparseMemoryRequirements->pNext);
 	while(extensionRequirements)
 	{
 		UNSUPPORTED("pSparseMemoryRequirements->pNext sType = %s", vk::Stringify(extensionRequirements->sType).c_str());
@@ -3533,165 +3533,165 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 		{
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceIDProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceIDProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceMaintenance3Properties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceMaintenance3Properties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceMaintenance4Properties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceMaintenance4Properties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceMultiviewProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceMultiviewProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDevicePointClippingProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDevicePointClippingProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceProtectedMemoryProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceProtectedMemoryProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceSubgroupProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceSubgroupProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceExternalMemoryHostPropertiesEXT *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceExternalMemoryHostPropertiesEXT *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceDriverProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceDriverProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 #ifdef __ANDROID__
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDevicePresentationPropertiesANDROID *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDevicePresentationPropertiesANDROID *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 #endif
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceLineRasterizationPropertiesEXT *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceLineRasterizationPropertiesEXT *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceProvokingVertexPropertiesEXT *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceProvokingVertexPropertiesEXT *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceFloatControlsProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceFloatControlsProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceVulkan11Properties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceVulkan11Properties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceSamplerFilterMinmaxProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceSamplerFilterMinmaxProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceTimelineSemaphoreProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceTimelineSemaphoreProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceVulkan12Properties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceVulkan12Properties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceVulkan13Properties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceVulkan13Properties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceDescriptorIndexingProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceDescriptorIndexingProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceDepthStencilResolveProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceDepthStencilResolveProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceCustomBorderColorPropertiesEXT *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceCustomBorderColorPropertiesEXT *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceSubgroupSizeControlProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceInlineUniformBlockProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceInlineUniformBlockProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceTexelBufferAlignmentProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDeviceShaderIntegerDotProductProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDeviceShaderIntegerDotProductProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT:
 			{
-				auto properties = reinterpret_cast<VkPhysicalDevicePipelineRobustnessPropertiesEXT *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkPhysicalDevicePipelineRobustnessPropertiesEXT *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
@@ -3849,13 +3849,13 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		{
 		case VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkExternalImageFormatProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkExternalImageFormatProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(handleType, properties);
 			}
 			break;
 		case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES:
 			{
-				auto properties = reinterpret_cast<VkSamplerYcbcrConversionImageFormatProperties *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkSamplerYcbcrConversionImageFormatProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
@@ -3868,7 +3868,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 #ifdef __ANDROID__
 		case VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_USAGE_ANDROID:
 			{
-				auto properties = reinterpret_cast<VkAndroidHardwareBufferUsageANDROID *>(extensionProperties);
+				auto *properties = reinterpret_cast<VkAndroidHardwareBufferUsageANDROID *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(pImageFormatInfo, properties);
 				hasAHBUsage = true;
 			}
@@ -4011,7 +4011,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyProperties2(VkPhysicalD
 
 	if(pQueueFamilyProperties)
 	{
-		auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pQueueFamilyProperties->pNext);
+		const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pQueueFamilyProperties->pNext);
 		while(extInfo)
 		{
 			UNSUPPORTED("pQueueFamilyProperties->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -4033,7 +4033,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceMemoryProperties2(VkPhysicalDevice
 {
 	TRACE("(VkPhysicalDevice physicalDevice = %p, VkPhysicalDeviceMemoryProperties2* pMemoryProperties = %p)", physicalDevice, pMemoryProperties);
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pMemoryProperties->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pMemoryProperties->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pMemoryProperties->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -4050,7 +4050,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceSparseImageFormatProperties2(VkPhy
 
 	if(pProperties)
 	{
-		auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pProperties->pNext);
+		const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pProperties->pNext);
 		while(extInfo)
 		{
 			UNSUPPORTED("pProperties->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -4095,7 +4095,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetDeviceQueue2(VkDevice device, const VkDeviceQueu
 	TRACE("(VkDevice device = %p, const VkDeviceQueueInfo2* pQueueInfo = %p, VkQueue* pQueue = %p)",
 	      device, pQueueInfo, pQueue);
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pQueueInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pQueueInfo->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pQueueInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -4120,7 +4120,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSamplerYcbcrConversion(VkDevice device, c
 	TRACE("(VkDevice device = %p, const VkSamplerYcbcrConversionCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkSamplerYcbcrConversion* pYcbcrConversion = %p)",
 	      device, pCreateInfo, pAllocator, pYcbcrConversion);
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
 	while(extInfo)
 	{
 		switch(extInfo->sType)
@@ -4163,7 +4163,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorUpdateTemplate(VkDevice device,
 		UNSUPPORTED("pCreateInfo->templateType %d", int(pCreateInfo->templateType));
 	}
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pCreateInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -4283,7 +4283,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetDeviceImageMemoryRequirements(VkDevice device, c
 	TRACE("(VkDevice device = %p, const VkDeviceImageMemoryRequirements* pInfo = %p, VkMemoryRequirements2* pMemoryRequirements = %p)",
 	      device, pInfo, pMemoryRequirements);
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pInfo->pNext);
+	const auto *extInfo = reinterpret_cast<VkBaseInStructure const *>(pInfo->pNext);
 	while(extInfo)
 	{
 		UNSUPPORTED("pInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
@@ -4654,7 +4654,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(VkDevice device, const VkSwa
 		return status;
 	}
 
-	auto swapchain = vk::Cast(*pSwapchain);
+	auto *swapchain = vk::Cast(*pSwapchain);
 	status = swapchain->createImages(device, pCreateInfo);
 
 	if(status != VK_SUCCESS)
