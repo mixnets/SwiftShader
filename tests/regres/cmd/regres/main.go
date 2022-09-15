@@ -762,11 +762,12 @@ func (r *regres) updateLocalDeqpFiles(test *test) ([]string, error) {
 		return nil, cause.Wrap(err, "Couldn't parse %s", deqpConfigRelPath)
 	}
 
-	hash, err := git.FetchRefHash("HEAD", cfg.Remote)
-	if err != nil {
-		return nil, cause.Wrap(err, "Failed to fetch dEQP ref")
-	}
-	cfg.SHA = hash.String()
+	// TODO(b/216982034): restart updating the hash after 1.3.2.0 conformance is done
+	// hash, err := git.FetchRefHash("HEAD", cfg.Remote)
+	// if err != nil {
+	//	return nil, cause.Wrap(err, "Failed to fetch dEQP ref")
+	// }
+	// cfg.SHA = hash.String()
 	log.Println("New dEQP revision: %s", cfg.SHA)
 
 	newFile, err := os.Create(deqpJsonPath)
