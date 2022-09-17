@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fea5dc2_ea82d826",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 18
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-17T20:48:41Z",
+      "side": 1,
+      "message": "CTS found a number of issues, that I\u0027ve fixed. Diff is between PS 13 and 18. PTAL, in case there\u0027s other feedback",
+      "revId": "7f51e3885b35524f20252b353303ac934103efba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
