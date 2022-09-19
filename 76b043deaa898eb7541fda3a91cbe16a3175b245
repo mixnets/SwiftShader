@@ -52,6 +52,24 @@
       "parentUuid": "87d47a84_05376f60",
       "revId": "76b043deaa898eb7541fda3a91cbe16a3175b245",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c288ab54_6102b1d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-19T18:33:52Z",
+      "side": 1,
+      "message": "Thanks Shabi. As agreed offline, I\u0027ll land this for now. If new tests get added, we\u0027ll make sure they fail, and then we\u0027ll properly fix those at that point.",
+      "parentUuid": "437ee119_decf6a8d",
+      "revId": "76b043deaa898eb7541fda3a91cbe16a3175b245",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
