@@ -34,6 +34,24 @@
       "parentUuid": "b2bbeafd_85fd8240",
       "revId": "76b043deaa898eb7541fda3a91cbe16a3175b245",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "437ee119_decf6a8d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-19T18:30:48Z",
+      "side": 1,
+      "message": "Chatted offline. It\u0027s unclear what device-default really means, I\u0027ll ask for spec clarification.",
+      "parentUuid": "87d47a84_05376f60",
+      "revId": "76b043deaa898eb7541fda3a91cbe16a3175b245",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
