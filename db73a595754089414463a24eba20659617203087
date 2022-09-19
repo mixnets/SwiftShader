@@ -93,6 +93,30 @@
       },
       "revId": "db73a595754089414463a24eba20659617203087",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "348d4697_0ad36c71",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-19T14:27:22Z",
+      "side": 1,
+      "message": "My understanding is that the compiler is expecting `vec\u003cT, 4\u003e` to be an array, while it\u0027s just a class with an overloaded `operator[]`.",
+      "parentUuid": "bc781be9_39053b0f",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 31
+      },
+      "revId": "db73a595754089414463a24eba20659617203087",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
