@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7de6842_9c476df6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2022-09-19T14:17:27Z",
+      "side": 1,
+      "message": "Below you said this is a compile error, but this sentence implies that the error would happen at runtime?",
+      "range": {
+        "startLine": 12,
+        "startChar": 26,
+        "endLine": 12,
+        "endChar": 62
+      },
+      "revId": "db73a595754089414463a24eba20659617203087",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07289c4c_a4d1bdd6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2022-09-19T14:17:27Z",
+      "side": 1,
+      "message": "Can you specify which compiler (and version), and what the error message from it was exactly? Would help me understand what this fixes.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 31
+      },
+      "revId": "db73a595754089414463a24eba20659617203087",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
