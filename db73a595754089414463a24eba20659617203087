@@ -141,6 +141,30 @@
       },
       "revId": "db73a595754089414463a24eba20659617203087",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de8aa3a6_a06f5e16",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-19T16:25:36Z",
+      "side": 1,
+      "message": "Thanks Antonio. I\u0027ll land this workaround for now and discuss it with Nicolas when he\u0027s back in the office.",
+      "parentUuid": "b5ed029f_97087e9e",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 31
+      },
+      "revId": "db73a595754089414463a24eba20659617203087",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
