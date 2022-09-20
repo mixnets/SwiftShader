@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d63b2088_98b7bcab",
+        "filename": "tests/regres/testlists/vk-master-ASSERT.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-20T00:22:34Z",
+      "side": 0,
+      "message": "These tests were fixed by https://gerrit.khronos.org/c/vk-gl-cts/+/10043",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 50
+      },
+      "revId": "ca2d9fa8f69e6b415c71a12a0845c326f4d22654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74e39c9d_d69fb5b1",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-20T00:22:34Z",
+      "side": 0,
+      "message": "b/242264488",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 94
+      },
+      "revId": "ca2d9fa8f69e6b415c71a12a0845c326f4d22654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

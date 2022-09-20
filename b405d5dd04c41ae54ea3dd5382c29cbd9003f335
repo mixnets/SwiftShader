@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b2fcd70_f18680e2",
+        "filename": "tests/regres/testlists/vk-master-ASSERT.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-20T00:22:34Z",
+      "side": 1,
+      "message": "b/247637093",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 75
+      },
+      "revId": "b405d5dd04c41ae54ea3dd5382c29cbd9003f335",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ff201c1f_6289c785",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-20T00:22:34Z",
+      "side": 1,
+      "message": "New failure, will be fixed by:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/68330",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 120
+      },
+      "revId": "b405d5dd04c41ae54ea3dd5382c29cbd9003f335",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bb43e13_5ae41c39",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-20T00:22:34Z",
+      "side": 1,
+      "message": "New failures, will be fixed by:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/68331",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 109
+      },
+      "revId": "b405d5dd04c41ae54ea3dd5382c29cbd9003f335",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c19431ab_81b9b45c",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-20T00:22:34Z",
+      "side": 1,
+      "message": "b/247637094",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 26
+      },
+      "revId": "b405d5dd04c41ae54ea3dd5382c29cbd9003f335",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
