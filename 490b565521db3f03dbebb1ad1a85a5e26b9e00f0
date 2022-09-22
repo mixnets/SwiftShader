@@ -16,6 +16,24 @@
       "message": "Looks good to me.\nProbably Rebecca is the better one to review.\nYou might have to look into these commits as well:\nhttps://issuetracker.google.com/issues/217573066#comment24",
       "revId": "490b565521db3f03dbebb1ad1a85a5e26b9e00f0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11ac2b24_6755f0ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101546
+      },
+      "writtenOn": "2022-09-22T12:15:39Z",
+      "side": 1,
+      "message": "Ok，Thanks for your reply!",
+      "parentUuid": "63cb4fcd_b2de0121",
+      "revId": "490b565521db3f03dbebb1ad1a85a5e26b9e00f0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
