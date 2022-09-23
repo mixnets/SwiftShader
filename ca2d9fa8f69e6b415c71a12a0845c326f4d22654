@@ -16,6 +16,24 @@
       "message": "Looks like my original interpretation was correct, and DEVICE_DEFAULT means set to whatever was set at device creation time: https://gitlab.khronos.org/vulkan/vulkan/-/issues/3237#note_378430\n\nSo this change would need to be reverted, but we still need to look into why tests were failing.",
       "revId": "ca2d9fa8f69e6b415c71a12a0845c326f4d22654",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "92da15f3_5fe31635",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-23T12:20:34Z",
+      "side": 1,
+      "message": "We\u0027ll fix it properly instead of reverting. We had already established the reason tests were failing before is this CL:\n\"unspecified VkPipelineRobustnessCreateInfoEXT pNext pointer\" !\u003d \"DEVICE_DEFAULT\" for pipeline stages and VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DEVICE_DEFAULT_EXT is used by default at line 275. Maybe just removing the else at line 285 was enough to fix the issue.\nI would\u0027ve liked it if we could\u0027ve had failing tests before fixing this, but I\u0027ll do it now anyway.",
+      "parentUuid": "9473d7a6_4500b230",
+      "revId": "ca2d9fa8f69e6b415c71a12a0845c326f4d22654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
