@@ -34,6 +34,24 @@
       "parentUuid": "9473d7a6_4500b230",
       "revId": "ca2d9fa8f69e6b415c71a12a0845c326f4d22654",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5172f5d_f5bd147f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-23T12:31:47Z",
+      "side": 1,
+      "message": "Yeah, I tested locally and just doing the change at line 285 is enough to fix the issue. I\u0027ll prepare a CL.",
+      "parentUuid": "92da15f3_5fe31635",
+      "revId": "ca2d9fa8f69e6b415c71a12a0845c326f4d22654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
