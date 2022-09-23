@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ceb29af_deb3c4a2",
+        "filename": "tests/regres/testlists/vk-master-UNIMPLEMENTED.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-23T12:24:24Z",
+      "side": 0,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/68408",
+      "revId": "bd8f8a8fc544ec74858ebe4dc0f38c7e3442fc4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
