@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb72f0d0_629bcbee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101556
+      },
+      "writtenOn": "2022-09-23T18:09:47Z",
+      "side": 1,
+      "message": "Hi,\n\nRecent Wayland related changes in the BUILD.gn files seem to have caused unconditional dependency on the libwayland-client library on linux platforms.\n\nThis small patch tries to correct this.",
+      "revId": "d5af889d2d74136a1d644693e0b6dba8f870becc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
