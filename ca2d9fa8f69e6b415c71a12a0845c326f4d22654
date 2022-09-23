@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9473d7a6_4500b230",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-23T03:13:12Z",
+      "side": 1,
+      "message": "Looks like my original interpretation was correct, and DEVICE_DEFAULT means set to whatever was set at device creation time: https://gitlab.khronos.org/vulkan/vulkan/-/issues/3237#note_378430\n\nSo this change would need to be reverted, but we still need to look into why tests were failing.",
+      "revId": "ca2d9fa8f69e6b415c71a12a0845c326f4d22654",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
