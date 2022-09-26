@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "438fdc3e_86016b46",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-26T17:32:07Z",
+      "side": 1,
+      "message": "This depends on this test bug being fixed:\nhttps://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3898",
+      "revId": "0a4742abd697d18aac690d1ce99ce58cbaeeb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
