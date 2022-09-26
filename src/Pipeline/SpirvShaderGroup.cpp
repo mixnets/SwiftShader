@@ -27,12 +27,12 @@ template<typename TYPE, typename I, typename APPLY>
 static void BinaryOperation(
     const SpirvShader &shader,
     const SpirvShader::InsnIterator &insn,
-    const SpirvShader::EmitState &state,
+    const EmitState &state,
     Intermediate &dst,
     const I identityValue,
     APPLY &&apply)
 {
-	SpirvShader::Operand value(shader, state, insn.word(5));
+	EmitState::Operand value(shader, state, insn.word(5));
 	auto &type = shader.getType(SpirvShader::Type::ID(insn.word(1)));
 	for(auto i = 0u; i < type.componentCount; i++)
 	{
@@ -73,12 +73,12 @@ static void BinaryOperation(
 	}
 }
 
-SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator insn)
+EmitState::EmitResult EmitState::EmitGroupNonUniform(SpirvShader::InsnIterator insn)
 {
 	ASSERT(SIMD::Width == 4);  // EmitGroupNonUniform makes many assumptions that the SIMD vector width is 4
 
-	auto &type = shader.getType(Type::ID(insn.word(1)));
-	Object::ID resultId = insn.word(2);
+	auto &type = shader.getType(SpirvShader::Type::ID(insn.word(1)));
+	SpirvShader::Object::ID resultId = insn.word(2);
 	auto scope = spv::Scope(shader.GetConstScalarInt(insn.word(3)));
 	ASSERT_MSG(scope == spv::ScopeSubgroup, "Scope for Non Uniform Group Operations must be Subgroup for Vulkan 1.1");
 
@@ -135,8 +135,8 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 
 	case spv::OpGroupNonUniformBroadcast:
 		{
-			auto valueId = Object::ID(insn.word(4));
-			auto idId = Object::ID(insn.word(5));
+			auto valueId = SpirvShader::Object::ID(insn.word(4));
+			auto idId = SpirvShader::Object::ID(insn.word(5));
 			Operand value(shader, *this, valueId);
 
 			// Decide between the fast path for constants and the slow path for
@@ -175,7 +175,7 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 
 	case spv::OpGroupNonUniformBroadcastFirst:
 		{
-			auto valueId = Object::ID(insn.word(4));
+			auto valueId = SpirvShader::Object::ID(insn.word(4));
 			Operand value(shader, *this, valueId);
 			// Result is true only in the active invocation with the lowest id
 			// in the group, otherwise result is false.
@@ -193,11 +193,11 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 
 	case spv::OpGroupNonUniformQuadBroadcast:
 		{
-			auto valueId = Object::ID(insn.word(4));
+			auto valueId = SpirvShader::Object::ID(insn.word(4));
 			Operand value(shader, *this, valueId);
 
 			ASSERT(shader.getType(shader.getObject(insn.word(5))).componentCount == 1);
-			auto indexId = Object::ID(insn.word(5));
+			auto indexId = SpirvShader::Object::ID(insn.word(5));
 			SIMD::Int index = Operand(shader, *this, indexId).Int(0);
 
 			SIMD::Int active = activeLaneMask();
@@ -215,7 +215,7 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 
 	case spv::OpGroupNonUniformQuadSwap:
 		{
-			auto valueId = Object::ID(insn.word(4));
+			auto valueId = SpirvShader::Object::ID(insn.word(4));
 			// SPIR-V spec: Drection must be a scalar of integer type and come from a constant instruction
 			int direction = shader.GetConstScalarInt(insn.word(5));
 
@@ -257,7 +257,7 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 
 	case spv::OpGroupNonUniformInverseBallot:
 		{
-			auto valueId = Object::ID(insn.word(4));
+			auto valueId = SpirvShader::Object::ID(insn.word(4));
 			ASSERT(type.componentCount == 1);
 			ASSERT(shader.getObjectType(valueId).componentCount == 4);
 			Operand value(shader, *this, valueId);
@@ -268,8 +268,8 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 
 	case spv::OpGroupNonUniformBallotBitExtract:
 		{
-			auto valueId = Object::ID(insn.word(4));
-			auto indexId = Object::ID(insn.word(5));
+			auto valueId = SpirvShader::Object::ID(insn.word(4));
+			auto indexId = SpirvShader::Object::ID(insn.word(5));
 			ASSERT(type.componentCount == 1);
 			ASSERT(shader.getObjectType(valueId).componentCount == 4);
 			ASSERT(shader.getObjectType(indexId).componentCount == 1);
@@ -288,7 +288,7 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 	case spv::OpGroupNonUniformBallotBitCount:
 		{
 			auto operation = spv::GroupOperation(insn.word(4));
-			auto valueId = Object::ID(insn.word(5));
+			auto valueId = SpirvShader::Object::ID(insn.word(5));
 			ASSERT(type.componentCount == 1);
 			ASSERT(shader.getObjectType(valueId).componentCount == 4);
 			Operand value(shader, *this, valueId);
@@ -311,7 +311,7 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 
 	case spv::OpGroupNonUniformBallotFindLSB:
 		{
-			auto valueId = Object::ID(insn.word(4));
+			auto valueId = SpirvShader::Object::ID(insn.word(4));
 			ASSERT(type.componentCount == 1);
 			ASSERT(shader.getObjectType(valueId).componentCount == 4);
 			Operand value(shader, *this, valueId);
@@ -321,7 +321,7 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 
 	case spv::OpGroupNonUniformBallotFindMSB:
 		{
-			auto valueId = Object::ID(insn.word(4));
+			auto valueId = SpirvShader::Object::ID(insn.word(4));
 			ASSERT(type.componentCount == 1);
 			ASSERT(shader.getObjectType(valueId).componentCount == 4);
 			Operand value(shader, *this, valueId);
@@ -499,7 +499,7 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitGroupNonUniform(InsnIterator
 		break;
 
 	default:
-		UNSUPPORTED("EmitGroupNonUniform op: %s", OpcodeName(type.opcode()));
+		UNSUPPORTED("EmitGroupNonUniform op: %s", shader.OpcodeName(type.opcode()));
 	}
 	return EmitResult::Continue;
 }

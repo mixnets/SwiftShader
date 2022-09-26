@@ -149,18 +149,19 @@ private:
 class SpirvShader
 {
 public:
+	SpirvShader(VkShaderStageFlagBits stage,
+	            const char *entryPointName,
+	            const SpirvBinary &insns,
+	            const vk::RenderPass *renderPass,
+	            uint32_t subpassIndex,
+	            bool robustBufferAccess);
+
+	~SpirvShader();
+
 	SpirvBinary insns;
-
-	using ImageSampler = void(void *texture, void *uvsIn, void *texelOut, void *constants);
-
-	enum class YieldResult
-	{
-		ControlBarrier,
-	};
 
 	class Type;
 	class Object;
-	class EmitState;
 
 	// Pseudo-iterator over SPIR-V instructions, designed to support range-based-for.
 	class InsnIterator
@@ -346,8 +347,8 @@ public:
 		using ID = SpirvID<Object>;
 
 		spv::Op opcode() const { return definition.opcode(); }
-		Type::ID typeId() const { return definition.resultTypeId(); }
-		Object::ID id() const { return definition.resultId(); }
+		SpirvShader::Type::ID typeId() const { return definition.resultTypeId(); }
+		SpirvShader::Object::ID id() const { return definition.resultId(); }
 
 		bool isConstantZero() const;
 
@@ -385,16 +386,6 @@ public:
 		};
 
 		Kind kind = Kind::Unknown;
-	};
-
-	class SampledImagePointer : public SIMD::Pointer
-	{
-	public:
-		SampledImagePointer(SIMD::Pointer image, Object::ID sampler)
-		    : SIMD::Pointer(image)
-		    , samplerId(sampler)
-		{}
-		Object::ID samplerId;
 	};
 
 	// Block is an interval of SPIR-V instructions, starting with the
@@ -488,10 +479,10 @@ public:
 			return it->second;
 		}
 
-		Block::ID entry;          // function entry point block.
-		HandleMap<Block> blocks;  // blocks belonging to this function.
-		Type::ID type;            // type of the function.
-		Type::ID result;          // return type.
+		Block::ID entry;               // function entry point block.
+		HandleMap<Block> blocks;       // blocks belonging to this function.
+		SpirvShader::Type::ID type;    // type of the function.
+		SpirvShader::Type::ID result;  // return type.
 	};
 
 	using String = std::string;
@@ -536,123 +527,12 @@ public:
 		inline operator Object::ID() const { return Object::ID(value()); }
 	};
 
-	// OpImageSample variants
-	enum Variant : uint32_t
-	{
-		None,  // No Dref or Proj. Also used by OpImageFetch and OpImageQueryLod.
-		Dref,
-		Proj,
-		ProjDref,
-		VARIANT_LAST = ProjDref
-	};
-
-	// Compact representation of image instruction state that is passed to the
-	// trampoline function for retrieving/generating the corresponding sampling routine.
-	struct ImageInstructionSignature
-	{
-		ImageInstructionSignature(Variant variant, SamplerMethod samplerMethod)
-		{
-			this->variant = variant;
-			this->samplerMethod = samplerMethod;
-		}
-
-		// Unmarshal from raw 32-bit data
-		explicit ImageInstructionSignature(uint32_t signature)
-		    : signature(signature)
-		{}
-
-		SamplerFunction getSamplerFunction() const
-		{
-			return { samplerMethod, offset != 0, sample != 0 };
-		}
-
-		bool isDref() const
-		{
-			return (variant == Dref) || (variant == ProjDref);
-		}
-
-		bool isProj() const
-		{
-			return (variant == Proj) || (variant == ProjDref);
-		}
-
-		bool hasLod() const
-		{
-			return samplerMethod == Lod || samplerMethod == Fetch;  // We always pass a Lod operand for Fetch operations.
-		}
-
-		bool hasGrad() const
-		{
-			return samplerMethod == Grad;
-		}
-
-		union
-		{
-			struct
-			{
-				Variant variant : BITS(VARIANT_LAST);
-				SamplerMethod samplerMethod : BITS(SAMPLER_METHOD_LAST);
-				uint32_t gatherComponent : 2;
-				uint32_t dim : BITS(spv::DimSubpassData);  // spv::Dim
-				uint32_t arrayed : 1;
-				uint32_t imageFormat : BITS(spv::ImageFormatR64i);  // spv::ImageFormat
-
-				// Parameters are passed to the sampling routine in this order:
-				uint32_t coordinates : 3;       // 1-4 (does not contain projection component)
-				/*	uint32_t dref : 1; */       // Indicated by Variant::ProjDref|Dref
-				/*	uint32_t lodOrBias : 1; */  // Indicated by SamplerMethod::Lod|Bias|Fetch
-				uint32_t grad : 2;              // 0-3 components (for each of dx / dy)
-				uint32_t offset : 2;            // 0-3 components
-				uint32_t sample : 1;            // 0-1 scalar integer
-			};
-
-			uint32_t signature = 0;
-		};
-	};
-
-	// This gets stored as a literal in the generated code, so it should be compact.
-	static_assert(sizeof(ImageInstructionSignature) == sizeof(uint32_t), "ImageInstructionSignature must be 32-bit");
-
-	struct ImageInstruction : public ImageInstructionSignature
-	{
-		ImageInstruction(InsnIterator insn, const SpirvShader &spirv, const EmitState &state);
-
-		const uint32_t position;
-
-		Type::ID resultTypeId = 0;
-		Object::ID resultId = 0;
-		Object::ID imageId = 0;
-		Object::ID samplerId = 0;
-		Object::ID coordinateId = 0;
-		Object::ID texelId = 0;
-		Object::ID drefId = 0;
-		Object::ID lodOrBiasId = 0;
-		Object::ID gradDxId = 0;
-		Object::ID gradDyId = 0;
-		Object::ID offsetId = 0;
-		Object::ID sampleId = 0;
-
-	private:
-		static ImageInstructionSignature parseVariantAndMethod(InsnIterator insn);
-		static uint32_t getImageOperandsIndex(InsnIterator insn);
-		static uint32_t getImageOperandsMask(InsnIterator insn);
-	};
-
 	// This method is for retrieving an ID that uniquely identifies the
 	// shader entry point represented by this object.
 	uint64_t getIdentifier() const
 	{
 		return ((uint64_t)entryPoint.value() << 32) | insns.getIdentifier();
 	}
-
-	SpirvShader(VkShaderStageFlagBits stage,
-	            const char *entryPointName,
-	            const SpirvBinary &insns,
-	            const vk::RenderPass *renderPass,
-	            uint32_t subpassIndex,
-	            bool robustBufferAccess);
-
-	~SpirvShader();
 
 	struct ExecutionModes
 	{
@@ -664,9 +544,9 @@ public:
 		bool StencilRefReplacing : 1;
 
 		// Compute workgroup dimensions
-		Object::ID WorkgroupSizeX = 1;
-		Object::ID WorkgroupSizeY = 1;
-		Object::ID WorkgroupSizeZ = 1;
+		SpirvShader::Object::ID WorkgroupSizeX = 1;
+		SpirvShader::Object::ID WorkgroupSizeY = 1;
+		SpirvShader::Object::ID WorkgroupSizeZ = 1;
 		bool useWorkgroupSizeId = false;
 	};
 
@@ -902,7 +782,7 @@ public:
 
 	struct BuiltinMapping
 	{
-		Object::ID Id;
+		SpirvShader::Object::ID Id;
 		uint32_t FirstComponent;
 		uint32_t SizeInComponents;
 	};
@@ -968,7 +848,11 @@ private:
 
 	HandleMap<Type> types;
 	HandleMap<Object> defs;
+
+public:
 	HandleMap<Function> functions;
+
+private:
 	std::unordered_map<StringID, String> strings;
 
 	// DeclareType creates a Type for the given OpTypeX instruction, storing
@@ -978,9 +862,13 @@ private:
 	void ProcessExecutionMode(InsnIterator it);
 
 	uint32_t ComputeTypeSize(InsnIterator insn);
+
+public:
 	Decorations GetDecorationsForId(TypeOrObjectID id) const;
 	void ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const;
 	void ApplyDecorationsForIdMember(Decorations *d, Type::ID id, uint32_t member) const;
+
+private:
 	void ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecorations *dd, Object::ID baseId, const Span &indexIds) const;
 
 	// Creates an Object for the instruction's result in 'defs'.
@@ -1028,20 +916,26 @@ private:
 	// ---------------+-----------+-----------+-----------+----------
 	//  LaneOffset=3: |  Word[3]  |  Word[3]  |  Word[3]  |  Word[3]
 	//
+
+public:
 	static bool IsStorageInterleavedByLane(spv::StorageClass storageClass);
+
+private:
 	static bool IsExplicitLayout(spv::StorageClass storageClass);
 
-	static SIMD::Pointer GetElementPointer(SIMD::Pointer structure, uint32_t offset, bool interleavedByLane);
+public:
+	static SIMD::Pointer GetElementPointer(SIMD::Pointer structure, uint32_t offset, bool interleavedByLane);  /// take storageClass
 
 	// Output storage buffers and images should not be affected by helper invocations
-	static bool StoresInHelperInvocation(spv::StorageClass storageClass);
+	static bool StoresInHelperInvocation(spv::StorageClass storageClass);  /// rename?
 
 	using InterfaceVisitor = std::function<void(Decorations const, AttribType)>;
-
 	void VisitInterface(Object::ID id, const InterfaceVisitor &v) const;
 
+private:
 	int VisitInterfaceInner(Type::ID id, Decorations d, const InterfaceVisitor &v) const;
 
+public:
 	// MemoryElement describes a scalar element within a structure, and is
 	// used by the callback function of VisitMemoryObject().
 	struct MemoryElement
@@ -1058,6 +952,7 @@ private:
 	// within the
 	void VisitMemoryObject(Object::ID id, bool resultIsPointer, const MemoryVisitor &v) const;
 
+private:
 	// VisitMemoryObjectInner() is internally called by VisitMemoryObject()
 	void VisitMemoryObjectInner(Type::ID id, Decorations d, uint32_t &index, uint32_t offset, bool resultIsPointer, const MemoryVisitor &v) const;
 
@@ -1065,7 +960,264 @@ private:
 
 	void ProcessInterfaceVariable(Object &object);
 
+public:  ///
+	const Type &getType(Type::ID id) const
+	{
+		auto it = types.find(id);
+		ASSERT_MSG(it != types.end(), "Unknown type %d", id.value());
+		return it->second;
+	}
+
+	const Type &getType(const Object &object) const
+	{
+		return getType(object.typeId());
+	}
+
+	const Object &getObject(Object::ID id) const
+	{
+		auto it = defs.find(id);
+		ASSERT_MSG(it != defs.end(), "Unknown object %d", id.value());
+		return it->second;
+	}
+
+	const Type &getObjectType(Object::ID id) const
+	{
+		return getType(getObject(id));
+	}
+
+	const Function &getFunction(Function::ID id) const
+	{
+		auto it = functions.find(id);
+		ASSERT_MSG(it != functions.end(), "Unknown function %d", id.value());
+		return it->second;
+	}
+
+	const String &getString(StringID id) const
+	{
+		auto it = strings.find(id);
+		ASSERT_MSG(it != strings.end(), "Unknown string %d", id.value());
+		return it->second;
+	}
+
+	const Extension &getExtension(Extension::ID id) const
+	{
+		auto it = extensionsByID.find(id);
+		ASSERT_MSG(it != extensionsByID.end(), "Unknown extension %d", id.value());
+		return it->second;
+	}
+
+	OutOfBoundsBehavior getOutOfBoundsBehavior(Object::ID pointerId, const vk::PipelineLayout *pipelineLayout) const;
+
+	// Returns the *component* offset in the literal for the given access chain.
+	uint32_t WalkLiteralAccessChain(Type::ID id, const Span &indexes) const;
+
+	uint32_t GetConstScalarInt(Object::ID id) const;
+	void EvalSpecConstantOp(InsnIterator insn);
+	void EvalSpecConstantUnaryOp(InsnIterator insn);
+	void EvalSpecConstantBinaryOp(InsnIterator insn);
+
+	// Fragment input interpolation functions
+	uint32_t GetNumInputComponents(int32_t location) const;
+	uint32_t GetPackedInterpolant(int32_t location) const;
+
+	// WriteCFGGraphVizDotFile() writes a graphviz dot file of the shader's
+	// control flow to the given file path.
+	void WriteCFGGraphVizDotFile(const char *path) const;
+
+	// OpcodeName() returns the name of the opcode op.
+	static const char *OpcodeName(spv::Op op);
+	static std::memory_order MemoryOrder(spv::MemorySemanticsMask memorySemantics);
+
+	// IsStatement() returns true if the given opcode actually performs
+	// work (as opposed to declaring a type, defining a function start / end,
+	// etc).
+	static bool IsStatement(spv::Op op);
+
+	// HasTypeAndResult() returns true if the given opcode's instruction
+	// has a result type ID and result ID, i.e. defines an Object.
+	static bool HasTypeAndResult(spv::Op op);
+
+	// Returns 0 when invalid.
+	static VkShaderStageFlagBits executionModelToStage(spv::ExecutionModel model);
+};
+
+class EmitState
+{
 public:
+	EmitState(const SpirvShader &shader,
+	          SpirvRoutine *routine,
+	          SpirvShader::Function::ID function,
+	          RValue<SIMD::Int> activeLaneMask,
+	          RValue<SIMD::Int> storesAndAtomicsMask,
+	          const vk::DescriptorSet::Bindings &descriptorSets,
+	          unsigned int multiSampleCount)
+	    : shader(shader)
+	    , routine(routine)
+	    , function(function)
+	    , activeLaneMaskValue(activeLaneMask.value())
+	    , storesAndAtomicsMaskValue(storesAndAtomicsMask.value())
+	    , descriptorSets(descriptorSets)
+	    , multiSampleCount(multiSampleCount)
+	{
+	}
+
+	// Returns the mask describing the active lanes as updated by dynamic
+	// control flow. Active lanes include helper invocations, used for
+	// calculating fragment derivitives, which must not perform memory
+	// stores or atomic writes.
+	//
+	// Use activeStoresAndAtomicsMask() to consider both control flow and
+	// lanes which are permitted to perform memory stores and atomic
+	// operations
+	RValue<SIMD::Int> activeLaneMask() const
+	{
+		ASSERT(activeLaneMaskValue != nullptr);
+		return RValue<SIMD::Int>(activeLaneMaskValue);
+	}
+
+	// Returns the immutable lane mask that describes which lanes are
+	// permitted to perform memory stores and atomic operations.
+	// Note that unlike activeStoresAndAtomicsMask() this mask *does not*
+	// consider lanes that have been made inactive due to control flow.
+	RValue<SIMD::Int> storesAndAtomicsMask() const
+	{
+		ASSERT(storesAndAtomicsMaskValue != nullptr);
+		return RValue<SIMD::Int>(storesAndAtomicsMaskValue);
+	}
+
+	// Returns a lane mask that describes which lanes are permitted to
+	// perform memory stores and atomic operations, considering lanes that
+	// may have been made inactive due to control flow.
+	RValue<SIMD::Int> activeStoresAndAtomicsMask() const
+	{
+		return activeLaneMask() & storesAndAtomicsMask();
+	}
+
+	// Add a new active lane mask edge from the current block to out.
+	// The edge mask value will be (mask AND activeLaneMaskValue).
+	// If multiple active lane masks are added for the same edge, then
+	// they will be ORed together.
+	void addOutputActiveLaneMaskEdge(SpirvShader::Block::ID out, RValue<SIMD::Int> mask);
+
+	// Add a new active lane mask for the edge from -> to.
+	// If multiple active lane masks are added for the same edge, then
+	// they will be ORed together.
+	void addActiveLaneMaskEdge(SpirvShader::Block::ID from, SpirvShader::Block::ID to, RValue<SIMD::Int> mask);
+
+	/// unsigned int getMultiSampleCount() const { return multiSampleCount; }
+
+	// OpImageSample variants
+	enum Variant : uint32_t
+	{
+		None,  // No Dref or Proj. Also used by OpImageFetch and OpImageQueryLod.
+		Dref,
+		Proj,
+		ProjDref,
+		VARIANT_LAST = ProjDref
+	};
+
+	// Compact representation of image instruction state that is passed to the
+	// trampoline function for retrieving/generating the corresponding sampling routine.
+	struct ImageInstructionSignature
+	{
+		ImageInstructionSignature(Variant variant, SamplerMethod samplerMethod)
+		{
+			this->variant = variant;
+			this->samplerMethod = samplerMethod;
+		}
+
+		// Unmarshal from raw 32-bit data
+		explicit ImageInstructionSignature(uint32_t signature)
+		    : signature(signature)
+		{}
+
+		SamplerFunction getSamplerFunction() const
+		{
+			return { samplerMethod, offset != 0, sample != 0 };
+		}
+
+		bool isDref() const
+		{
+			return (variant == Dref) || (variant == ProjDref);
+		}
+
+		bool isProj() const
+		{
+			return (variant == Proj) || (variant == ProjDref);
+		}
+
+		bool hasLod() const
+		{
+			return samplerMethod == Lod || samplerMethod == Fetch;  // We always pass a Lod operand for Fetch operations.
+		}
+
+		bool hasGrad() const
+		{
+			return samplerMethod == Grad;
+		}
+
+		union
+		{
+			struct
+			{
+				Variant variant : BITS(VARIANT_LAST);
+				SamplerMethod samplerMethod : BITS(SAMPLER_METHOD_LAST);
+				uint32_t gatherComponent : 2;
+				uint32_t dim : BITS(spv::DimSubpassData);  // spv::Dim
+				uint32_t arrayed : 1;
+				uint32_t imageFormat : BITS(spv::ImageFormatR64i);  // spv::ImageFormat
+
+				// Parameters are passed to the sampling routine in this order:
+				uint32_t coordinates : 3;       // 1-4 (does not contain projection component)
+				/*	uint32_t dref : 1; */       // Indicated by Variant::ProjDref|Dref
+				/*	uint32_t lodOrBias : 1; */  // Indicated by SamplerMethod::Lod|Bias|Fetch
+				uint32_t grad : 2;              // 0-3 components (for each of dx / dy)
+				uint32_t offset : 2;            // 0-3 components
+				uint32_t sample : 1;            // 0-1 scalar integer
+			};
+
+			uint32_t signature = 0;
+		};
+	};
+
+	// This gets stored as a literal in the generated code, so it should be compact.
+	static_assert(sizeof(ImageInstructionSignature) == sizeof(uint32_t), "ImageInstructionSignature must be 32-bit");
+
+	struct ImageInstruction : public ImageInstructionSignature
+	{
+		ImageInstruction(SpirvShader::InsnIterator insn, const SpirvShader &spirv, const EmitState &state);
+
+		const uint32_t position;
+
+		SpirvShader::Type::ID resultTypeId = 0;
+		SpirvShader::Object::ID resultId = 0;
+		SpirvShader::Object::ID imageId = 0;
+		SpirvShader::Object::ID samplerId = 0;
+		SpirvShader::Object::ID coordinateId = 0;
+		SpirvShader::Object::ID texelId = 0;
+		SpirvShader::Object::ID drefId = 0;
+		SpirvShader::Object::ID lodOrBiasId = 0;
+		SpirvShader::Object::ID gradDxId = 0;
+		SpirvShader::Object::ID gradDyId = 0;
+		SpirvShader::Object::ID offsetId = 0;
+		SpirvShader::Object::ID sampleId = 0;
+
+	private:
+		static ImageInstructionSignature parseVariantAndMethod(SpirvShader::InsnIterator insn);
+		static uint32_t getImageOperandsIndex(SpirvShader::InsnIterator insn);
+		static uint32_t getImageOperandsMask(SpirvShader::InsnIterator insn);
+	};
+
+	class SampledImagePointer : public SIMD::Pointer
+	{
+	public:
+		SampledImagePointer(SIMD::Pointer image, SpirvShader::Object::ID sampler)
+		    : SIMD::Pointer(image)
+		    , samplerId(sampler)
+		{}
+		SpirvShader::Object::ID samplerId;
+	};
+
 	// Generic wrapper over either per-lane intermediate value, or a constant.
 	// Constants are transparently widened to per-lane values in operator[].
 	// This is appropriate in most cases -- if we're not going to do something
@@ -1137,7 +1289,7 @@ public:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
 
 		// Delegate constructor
-		Operand(const EmitState &state, const Object &object);
+		Operand(const EmitState &state, const SpirvShader::Object &object);
 
 		const uint32_t *constant = nullptr;
 		const Intermediate *intermediate = nullptr;
@@ -1150,6 +1302,58 @@ public:
 
 	RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
 
+	Intermediate &createIntermediate(SpirvShader::Object::ID id, uint32_t componentCount)
+	{
+		auto it = intermediates.emplace(std::piecewise_construct,
+		                                std::forward_as_tuple(id),
+		                                std::forward_as_tuple(componentCount));
+		ASSERT_MSG(it.second, "Intermediate %d created twice", id.value());
+		return it.first->second;
+	}
+
+	const Intermediate &getIntermediate(SpirvShader::Object::ID id) const
+	{
+		auto it = intermediates.find(id);
+		ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
+		return it->second;
+	}
+
+	void createPointer(SpirvShader::Object::ID id, SIMD::Pointer ptr)
+	{
+		bool added = pointers.emplace(id, ptr).second;
+		ASSERT_MSG(added, "Pointer %d created twice", id.value());
+	}
+
+	const SIMD::Pointer &getPointer(SpirvShader::Object::ID id) const
+	{
+		auto it = pointers.find(id);
+		ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
+		return it->second;
+	}
+
+	void createSampledImage(SpirvShader::Object::ID id, SampledImagePointer ptr)
+	{
+		bool added = sampledImages.emplace(id, ptr).second;
+		ASSERT_MSG(added, "Sampled image %d created twice", id.value());
+	}
+
+	const SampledImagePointer &getSampledImage(SpirvShader::Object::ID id) const
+	{
+		auto it = sampledImages.find(id);
+		ASSERT_MSG(it != sampledImages.end(), "Unknown sampled image %d", id.value());
+		return it->second;
+	}
+
+	bool isSampledImage(SpirvShader::Object::ID id) const
+	{
+		return sampledImages.find(id) != sampledImages.end();
+	}
+
+	const SIMD::Pointer &getImage(SpirvShader::Object::ID id) const
+	{
+		return isSampledImage(id) ? getSampledImage(id) : getPointer(id);
+	}
+
 	// EmitResult is an enumerator of result values from the Emit functions.
 	enum class EmitResult
 	{
@@ -1157,379 +1361,184 @@ public:
 		Terminator,  // Reached a termination instruction.
 	};
 
-	// EmitState holds control-flow state for the emit() pass.
-	class EmitState
+	EmitResult EmitVariable(SpirvShader::InsnIterator insn);
+	EmitResult EmitLoad(SpirvShader::InsnIterator insn);
+	EmitResult EmitStore(SpirvShader::InsnIterator insn);
+	EmitResult EmitAccessChain(SpirvShader::InsnIterator insn);
+	EmitResult EmitCompositeConstruct(SpirvShader::InsnIterator insn);
+	EmitResult EmitCompositeInsert(SpirvShader::InsnIterator insn);
+	EmitResult EmitCompositeExtract(SpirvShader::InsnIterator insn);
+	EmitResult EmitVectorShuffle(SpirvShader::InsnIterator insn);
+	EmitResult EmitVectorTimesScalar(SpirvShader::InsnIterator insn);
+	EmitResult EmitMatrixTimesVector(SpirvShader::InsnIterator insn);
+	EmitResult EmitVectorTimesMatrix(SpirvShader::InsnIterator insn);
+	EmitResult EmitMatrixTimesMatrix(SpirvShader::InsnIterator insn);
+	EmitResult EmitOuterProduct(SpirvShader::InsnIterator insn);
+	EmitResult EmitTranspose(SpirvShader::InsnIterator insn);
+	EmitResult EmitVectorExtractDynamic(SpirvShader::InsnIterator insn);
+	EmitResult EmitVectorInsertDynamic(SpirvShader::InsnIterator insn);
+	EmitResult EmitUnaryOp(SpirvShader::InsnIterator insn);
+	EmitResult EmitBinaryOp(SpirvShader::InsnIterator insn);
+	EmitResult EmitDot(SpirvShader::InsnIterator insn);
+	EmitResult EmitSelect(SpirvShader::InsnIterator insn);
+	EmitResult EmitExtendedInstruction(SpirvShader::InsnIterator insn);
+	EmitResult EmitExtGLSLstd450(SpirvShader::InsnIterator insn);
+	EmitResult EmitAny(SpirvShader::InsnIterator insn);
+	EmitResult EmitAll(SpirvShader::InsnIterator insn);
+	EmitResult EmitBranch(SpirvShader::InsnIterator insn);
+	EmitResult EmitBranchConditional(SpirvShader::InsnIterator insn);
+	EmitResult EmitSwitch(SpirvShader::InsnIterator insn);
+	EmitResult EmitUnreachable(SpirvShader::InsnIterator insn);
+	EmitResult EmitReturn(SpirvShader::InsnIterator insn);
+	EmitResult EmitTerminateInvocation(SpirvShader::InsnIterator insn);
+	EmitResult EmitDemoteToHelperInvocation(SpirvShader::InsnIterator insn);
+	EmitResult EmitIsHelperInvocation(SpirvShader::InsnIterator insn);
+	EmitResult EmitFunctionCall(SpirvShader::InsnIterator insn);
+	EmitResult EmitPhi(SpirvShader::InsnIterator insn);
+	EmitResult EmitImageSample(const ImageInstruction &instruction);
+	EmitResult EmitImageQuerySizeLod(SpirvShader::InsnIterator insn);
+	EmitResult EmitImageQuerySize(SpirvShader::InsnIterator insn);
+	EmitResult EmitImageQueryLevels(SpirvShader::InsnIterator insn);
+	EmitResult EmitImageQuerySamples(SpirvShader::InsnIterator insn);
+	EmitResult EmitImageRead(const ImageInstruction &instruction);
+	EmitResult EmitImageWrite(const ImageInstruction &instruction);
+	EmitResult EmitImageTexelPointer(const ImageInstruction &instruction);
+	EmitResult EmitAtomicOp(SpirvShader::InsnIterator insn);
+	EmitResult EmitAtomicCompareExchange(SpirvShader::InsnIterator insn);
+	EmitResult EmitSampledImage(SpirvShader::InsnIterator insn);
+	EmitResult EmitImage(SpirvShader::InsnIterator insn);
+	EmitResult EmitCopyObject(SpirvShader::InsnIterator insn);
+	EmitResult EmitCopyMemory(SpirvShader::InsnIterator insn);
+	EmitResult EmitControlBarrier(SpirvShader::InsnIterator insn);
+	EmitResult EmitMemoryBarrier(SpirvShader::InsnIterator insn);
+	EmitResult EmitGroupNonUniform(SpirvShader::InsnIterator insn);
+	EmitResult EmitArrayLength(SpirvShader::InsnIterator insn);
+	EmitResult EmitBitcastPointer(SpirvShader::Object::ID resultID, Operand &src);
+
+	enum InterpolationType
 	{
-	public:
-		EmitState(const SpirvShader &shader,
-		          SpirvRoutine *routine,
-		          Function::ID function,
-		          RValue<SIMD::Int> activeLaneMask,
-		          RValue<SIMD::Int> storesAndAtomicsMask,
-		          const vk::DescriptorSet::Bindings &descriptorSets,
-		          unsigned int multiSampleCount)
-		    : shader(shader)
-		    , routine(routine)
-		    , function(function)
-		    , activeLaneMaskValue(activeLaneMask.value())
-		    , storesAndAtomicsMaskValue(storesAndAtomicsMask.value())
-		    , descriptorSets(descriptorSets)
-		    , multiSampleCount(multiSampleCount)
-		{
-		}
-
-		// Returns the mask describing the active lanes as updated by dynamic
-		// control flow. Active lanes include helper invocations, used for
-		// calculating fragment derivitives, which must not perform memory
-		// stores or atomic writes.
-		//
-		// Use activeStoresAndAtomicsMask() to consider both control flow and
-		// lanes which are permitted to perform memory stores and atomic
-		// operations
-		RValue<SIMD::Int> activeLaneMask() const
-		{
-			ASSERT(activeLaneMaskValue != nullptr);
-			return RValue<SIMD::Int>(activeLaneMaskValue);
-		}
-
-		// Returns the immutable lane mask that describes which lanes are
-		// permitted to perform memory stores and atomic operations.
-		// Note that unlike activeStoresAndAtomicsMask() this mask *does not*
-		// consider lanes that have been made inactive due to control flow.
-		RValue<SIMD::Int> storesAndAtomicsMask() const
-		{
-			ASSERT(storesAndAtomicsMaskValue != nullptr);
-			return RValue<SIMD::Int>(storesAndAtomicsMaskValue);
-		}
-
-		// Returns a lane mask that describes which lanes are permitted to
-		// perform memory stores and atomic operations, considering lanes that
-		// may have been made inactive due to control flow.
-		RValue<SIMD::Int> activeStoresAndAtomicsMask() const
-		{
-			return activeLaneMask() & storesAndAtomicsMask();
-		}
-
-		// Add a new active lane mask edge from the current block to out.
-		// The edge mask value will be (mask AND activeLaneMaskValue).
-		// If multiple active lane masks are added for the same edge, then
-		// they will be ORed together.
-		void addOutputActiveLaneMaskEdge(Block::ID out, RValue<SIMD::Int> mask);
-
-		// Add a new active lane mask for the edge from -> to.
-		// If multiple active lane masks are added for the same edge, then
-		// they will be ORed together.
-		void addActiveLaneMaskEdge(Block::ID from, Block::ID to, RValue<SIMD::Int> mask);
-
-		unsigned int getMultiSampleCount() const { return multiSampleCount; }
-
-		Intermediate &createIntermediate(Object::ID id, uint32_t componentCount)
-		{
-			auto it = intermediates.emplace(std::piecewise_construct,
-			                                std::forward_as_tuple(id),
-			                                std::forward_as_tuple(componentCount));
-			ASSERT_MSG(it.second, "Intermediate %d created twice", id.value());
-			return it.first->second;
-		}
-
-		const Intermediate &getIntermediate(Object::ID id) const
-		{
-			auto it = intermediates.find(id);
-			ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
-			return it->second;
-		}
-
-		void createPointer(Object::ID id, SIMD::Pointer ptr)
-		{
-			bool added = pointers.emplace(id, ptr).second;
-			ASSERT_MSG(added, "Pointer %d created twice", id.value());
-		}
-
-		const SIMD::Pointer &getPointer(Object::ID id) const
-		{
-			auto it = pointers.find(id);
-			ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
-			return it->second;
-		}
-
-		void createSampledImage(Object::ID id, SampledImagePointer ptr)
-		{
-			bool added = sampledImages.emplace(id, ptr).second;
-			ASSERT_MSG(added, "Sampled image %d created twice", id.value());
-		}
-
-		const SampledImagePointer &getSampledImage(Object::ID id) const
-		{
-			auto it = sampledImages.find(id);
-			ASSERT_MSG(it != sampledImages.end(), "Unknown sampled image %d", id.value());
-			return it->second;
-		}
-
-		bool isSampledImage(Object::ID id) const
-		{
-			return sampledImages.find(id) != sampledImages.end();
-		}
-
-		const SIMD::Pointer &getImage(Object::ID id) const
-		{
-			return isSampledImage(id) ? getSampledImage(id) : getPointer(id);
-		}
-
-		EmitResult EmitVariable(InsnIterator insn);
-		EmitResult EmitLoad(InsnIterator insn);
-		EmitResult EmitStore(InsnIterator insn);
-		EmitResult EmitAccessChain(InsnIterator insn);
-		EmitResult EmitCompositeConstruct(InsnIterator insn);
-		EmitResult EmitCompositeInsert(InsnIterator insn);
-		EmitResult EmitCompositeExtract(InsnIterator insn);
-		EmitResult EmitVectorShuffle(InsnIterator insn);
-		EmitResult EmitVectorTimesScalar(InsnIterator insn);
-		EmitResult EmitMatrixTimesVector(InsnIterator insn);
-		EmitResult EmitVectorTimesMatrix(InsnIterator insn);
-		EmitResult EmitMatrixTimesMatrix(InsnIterator insn);
-		EmitResult EmitOuterProduct(InsnIterator insn);
-		EmitResult EmitTranspose(InsnIterator insn);
-		EmitResult EmitVectorExtractDynamic(InsnIterator insn);
-		EmitResult EmitVectorInsertDynamic(InsnIterator insn);
-		EmitResult EmitUnaryOp(InsnIterator insn);
-		EmitResult EmitBinaryOp(InsnIterator insn);
-		EmitResult EmitDot(InsnIterator insn);
-		EmitResult EmitSelect(InsnIterator insn);
-		EmitResult EmitExtendedInstruction(InsnIterator insn);
-		EmitResult EmitExtGLSLstd450(InsnIterator insn);
-		EmitResult EmitAny(InsnIterator insn);
-		EmitResult EmitAll(InsnIterator insn);
-		EmitResult EmitBranch(InsnIterator insn);
-		EmitResult EmitBranchConditional(InsnIterator insn);
-		EmitResult EmitSwitch(InsnIterator insn);
-		EmitResult EmitUnreachable(InsnIterator insn);
-		EmitResult EmitReturn(InsnIterator insn);
-		EmitResult EmitTerminateInvocation(InsnIterator insn);
-		EmitResult EmitDemoteToHelperInvocation(InsnIterator insn);
-		EmitResult EmitIsHelperInvocation(InsnIterator insn);
-		EmitResult EmitFunctionCall(InsnIterator insn);
-		EmitResult EmitPhi(InsnIterator insn);
-		EmitResult EmitImageSample(const ImageInstruction &instruction);
-		EmitResult EmitImageQuerySizeLod(InsnIterator insn);
-		EmitResult EmitImageQuerySize(InsnIterator insn);
-		EmitResult EmitImageQueryLevels(InsnIterator insn);
-		EmitResult EmitImageQuerySamples(InsnIterator insn);
-		EmitResult EmitImageRead(const ImageInstruction &instruction);
-		EmitResult EmitImageWrite(const ImageInstruction &instruction) const;
-		EmitResult EmitImageTexelPointer(const ImageInstruction &instruction);
-		EmitResult EmitAtomicOp(InsnIterator insn);
-		EmitResult EmitAtomicCompareExchange(InsnIterator insn);
-		EmitResult EmitSampledImage(InsnIterator insn);
-		EmitResult EmitImage(InsnIterator insn);
-		EmitResult EmitCopyObject(InsnIterator insn);
-		EmitResult EmitCopyMemory(InsnIterator insn);
-		EmitResult EmitControlBarrier(InsnIterator insn) const;
-		EmitResult EmitMemoryBarrier(InsnIterator insn);
-		EmitResult EmitGroupNonUniform(InsnIterator insn);
-		EmitResult EmitArrayLength(InsnIterator insn);
-		EmitResult EmitBitcastPointer(Object::ID resultID, Operand &src);
-
-		enum InterpolationType
-		{
-			Centroid,
-			AtSample,
-			AtOffset,
-		};
-		SIMD::Float EmitInterpolate(const SIMD::Pointer &ptr, int32_t location, Object::ID paramId,
-		                            uint32_t component, InterpolationType type) const;
-
-		SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, Object::ID elementId, const Span &indexIds, bool nonUniform) const;
-		SIMD::Pointer WalkAccessChain(Object::ID id, Object::ID elementId, const Span &indexIds, bool nonUniform) const;
-
-		// Returns a SIMD::Pointer to the underlying data for the given pointer
-		// object.
-		// Handles objects of the following kinds:
-		//  - DescriptorSet
-		//  - Pointer
-		//  - InterfaceVariable
-		// Calling GetPointerToData with objects of any other kind will assert.
-		SIMD::Pointer GetPointerToData(Object::ID id, SIMD::Int arrayIndex, bool nonUniform) const;
-		void OffsetToElement(SIMD::Pointer &ptr, Object::ID elementId, int32_t arrayStride) const;
-
-		/* image istructions */
-
-		// Emits code to sample an image, regardless of whether any SIMD lanes are active.
-		void EmitImageSampleUnconditional(Array<SIMD::Float> &out, const ImageInstruction &instruction) const;
-
-		Pointer<Byte> getSamplerDescriptor(Pointer<Byte> imageDescriptor, const ImageInstruction &instruction) const;
-		Pointer<Byte> getSamplerDescriptor(Pointer<Byte> imageDescriptor, const ImageInstruction &instruction, int laneIdx) const;
-		Pointer<Byte> lookupSamplerFunction(Pointer<Byte> imageDescriptor, Pointer<Byte> samplerDescriptor, const ImageInstruction &instruction) const;
-		void callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD::Float> &out, Pointer<Byte> imageDescriptor, const ImageInstruction &instruction) const;
-
-		void GetImageDimensions(const Type &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
-		struct TexelAddressData
-		{
-			bool isArrayed;
-			spv::Dim dim;
-			int dims, texelSize;
-			SIMD::Int u, v, w, ptrOffset;
-		};
-		static TexelAddressData setupTexelAddressData(SIMD::Int rowPitch, SIMD::Int slicePitch, SIMD::Int samplePitch, ImageInstructionSignature instruction, SIMD::Int coordinate[], SIMD::Int sample, vk::Format imageFormat, const SpirvRoutine *routine);
-		static SIMD::Pointer GetNonUniformTexelAddress(ImageInstructionSignature instruction, SIMD::Pointer descriptor, SIMD::Int coordinate[], SIMD::Int sample, vk::Format imageFormat, OutOfBoundsBehavior outOfBoundsBehavior, SIMD::Int activeLaneMask, const SpirvRoutine *routine);
-		static SIMD::Pointer GetTexelAddress(ImageInstructionSignature instruction, Pointer<Byte> descriptor, SIMD::Int coordinate[], SIMD::Int sample, vk::Format imageFormat, OutOfBoundsBehavior outOfBoundsBehavior, const SpirvRoutine *routine);
-		static void WriteImage(ImageInstructionSignature instruction, Pointer<Byte> descriptor, const Pointer<SIMD::Int> &coord, const Pointer<SIMD::Int> &texelAndMask, vk::Format imageFormat);
-
-		/* control flow */
-
-		// Lookup the active lane mask for the edge from -> to.
-		// If from is unreachable, then a mask of all zeros is returned.
-		// Asserts if from is reachable and the edge does not exist.
-		RValue<SIMD::Int> GetActiveLaneMaskEdge(Block::ID from, Block::ID to) const;
-
-		// Updates the current active lane mask.
-		void SetActiveLaneMask(RValue<SIMD::Int> mask);
-		void SetStoresAndAtomicsMask(RValue<SIMD::Int> mask);
-
-		// Emit all the unvisited blocks (except for ignore) in DFS order,
-		// starting with id.
-		void EmitBlocks(Block::ID id, Block::ID ignore = 0);
-		void EmitNonLoop();
-		void EmitLoop();
-
-		void EmitInstructions(InsnIterator begin, InsnIterator end);
-		EmitResult EmitInstruction(InsnIterator insn);
-
-		// Helper for implementing OpStore, which doesn't take an InsnIterator so it
-		// can also store independent operands.
-		void Store(Object::ID pointerId, const Operand &value, bool atomic, std::memory_order memoryOrder) const;
-
-		// LoadPhi loads the phi values from the alloca storage and places the
-		// load values into the intermediate with the phi's result id.
-		void LoadPhi(InsnIterator insn);
-
-		// StorePhi updates the phi's alloca storage value using the incoming
-		// values from blocks that are both in the OpPhi instruction and in
-		// filter.
-		void StorePhi(Block::ID blockID, InsnIterator insn, const std::unordered_set<SpirvShader::Block::ID> &filter) const;
-
-		// Emits a rr::Fence for the given MemorySemanticsMask.
-		void Fence(spv::MemorySemanticsMask semantics) const;
-
-		// Helper for calling rr::Yield with res cast to an rr::Int.
-		void Yield(YieldResult res) const;
-
-		// Helper as we often need to take dot products as part of doing other things.
-		static SIMD::Float FDot(unsigned numComponents, const Operand &x, const Operand &y);
-		static SIMD::Int SDot(unsigned numComponents, const Operand &x, const Operand &y, const Operand *accum);
-		static SIMD::UInt UDot(unsigned numComponents, const Operand &x, const Operand &y, const Operand *accum);
-		static SIMD::Int SUDot(unsigned numComponents, const Operand &x, const Operand &y, const Operand *accum);
-		static SIMD::Int AddSat(RValue<SIMD::Int> a, RValue<SIMD::Int> b);
-		static SIMD::UInt AddSat(RValue<SIMD::UInt> a, RValue<SIMD::UInt> b);
-
-		static ImageSampler *getImageSampler(const vk::Device *device, uint32_t signature, uint32_t samplerId, uint32_t imageViewId);
-		static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstructionSignature instruction, const Sampler &samplerState);
-		static std::shared_ptr<rr::Routine> emitWriteRoutine(ImageInstructionSignature instruction, const Sampler &samplerState);
-
-		// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
-		static sw::FilterType convertFilterMode(const vk::SamplerState *samplerState, VkImageViewType imageViewType, SamplerMethod samplerMethod);
-		static sw::MipmapType convertMipmapMode(const vk::SamplerState *samplerState);
-		static sw::AddressingMode convertAddressingMode(int coordinateIndex, const vk::SamplerState *samplerState, VkImageViewType imageViewType);
-
-	private:
-		const SpirvShader &shader;
-		SpirvRoutine *const routine;                     // The current routine being built.
-		Function::ID function;                           // The current function being built.
-		Block::ID block;                                 // The current block being built.
-		rr::Value *activeLaneMaskValue = nullptr;        // The current active lane mask.
-		rr::Value *storesAndAtomicsMaskValue = nullptr;  // The current atomics mask.
-		Block::Set visited;                              // Blocks already built.
-		std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
-		std::deque<Block::ID> *pending;
-
-		const vk::DescriptorSet::Bindings &descriptorSets;
-
-		std::unordered_map<Object::ID, Intermediate> intermediates;
-		std::unordered_map<Object::ID, SIMD::Pointer> pointers;
-		std::unordered_map<Object::ID, SampledImagePointer> sampledImages;
-
-		const unsigned int multiSampleCount;
+		Centroid,
+		AtSample,
+		AtOffset,
 	};
+	SIMD::Float EmitInterpolate(const SIMD::Pointer &ptr, int32_t location, SpirvShader::Object::ID paramId,
+	                            uint32_t component, InterpolationType type) const;
 
-	const Type &getType(Type::ID id) const
+	SIMD::Pointer WalkExplicitLayoutAccessChain(SpirvShader::Object::ID id, SpirvShader::Object::ID elementId, const SpirvShader::Span &indexIds, bool nonUniform) const;
+	SIMD::Pointer WalkAccessChain(SpirvShader::Object::ID id, SpirvShader::Object::ID elementId, const SpirvShader::Span &indexIds, bool nonUniform) const;
+
+	// Returns a SIMD::Pointer to the underlying data for the given pointer
+	// object.
+	// Handles objects of the following kinds:
+	//  - DescriptorSet
+	//  - Pointer
+	//  - InterfaceVariable
+	// Calling GetPointerToData with objects of any other kind will assert.
+	SIMD::Pointer GetPointerToData(SpirvShader::Object::ID id, SIMD::Int arrayIndex, bool nonUniform) const;
+	void OffsetToElement(SIMD::Pointer &ptr, SpirvShader::Object::ID elementId, int32_t arrayStride) const;
+
+	/* image istructions */
+
+	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
+	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, const ImageInstruction &instruction) const;
+
+	Pointer<Byte> getSamplerDescriptor(Pointer<Byte> imageDescriptor, const ImageInstruction &instruction) const;
+	Pointer<Byte> getSamplerDescriptor(Pointer<Byte> imageDescriptor, const ImageInstruction &instruction, int laneIdx) const;
+	Pointer<Byte> lookupSamplerFunction(Pointer<Byte> imageDescriptor, Pointer<Byte> samplerDescriptor, const ImageInstruction &instruction) const;
+	void callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD::Float> &out, Pointer<Byte> imageDescriptor, const ImageInstruction &instruction) const;
+
+	void GetImageDimensions(const SpirvShader::Type &resultTy, SpirvShader::Object::ID imageId, SpirvShader::Object::ID lodId, Intermediate &dst) const;
+	struct TexelAddressData
 	{
-		auto it = types.find(id);
-		ASSERT_MSG(it != types.end(), "Unknown type %d", id.value());
-		return it->second;
-	}
+		bool isArrayed;
+		spv::Dim dim;
+		int dims, texelSize;
+		SIMD::Int u, v, w, ptrOffset;
+	};
+	static TexelAddressData setupTexelAddressData(SIMD::Int rowPitch, SIMD::Int slicePitch, SIMD::Int samplePitch, ImageInstructionSignature instruction, SIMD::Int coordinate[], SIMD::Int sample, vk::Format imageFormat, const SpirvRoutine *routine);
+	static SIMD::Pointer GetNonUniformTexelAddress(ImageInstructionSignature instruction, SIMD::Pointer descriptor, SIMD::Int coordinate[], SIMD::Int sample, vk::Format imageFormat, OutOfBoundsBehavior outOfBoundsBehavior, SIMD::Int activeLaneMask, const SpirvRoutine *routine);
+	static SIMD::Pointer GetTexelAddress(ImageInstructionSignature instruction, Pointer<Byte> descriptor, SIMD::Int coordinate[], SIMD::Int sample, vk::Format imageFormat, OutOfBoundsBehavior outOfBoundsBehavior, const SpirvRoutine *routine);
+	static void WriteImage(ImageInstructionSignature instruction, Pointer<Byte> descriptor, const Pointer<SIMD::Int> &coord, const Pointer<SIMD::Int> &texelAndMask, vk::Format imageFormat);
+
+	/* control flow */
+
+	// Lookup the active lane mask for the edge from -> to.
+	// If from is unreachable, then a mask of all zeros is returned.
+	// Asserts if from is reachable and the edge does not exist.
+	RValue<SIMD::Int> GetActiveLaneMaskEdge(SpirvShader::Block::ID from, SpirvShader::Block::ID to) const;
+
+	// Updates the current active lane mask.
+	void SetActiveLaneMask(RValue<SIMD::Int> mask);
+	void SetStoresAndAtomicsMask(RValue<SIMD::Int> mask);
+
+	// Emit all the unvisited blocks (except for ignore) in DFS order,
+	// starting with id.
+	void EmitBlocks(SpirvShader::Block::ID id, SpirvShader::Block::ID ignore = 0);
+	void EmitNonLoop();
+	void EmitLoop();
+
+	void EmitInstructions(SpirvShader::InsnIterator begin, SpirvShader::InsnIterator end);
+	EmitResult EmitInstruction(SpirvShader::InsnIterator insn);
+
+	// Helper for implementing OpStore, which doesn't take an InsnIterator so it
+	// can also store independent operands.
+	void Store(SpirvShader::Object::ID pointerId, const Operand &value, bool atomic, std::memory_order memoryOrder) const;
+
+	// LoadPhi loads the phi values from the alloca storage and places the
+	// load values into the intermediate with the phi's result id.
+	void LoadPhi(SpirvShader::InsnIterator insn);
+
+	// StorePhi updates the phi's alloca storage value using the incoming
+	// values from blocks that are both in the OpPhi instruction and in
+	// filter.
+	void StorePhi(SpirvShader::Block::ID blockID, SpirvShader::InsnIterator insn, const std::unordered_set<SpirvShader::Block::ID> &filter) const;
+
+	// Emits a rr::Fence for the given MemorySemanticsMask.
+	void Fence(spv::MemorySemanticsMask semantics) const;
+
+	// Helper for calling rr::Yield with res cast to an rr::Int.
+	enum class YieldResult
+	{
+		ControlBarrier = 0,
+	};
+	void Yield(YieldResult res) const;
+
+	// Helper as we often need to take dot products as part of doing other things.
+	static SIMD::Float FDot(unsigned numComponents, const Operand &x, const Operand &y);
+	static SIMD::Int SDot(unsigned numComponents, const Operand &x, const Operand &y, const Operand *accum);
+	static SIMD::UInt UDot(unsigned numComponents, const Operand &x, const Operand &y, const Operand *accum);
+	static SIMD::Int SUDot(unsigned numComponents, const Operand &x, const Operand &y, const Operand *accum);
+	static SIMD::Int AddSat(RValue<SIMD::Int> a, RValue<SIMD::Int> b);
+	static SIMD::UInt AddSat(RValue<SIMD::UInt> a, RValue<SIMD::UInt> b);
+
+	using ImageSampler = void(void *texture, void *uvsIn, void *texelOut, void *constants);
+	static ImageSampler *getImageSampler(const vk::Device *device, uint32_t signature, uint32_t samplerId, uint32_t imageViewId);
+	static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstructionSignature instruction, const Sampler &samplerState);
+	static std::shared_ptr<rr::Routine> emitWriteRoutine(ImageInstructionSignature instruction, const Sampler &samplerState);
+
+	// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
+	static sw::FilterType convertFilterMode(const vk::SamplerState *samplerState, VkImageViewType imageViewType, SamplerMethod samplerMethod);
+	static sw::MipmapType convertMipmapMode(const vk::SamplerState *samplerState);
+	static sw::AddressingMode convertAddressingMode(int coordinateIndex, const vk::SamplerState *samplerState, VkImageViewType imageViewType);
 
 private:
-	const Type &getType(const Object &object) const
-	{
-		return getType(object.typeId());
-	}
+	const SpirvShader &shader;
+	SpirvRoutine *const routine;                     // The current routine being built.
+	SpirvShader::Function::ID function;              // The current function being built.
+	SpirvShader::Block::ID block;                    // The current block being built.
+	rr::Value *activeLaneMaskValue = nullptr;        // The current active lane mask.
+	rr::Value *storesAndAtomicsMaskValue = nullptr;  // The current atomics mask.
+	SpirvShader::SpirvShader::Block::Set visited;    // Blocks already built.
+	std::unordered_map<SpirvShader::Block::Edge, RValue<SIMD::Int>, SpirvShader::Block::Edge::Hash> edgeActiveLaneMasks;
+	std::deque<SpirvShader::Block::ID> *pending;
 
-	const Object &getObject(Object::ID id) const
-	{
-		auto it = defs.find(id);
-		ASSERT_MSG(it != defs.end(), "Unknown object %d", id.value());
-		return it->second;
-	}
+	const vk::DescriptorSet::Bindings &descriptorSets;
 
-	const Type &getObjectType(Object::ID id) const
-	{
-		return getType(getObject(id));
-	}
+	std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
+	std::unordered_map<SpirvShader::Object::ID, SIMD::Pointer> pointers;
+	std::unordered_map<SpirvShader::Object::ID, SampledImagePointer> sampledImages;
 
-	const Function &getFunction(Function::ID id) const
-	{
-		auto it = functions.find(id);
-		ASSERT_MSG(it != functions.end(), "Unknown function %d", id.value());
-		return it->second;
-	}
-
-	const String &getString(StringID id) const
-	{
-		auto it = strings.find(id);
-		ASSERT_MSG(it != strings.end(), "Unknown string %d", id.value());
-		return it->second;
-	}
-
-	const Extension &getExtension(Extension::ID id) const
-	{
-		auto it = extensionsByID.find(id);
-		ASSERT_MSG(it != extensionsByID.end(), "Unknown extension %d", id.value());
-		return it->second;
-	}
-
-	OutOfBoundsBehavior getOutOfBoundsBehavior(Object::ID pointerId, const vk::PipelineLayout *pipelineLayout) const;
-
-	// Returns the *component* offset in the literal for the given access chain.
-	uint32_t WalkLiteralAccessChain(Type::ID id, const Span &indexes) const;
-
-	uint32_t GetConstScalarInt(Object::ID id) const;
-	void EvalSpecConstantOp(InsnIterator insn);
-	void EvalSpecConstantUnaryOp(InsnIterator insn);
-	void EvalSpecConstantBinaryOp(InsnIterator insn);
-
-	// Fragment input interpolation functions
-	uint32_t GetNumInputComponents(int32_t location) const;
-	uint32_t GetPackedInterpolant(int32_t location) const;
-
-	// WriteCFGGraphVizDotFile() writes a graphviz dot file of the shader's
-	// control flow to the given file path.
-	void WriteCFGGraphVizDotFile(const char *path) const;
-
-public:
-	// OpcodeName() returns the name of the opcode op.
-	static const char *OpcodeName(spv::Op op);
-	static std::memory_order MemoryOrder(spv::MemorySemanticsMask memorySemantics);
-
-	// IsStatement() returns true if the given opcode actually performs
-	// work (as opposed to declaring a type, defining a function start / end,
-	// etc).
-	static bool IsStatement(spv::Op op);
-
-	// HasTypeAndResult() returns true if the given opcode's instruction
-	// has a result type ID and result ID, i.e. defines an Object.
-	static bool HasTypeAndResult(spv::Op op);
-
-	// Returns 0 when invalid.
-	static VkShaderStageFlagBits executionModelToStage(spv::ExecutionModel model);
+	const unsigned int multiSampleCount;
 };
 
 class SpirvRoutine
@@ -1605,6 +1614,8 @@ public:
 	std::array<SIMD::Int, 3> localInvocationID;   // TODO(b/236162233): SIMD::Int3
 	std::array<SIMD::Int, 3> globalInvocationID;  // TODO(b/236162233): SIMD::Int3
 
+	Pointer<Byte> dbgState;  // Pointer to a debugger state.
+
 	void createVariable(SpirvShader::Object::ID id, uint32_t componentCount)
 	{
 		bool added = variables.emplace(id, Variable(componentCount)).second;
@@ -1645,6 +1656,7 @@ private:
 	// SpirvShader::emitProlog() and SpirvShader::emitEpilog().
 	friend class SpirvShader;
 
+public:
 	std::unordered_map<SpirvShader::Object::ID, Variable> phis;
 };
 
