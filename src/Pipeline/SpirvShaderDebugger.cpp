@@ -2547,12 +2547,12 @@ SpirvShader::Impl::Debugger::State::Data::buildSpirvValue(State *state, Shadow::
 ////////////////////////////////////////////////////////////////////////////////
 // sw::SpirvShader methods
 ////////////////////////////////////////////////////////////////////////////////
-void SpirvShader::EmitState::dbgInit(const std::shared_ptr<vk::dbg::Context> &ctx)
+void EmitState::dbgInit(const std::shared_ptr<vk::dbg::Context> &ctx)
 {
 	impl.debugger = new Impl::Debugger(this, ctx);
 }
 
-void SpirvShader::EmitState::dbgTerm()
+void EmitState::dbgTerm()
 {
 	if(impl.debugger)
 	{
@@ -2560,7 +2560,7 @@ void SpirvShader::EmitState::dbgTerm()
 	}
 }
 
-void SpirvShader::EmitState::dbgCreateFile()
+void EmitState::dbgCreateFile()
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
@@ -2594,7 +2594,7 @@ void SpirvShader::EmitState::dbgCreateFile()
 	dbg->spirvFile = dbg->ctx->lock().createVirtualFile(name.c_str(), source.c_str());
 }
 
-void SpirvShader::EmitState::dbgBeginEmit() const
+void EmitState::dbgBeginEmit() const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
@@ -2652,7 +2652,7 @@ void SpirvShader::EmitState::dbgBeginEmit() const
 	}
 }
 
-void SpirvShader::EmitState::dbgEndEmit() const
+void EmitState::dbgEndEmit() const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
@@ -2662,7 +2662,7 @@ void SpirvShader::EmitState::dbgEndEmit() const
 	rr::Call(&Impl::Debugger::State::destroy, routine->dbgState);
 }
 
-void SpirvShader::EmitState::dbgBeginEmitInstruction(InsnIterator insn) const
+void EmitState::dbgBeginEmitInstruction(InsnIterator insn) const
 {
 #	if PRINT_EACH_EMITTED_INSTRUCTION
 	{
@@ -2716,7 +2716,7 @@ void SpirvShader::EmitState::dbgBeginEmitInstruction(InsnIterator insn) const
 	}
 }
 
-void SpirvShader::EmitState::dbgEndEmitInstruction(InsnIterator insn) const
+void EmitState::dbgEndEmitInstruction(InsnIterator insn) const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
@@ -2742,7 +2742,7 @@ void SpirvShader::EmitState::dbgEndEmitInstruction(InsnIterator insn) const
 	}
 }
 
-void SpirvShader::EmitState::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask) const
+void EmitState::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask) const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
@@ -2752,7 +2752,7 @@ void SpirvShader::EmitState::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask) con
 	store(globals + OFFSET(Impl::Debugger::State::Globals, activeLaneMask), mask);
 }
 
-void SpirvShader::EmitState::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const
+void EmitState::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const
 {
 	auto dbg = impl.debugger;
 	if(!dbg) { return; }
@@ -2760,7 +2760,7 @@ void SpirvShader::EmitState::dbgDeclareResult(const InsnIterator &insn, Object::
 	dbg->results.emplace(insn.data(), resultId);
 }
 
-SpirvShader::EmitResult SpirvShader::EmitLine(InsnIterator insn) const
+EmitState::EmitResult SpirvShader::EmitLine(InsnIterator insn) const
 {
 	if(auto dbg = impl.debugger)
 	{
@@ -2792,7 +2792,7 @@ void SpirvShader::DefineOpenCLDebugInfo100(const InsnIterator &insn)
 	dbg->process(insn, nullptr, Impl::Debugger::Pass::Define);
 }
 
-SpirvShader::EmitResult SpirvShader::EmitState::EmitOpenCLDebugInfo100(InsnIterator insn)
+EmitState::EmitResult EmitState::EmitOpenCLDebugInfo100(InsnIterator insn)
 {
 	if(auto dbg = impl.debugger)
 	{
@@ -2808,25 +2808,25 @@ SpirvShader::EmitResult SpirvShader::EmitState::EmitOpenCLDebugInfo100(InsnItera
 // Stub implementations of the dbgXXX functions.
 namespace sw {
 
-void SpirvShader::EmitState::dbgInit(const std::shared_ptr<vk::dbg::Context> &dbgctx) {}
-void SpirvShader::EmitState::dbgTerm() {}
-void SpirvShader::EmitState::dbgCreateFile() {}
-void SpirvShader::EmitState::dbgBeginEmit() const {}
-void SpirvShader::EmitState::dbgEndEmit() const {}
-void SpirvShader::EmitState::dbgBeginEmitInstruction(InsnIterator insn) const {}
-void SpirvShader::EmitState::dbgEndEmitInstruction(InsnIterator insn) const {}
-void SpirvShader::EmitState::dbgExposeIntermediate(Object::ID id) const {}
-void SpirvShader::EmitState::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask) const {}
-void SpirvShader::EmitState::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const {}
+void EmitState::dbgInit(const std::shared_ptr<vk::dbg::Context> &dbgctx) {}
+void EmitState::dbgTerm() {}
+void EmitState::dbgCreateFile() {}
+void EmitState::dbgBeginEmit() const {}
+void EmitState::dbgEndEmit() const {}
+void EmitState::dbgBeginEmitInstruction(SpirvShader::InsnIterator insn) const {}
+void EmitState::dbgEndEmitInstruction(SpirvShader::InsnIterator insn) const {}
+void EmitState::dbgExposeIntermediate(SpirvShader::Object::ID id) const {}
+void EmitState::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask) const {}
+void EmitState::dbgDeclareResult(const SpirvShader::InsnIterator &insn, SpirvShader::Object::ID resultId) const {}
 
 void SpirvShader::DefineOpenCLDebugInfo100(const InsnIterator &insn) {}
 
-SpirvShader::EmitResult SpirvShader::EmitState::EmitOpenCLDebugInfo100(InsnIterator insn)
+EmitState::EmitResult EmitState::EmitOpenCLDebugInfo100(SpirvShader::InsnIterator insn)
 {
 	return EmitResult::Continue;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitState::EmitLine(InsnIterator insn)
+EmitState::EmitResult EmitState::EmitLine(SpirvShader::InsnIterator insn)
 {
 	return EmitResult::Continue;
 }
