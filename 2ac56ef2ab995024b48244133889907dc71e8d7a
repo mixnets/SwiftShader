@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ca3e955_076aca0c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-09-27T19:07:21Z",
+      "side": 1,
+      "message": "Cool, didn\u0027t know you carry patches!",
+      "revId": "2ac56ef2ab995024b48244133889907dc71e8d7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
