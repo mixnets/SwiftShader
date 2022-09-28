@@ -36,6 +36,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd5c46cc_ea1008de",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-09-28T19:44:33Z",
+      "side": 1,
+      "message": "Dropped when rebased?",
+      "parentUuid": "81486afa_851fb360",
+      "revId": "e9da6d646c0b6b1c7fdfb2e0c96203a737cf13a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "acd1584d_50e07965",
