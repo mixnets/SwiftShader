@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "61f3a032_39db690a",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-09-28T14:44:40Z",
+      "side": 1,
+      "message": "Already temporarily fixed here:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/68568\nShould be gone in the next roll",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 129
+      },
+      "revId": "200c36eecd654ce44062d6f17e9afa2dca791d4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
