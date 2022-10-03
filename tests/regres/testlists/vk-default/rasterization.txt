@@ -941,7 +941,6 @@ dEQP-VK.rasterization.discard.line_strip.query_pipeline_true
 dEQP-VK.rasterization.discard.point_list.query_pipeline_false
 dEQP-VK.rasterization.discard.point_list.query_pipeline_true
 dEQP-VK.rasterization.depth_bias.d16_unorm
-dEQP-VK.rasterization.depth_bias.d32_sfloat
 dEQP-VK.rasterization.depth_bias.d24_unorm
 dEQP-VK.rasterization.culling.front_triangles
 dEQP-VK.rasterization.culling.front_triangles_line
