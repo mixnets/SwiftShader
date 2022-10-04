@@ -111,17 +111,6 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 
 		x0 &= 0xFFFFFFFE;
 
-		Int x1a = Int(*Pointer<Short>(primitive + OFFSET(Primitive, outline->right) + (y + 0) * sizeof(Primitive::Span)));
-		Int x1b = Int(*Pointer<Short>(primitive + OFFSET(Primitive, outline->right) + (y + 1) * sizeof(Primitive::Span)));
-		Int x1 = Max(x1a, x1b);
-
-		for(unsigned int q = 1; q < state.multiSampleCount; q++)
-		{
-			x1a = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline->right) + (y + 0) * sizeof(Primitive::Span)));
-			x1b = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline->right) + (y + 1) * sizeof(Primitive::Span)));
-			x1 = Max(x1, Max(x1a, x1b));
-		}
-
 		// Compute the y coordinate of each fragment in the SIMD group.
 		const auto yMorton = SIMD::Float([](int i) { return float(compactEvenBits(i >> 1)); });  // 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3, ...
 		yFragment = SIMD::Float(Float(y)) + yMorton - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, y0)));
@@ -141,73 +130,81 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			}
 		}
 
-		If(x0 < x1)
+		if(interpolateW())
 		{
-			if(interpolateW())
-			{
-				Dw = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, w.C))) + yFragment * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, w.B)));
-			}
+			Dw = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, w.C))) + yFragment * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, w.B)));
+		}
 
-			if(spirvShader)
+		if(spirvShader)
+		{
+			int packedInterpolant = 0;
+			for(int interfaceInterpolant = 0; interfaceInterpolant < MAX_INTERFACE_COMPONENTS; interfaceInterpolant++)
 			{
-				int packedInterpolant = 0;
-				for(int interfaceInterpolant = 0; interfaceInterpolant < MAX_INTERFACE_COMPONENTS; interfaceInterpolant++)
+				if(spirvShader->inputs[interfaceInterpolant].Type != SpirvShader::ATTRIBTYPE_UNUSED)
 				{
-					if(spirvShader->inputs[interfaceInterpolant].Type != SpirvShader::ATTRIBTYPE_UNUSED)
+					Dv[interfaceInterpolant] = *Pointer<Float>(primitive + OFFSET(Primitive, V[packedInterpolant].C));
+					if(!spirvShader->inputs[interfaceInterpolant].Flat)
 					{
-						Dv[interfaceInterpolant] = *Pointer<Float>(primitive + OFFSET(Primitive, V[packedInterpolant].C));
-						if(!spirvShader->inputs[interfaceInterpolant].Flat)
-						{
-							Dv[interfaceInterpolant] +=
-							    yFragment * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, V[packedInterpolant].B)));
-						}
-						packedInterpolant++;
+						Dv[interfaceInterpolant] +=
+						    yFragment * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, V[packedInterpolant].B)));
 					}
-				}
-
-				for(unsigned int i = 0; i < state.numClipDistances; i++)
-				{
-					DclipDistance[i] = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, clipDistance[i].C))) +
-					                   yFragment * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, clipDistance[i].B)));
-				}
-
-				for(unsigned int i = 0; i < state.numCullDistances; i++)
-				{
-					DcullDistance[i] = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, cullDistance[i].C))) +
-					                   yFragment * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, cullDistance[i].B)));
+					packedInterpolant++;
 				}
 			}
 
-			Short4 xLeft[4];
-			Short4 xRight[4];
+			for(unsigned int i = 0; i < state.numClipDistances; i++)
+			{
+				DclipDistance[i] = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, clipDistance[i].C))) +
+				                   yFragment * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, clipDistance[i].B)));
+			}
+
+			for(unsigned int i = 0; i < state.numCullDistances; i++)
+			{
+				DcullDistance[i] = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, cullDistance[i].C))) +
+				                   yFragment * SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, cullDistance[i].B)));
+			}
+		}
+
+		Short4 xLeft[4];
+		Short4 xRight[4];
+
+		for(unsigned int q = 0; q < state.multiSampleCount; q++)
+		{
+			xLeft[q] = *Pointer<Short4>(primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline) + y * sizeof(Primitive::Span));
+			xRight[q] = xLeft[q];
+
+			xLeft[q] = Swizzle(xLeft[q], 0x0022) - Short4(1, 2, 1, 2);
+			xRight[q] = Swizzle(xRight[q], 0x1133) - Short4(0, 1, 0, 1);
+		}
+
+		Int x = x0;
+		Int combinedMask;
+
+		Do
+		{
+			Short4 xxxx = Short4(x);
+			Int cMask[4];
+			combinedMask = 0xFFFFFFFF;
 
 			for(unsigned int q = 0; q < state.multiSampleCount; q++)
 			{
-				xLeft[q] = *Pointer<Short4>(primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline) + y * sizeof(Primitive::Span));
-				xRight[q] = xLeft[q];
-
-				xLeft[q] = Swizzle(xLeft[q], 0x0022) - Short4(1, 2, 1, 2);
-				xRight[q] = Swizzle(xRight[q], 0x1133) - Short4(0, 1, 0, 1);
+				if(state.multiSampleMask & (1 << q))
+				{
+					unsigned int i = state.enableMultiSampling ? q : 0;
+					Short4 mask = CmpGT(xxxx, xLeft[i]) & CmpGT(xRight[i], xxxx);
+					cMask[q] = SignMask(PackSigned(mask, mask)) & 0x0000000F;
+					combinedMask &= cMask[q];
+				}
 			}
 
-			For(Int x = x0, x < x1, x += 2)
+			If(combinedMask != 0)
 			{
-				Short4 xxxx = Short4(x);
-				Int cMask[4];
-
-				for(unsigned int q = 0; q < state.multiSampleCount; q++)
-				{
-					if(state.multiSampleMask & (1 << q))
-					{
-						unsigned int i = state.enableMultiSampling ? q : 0;
-						Short4 mask = CmpGT(xxxx, xLeft[i]) & CmpGT(xRight[i], xxxx);
-						cMask[q] = SignMask(PackSigned(mask, mask)) & 0x0000000F;
-					}
-				}
-
 				quad(cBuffer, zBuffer, sBuffer, cMask, x, y);
+
+				x += 2;
 			}
 		}
+		Until(combinedMask == 0);
 
 		for(int index = 0; index < MAX_COLOR_BUFFERS; index++)
 		{
