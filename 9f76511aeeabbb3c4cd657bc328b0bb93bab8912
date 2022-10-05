@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c547e60b_b87a5acf",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 788,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-05T15:28:40Z",
+      "side": 1,
+      "message": "`getOrBuildDEQPFromConfig` ?",
+      "range": {
+        "startLine": 788,
+        "startChar": 8,
+        "endLine": 788,
+        "endChar": 22
+      },
+      "revId": "9f76511aeeabbb3c4cd657bc328b0bb93bab8912",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
