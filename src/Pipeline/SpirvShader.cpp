@@ -1802,17 +1802,10 @@ void SpirvShader::emitProlog(SpirvRoutine *routine) const
 				auto resultPointerType = getType(insn.resultTypeId());
 				auto pointeeType = getType(resultPointerType.element);
 
-				if(pointeeType.componentCount > 0)  // TODO: what to do about zero-slot objects?
+				if(pointeeType.componentCount > 0)
 				{
 					routine->createVariable(insn.resultId(), pointeeType.componentCount);
 				}
-			}
-			break;
-
-		case spv::OpPhi:
-			{
-				auto type = getType(insn.resultTypeId());
-				routine->phis.emplace(insn.resultId(), SpirvRoutine::Variable(type.componentCount));
 			}
 			break;
 
@@ -1845,24 +1838,63 @@ void SpirvShader::emitProlog(SpirvRoutine *routine) const
 
 void SpirvShader::emit(SpirvRoutine *routine, const RValue<SIMD::Int> &activeLaneMask, const RValue<SIMD::Int> &storesAndAtomicsMask, const vk::DescriptorSet::Bindings &descriptorSets, unsigned int multiSampleCount) const
 {
-	EmitState state(*this, routine, entryPoint, activeLaneMask, storesAndAtomicsMask, descriptorSets, multiSampleCount);
+	EmitState::emit(*this, routine, entryPoint, activeLaneMask, storesAndAtomicsMask, descriptorSets, multiSampleCount);
+}
+
+EmitState::EmitState(const SpirvShader &shader,
+                     SpirvRoutine *routine,
+                     SpirvShader::Function::ID entryPoint,
+                     RValue<SIMD::Int> activeLaneMask,
+                     RValue<SIMD::Int> storesAndAtomicsMask,
+                     const vk::DescriptorSet::Bindings &descriptorSets,
+                     unsigned int multiSampleCount)
+    : shader(shader)
+    , routine(routine)
+    , function(entryPoint)
+    , activeLaneMaskValue(activeLaneMask.value())
+    , storesAndAtomicsMaskValue(storesAndAtomicsMask.value())
+    , descriptorSets(descriptorSets)
+    , multiSampleCount(multiSampleCount)
+{
+}
+
+void EmitState::emit(const SpirvShader &shader,
+                     SpirvRoutine *routine,
+                     SpirvShader::Function::ID entryPoint,
+                     RValue<SIMD::Int> activeLaneMask,
+                     RValue<SIMD::Int> storesAndAtomicsMask,
+                     const vk::DescriptorSet::Bindings &descriptorSets,
+                     unsigned int multiSampleCount)
+{
+	EmitState state(shader, routine, entryPoint, activeLaneMask, storesAndAtomicsMask, descriptorSets, multiSampleCount);
+
+	// Create phi variables
+	for(auto insn : shader)
+	{
+		if(insn.opcode() == spv::OpPhi)
+		{
+			auto type = shader.getType(insn.resultTypeId());
+			state.phis.emplace(insn.resultId(), Array<SIMD::Float>(type.componentCount));
+		}
+	}
 
 	/// dbgBeginEmit(&state);
 	/// defer(dbgEndEmit(&state));
 
 	// Emit everything up to the first label
 	// TODO: Separate out dispatch of block from non-block instructions?
-	for(auto insn : *this)
+	for(auto insn : shader)
 	{
 		if(insn.opcode() == spv::OpLabel)
 		{
 			break;
 		}
+
 		state.EmitInstruction(insn);
 	}
 
 	// Emit all the blocks starting from entryPoint.
-	state.EmitBlocks(getFunction(entryPoint).entry);
+	state.EmitBlocks(shader.getFunction(entryPoint).entry);
 }
 
 void EmitState::EmitInstructions(SpirvShader::InsnIterator begin, SpirvShader::InsnIterator end)
@@ -2754,15 +2786,6 @@ void SpirvShader::emitEpilog(SpirvRoutine *routine) const
 	{
 		profiler->RegisterShaderForProfiling(std::to_string(insns.getIdentifier()) + "_" + std::to_string((uintptr_t)routine), std::move(routine->profData));
 	}
-}
-
-void SpirvShader::clearPhis(SpirvRoutine *routine) const
-{
-	// Clear phis that are no longer used. This serves two purposes:
-	// (1) The phi rr::Variables are destructed, preventing pointless
-	//     materialization.
-	// (2) Frees memory that will never be used again.
-	routine->phis.clear();
 }
 
 VkShaderStageFlagBits SpirvShader::executionModelToStage(spv::ExecutionModel model)
