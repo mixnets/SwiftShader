@@ -754,6 +754,15 @@ func copyFileIfDifferent(dst, src string) error {
 	return nil
 }
 
+// deleteFileIfNotPresent deletes a file if the corresponding file doesn't exist
+func deleteFileIfNotPresent(toDeleteFile, checkFile string) error {
+	if _, err := os.Stat(checkFile); errors.Is(err, os.ErrNotExist) {
+		return os.Remove(toDeleteFile)
+	}
+
+	return nil
+}
+
 // updateLocalDeqpFiles sets the SHA in deqp.json to the latest dEQP revision,
 // then it uses getOrBuildDEQP to checkout that revision and copy over its testlists
 func (r *regres) updateLocalDeqpFiles(test *test) ([]string, error) {
@@ -809,24 +818,47 @@ func (r *regres) updateLocalDeqpFiles(test *test) ([]string, error) {
 
 	out = append(out, swsDefault)
 
-	files, err := ioutil.ReadDir(path.Join(deqpTestlistDir, "vk-default"))
+	// First, copy over any existing dEQP file and add new dEQP files
+	err = filepath.Walk(path.Join(deqpTestlistDir, "vk-default"),
+		func(pathString string, f os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if !f.IsDir() {
+				swsFile := path.Join(swsTestlistDir, "vk-default", f.Name())
+				deqpFile := path.Join(deqpTestlistDir, "vk-default", f.Name())
+
+				if err := copyFileIfDifferent(swsFile, deqpFile); err != nil {
+					return cause.Wrap(err, "Failed to copy '%s' to '%s'", deqpFile, swsFile)
+				}
+				out = append(out, swsFile)
+			}
+			return nil
+		})
 	if err != nil {
 		return nil, cause.Wrap(err, "Could not read files from %s/vk-default/", deqpTestlistDir)
 	}
 
-	for _, f := range files {
-		if f.IsDir() {
-			continue
-		}
+	// Second, delete files which no longer exist in dEQP
+	err = filepath.Walk(path.Join(swsTestlistDir, "vk-default"),
+		func(pathString string, f os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if !f.IsDir() {
+				swsFile := path.Join(swsTestlistDir, "vk-default", f.Name())
+				deqpFile := path.Join(deqpTestlistDir, "vk-default", f.Name())
 
-		swsFile := path.Join(swsTestlistDir, "vk-default", f.Name())
-		deqpFile := path.Join(deqpTestlistDir, "vk-default", f.Name())
-
-		if err := copyFileIfDifferent(swsFile, deqpFile); err != nil {
-			return nil, cause.Wrap(err, "Failed to copy '%s' to '%s'", deqpFile, swsFile)
-		}
-		out = append(out, swsFile)
+				if err := deleteFileIfNotPresent(swsFile, deqpFile); err != nil {
+					return cause.Wrap(err, "Failed to delete '%s'", swsFile)
+				}
+			}
+			return nil
+		})
+	if err != nil {
+		return nil, cause.Wrap(err, "Could not read files from %s/vk-default/", swsTestlistDir)
 	}
+
 	return out, nil
 }
 
