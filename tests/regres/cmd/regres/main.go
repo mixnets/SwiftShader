@@ -439,6 +439,14 @@ type deqpBuild struct {
 	hash string // hash of the deqp config
 }
 
+// DeqpConfig holds the JSON payload of the deqp.json file
+type DeqpConfig struct {
+	Remote  string   `json:"remote"`
+	Branch  string   `json:"branch"`
+	SHA     string   `json:"sha"`
+	Patches []string `json:"patches"`
+}
+
 func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 	checkoutDir := test.checkoutDir
 	if p := path.Join(checkoutDir, deqpConfigRelPath); !util.IsFile(p) {
@@ -453,16 +461,15 @@ func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 	}
 	defer file.Close()
 
-	cfg := struct {
-		Remote  string   `json:"remote"`
-		Branch  string   `json:"branch"`
-		SHA     string   `json:"sha"`
-		Patches []string `json:"patches"`
-	}{}
+	cfg := DeqpConfig{}
 	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
 		return deqpBuild{}, cause.Wrap(err, "Couldn't parse %s", deqpConfigRelPath)
 	}
 
+	return r.getOrBuildDEQPFromConfig(test, cfg, checkoutDir)
+}
+
+func (r *regres) getOrBuildDEQPFromConfig(test *test, cfg DeqpConfig, checkoutDir string) (deqpBuild, error) {
 	hasher := sha1.New()
 	if err := json.NewEncoder(hasher).Encode(&cfg); err != nil {
 		return deqpBuild{}, cause.Wrap(err, "Couldn't re-encode %s", deqpConfigRelPath)
@@ -752,12 +759,7 @@ func (r *regres) updateLocalDeqpFiles(test *test) ([]string, error) {
 	}
 	defer file.Close()
 
-	cfg := struct {
-		Remote  string   `json:"remote"`
-		Branch  string   `json:"branch"`
-		SHA     string   `json:"sha"`
-		Patches []string `json:"patches"`
-	}{}
+	cfg := DeqpConfig{}
 	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
 		return nil, cause.Wrap(err, "Couldn't parse %s", deqpConfigRelPath)
 	}
@@ -784,7 +786,7 @@ func (r *regres) updateLocalDeqpFiles(test *test) ([]string, error) {
 	out = append(out, deqpJsonPath)
 
 	// Use getOrBuildDEQP as it'll prevent us from copying data from a revision of dEQP that has build errors.
-	deqpBuild, err := r.getOrBuildDEQP(test)
+	deqpBuild, err := r.getOrBuildDEQPFromConfig(test, cfg, test.checkoutDir)
 
 	if err != nil {
 		return nil, cause.Wrap(err, "Failed to retrieve dEQP build information")
