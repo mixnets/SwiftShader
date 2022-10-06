@@ -18,6 +18,52 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "67ceb497_95faefdf",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 822,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-06T12:56:31Z",
+      "side": 1,
+      "message": "übernit: The docs say that `WalkDir` is a bit more efficient, but who cares.",
+      "range": {
+        "startLine": 822,
+        "startChar": 16,
+        "endLine": 822,
+        "endChar": 20
+      },
+      "revId": "516208c4689977352a21de14abb24a29fe63c671",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "545b9fe4_99f8639f",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 828,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-06T12:56:31Z",
+      "side": 1,
+      "message": "`f.Name()` only returns the file name. Given that you are globbing into subdirectories, I think you need to use `pathString`:\n\n```\n        deqpTestlistVkDefaultDir :\u003d path.Join(deqpTestlistDir, \"vk-default\")\n        swsTestlistVkDefaultDir :\u003d path.Join(swsTestlistDir, \"vk-default\")\n\terr \u003d filepath.Walk(deqpTestlistVkDefaultDir,\n\t\tfunc(deqpFile string, f os.FileInfo, err error) error {\n\t\t\tif f.IsDir() || err !\u003d nil {\n\t\t\t\treturn err\n\t\t\t}\n\n\t\t\trelPath, err :\u003d filepath.Rel(deqpTestlistVkDefaultDir, deqpFile)\n\t\t\tif err !\u003d nil {\n\t\t\t\treturn err\n\t\t\t}\n\n\t\t\tswsFile :\u003d path.Join(swsTestlistVkDefaultDir, relPath)\n\t\t\tif err :\u003d copyFileIfDifferent(swsFile, deqpFile); err !\u003d nil {\n\t\t\t\treturn cause.Wrap(err, \"Failed to copy \u0027%s\u0027 to \u0027%s\u0027\", deqpFile, swsFile)\n\t\t\t}\n\t\t\tout \u003d append(out, swsFile)\n\t\t\treturn nil\n\t\t})\n```",
+      "range": {
+        "startLine": 828,
+        "startChar": 55,
+        "endLine": 828,
+        "endChar": 63
+      },
+      "revId": "516208c4689977352a21de14abb24a29fe63c671",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "db0910ae_fb1acfc5",
@@ -31,6 +77,30 @@
       "writtenOn": "2022-10-06T01:10:33Z",
       "side": 1,
       "message": "You could just wipe the whole directory first, then copy the new files without having to check for differences.",
+      "range": {
+        "startLine": 842,
+        "startChar": 4,
+        "endLine": 842,
+        "endChar": 18
+      },
+      "revId": "516208c4689977352a21de14abb24a29fe63c671",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6d36aad_4c55d86e",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-06T12:56:31Z",
+      "side": 1,
+      "message": "+1. The only difference I can see with deleting the whole directory and this implementation is that directories would also get deleted (although either way, the files get deleted).",
+      "parentUuid": "db0910ae_fb1acfc5",
       "range": {
         "startLine": 842,
         "startChar": 4,
