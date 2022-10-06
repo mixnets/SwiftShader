@@ -16,6 +16,29 @@
       "message": "Hi Ben, please review this CL thoroughly. I wasn\u0027t able to quickly setup something to properly verify that this behaves properly, so I need someone with some go knowledge to tell me if this is correct or not.",
       "revId": "516208c4689977352a21de14abb24a29fe63c671",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db0910ae_fb1acfc5",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-06T01:10:33Z",
+      "side": 1,
+      "message": "You could just wipe the whole directory first, then copy the new files without having to check for differences.",
+      "range": {
+        "startLine": 842,
+        "startChar": 4,
+        "endLine": 842,
+        "endChar": 18
+      },
+      "revId": "516208c4689977352a21de14abb24a29fe63c671",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
