@@ -181,6 +181,30 @@
       },
       "revId": "516208c4689977352a21de14abb24a29fe63c671",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a8cc5a1_ea6fb7d5",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-07T21:03:18Z",
+      "side": 1,
+      "message": "So, this gets pretty hairy if I delete the entire directory first, because that removes the ability to get the list of modified files, which then removes the ability to pass the list of modified files to git.Add(). While this might be doable, it requires a sizable refactor, and I\u0027d rather have this CL landed as is ASAP so that we don\u0027t have to manually update dEQP files anymore, at least, and I can look into refactoring this more thoroughly next week.",
+      "parentUuid": "69074639_60d1c8eb",
+      "range": {
+        "startLine": 842,
+        "startChar": 4,
+        "endLine": 842,
+        "endChar": 18
+      },
+      "revId": "516208c4689977352a21de14abb24a29fe63c671",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
