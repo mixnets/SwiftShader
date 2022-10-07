@@ -1608,7 +1608,7 @@ private:
 	const vk::DescriptorSet::Bindings &descriptorSets;
 
 	std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
-	std::unordered_map<SpirvShader::Object::ID, Array<SIMD::Float>> phis;
+	std::unordered_map<SpirvShader::Object::ID, std::vector<SIMD::Float>> phis;
 	std::unordered_map<SpirvShader::Object::ID, SIMD::Pointer> pointers;
 	std::unordered_map<SpirvShader::Object::ID, SampledImagePointer> sampledImages;
 
