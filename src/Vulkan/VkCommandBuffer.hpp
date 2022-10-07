@@ -232,7 +232,7 @@ public:
 private:
 	void resetState();
 	template<typename T, typename... Args>
-	void addCommand(Args &&... args);
+	void addCommand(Args &&...args);
 
 	enum State
 	{
@@ -249,10 +249,6 @@ private:
 
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
 	std::vector<std::unique_ptr<Command>> commands;
-
-#ifdef ENABLE_VK_DEBUGGER
-	std::shared_ptr<vk::dbg::File> debuggerFile;
-#endif  // ENABLE_VK_DEBUGGER
 };
 
 using DispatchableCommandBuffer = DispatchableObject<CommandBuffer, VkCommandBuffer>;

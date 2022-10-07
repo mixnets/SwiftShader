@@ -164,15 +164,6 @@ public:
 	void removeSampler(const SamplerState &samplerState);
 	const SamplerState *findSampler(uint32_t samplerId) const;
 
-	std::shared_ptr<vk::dbg::Context> getDebuggerContext() const
-	{
-#ifdef ENABLE_VK_DEBUGGER
-		return debugger.context;
-#else
-		return nullptr;
-#endif  // ENABLE_VK_DEBUGGER
-	}
-
 	VkResult setDebugUtilsObjectName(const VkDebugUtilsObjectNameInfoEXT *pNameInfo);
 	VkResult setDebugUtilsObjectTag(const VkDebugUtilsObjectTagInfoEXT *pTagInfo);
 
@@ -224,14 +215,6 @@ private:
 
 	marl::mutex privateDataMutex;
 	std::map<const PrivateData *, PrivateDataSlot> privateData;
-
-#ifdef ENABLE_VK_DEBUGGER
-	struct
-	{
-		std::shared_ptr<vk::dbg::Context> context;
-		std::shared_ptr<vk::dbg::Server> server;
-	} debugger;
-#endif  // ENABLE_VK_DEBUGGER
 
 #ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 	std::vector<std::pair<PFN_vkDeviceMemoryReportCallbackEXT, void *>> deviceMemoryReportCallbacks;
