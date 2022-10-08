@@ -205,6 +205,30 @@
       },
       "revId": "516208c4689977352a21de14abb24a29fe63c671",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f37bf04_469004cb",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-08T06:20:04Z",
+      "side": 1,
+      "message": "Fair enough, thanks for giving it a try. According to https://github.com/go-git/go-git/issues/223 there\u0027s an `AddWithOptions()` which should allow to essentially perform `git add --all` but it has a bug (although a workaround is mentioned too). Anyway, that can be looked into later.",
+      "parentUuid": "3a8cc5a1_ea6fb7d5",
+      "range": {
+        "startLine": 842,
+        "startChar": 4,
+        "endLine": 842,
+        "endChar": 18
+      },
+      "revId": "516208c4689977352a21de14abb24a29fe63c671",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
