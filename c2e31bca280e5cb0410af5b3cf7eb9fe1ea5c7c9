@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a4f5f07_5f2b657b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-11T14:34:32Z",
+      "side": 1,
+      "message": "Note: I\u0027ll probably try to reconnect this properly after the refactor has landed.",
+      "revId": "c2e31bca280e5cb0410af5b3cf7eb9fe1ea5c7c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
