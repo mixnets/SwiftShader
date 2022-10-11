@@ -22,6 +22,30 @@
       },
       "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1dc9018_7f8dadcd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-11T20:31:31Z",
+      "side": 1,
+      "message": "@syoussefi: could your test also reproduce this issue with a vertex shader?",
+      "parentUuid": "22da47ec_cb3caafe",
+      "range": {
+        "startLine": 7,
+        "startChar": 26,
+        "endLine": 7,
+        "endChar": 31
+      },
+      "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
