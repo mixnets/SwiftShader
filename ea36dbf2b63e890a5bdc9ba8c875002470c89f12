@@ -46,6 +46,30 @@
       },
       "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77ffde22_c316d4eb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-11T22:37:21Z",
+      "side": 1,
+      "message": "I\u0027m starting to wonder if the issue actually isn\u0027t SpirvShader::getIdentifier() instead. Looking at:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Pipeline/SpirvShader.hpp;l\u003d645\nIt looks like the unique identifier ignores `renderPass`, `subpassIndex` and `robustBufferAccess`, which could all alter the shader\u0027s execution.",
+      "parentUuid": "c1dc9018_7f8dadcd",
+      "range": {
+        "startLine": 7,
+        "startChar": 26,
+        "endLine": 7,
+        "endChar": 31
+      },
+      "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
