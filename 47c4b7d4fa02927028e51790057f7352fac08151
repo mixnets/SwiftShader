@@ -46,6 +46,30 @@
       },
       "revId": "47c4b7d4fa02927028e51790057f7352fac08151",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "918d01a3_b1747784",
+        "filename": "tests/regres/run.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-11T19:03:08Z",
+      "side": 1,
+      "message": "I\u0027m not sure if we want SwiftShader to present itself as a Go module; we wouldn\u0027t want others to create a dependency on it (otherwise we should consider putting it into a separate repo). I think it\u0027s fine to require opening VSCode at `tests/regres/` when working on Regres. We should never change C++ and Go code in the same CL anyway.\n\nSo I appreciate keeping the `go.mod` and `go.sum` files out of the root directory if that\u0027s reasonably possible.\n\nI tried this CL locally and while the CI test runs seemed fine the \u0027daily\u0027 was trying to fetch the cache\u0027s results files from the wrong directory. Presumably bringing the cache back to the root directory would fix that.",
+      "parentUuid": "1f367549_8b99c449",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 15
+      },
+      "revId": "47c4b7d4fa02927028e51790057f7352fac08151",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
