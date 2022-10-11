@@ -550,6 +550,7 @@ bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 	case spv::StorageClassImage:
 		return false;
 	default:
+		assert(false);
 		return true;
 	}
 }
