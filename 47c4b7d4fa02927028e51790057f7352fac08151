@@ -22,6 +22,30 @@
       },
       "revId": "47c4b7d4fa02927028e51790057f7352fac08151",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f367549_8b99c449",
+        "filename": "tests/regres/run.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-11T13:17:24Z",
+      "side": 1,
+      "message": "`go run` needs to operate in the directory of the `go.mod` and `go.sum` files. I assumed you\u0027d rather have these tucked away in `tests/regres` than polluting the root project directory.\nIf you are actually happy with them being in the root, then I\u0027d say that\u0027s better all round, as go tooling will work with just opening the swiftshader root directory, instead of you requiring another IDE opened in the `tests/regres` subdirectory.\n\nIf you\u0027d rather not have this, I think we can tell regress to put the cache somewhere else.",
+      "parentUuid": "3a5430bd_3d035574",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 15
+      },
+      "revId": "47c4b7d4fa02927028e51790057f7352fac08151",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
