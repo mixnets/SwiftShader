@@ -94,6 +94,30 @@
       },
       "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5623269f_d9a310cc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5845
+      },
+      "writtenOn": "2022-10-12T12:09:25Z",
+      "side": 1,
+      "message": "Ok, but then, since we still wouldn\u0027t be taking `renderPass` and `subpassIndex` into account as part of the cache key, how will we avoid future incorrect cache hits like this one?",
+      "parentUuid": "e4d2e02f_7a3c6574",
+      "range": {
+        "startLine": 7,
+        "startChar": 26,
+        "endLine": 7,
+        "endChar": 31
+      },
+      "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
