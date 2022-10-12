@@ -118,6 +118,30 @@
       },
       "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3dd793b2_284a6116",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-10-12T13:45:12Z",
+      "side": 1,
+      "message": "\u003e Vertex not affected?\n\nAlso Compute by the way. I\u0027ll make sure to cover all three, will let you know when I have tests",
+      "parentUuid": "5623269f_d9a310cc",
+      "range": {
+        "startLine": 7,
+        "startChar": 26,
+        "endLine": 7,
+        "endChar": 31
+      },
+      "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
