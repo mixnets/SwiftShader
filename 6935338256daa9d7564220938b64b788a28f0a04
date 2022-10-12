@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0814e6ca_0bb752a4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-12T12:58:14Z",
+      "side": 1,
+      "message": "I traced back the reduction in PASS tests to https://gerrit.khronos.org/c/vk-gl-cts/+/10230. There\u0027s several newly passing tests too.",
+      "revId": "6935338256daa9d7564220938b64b788a28f0a04",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
