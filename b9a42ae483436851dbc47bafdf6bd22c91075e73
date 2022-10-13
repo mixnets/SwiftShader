@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f24f498_80efc608",
+        "filename": "tests/regres/shell/shell_unix.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-13T21:23:45Z",
+      "side": 1,
+      "message": "needed?",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 26
+      },
+      "revId": "b9a42ae483436851dbc47bafdf6bd22c91075e73",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
