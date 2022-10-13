@@ -190,6 +190,30 @@
       },
       "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "86656e85_c81197ca",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-13T12:28:28Z",
+      "side": 1,
+      "message": "FYI, robustBufferAccess is already part of the VertexProcessor state:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Device/VertexProcessor.hpp;l\u003d82",
+      "parentUuid": "b956ac6a_f44368e7",
+      "range": {
+        "startLine": 7,
+        "startChar": 26,
+        "endLine": 7,
+        "endChar": 31
+      },
+      "revId": "ea36dbf2b63e890a5bdc9ba8c875002470c89f12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
