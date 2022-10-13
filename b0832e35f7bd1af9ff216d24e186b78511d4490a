@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5529cbf_1ce3c79c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-13T12:30:41Z",
+      "side": 1,
+      "message": "Renamed new PixelProcessor state to `robustBufferAccess` to match the VertexProcessor state.",
+      "revId": "b0832e35f7bd1af9ff216d24e186b78511d4490a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
