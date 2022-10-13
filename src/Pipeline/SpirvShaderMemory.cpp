@@ -548,8 +548,12 @@ bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 	case spv::StorageClassStorageBuffer:
 	case spv::StorageClassPhysicalStorageBuffer:
 	case spv::StorageClassImage:
+	case spv::StorageClassPrivate:
 		return false;
+	case spv::StorageClassFunction:
+		return true;
 	default:
+		ASSERT(false);
 		return true;
 	}
 }
