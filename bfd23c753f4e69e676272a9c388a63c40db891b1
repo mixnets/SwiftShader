@@ -22,6 +22,30 @@
       },
       "revId": "bfd23c753f4e69e676272a9c388a63c40db891b1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0d368a0_ab705271",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-13T21:12:02Z",
+      "side": 1,
+      "message": "Thanks, yeah, I\u0027m aware of it, but I\u0027m going to try to keep this code as readable as possible for now 😊 (as long as I\u0027m not very comfortable writing go)",
+      "parentUuid": "812f1360_2a208bfe",
+      "range": {
+        "startLine": 320,
+        "startChar": 55,
+        "endLine": 320,
+        "endChar": 103
+      },
+      "revId": "bfd23c753f4e69e676272a9c388a63c40db891b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
