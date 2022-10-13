@@ -22,6 +22,30 @@
       },
       "revId": "b9a42ae483436851dbc47bafdf6bd22c91075e73",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f252644_a1cbb3a8",
+        "filename": "tests/regres/shell/shell_unix.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-13T21:33:08Z",
+      "side": 1,
+      "message": "I don\u0027t know what this is, it was added by gofmt",
+      "parentUuid": "2f24f498_80efc608",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 26
+      },
+      "revId": "b9a42ae483436851dbc47bafdf6bd22c91075e73",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
