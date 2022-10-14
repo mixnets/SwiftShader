@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "345848d0_63ea9aaf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-14T02:10:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "55a545b3_f44a073d",
+      "range": {
+        "startLine": 12,
+        "startChar": 7,
+        "endLine": 12,
+        "endChar": 16
+      },
+      "revId": "bfd23c753f4e69e676272a9c388a63c40db891b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "812f1360_2a208bfe",
         "filename": "tests/regres/deqp/deqp.go",
         "patchSetId": 1
