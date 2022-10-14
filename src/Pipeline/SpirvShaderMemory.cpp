@@ -550,9 +550,9 @@ bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 	case spv::StorageClassImage:
 	case spv::StorageClassPrivate:
 	case spv::StorageClassOutput:
-	case spv::StorageClassWorkgroup:
 		return false;
 	case spv::StorageClassFunction:
+	case spv::StorageClassWorkgroup:
 		return true;
 	default:
 		ASSERT(false);
