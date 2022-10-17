@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4eae4d0a_363a50ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-17T14:03:20Z",
+      "side": 1,
+      "message": "Since gerrit wasn\u0027t able to automatically rebase it, I did a manual rebase.\nI also added a bug ID.",
+      "revId": "3dcc3abde89a70237bae57531c9ce5d23e6c924a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
