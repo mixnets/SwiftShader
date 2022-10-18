@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74e2bdf5_7b4fff5d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-18T15:27:16Z",
+      "side": 1,
+      "message": "Note: it would have made reviewing much easier if EmitState hadn\u0027t been both moved and modified in the same CL, but I think the change is ok.",
+      "revId": "79e3aace0d1c95868313ef513db7ecb8193d058e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
