@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15263b12_20600c66",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-18T22:36:11Z",
+      "side": 1,
+      "message": "unlike `run_testlist` this is not hooked up to a flag. Intentional?",
+      "range": {
+        "startLine": 83,
+        "startChar": 1,
+        "endLine": 83,
+        "endChar": 16
+      },
+      "revId": "ffcbd3b42c191472130ff91969855faf50150611",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9df008dc_b863c30e",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-18T22:36:11Z",
+      "side": 1,
+      "message": "nit: could just pass this chan down to `PerformTests` to reduce GC churn.",
+      "range": {
+        "startLine": 321,
+        "startChar": 4,
+        "endLine": 321,
+        "endChar": 11
+      },
+      "revId": "ffcbd3b42c191472130ff91969855faf50150611",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e4fcd49_787f755c",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-18T22:36:11Z",
+      "side": 1,
+      "message": "`stdin :\u003d strings.Join(testNames, \"\\n\") + \"\\n\"`",
+      "range": {
+        "startLine": 346,
+        "startChar": 1,
+        "endLine": 349,
+        "endChar": 2
+      },
+      "revId": "ffcbd3b42c191472130ff91969855faf50150611",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ffff2bd6_8af69b0c",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-18T22:36:11Z",
+      "side": 1,
+      "message": "Splitting with this seems okay, but then splitting with `..` later seems fragile.\n\nYou could use a couple of regexps to tighten this a bit.\nAt package scope, declare:\n\n```\nvar reCaseOutput \u003d regexp.MustCompile(\"Test case \u0027([^\u0027]*)\u0027..\\n\")\n```\n\nThen here, you can get the per-test results with:\n\n```\n\tcaseOutputs :\u003d reCaseOutput.Split(out, -1)\n\tcaseOutputs \u003d caseOutputs[1:] // Ignore text up to first \"Test case \u0027...\u0027\"\n\n\tcaseNameMatches :\u003d reCaseOutput.FindAllStringSubmatch(out, -1)\n\tcaseNames :\u003d make([]string, len(caseNameMatches))\n\tfor i, m :\u003d range caseNameMatches {\n\t\tcaseNames[i] \u003d m[1]\n\t}\n\t\n\t// caseOutputs holds all the per-case output\n\t// caseNames holds the case name\n\t// len(caseOutputs) should equal len(caseNames)\n```",
+      "range": {
+        "startLine": 387,
+        "startChar": 2,
+        "endLine": 387,
+        "endChar": 50
+      },
+      "revId": "ffcbd3b42c191472130ff91969855faf50150611",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc06d4dc_4499df84",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-18T22:36:11Z",
+      "side": 1,
+      "message": "Bit dubious. Maybe just drop test timing, if there\u0027s no reliable data?",
+      "range": {
+        "startLine": 400,
+        "startChar": 22,
+        "endLine": 400,
+        "endChar": 62
+      },
+      "revId": "ffcbd3b42c191472130ff91969855faf50150611",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fff71d21_e8fb50a6",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-18T22:36:11Z",
+      "side": 1,
+      "message": "no need for `\u003d nil`. Everything is zero initialized in go.",
+      "range": {
+        "startLine": 436,
+        "startChar": 16,
+        "endLine": 436,
+        "endChar": 20
+      },
+      "revId": "ffcbd3b42c191472130ff91969855faf50150611",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
