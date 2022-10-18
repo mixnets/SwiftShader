@@ -90,6 +90,7 @@ var (
 	githubPass    = flag.String("gh-pass", "$SS_GITHUB_PASS", "github password for posting coverage results")
 	keepCheckouts = flag.Bool("keep", false, "don't delete checkout directories after use")
 	dryRun        = flag.Bool("dry", false, "don't post regres reports to gerrit")
+	maxTestsPerProc = flag.Int("max-tests-per-proc", 1, "maximum number of tests running in a single process")
 	maxProcMemory = flag.Uint64("max-proc-mem", shell.MaxProcMemory, "maximum virtual memory per child process")
 	dailyNow      = flag.Bool("dailynow", false, "Start by running the daily pass")
 	dailyOnly     = flag.Bool("dailyonly", false, "Run only the daily pass")
@@ -1368,6 +1369,7 @@ func (t *test) run(testLists testlist.Lists, d deqpBuild) (*deqp.Results, error)
 			t.checkoutDir: "<SwiftShader>",
 		},
 		NumParallelTests: numParallelTests,
+		MaxTestsPerProc:  maxTestsPerProc,
 		TestTimeout:      testTimeout,
 		CoverageEnv:      t.coverageEnv,
 	}
