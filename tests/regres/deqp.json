@@ -4,7 +4,6 @@
     "sha": "f4ed7376e1da2e720211bcddd605bc0599e91920",
     "patches": [
         "tests/regres/deqp-patches/deqp-x11.patch",
-        "tests/regres/deqp-patches/deqp-oob-read-fix.patch",
-        "tests/regres/deqp-patches/deqp-zero-feedback-count.patch"
+        "tests/regres/deqp-patches/deqp-oob-read-fix.patch"
     ]
 }
