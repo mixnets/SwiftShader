@@ -80,6 +80,7 @@ const (
 
 var (
 	numParallelTests = runtime.NumCPU()
+	numTestsPerProc  = 1
 	llvmVersion      = llvm.Version{Major: 10}
 
 	cacheDir      = flag.String("cache", "cache", "path to the output cache directory")
@@ -1368,6 +1369,7 @@ func (t *test) run(testLists testlist.Lists, d deqpBuild) (*deqp.Results, error)
 			t.checkoutDir: "<SwiftShader>",
 		},
 		NumParallelTests: numParallelTests,
+		NumTestsPerProc:  numTestsPerProc,
 		TestTimeout:      testTimeout,
 		CoverageEnv:      t.coverageEnv,
 	}
