@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b12f3f1_6bc5fe20",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1649,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-18T16:02:30Z",
+      "side": 1,
+      "message": "AFAICT, this is necessary only because of 2 uses, which are identical:\n```\n\tauto storageIt \u003d routine-\u003ephis.find(objectId);\n\tASSERT(storageIt !\u003d routine-\u003ephis.end());\n\tauto \u0026storage \u003d storageIt-\u003esecond;\n```\nWhy not add a function like this around line 1621 instead?\n`Variable \u0026getStorage(Object::ID id);`",
+      "range": {
+        "startLine": 1649,
+        "startChar": 0,
+        "endLine": 1649,
+        "endChar": 7
+      },
+      "revId": "4f10755e3b6b3910b71212e3eea0c3a70bbcb580",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
