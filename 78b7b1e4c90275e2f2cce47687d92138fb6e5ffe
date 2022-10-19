@@ -34,6 +34,23 @@
       "parentUuid": "9483b847_bd5c7872",
       "revId": "78b7b1e4c90275e2f2cce47687d92138fb6e5ffe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3753d97_e546ac5a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-19T21:08:37Z",
+      "side": 1,
+      "message": "It looks like http://zlib.net/zlib-1.2.12.tar.gz no longer exists. http://zlib.net/zlib-1.2.13.tar.gz exists, though.",
+      "revId": "78b7b1e4c90275e2f2cce47687d92138fb6e5ffe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
