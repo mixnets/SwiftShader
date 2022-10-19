@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3efa718b_27a8a870",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-19T13:42:06Z",
+      "side": 1,
+      "message": "The CL to allow running multiple dEQP tests per process (https://swiftshader-review.googlesource.com/c/SwiftShader/+/69128) is running on top of this CL and everything works fine.",
+      "revId": "2a7f8cbacfa6f1147e10c95f31582d92e51c1134",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
