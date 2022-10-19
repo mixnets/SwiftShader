@@ -16,6 +16,24 @@
       "message": "The CL to allow running multiple dEQP tests per process (https://swiftshader-review.googlesource.com/c/SwiftShader/+/69128) is running on top of this CL and everything works fine.",
       "revId": "2a7f8cbacfa6f1147e10c95f31582d92e51c1134",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d4bc1b1_55a25b92",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-19T14:29:33Z",
+      "side": 1,
+      "message": "Thanks for testing it out! Could you have a look at the issue with \u0027daily\u0027 runs describe in the unresolved thread?",
+      "parentUuid": "3efa718b_27a8a870",
+      "revId": "2a7f8cbacfa6f1147e10c95f31582d92e51c1134",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
