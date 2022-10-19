@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "104a8163_b366f51d",
+        "filename": "src/Pipeline/SpirvShaderControlFlow.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-19T13:23:45Z",
+      "side": 1,
+      "message": "Uber nit: Not new to this CL, but this could be explicitly marked as const.",
+      "range": {
+        "startLine": 684,
+        "startChar": 1,
+        "endLine": 684,
+        "endChar": 6
+      },
+      "revId": "f7d72215d67d65a602d975eb78cbedd16740861b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
