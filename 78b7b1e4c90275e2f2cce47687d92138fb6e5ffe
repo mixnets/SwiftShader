@@ -68,6 +68,23 @@
       "message": "It looks like VK-GL-CTS tries to fetch the proper version:\nhttps://github.com/KhronosGroup/VK-GL-CTS/blob/7aaf3aef809de09834ff355f38917d8a16830ec8/external/fetch_sources.py#L285\nWhy is Regres fetching an older version while fetching dEQP?",
       "revId": "78b7b1e4c90275e2f2cce47687d92138fb6e5ffe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bda74ea3_4de33edd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-19T21:17:13Z",
+      "side": 1,
+      "message": "This fix landed 6 days ago:\nhttps://github.com/KhronosGroup/VK-GL-CTS/commit/6bb2e7d64261bedb503947b1b251b1eeeb49be73\n\nRegres is still fetching f4ed7376e1da2e720211bcddd605bc0599e91920 while it should be fetching 7aaf3aef809de09834ff355f38917d8a16830ec8. Can we manually update the hash to fix this?",
+      "revId": "78b7b1e4c90275e2f2cce47687d92138fb6e5ffe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
