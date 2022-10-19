@@ -51,6 +51,23 @@
       "message": "It looks like http://zlib.net/zlib-1.2.12.tar.gz no longer exists. http://zlib.net/zlib-1.2.13.tar.gz exists, though.",
       "revId": "78b7b1e4c90275e2f2cce47687d92138fb6e5ffe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11e5e29d_f4c331d9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-19T21:12:33Z",
+      "side": 1,
+      "message": "It looks like VK-GL-CTS tries to fetch the proper version:\nhttps://github.com/KhronosGroup/VK-GL-CTS/blob/7aaf3aef809de09834ff355f38917d8a16830ec8/external/fetch_sources.py#L285\nWhy is Regres fetching an older version while fetching dEQP?",
+      "revId": "78b7b1e4c90275e2f2cce47687d92138fb6e5ffe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
