@@ -16,6 +16,24 @@
       "message": "I\u0027m getting this error:\n\nFailed to build dEQP \u002769108\u0027 for change. Cause: Couldn\u0027t fetch deqp sources https://github.com/KhronosGroup/VK-GL-CTS.git @ f4ed7376e1da2e720211bcddd605bc0599e91920. Cause: Fetching http://zlib.net/zlib-1.2.12.tar.gz\n\nAt first I thought it only affected this change, but I\u0027ve cleared the cache and restarted Regres and now all other runs fail as well. This one simply failed before because it required a new dEQP build while others were using the cached build.\n\nAlexis have you seen such zlib issues recently?",
       "revId": "78b7b1e4c90275e2f2cce47687d92138fb6e5ffe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a2d8b12_09d44443",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-19T21:06:59Z",
+      "side": 1,
+      "message": "Yes, just tried on Linux a minute ago after seeing this and I also get this zlib issue.",
+      "parentUuid": "9483b847_bd5c7872",
+      "revId": "78b7b1e4c90275e2f2cce47687d92138fb6e5ffe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
