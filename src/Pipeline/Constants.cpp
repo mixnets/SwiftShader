@@ -306,7 +306,9 @@ Constants::Constants()
 
 	for(int i = 0; i <= 0xFFFF; i++)
 	{
-		half2float[i] = (float)reinterpret_cast<half &>(i);
+		half i_float;
+		std::memcpy(&i_float, &i, sizeof(half));
+		half2float[i] = static_cast<float>(i_float);
 	}
 }
 

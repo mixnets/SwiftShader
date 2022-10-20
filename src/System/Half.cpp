@@ -14,11 +14,14 @@
 
 #include "Half.hpp"
 
+#include <cstring>
+
 namespace sw {
 
 half::half(float fp32)
 {
-	unsigned int fp32i = *(unsigned int *)&fp32;
+	unsigned int fp32i;
+	std::memcpy(&fp32i, &fp32, 4);
 	unsigned int sign = (fp32i & 0x80000000) >> 16;
 	unsigned int abs = fp32i & 0x7FFFFFFF;
 
@@ -51,7 +54,7 @@ half::half(float fp32)
 half::operator float() const
 {
 	unsigned int fp32i;
-
+	float ret;
 	int s = (fp16i >> 15) & 0x00000001;
 	int e = (fp16i >> 10) & 0x0000001F;
 	int m = fp16i & 0x000003FF;
@@ -61,8 +64,8 @@ half::operator float() const
 		if(m == 0)
 		{
 			fp32i = s << 31;
-
-			return (float &)fp32i;
+			std::memcpy(&ret, &fp32i, 4);
+			return ret;
 		}
 		else
 		{
@@ -82,7 +85,8 @@ half::operator float() const
 
 	fp32i = (s << 31) | (e << 23) | m;
 
-	return (float &)fp32i;
+	std::memcpy(&ret, &fp32i, 4);
+	return ret;
 }
 
 half &half::operator=(float f)
