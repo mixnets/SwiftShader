@@ -16,6 +16,24 @@
       "message": "Thanks for contributing to SwiftShader! I think these type puns should be replaced by `sw::bit_cast\u003c\u003e` which can be found in `src/System/Math.hpp`. Once we\u0027re ready to upgrade to C++20 that could become `std::bit_cast\u003c\u003e`.\n\nI\u0027m afraid that without optimization guarantees the use of `std::memcpy()` could make certain things too slow.",
       "revId": "cf2400427a1b331a3a21fc3a3aa02ba1ec2adfdf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "679e2689_a6f8c3c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101566
+      },
+      "writtenOn": "2022-10-20T19:29:36Z",
+      "side": 1,
+      "message": "Right now i see src/System/Math.hpp does this through a union, which seems to be a GCC extension. While this is fine for me, not sure what other compilers support it.",
+      "parentUuid": "7187bd59_60935b25",
+      "revId": "cf2400427a1b331a3a21fc3a3aa02ba1ec2adfdf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
