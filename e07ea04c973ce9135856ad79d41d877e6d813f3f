@@ -16,6 +16,23 @@
       "message": "Adjusted timeout when running multiple tests",
       "revId": "e07ea04c973ce9135856ad79d41d877e6d813f3f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7884bc63_633edb90",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-20T19:54:38Z",
+      "side": 1,
+      "message": "FYI this is giving me:\n\n`cmd/regres/main.go:1372:21: cannot use maxTestsPerProc (variable of type *int) as type int in struct literal`\n\nThat\u0027s including (PS5) of the parent change for Go 1.18+",
+      "revId": "e07ea04c973ce9135856ad79d41d877e6d813f3f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
