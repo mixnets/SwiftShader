@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "be1e17fe_a5605be4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-21T15:20:41Z",
+      "side": 1,
+      "message": "I agree it looks a bit off but the alternatives don\u0027t seem any better. \"Compiler\" is a very broad term which is usually understood to also include a text-form parser, and output executable code or VM bytecode. Instead this class takes SPIR-V IR and translates it into Reactor, but also applies a number of implementation-specific transformations such as SIMD execution. While \"Emitter\" is admittedly vague I think it avoids misconceptions.\n\nRepeating \"Emit\" at as part of the method names is something we could avoid by simply dropping this prefix, but then we\u0027d have methods such as \"Any\" which seems undescriptive and confusing.\n\nPerhaps this just comes down to accepting that C++ isn\u0027t prose and we don\u0027t have to look for synonyms to avoid repeated words. 8-)\n\nIn any case, I think this change is a definite improvement over the old class name. We can bikeshed some more later if we find the time and inspiration.",
+      "parentUuid": "388a2c73_8ca7e322",
+      "revId": "86c9ccda1ff05f75d27a740b5f0ab015161b2c17",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7ce11e37_0367be88",
