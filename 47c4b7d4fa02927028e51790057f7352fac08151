@@ -70,6 +70,30 @@
       },
       "revId": "47c4b7d4fa02927028e51790057f7352fac08151",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0013c418_5fca8bbd",
+        "filename": "tests/regres/run.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-21T19:17:50Z",
+      "side": 1,
+      "message": "I ran `tests/regres/run.sh --dailyonly` on 2 different Linux computers with this CL and the next one (Allow running multiple dEQP tests per process) applied locally and I didn\u0027t run into the cache directory issue.\n\nNicolas, can you double check if you still run into this issue?",
+      "parentUuid": "918d01a3_b1747784",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 15
+      },
+      "revId": "47c4b7d4fa02927028e51790057f7352fac08151",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
