@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2d272b1_aac742f4",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-21T14:55:31Z",
+      "side": 1,
+      "message": "Huh, apparently that\u0027s valid C++ and a preexisting issue. Fixed now. I couldn\u0027t immediately find a compiler flag to warn us about this...",
+      "parentUuid": "7ce11e37_0367be88",
+      "range": {
+        "startLine": 39,
+        "startChar": 5,
+        "endLine": 39,
+        "endChar": 19
+      },
+      "revId": "86c9ccda1ff05f75d27a740b5f0ab015161b2c17",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ef7e6de6_778238b9",
@@ -54,6 +78,30 @@
       "writtenOn": "2022-10-21T03:23:28Z",
       "side": 1,
       "message": "Same",
+      "range": {
+        "startLine": 119,
+        "startChar": 5,
+        "endLine": 119,
+        "endChar": 19
+      },
+      "revId": "86c9ccda1ff05f75d27a740b5f0ab015161b2c17",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "20ed441f_4148b33a",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-21T14:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ef7e6de6_778238b9",
       "range": {
         "startLine": 119,
         "startChar": 5,
