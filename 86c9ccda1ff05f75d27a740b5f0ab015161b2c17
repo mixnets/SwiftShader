@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "388a2c73_8ca7e322",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-21T03:23:28Z",
+      "side": 1,
+      "message": "The `SpirvEmitter::Emit*` pattern everywhere looks a bit clumsy to me. Maybe SpirvCompiler? SpirvGenerator? Anyway, I don\u0027t really mind, it\u0027s just the double `emit` everywhere looked a bit odd to me.",
+      "revId": "86c9ccda1ff05f75d27a740b5f0ab015161b2c17",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ce11e37_0367be88",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-21T03:23:28Z",
+      "side": 1,
+      "message": "This doesn\u0027t look right",
+      "range": {
+        "startLine": 39,
+        "startChar": 5,
+        "endLine": 39,
+        "endChar": 19
+      },
+      "revId": "86c9ccda1ff05f75d27a740b5f0ab015161b2c17",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef7e6de6_778238b9",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-21T03:23:28Z",
+      "side": 1,
+      "message": "Same",
+      "range": {
+        "startLine": 119,
+        "startChar": 5,
+        "endLine": 119,
+        "endChar": 19
+      },
+      "revId": "86c9ccda1ff05f75d27a740b5f0ab015161b2c17",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
