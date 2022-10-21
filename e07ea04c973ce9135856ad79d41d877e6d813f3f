@@ -33,6 +33,41 @@
       "message": "FYI this is giving me:\n\n`cmd/regres/main.go:1372:21: cannot use maxTestsPerProc (variable of type *int) as type int in struct literal`\n\nThat\u0027s including (PS5) of the parent change for Go 1.18+",
       "revId": "e07ea04c973ce9135856ad79d41d877e6d813f3f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b30410c5_1b2f45d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-21T03:16:32Z",
+      "side": 1,
+      "message": "Right, there\u0027s a missing * there, will fix.",
+      "parentUuid": "7884bc63_633edb90",
+      "revId": "e07ea04c973ce9135856ad79d41d877e6d813f3f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "740c29fb_bb8aa7fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-21T03:16:32Z",
+      "side": 1,
+      "message": "Ok, this should work properly on both Windows and Linux now.",
+      "revId": "e07ea04c973ce9135856ad79d41d877e6d813f3f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
