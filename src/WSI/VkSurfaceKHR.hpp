@@ -98,7 +98,7 @@ public:
 	bool hasAssociatedSwapchain();
 
 protected:
-	static void setCommonSurfaceCapabilities(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext);
+	static VkResult setCommonSurfaceCapabilities(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext);
 
 private:
 	SwapchainKHR *associatedSwapchain = nullptr;

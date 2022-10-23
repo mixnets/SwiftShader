@@ -219,6 +219,24 @@ VkResult SwapchainKHR::present(uint32_t index)
 	auto &image = images[index];
 	image.setStatus(PRESENTING);
 	VkResult result = surface->present(&image);
+
+	releaseImage(index);
+	return result;
+}
+
+VkResult SwapchainKHR::releaseImages(uint32_t imageIndexCount, const uint32_t *pImageIndices)
+{
+	for(uint32_t i = 0; i < imageIndexCount; ++i)
+	{
+		const uint32_t index = pImageIndices[i];
+		releaseImage(index);
+	}
+	return VK_SUCCESS;
+}
+
+void SwapchainKHR::releaseImage(uint32_t index)
+{
+	auto &image = images[index];
 	image.setStatus(AVAILABLE);
 
 	if(retired)
@@ -227,8 +245,5 @@ VkResult SwapchainKHR::present(uint32_t index)
 		image.release();
 		surface->releaseImageMemory(&image);
 	}
-
-	return result;
 }
-
 }  // namespace vk

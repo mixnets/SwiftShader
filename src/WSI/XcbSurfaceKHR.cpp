@@ -94,8 +94,6 @@ VkResult XcbSurfaceKHR::getSurfaceCapabilities(const void *pSurfaceInfoPNext, Vk
 		return VK_ERROR_SURFACE_LOST_KHR;
 	}
 
-	setCommonSurfaceCapabilities(pSurfaceInfoPNext, pSurfaceCapabilities, pSurfaceCapabilitiesPNext);
-
 	VkExtent2D extent;
 	int depth;
 	if(!getWindowSizeAndDepth(connection, window, &extent, &depth))
@@ -107,7 +105,8 @@ VkResult XcbSurfaceKHR::getSurfaceCapabilities(const void *pSurfaceInfoPNext, Vk
 	pSurfaceCapabilities->currentExtent = extent;
 	pSurfaceCapabilities->minImageExtent = extent;
 	pSurfaceCapabilities->maxImageExtent = extent;
-	return VK_SUCCESS;
+
+	return setCommonSurfaceCapabilities(pSurfaceInfoPNext, pSurfaceCapabilities, pSurfaceCapabilitiesPNext);
 }
 
 void *XcbSurfaceKHR::allocateImageMemory(PresentImage *image, const VkMemoryAllocateInfo &allocateInfo)
