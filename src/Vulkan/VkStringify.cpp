@@ -34,6 +34,24 @@ std::string Stringify(VkStructureType value)
 	// TODO(b/174746309): This structure's extension has not been upstreamed yet.
 	case VK_STRUCTURE_TYPE_SAMPLER_FILTERING_PRECISION_GOOGLE:
 		return "SamplerFilteringPrecisionGOOGLE";
+
+	// WIP extension
+	case VK_STRUCTURE_TYPE_SURFACE_PRESENT_MODE_EXT:
+		return "SurfacePresentModeKHR";
+	case VK_STRUCTURE_TYPE_SURFACE_PRESENT_SCALING_CAPABILITIES_EXT:
+		return "SurfacePresentScalingCapabilitiesKHR";
+	case VK_STRUCTURE_TYPE_SURFACE_PRESENT_MODE_COMPATIBILITY_EXT:
+		return "SurfacePresentModeCompatibilityKHR";
+	case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT:
+		return "PhysicalDeviceSwapchainMaintenance_1FeaturesKHR";
+	case VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_FENCE_INFO_EXT:
+		return "SwapchainPresentFenceInfoKHR";
+	case VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT:
+		return "SwapchainPresentModesCreateInfoKHR";
+	case VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_MODE_INFO_EXT:
+		return "SwapchainPresentModeInfoKHR";
+	case VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT:
+		return "SwapchainPresentScalingCreateInfoKHR";
 	}
 #else
 	// In Release builds we avoid a dependency on vkhpp::to_string() to reduce binary size.

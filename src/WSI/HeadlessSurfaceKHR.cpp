@@ -31,11 +31,11 @@ void HeadlessSurfaceKHR::destroySurface(const VkAllocationCallbacks *pAllocator)
 
 VkResult HeadlessSurfaceKHR::getSurfaceCapabilities(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext) const
 {
-	setCommonSurfaceCapabilities(pSurfaceInfoPNext, pSurfaceCapabilities, pSurfaceCapabilitiesPNext);
 	pSurfaceCapabilities->currentExtent = { 1280, 720 };
 	pSurfaceCapabilities->minImageExtent = { 0, 0 };
 	pSurfaceCapabilities->maxImageExtent = { 3840, 2160 };
-	return VK_SUCCESS;
+
+	return setCommonSurfaceCapabilities(pSurfaceInfoPNext, pSurfaceCapabilities, pSurfaceCapabilitiesPNext);
 }
 
 void HeadlessSurfaceKHR::attachImage(PresentImage *image)

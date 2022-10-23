@@ -57,14 +57,13 @@ size_t Win32SurfaceKHR::ComputeRequiredAllocationSize(const VkWin32SurfaceCreate
 
 VkResult Win32SurfaceKHR::getSurfaceCapabilities(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext) const
 {
-	setCommonSurfaceCapabilities(pSurfaceInfoPNext, pSurfaceCapabilities, pSurfaceCapabilitiesPNext);
-
 	VkExtent2D extent;
 	VkResult result = getWindowSize(hwnd, extent);
 	pSurfaceCapabilities->currentExtent = extent;
 	pSurfaceCapabilities->minImageExtent = extent;
 	pSurfaceCapabilities->maxImageExtent = extent;
-	return result;
+
+	return setCommonSurfaceCapabilities(pSurfaceInfoPNext, pSurfaceCapabilities, pSurfaceCapabilitiesPNext);
 }
 
 void Win32SurfaceKHR::attachImage(PresentImage *image)
