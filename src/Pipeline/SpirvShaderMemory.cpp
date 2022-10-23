@@ -108,7 +108,7 @@ void SpirvEmitter::Store(Object::ID pointerId, const Operand &value, bool atomic
 	auto robustness = shader.getOutOfBoundsBehavior(pointerId, routine->pipelineLayout);
 
 	SIMD::Int mask = activeLaneMask();
-	if(!shader.StoresInHelperInvocation(pointerTy.storageClass))
+	if(!shader.StoresInHelperInvocationsHaveEffect(pointerTy.storageClass))
 	{
 		mask = mask & storesAndAtomicsMask();
 	}
@@ -527,17 +527,18 @@ std::memory_order SpirvShader::MemoryOrder(spv::MemorySemanticsMask memorySemant
 	}
 }
 
-bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
+bool SpirvShader::StoresInHelperInvocationsHaveEffect(spv::StorageClass storageClass)
 {
 	switch(storageClass)
 	{
-	case spv::StorageClassUniform:
-	case spv::StorageClassStorageBuffer:
-	case spv::StorageClassPhysicalStorageBuffer:
-	case spv::StorageClassImage:
-		return false;
-	default:
+	// "Stores and atomics performed by helper invocations must not have any effect on memory except for the Function and Private storage classes".
+	case spv::StorageClassFunction:
+	case spv::StorageClassPrivate:
+	// TODO(b/253701784): We assume Output should be treated as Private.
+	case spv::StorageClassOutput:
 		return true;
+	default:
+		return false;
 	}
 }
 
