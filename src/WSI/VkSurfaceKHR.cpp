@@ -94,19 +94,39 @@ VkImage PresentImage::asVkImage() const
 	return image ? static_cast<VkImage>(*image) : VkImage({ VK_NULL_HANDLE });
 }
 
-uint32_t SurfaceKHR::getSurfaceFormatsCount() const
+uint32_t SurfaceKHR::getSurfaceFormatsCount(const void *pSurfaceInfoPNext) const
 {
 	return static_cast<uint32_t>(sizeof(surfaceFormats) / sizeof(surfaceFormats[0]));
 }
 
 VkResult SurfaceKHR::getSurfaceFormats(uint32_t *pSurfaceFormatCount, VkSurfaceFormatKHR *pSurfaceFormats) const
 {
-	uint32_t count = getSurfaceFormatsCount();
+	uint32_t count = getSurfaceFormatsCount(nullptr);
 
 	uint32_t i;
 	for(i = 0; i < std::min(*pSurfaceFormatCount, count); i++)
 	{
 		pSurfaceFormats[i] = surfaceFormats[i];
+	}
+
+	*pSurfaceFormatCount = i;
+
+	if(*pSurfaceFormatCount < count)
+	{
+		return VK_INCOMPLETE;
+	}
+
+	return VK_SUCCESS;
+}
+
+VkResult SurfaceKHR::getSurfaceFormats2(const void *pSurfaceInfoPNext, uint32_t *pSurfaceFormatCount, VkSurfaceFormat2KHR *pSurfaceFormats) const
+{
+	uint32_t count = getSurfaceFormatsCount(pSurfaceInfoPNext);
+
+	uint32_t i;
+	for(i = 0; i < std::min(*pSurfaceFormatCount, count); i++)
+	{
+		pSurfaceFormats[i].surfaceFormat = surfaceFormats[i];
 	}
 
 	*pSurfaceFormatCount = i;
@@ -182,7 +202,7 @@ VkResult SurfaceKHR::getPresentRectangles(uint32_t *pRectCount, VkRect2D *pRects
 	return VK_SUCCESS;
 }
 
-void SurfaceKHR::setCommonSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities)
+void SurfaceKHR::setCommonSurfaceCapabilities(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext)
 {
 	pSurfaceCapabilities->minImageCount = 1;
 	pSurfaceCapabilities->maxImageCount = 0;
