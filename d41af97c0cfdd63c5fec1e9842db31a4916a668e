@@ -16,6 +16,23 @@
       "message": "Did a clean rebase to land this before the go 1.18 update",
       "revId": "d41af97c0cfdd63c5fec1e9842db31a4916a668e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a12acaf_bafc8add",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-24T13:58:22Z",
+      "side": 1,
+      "message": "Tested over the weekend with both test-count-per-process at 1 and 100. BIG speedup with the latter, and failures and crashes appear to still be properly reported!",
+      "revId": "d41af97c0cfdd63c5fec1e9842db31a4916a668e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
