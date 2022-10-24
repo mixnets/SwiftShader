@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee0ee98a_3d914396",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-24T13:13:58Z",
+      "side": 1,
+      "message": "LGTM but might have some room for cleaner interfaces instead of being directly bolted on.",
+      "revId": "2e4a4fe2200ad54f0b9a155e04b2c93ef4268fa9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fa501ed_ca89d353",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-24T13:13:58Z",
+      "side": 1,
+      "message": "I think it might be cleaner if we just have one method which takes one or more optional arguments. While we use Vulkan nomenclature where we can to keep things familiar, class interfaces don\u0027t have to exactly match the entry functions. This way handling the version \"2\" of an entry function can be stuffed away in libVulkan.cpp while these classes have a slightly more abstract idealized interface.",
+      "range": {
+        "startLine": 84,
+        "startChar": 40,
+        "endLine": 84,
+        "endChar": 41
+      },
+      "revId": "2e4a4fe2200ad54f0b9a155e04b2c93ef4268fa9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ee2c2d5_3283d498",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-24T13:13:58Z",
+      "side": 1,
+      "message": "Depending on the number and kind of parameters passed through the `pNext` it might be cleaner to do the parsing on the libVulkan.cpp side and thus make it clearer here what kind of parameters `getSurfaceFormatsCount()` may depend on.\n\nIf it\u0027s a lot of code or it depends on state which would require adding new accessors then having the class parse it is more ideal.\n\nSame for the other `pNext`s in this change I\u0027m not sure this evaluation was made.",
+      "range": {
+        "startLine": 86,
+        "startChar": 45,
+        "endLine": 86,
+        "endChar": 62
+      },
+      "revId": "2e4a4fe2200ad54f0b9a155e04b2c93ef4268fa9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
