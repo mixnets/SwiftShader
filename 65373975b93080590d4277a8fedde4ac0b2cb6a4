@@ -16,6 +16,24 @@
       "message": "There\u0027s also vk_swiftshader.lds for Linux. But note https://swiftshader-review.googlesource.com/c/SwiftShader/+/57290",
       "revId": "65373975b93080590d4277a8fedde4ac0b2cb6a4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "569d9b97_3bac352d",
+        "filename": "src/Vulkan/vk_swiftshader.def",
+        "patchSetId": 4
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-10-24T19:11:12Z",
+      "side": 1,
+      "message": "Done, thanks",
+      "parentUuid": "66fde0b4_28dfb8e7",
+      "revId": "65373975b93080590d4277a8fedde4ac0b2cb6a4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
