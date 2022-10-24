@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2788d4dd_6e357203",
+        "filename": "README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-24T14:15:40Z",
+      "side": 1,
+      "message": "note: This footnote syntax isn\u0027t supported by Gerrit preview but does work for GitHub and Google3.",
+      "range": {
+        "startLine": 8,
+        "startChar": 11,
+        "endLine": 8,
+        "endChar": 15
+      },
+      "revId": "0c1ebc542fe428ad25795106c4868e93b1961e1f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
