@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2cc9851_4fe37ed7",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-10-24T18:55:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6fa501ed_ca89d353",
+      "range": {
+        "startLine": 84,
+        "startChar": 40,
+        "endLine": 84,
+        "endChar": 41
+      },
+      "revId": "2e4a4fe2200ad54f0b9a155e04b2c93ef4268fa9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1ee2c2d5_3283d498",
@@ -54,6 +78,30 @@
       "writtenOn": "2022-10-24T13:13:58Z",
       "side": 1,
       "message": "Depending on the number and kind of parameters passed through the `pNext` it might be cleaner to do the parsing on the libVulkan.cpp side and thus make it clearer here what kind of parameters `getSurfaceFormatsCount()` may depend on.\n\nIf it\u0027s a lot of code or it depends on state which would require adding new accessors then having the class parse it is more ideal.\n\nSame for the other `pNext`s in this change I\u0027m not sure this evaluation was made.",
+      "range": {
+        "startLine": 86,
+        "startChar": 45,
+        "endLine": 86,
+        "endChar": 62
+      },
+      "revId": "2e4a4fe2200ad54f0b9a155e04b2c93ef4268fa9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c6484d0_c147c1d4",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-10-24T18:55:03Z",
+      "side": 1,
+      "message": "Ack. Resolved offline; given the multitude of possible structs that can be chained, it\u0027s better to have the class deal with them.",
+      "parentUuid": "1ee2c2d5_3283d498",
       "range": {
         "startLine": 86,
         "startChar": 45,
