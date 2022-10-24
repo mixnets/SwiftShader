@@ -274,7 +274,7 @@ size_t DisplaySurfaceKHR::ComputeRequiredAllocationSize(const VkDisplaySurfaceCr
 	return 0;
 }
 
-VkResult DisplaySurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+VkResult DisplaySurfaceKHR::getSurfaceCapabilities2(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext) const
 {
 	setCommonSurfaceCapabilities(pSurfaceCapabilities);
 

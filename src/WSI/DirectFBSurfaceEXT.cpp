@@ -34,7 +34,7 @@ size_t DirectFBSurfaceEXT::ComputeRequiredAllocationSize(const VkDirectFBSurface
 	return 0;
 }
 
-VkResult DirectFBSurfaceEXT::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+VkResult DirectFBSurfaceEXT::getSurfaceCapabilities2(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext) const
 {
 	setCommonSurfaceCapabilities(pSurfaceCapabilities);
 

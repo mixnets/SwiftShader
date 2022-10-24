@@ -55,7 +55,7 @@ size_t Win32SurfaceKHR::ComputeRequiredAllocationSize(const VkWin32SurfaceCreate
 	return 0;
 }
 
-VkResult Win32SurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+VkResult Win32SurfaceKHR::getSurfaceCapabilities2(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext) const
 {
 	setCommonSurfaceCapabilities(pSurfaceCapabilities);
 

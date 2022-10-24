@@ -87,7 +87,7 @@ size_t XcbSurfaceKHR::ComputeRequiredAllocationSize(const VkXcbSurfaceCreateInfo
 	return 0;
 }
 
-VkResult XcbSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+VkResult XcbSurfaceKHR::getSurfaceCapabilities2(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext) const
 {
 	if(surfaceLost)
 	{

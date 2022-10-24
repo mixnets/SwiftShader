@@ -62,7 +62,7 @@ size_t WaylandSurfaceKHR::ComputeRequiredAllocationSize(const VkWaylandSurfaceCr
 	return 0;
 }
 
-VkResult WaylandSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+VkResult WaylandSurfaceKHR::getSurfaceCapabilities2(const void *pSurfaceInfoPNext, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities, void *pSurfaceCapabilitiesPNext) const
 {
 	setCommonSurfaceCapabilities(pSurfaceCapabilities);
 

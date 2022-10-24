@@ -144,7 +144,10 @@ size_t MetalSurface::ComputeRequiredAllocationSize(const void *pCreateInfo) API_
     return sizeof(MetalLayer);
 }
 
-VkResult MetalSurface::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const API_AVAILABLE(macosx(10.11))
+VkResult MetalSurface::getSurfaceCapabilities2(const void *pSurfaceInfoPNext,
+                                               VkSurfaceCapabilitiesKHR *pSurfaceCapabilities,
+                                               void *pSurfaceCapabilitiesPNext) const
+    API_AVAILABLE(macosx(10.11))
 {
     setCommonSurfaceCapabilities(pSurfaceCapabilities);
 
