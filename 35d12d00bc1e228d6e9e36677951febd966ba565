@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "41645d3b_d5744dec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-10-24T02:54:33Z",
+      "side": 1,
+      "message": "In preparation for implementing a WIP WSI extension: https://gitlab.khronos.org/vulkan/vulkan/-/merge_requests/3997",
+      "revId": "35d12d00bc1e228d6e9e36677951febd966ba565",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
