@@ -392,15 +392,15 @@ func (c *Config) PerformTests(exe string, env []string, coverageFile string, log
 
 			averageDuration := duration / time.Duration(numTests)
 			for i, caseOutput := range caseOutputs {
-				results <- c.AnalyzeOutput(caseNames[i], caseOutput, averageDuration, coverage)
+				results <- c.AnalyzeOutput(caseNames[i], caseOutput, averageDuration, coverage, err)
 			}
 		}
 	} else {
-		results <- c.AnalyzeOutput(testNames[0], out, duration, coverage)
+		results <- c.AnalyzeOutput(testNames[0], out, duration, coverage, err)
 	}
 }
 
-func (c *Config) AnalyzeOutput(name string, out string, duration time.Duration, coverage *cov.Coverage) TestResult {
+func (c *Config) AnalyzeOutput(name string, out string, duration time.Duration, coverage *cov.Coverage, err error) TestResult {
 	for _, test := range []struct {
 		re *regexp.Regexp
 		s  testlist.Status
@@ -423,7 +423,6 @@ func (c *Config) AnalyzeOutput(name string, out string, duration time.Duration, 
 	}
 
 	// Don't treat non-zero error codes as crashes.
-	var err error
 	var exitErr *exec.ExitError
 	if errors.As(err, &exitErr) {
 		if exitErr.ExitCode() != 255 {
