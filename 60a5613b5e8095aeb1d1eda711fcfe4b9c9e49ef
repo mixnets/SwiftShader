@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b93775be_e6e8a284",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-25T14:48:57Z",
+      "side": 1,
+      "message": "Let\u0027s rename this to `deqpErr`?",
+      "range": {
+        "startLine": 347,
+        "startChar": 9,
+        "endLine": 347,
+        "endChar": 13
+      },
+      "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "942f185f_506230c4",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-25T14:48:57Z",
+      "side": 1,
+      "message": "nit: Not necessary to clarify this if the other variable is given a more descriptive name.",
+      "range": {
+        "startLine": 367,
+        "startChar": 18,
+        "endLine": 367,
+        "endChar": 91
+      },
+      "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "89f40ffd_feb28d91",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-25T14:48:57Z",
+      "side": 1,
+      "message": "FYI typically reusing the same variable name in a different scope wouldn\u0027t be a problem if `:\u003d` was used here. The problem is `coverage` is in the outer scope. I\u0027m not sure if there\u0027s a nice idiom for addressing this. Anyway, renaming both variables removes all confusion in my opinion.",
+      "range": {
+        "startLine": 368,
+        "startChar": 19,
+        "endLine": 368,
+        "endChar": 20
+      },
+      "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
