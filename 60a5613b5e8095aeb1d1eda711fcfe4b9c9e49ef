@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e3b8363_77af549a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-25T14:51:22Z",
+      "side": 1,
+      "message": "LGTM!",
+      "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b93775be_e6e8a284",
@@ -19,6 +36,29 @@
         "startChar": 9,
         "endLine": 347,
         "endChar": 13
+      },
+      "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42959ffe_e71532e5",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-25T14:51:22Z",
+      "side": 1,
+      "message": "Maybe rename this too, given that `err` tends to be tightly scoped / repeatedly assigned and tested (hence the bug)",
+      "range": {
+        "startLine": 347,
+        "startChar": 9,
+        "endLine": 347,
+        "endChar": 12
       },
       "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
