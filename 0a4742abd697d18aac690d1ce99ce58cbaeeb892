@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "641a3cc4_5be5df7a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-25T20:35:40Z",
+      "side": 1,
+      "message": "remaining?",
+      "range": {
+        "startLine": 9,
+        "startChar": 34,
+        "endLine": 9,
+        "endChar": 35
+      },
+      "revId": "0a4742abd697d18aac690d1ce99ce58cbaeeb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "438fdc3e_86016b46",
@@ -14,6 +37,24 @@
       "writtenOn": "2022-09-26T17:32:07Z",
       "side": 1,
       "message": "This depends on this test bug being fixed:\nhttps://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3898",
+      "revId": "0a4742abd697d18aac690d1ce99ce58cbaeeb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1247a642_90911dbf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-25T20:35:40Z",
+      "side": 1,
+      "message": "Remind me again why we\u0027re not seeing a Regres failure on this? In any case, now that we\u0027re Vulkan 1.3 conformant I think it\u0027s okay to have \"regressions\" as long as we know we\u0027re following the spec and use the failure as a reminder to check on dEQP-VK being fixed.",
+      "parentUuid": "438fdc3e_86016b46",
       "revId": "0a4742abd697d18aac690d1ce99ce58cbaeeb892",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
