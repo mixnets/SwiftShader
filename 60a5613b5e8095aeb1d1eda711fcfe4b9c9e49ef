@@ -64,6 +64,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "06ad8626_bfa0e6b5",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-25T14:57:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b93775be_e6e8a284",
+      "range": {
+        "startLine": 347,
+        "startChar": 9,
+        "endLine": 347,
+        "endChar": 13
+      },
+      "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "942f185f_506230c4",
@@ -77,6 +101,30 @@
       "writtenOn": "2022-10-25T14:48:57Z",
       "side": 1,
       "message": "nit: Not necessary to clarify this if the other variable is given a more descriptive name.",
+      "range": {
+        "startLine": 367,
+        "startChar": 18,
+        "endLine": 367,
+        "endChar": 91
+      },
+      "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1474c845_cb700df3",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-25T14:57:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "942f185f_506230c4",
       "range": {
         "startLine": 367,
         "startChar": 18,
