@@ -108,6 +108,30 @@
       },
       "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17bae7f4_58b66fdd",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-10-25T14:53:21Z",
+      "side": 1,
+      "message": "+1 to this. I had written a very similar comment, but decided I this was likely just personal preference, and this is an acceptable solution.\n\nI do prefer to use `:\u003d` where possible, but it does often encourage shadowing of `err`, which some people object to.",
+      "parentUuid": "89f40ffd_feb28d91",
+      "range": {
+        "startLine": 368,
+        "startChar": 19,
+        "endLine": 368,
+        "endChar": 20
+      },
+      "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
