@@ -88,6 +88,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b5152fe_2c846aee",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-25T14:58:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "42959ffe_e71532e5",
+      "range": {
+        "startLine": 347,
+        "startChar": 9,
+        "endLine": 347,
+        "endChar": 12
+      },
+      "revId": "60a5613b5e8095aeb1d1eda711fcfe4b9c9e49ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "942f185f_506230c4",
