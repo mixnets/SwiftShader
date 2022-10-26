@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2104f672_0c8645b3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-26T14:16:02Z",
+      "side": 1,
+      "message": "I\u0027m curious if we\u0027re missing any 1.3 structs too?",
+      "range": {
+        "startLine": 9,
+        "startChar": 13,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "53edb16a6a8fe95e434a716b4a5dbfc703d2de9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7914655c_a22a4fbb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-26T14:16:02Z",
+      "side": 1,
+      "message": "Let\u0027s either reference the github issues from https://swiftshader-review.googlesource.com/c/SwiftShader/+/69328 here too, or have Romaric\u0027s change land first and rebase this one.",
+      "revId": "53edb16a6a8fe95e434a716b4a5dbfc703d2de9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
