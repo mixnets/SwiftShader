@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b5a073bb_6d3f6c94",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-26T13:54:46Z",
+      "side": 1,
+      "message": "Oh, I see you\u0027re using your @chromium account. That\u0027s ok but will require another @google account\u0027s review to avoid issues importing it downstream. You can do that for the Verified+1 vote or Alexis can add a vote.",
+      "revId": "9eb66f7e18a02ec0a6309e0aef31c4e84d5727e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
