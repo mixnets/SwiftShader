@@ -94,6 +94,30 @@
       },
       "revId": "47c4b7d4fa02927028e51790057f7352fac08151",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a35ca88c_fc7e53b6",
+        "filename": "tests/regres/run.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-26T05:24:57Z",
+      "side": 1,
+      "message": "It appears I was observing a prior issue. When there\u0027s no diff we still attempt to commit at the end of the test run. It produces a confusing message:\n```\nFailed to commit test results. Cause: HEAD detached at 04d0079\nnothing to commit, working tree clean\n```\nI\u0027ve filed b/255679427 to look into that.",
+      "parentUuid": "0013c418_5fca8bbd",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 15
+      },
+      "revId": "47c4b7d4fa02927028e51790057f7352fac08151",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
