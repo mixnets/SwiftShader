@@ -34,6 +34,23 @@
       "parentUuid": "b5a073bb_6d3f6c94",
       "revId": "9eb66f7e18a02ec0a6309e0aef31c4e84d5727e7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f2bdba6_041f1af3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-26T14:17:57Z",
+      "side": 1,
+      "message": "You can land this and I\u0027ll rebase my change on top of this one. Thanks!",
+      "revId": "9eb66f7e18a02ec0a6309e0aef31c4e84d5727e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
