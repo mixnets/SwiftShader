@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a5e0c20_7be12d4f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-26T13:50:52Z",
+      "side": 1,
+      "message": "Let\u0027s add the line \"Bug: b/181875303\" here (which interestingly is still open). I\u0027ll follow up with Khronos to add test coverage.",
+      "revId": "c5b321b948bd32af2a43085f0e2fca39d1253bac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "158cef3d_75e2aad4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-26T13:50:52Z",
+      "side": 1,
+      "message": "Thanks Romaric! One small nit about adding a Bug: line (see below). Once that\u0027s taken care of and all tests pass feel free to manually vote Verified+1 and Submit.",
+      "revId": "c5b321b948bd32af2a43085f0e2fca39d1253bac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
