@@ -99,6 +99,24 @@
       "parentUuid": "1247a642_90911dbf",
       "revId": "0a4742abd697d18aac690d1ce99ce58cbaeeb892",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bbd48ecc_3205165b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-26T02:37:46Z",
+      "side": 1,
+      "message": "Ah, I see, Regres didn\u0027t run on Patchset 3 because of the Kokoro -1. Feel free to rebase and we can discuss through chat whether or not to land this before the deqp fix lands.",
+      "parentUuid": "52a827e3_010e3d00",
+      "revId": "0a4742abd697d18aac690d1ce99ce58cbaeeb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
