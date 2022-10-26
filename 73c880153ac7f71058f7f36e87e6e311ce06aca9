@@ -16,6 +16,24 @@
       "message": "Note: I\u0027m assuming this is on purpose, but run_testlist still defaults to 1.",
       "revId": "73c880153ac7f71058f7f36e87e6e311ce06aca9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf4287f3_c523110d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-26T14:34:04Z",
+      "side": 1,
+      "message": "I forgot about `run_testlist`. Anyway, seems fine to not touch that at this moment. I\u0027m not sure if anyone still uses it (I believe GraphicsFuzz is/was the only one).",
+      "parentUuid": "7d3f6d39_e42c517a",
+      "revId": "73c880153ac7f71058f7f36e87e6e311ce06aca9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
