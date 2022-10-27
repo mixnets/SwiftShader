@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3b463d2_cf22e284",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-27T17:37:25Z",
+      "side": 1,
+      "message": "Nit: maybe remove the `!`, inverse the logic and name it something like `StoresInHelperInvocationsAreNoop`?",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 5
+      },
+      "revId": "b0f2f8c4127fd5ae1f33b8f77293c6780519a2a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
