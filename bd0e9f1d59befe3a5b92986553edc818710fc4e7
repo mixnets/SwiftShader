@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5b26fcc_80db6f3d",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-10-28T17:35:11Z",
+      "side": 1,
+      "message": "b/240267529 - This seems to be failing more consistently now in daily runs (but not CI runs)? I suggest we land this to ensure we prioritize this and get a clear signal when it\u0027s fixed.",
+      "range": {
+        "startLine": 1,
+        "startChar": 35,
+        "endLine": 1,
+        "endChar": 65
+      },
+      "revId": "bd0e9f1d59befe3a5b92986553edc818710fc4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
