@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "028465d1_fbdc7c13",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101566
+      },
+      "writtenOn": "2022-10-29T11:26:24Z",
+      "side": 1,
+      "message": "@nicolascapens@google.com Changed to use bit_cast.",
+      "revId": "58c889da0eccb65cd8339638b047ed8ac5d70742",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
