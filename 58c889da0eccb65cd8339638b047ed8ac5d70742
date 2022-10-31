@@ -16,6 +16,23 @@
       "message": "@nicolascapens@google.com Changed to use bit_cast.",
       "revId": "58c889da0eccb65cd8339638b047ed8ac5d70742",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e4522989_5e0f45ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-31T12:33:55Z",
+      "side": 1,
+      "message": "The Kokoro error is simply that you\u0027re missing a:\n`Bug: \u003cvalid bug ID\u003e`\nline just above the `Change-Id` line.\nFor example:\n`Bug: b/12345678` for buganizer\n`Bug: chromium:12345678` for a crbug",
+      "revId": "58c889da0eccb65cd8339638b047ed8ac5d70742",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
