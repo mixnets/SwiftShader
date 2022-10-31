@@ -16,6 +16,24 @@
       "message": "Our current dEQP revision is from Oct 14, while several new commits and merges have been made in the last two weeks: https://github.com/KhronosGroup/VK-GL-CTS/commits/main\n\nShould we reopen b/201453797 ?",
       "revId": "48a4a02049fc446231ba2951e8ffb10e366cec79",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7b0dcba_17f1ad05",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-10-31T15:54:33Z",
+      "side": 1,
+      "message": "Ok, I\u0027ll have a look this afternoon",
+      "parentUuid": "30dc2113_88e11d6a",
+      "revId": "48a4a02049fc446231ba2951e8ffb10e366cec79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
