@@ -16,6 +16,23 @@
       "message": "LGTM",
       "revId": "57bb127073530be703862b6d0b7a1c3fda218a0f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "98f83f8a_0820aa0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-01T18:56:39Z",
+      "side": 1,
+      "message": "Addresses luci-config errors produced after https://swiftshader-review.googlesource.com/c/SwiftShader/+/69448 landed.",
+      "revId": "57bb127073530be703862b6d0b7a1c3fda218a0f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
