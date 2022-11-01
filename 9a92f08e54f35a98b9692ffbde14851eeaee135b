@@ -16,6 +16,24 @@
       "message": "Not sure why, but there are failures",
       "revId": "9a92f08e54f35a98b9692ffbde14851eeaee135b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "191db3e0_f5a2e6fb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-01T12:34:27Z",
+      "side": 1,
+      "message": "There\u0027s two Regres results. The first one appears to fail the tests fixed by https://swiftshader-review.googlesource.com/c/SwiftShader/+/69408. So I assume you were running a second Regres instance with a local change applied?",
+      "parentUuid": "d771c359_65239d99",
+      "revId": "9a92f08e54f35a98b9692ffbde14851eeaee135b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
