@@ -41,6 +41,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2292ba85_11041b6f",
+        "filename": "src/Pipeline/VertexProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-01T19:46:46Z",
+      "side": 1,
+      "message": "Correct. As noted in the commit message of https://swiftshader-review.googlesource.com/c/SwiftShader/+/67429 it\u0027s intentional to support both. For some cases it will be obvious which one is best, but for some it\u0027s a judgement call.\n\nFor this one I think you\u0027re right the lambda is cleaner. Some of this work predates that feature. I\u0027d probably use `1 + i` though.",
+      "parentUuid": "8894f118_4d796e4b",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 85,
+        "endChar": 90
+      },
+      "revId": "38b8f9e52304a1153d88afd3df558021d0130bd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "54e0b03c_7297cd24",
@@ -54,6 +78,30 @@
       "writtenOn": "2022-11-01T15:47:32Z",
       "side": 1,
       "message": "Can this be 4 or 8?",
+      "range": {
+        "startLine": 4308,
+        "startChar": 8,
+        "endLine": 4308,
+        "endChar": 24
+      },
+      "revId": "38b8f9e52304a1153d88afd3df558021d0130bd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa2f59c4_6af3da11",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4308,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-01T19:46:46Z",
+      "side": 1,
+      "message": "At one point I was rewriting things to be only 8-wide, to get a compact overview of the changes needed to get a triangle on the screen. Then I added support for both 4 and 8 wide (or more where straightforward). I don\u0027t think I fixed up the patches \"backwards\" this far.",
+      "parentUuid": "54e0b03c_7297cd24",
       "range": {
         "startLine": 4308,
         "startChar": 8,
