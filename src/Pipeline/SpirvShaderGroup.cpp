@@ -135,7 +135,7 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 			if(shader.getObject(idId).kind == Object::Kind::Constant)
 			{
 				auto id = SIMD::Int(shader.GetConstScalarInt(insn.word(5)));
-				auto mask = CmpEQ(id, SIMD::Int(0, 1, 2, 3));
+				auto mask = CmpEQ(id, SIMD::Int([](int i) { return i; }));
 				for(auto i = 0u; i < type.componentCount; i++)
 				{
 					dst.move(i, OrAll(value.Int(i) & mask));
@@ -154,7 +154,7 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 					filled |= filled.yzwx & inactive;  // Populate inactive 'holes' with a live value
 				}
 
-				auto mask = CmpEQ(filled, SIMD::UInt(0, 1, 2, 3));
+				auto mask = CmpEQ(filled, SIMD::UInt([](int i) { return i; }));
 
 				for(uint32_t i = 0u; i < type.componentCount; i++)
 				{
@@ -195,7 +195,7 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 			// Populate all lanes in index with the same value. Index is required to be
 			// uniform per the SPIR-V spec, so all active lanes should be identical.
 			index = OrAll(active & index);
-			SIMD::Int mask = CmpEQ(index, SIMD::Int(0, 1, 2, 3));
+			SIMD::Int mask = CmpEQ(index, SIMD::Int([](int i) { return i; }));
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
@@ -252,7 +252,7 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 			ASSERT(type.componentCount == 1);
 			ASSERT(shader.getObjectType(valueId).componentCount == 4);
 			Operand value(shader, *this, valueId);
-			auto bit = (value.Int(0) >> SIMD::Int(0, 1, 2, 3)) & SIMD::Int(1);
+			auto bit = (value.Int(0) >> SIMD::Int([](int i) { return i; })) & SIMD::Int(1);
 			dst.move(0, -bit);
 		}
 		break;
@@ -289,10 +289,10 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 				dst.move(0, CountBits(value.UInt(0) & SIMD::UInt(15)));
 				break;
 			case spv::GroupOperationInclusiveScan:
-				dst.move(0, CountBits(value.UInt(0) & SIMD::UInt(1, 3, 7, 15)));
+				dst.move(0, CountBits(value.UInt(0) & SIMD::UInt([](int i) { return (1 << (i + 1)) - 1; })));  // 1, 3, 7, 15, ...
 				break;
 			case spv::GroupOperationExclusiveScan:
-				dst.move(0, CountBits(value.UInt(0) & SIMD::UInt(0, 1, 3, 7)));
+				dst.move(0, CountBits(value.UInt(0) & SIMD::UInt([](int i) { return (1 << i) - 1; })));  // 0, 1, 3, 7, ...
 				break;
 			default:
 				UNSUPPORTED("GroupOperation %d", int(operation));
@@ -340,10 +340,11 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 		{
 			Operand value(shader, *this, insn.word(4));
 			Operand mask(shader, *this, insn.word(5));
-			auto x = CmpEQ(SIMD::Int(0), SIMD::Int(0, 1, 2, 3) ^ mask.Int(0));
-			auto y = CmpEQ(SIMD::Int(1), SIMD::Int(0, 1, 2, 3) ^ mask.Int(0));
-			auto z = CmpEQ(SIMD::Int(2), SIMD::Int(0, 1, 2, 3) ^ mask.Int(0));
-			auto w = CmpEQ(SIMD::Int(3), SIMD::Int(0, 1, 2, 3) ^ mask.Int(0));
+			auto bitMask = SIMD::Int([](int i) { return i; }) ^ mask.Int(0);
+			auto x = CmpEQ(SIMD::Int(0), bitMask);
+			auto y = CmpEQ(SIMD::Int(1), bitMask);
+			auto z = CmpEQ(SIMD::Int(2), bitMask);
+			auto w = CmpEQ(SIMD::Int(3), bitMask);
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
 				SIMD::Int v = value.Int(i);
