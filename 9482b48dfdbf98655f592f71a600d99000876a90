@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "524d7eef_4b418935",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-01T19:04:14Z",
+      "side": 1,
+      "message": "Just a couple of `dEQP-VK.api.device_init.create_device_global_priority*` tests.",
+      "revId": "9482b48dfdbf98655f592f71a600d99000876a90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
