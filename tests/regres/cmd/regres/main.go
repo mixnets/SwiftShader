@@ -667,10 +667,10 @@ func (r *regres) runDaily(client *gerrit.Client, reactorBackend reactorBackend, 
 	}
 
 	return r.runDailyTest(dailyHash, reactorBackend, genCov,
-		func(test *test, testLists testlist.Lists, results *deqp.Results) error {
+		func(test *test, testLists testlist.Lists, newPaths []string, results *deqp.Results) error {
 			errs := []error{}
 
-			if err := r.postDailyResults(client, test, testLists, results, reactorBackend, dailyHash); err != nil {
+			if err := r.postDailyResults(client, test, testLists, newPaths, results, reactorBackend, dailyHash); err != nil {
 				errs = append(errs, err)
 			}
 
@@ -693,7 +693,7 @@ func (r *regres) runDaily(client *gerrit.Client, reactorBackend reactorBackend, 
 
 // runDailyTest performs the full deqp run on the HEAD change, calling
 // withResults with the test results.
-func (r *regres) runDailyTest(dailyHash git.Hash, reactorBackend reactorBackend, genCov bool, withResults func(*test, testlist.Lists, *deqp.Results) error) error {
+func (r *regres) runDailyTest(dailyHash git.Hash, reactorBackend reactorBackend, genCov bool, withResults func(*test, testlist.Lists, []string, *deqp.Results) error) error {
 	// Get the full test results.
 	test := r.newTest(dailyHash).setReactorBackend(reactorBackend)
 	defer test.cleanup()
@@ -701,6 +701,11 @@ func (r *regres) runDailyTest(dailyHash git.Hash, reactorBackend reactorBackend,
 	// Always need to checkout the change.
 	if err := test.checkout(); err != nil {
 		return fmt.Errorf("failed to checkout '%s': %w", dailyHash, err)
+	}
+
+	newPaths, err := r.updateLocalDeqpFiles(test)
+	if err != nil {
+		return fmt.Errorf("failed to update test lists from dEQP: %w", err)
 	}
 
 	d, err := r.getOrBuildDEQP(test)
@@ -734,7 +739,7 @@ func (r *regres) runDailyTest(dailyHash git.Hash, reactorBackend reactorBackend,
 		return fmt.Errorf("failed to test '%s': %w", dailyHash, err)
 	}
 
-	return withResults(test, testLists, results)
+	return withResults(test, testLists, newPaths, results)
 }
 
 // copyFileIfDifferent copies src to dst if src doesn't exist or if there are differences
@@ -891,6 +896,7 @@ func (r *regres) postDailyResults(
 	client *gerrit.Client,
 	test *test,
 	testLists testlist.Lists,
+	newPaths []string,
 	results *deqp.Results,
 	reactorBackend reactorBackend,
 	dailyHash git.Hash) error {
@@ -899,11 +905,6 @@ func (r *regres) postDailyResults(
 	filePaths, err := test.writeTestListsByStatus(testLists, results)
 	if err != nil {
 		return fmt.Errorf("failed to write test lists by status: %w", err)
-	}
-
-	newPaths, err := r.updateLocalDeqpFiles(test)
-	if err != nil {
-		return fmt.Errorf("failed to update test lists from dEQP: %w", err)
 	}
 
 	filePaths = append(filePaths, newPaths...)
