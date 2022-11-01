@@ -293,13 +293,18 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 
 				SIMD::Float4 colorf = alphaBlend(index, buffer, c[index], x);
 
-				ASSERT(SIMD::Width == 4);
-				Vector4s color;
-				color.x = UShort4(Extract128(colorf.x, 0) * 0xFFFF, true);  // Saturating
-				color.y = UShort4(Extract128(colorf.y, 0) * 0xFFFF, true);  // Saturating
-				color.z = UShort4(Extract128(colorf.z, 0) * 0xFFFF, true);  // Saturating
-				color.w = UShort4(Extract128(colorf.w, 0) * 0xFFFF, true);  // Saturating
-				writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
+				for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+				{
+					Vector4s color;
+					color.x = UShort4(Extract128(colorf.x, lane128) * 0xFFFF, true);  // Saturating
+					color.y = UShort4(Extract128(colorf.y, lane128) * 0xFFFF, true);  // Saturating
+					color.z = UShort4(Extract128(colorf.z, lane128) * 0xFFFF, true);  // Saturating
+					color.w = UShort4(Extract128(colorf.w, lane128) * 0xFFFF, true);  // Saturating
+					writeColor(index, buffer, x + lane128 * 2, color,
+					           (sMask[q] >> (lane128 * 4)) & 0xF,
+					           (zMask[q] >> (lane128 * 4)) & 0xF,
+					           (cMask[q] >> (lane128 * 4)) & 0xF);
+				}
 			}
 			break;
 		case VK_FORMAT_R16_SFLOAT:
@@ -339,13 +344,19 @@ void PixelProgram::blendColor(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], In
 				Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
 
 				SIMD::Float4 C = alphaBlend(index, buffer, c[index], x);
-				ASSERT(SIMD::Width == 4);
-				Vector4f color;
-				color.x = Extract128(C.x, 0);
-				color.y = Extract128(C.y, 0);
-				color.z = Extract128(C.z, 0);
-				color.w = Extract128(C.w, 0);
-				writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
+
+				for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+				{
+					Vector4f color;
+					color.x = Extract128(C.x, lane128);
+					color.y = Extract128(C.y, lane128);
+					color.z = Extract128(C.z, lane128);
+					color.w = Extract128(C.w, lane128);
+					writeColor(index, buffer, x + lane128 * 2, color,
+					           (sMask[q] >> (lane128 * 4)) & 0xF,
+					           (zMask[q] >> (lane128 * 4)) & 0xF,
+					           (cMask[q] >> (lane128 * 4)) & 0xF);
+				}
 			}
 			break;
 		default:
