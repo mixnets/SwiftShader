@@ -22,6 +22,30 @@
       },
       "revId": "dc3b53abe46d38c205d3fd4437ad4b4dce6ca111",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7334348_c9f949a5",
+        "filename": "infra/config/generated/commit-queue.cfg",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-01T18:54:34Z",
+      "side": 1,
+      "message": "Thanks Roberto! https://swiftshader-review.googlesource.com/c/SwiftShader/+/69450",
+      "parentUuid": "49ad3df6_3122e7c4",
+      "range": {
+        "startLine": 18,
+        "startChar": 4,
+        "endLine": 18,
+        "endChar": 21
+      },
+      "revId": "dc3b53abe46d38c205d3fd4437ad4b4dce6ca111",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
