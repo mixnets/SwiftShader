@@ -424,7 +424,6 @@ void PixelRoutine::stencilTest(Byte8 &value, VkCompareOp stencilCompareMode, boo
 
 SIMD::Float PixelRoutine::readDepth32F(const Pointer<Byte> &zBuffer, int q, const Int &x) const
 {
-	ASSERT(SIMD::Width == 4);
 	Pointer<Byte> buffer = zBuffer + 4 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -433,13 +432,20 @@ SIMD::Float PixelRoutine::readDepth32F(const Pointer<Byte> &zBuffer, int q, cons
 		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
 	}
 
-	Float4 zValue = Float4(*Pointer<Float2>(buffer), *Pointer<Float2>(buffer + pitch));
-	return SIMD::Float(zValue);
+	SIMD::Float z;
+
+	for(int i = 0; i < SIMD::Width / 4; i++)
+	{
+		Float4 zValue = Float4(*Pointer<Float2>(buffer), *Pointer<Float2>(buffer + pitch));
+		z = Insert128(z, zValue, i);
+		buffer += 8;
+	}
+
+	return z;
 }
 
 SIMD::Float PixelRoutine::readDepth16(const Pointer<Byte> &zBuffer, int q, const Int &x) const
 {
-	ASSERT(SIMD::Width == 4);
 	Pointer<Byte> buffer = zBuffer + 2 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -448,11 +454,19 @@ SIMD::Float PixelRoutine::readDepth16(const Pointer<Byte> &zBuffer, int q, const
 		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
 	}
 
-	UShort4 zValue16;
-	zValue16 = As<UShort4>(Insert(As<Int2>(zValue16), *Pointer<Int>(buffer), 0));
-	zValue16 = As<UShort4>(Insert(As<Int2>(zValue16), *Pointer<Int>(buffer + pitch), 1));
-	Float4 zValue = Float4(zValue16);
-	return SIMD::Float(zValue);
+	SIMD::Float z;
+
+	for(int i = 0; i < SIMD::Width / 4; i++)
+	{
+		UShort4 zValue16;
+		zValue16 = As<UShort4>(Insert(As<Int2>(zValue16), *Pointer<Int>(buffer), 0));
+		zValue16 = As<UShort4>(Insert(As<Int2>(zValue16), *Pointer<Int>(buffer + pitch), 1));
+		Float4 zValue = Float4(zValue16);
+		z = Insert128(z, zValue, i);
+		buffer += 4;
+	}
+
+	return z;
 }
 
 SIMD::Float PixelRoutine::clampDepth(const SIMD::Float &z)
@@ -695,15 +709,20 @@ void PixelRoutine::writeDepth(Pointer<Byte> &zBuffer, const Int &x, const Int zM
 
 	for(unsigned int q : samples)
 	{
-		ASSERT(SIMD::Width == 4);
 		switch(state.depthFormat)
 		{
 		case VK_FORMAT_D16_UNORM:
-			writeDepth16(zBuffer, q, x, Extract128(z[q], 0), zMask[q]);
+			for(int i = 0; i < SIMD::Width / 4; i++)
+			{
+				writeDepth16(zBuffer, q, x + (2 * i), Extract128(z[q], i), zMask[q] >> (4 * i));
+			}
 			break;
 		case VK_FORMAT_D32_SFLOAT:
 		case VK_FORMAT_D32_SFLOAT_S8_UINT:
-			writeDepth32F(zBuffer, q, x, Extract128(z[q], 0), zMask[q]);
+			for(int i = 0; i < SIMD::Width / 4; i++)
+			{
+				writeDepth32F(zBuffer, q, x + (2 * i), Extract128(z[q], i), zMask[q] >> (4 * i));
+			}
 			break;
 		default:
 			UNSUPPORTED("Depth format: %d", int(state.depthFormat));
