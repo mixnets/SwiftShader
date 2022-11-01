@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99b803b7_00fdae87",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-01T15:47:32Z",
+      "side": 1,
+      "message": "Some small questions",
+      "revId": "38b8f9e52304a1153d88afd3df558021d0130bd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8894f118_4d796e4b",
+        "filename": "src/Pipeline/VertexProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-01T15:47:32Z",
+      "side": 1,
+      "message": "I think this could be achieved with:\n```\nSIMD::UInt laneOrdinal\u003d SIMD::UInt([](int i) { return i + 1; });  // 1, 2, 3, 4, ...\nSIMD::Int storesAndAtomicsMask \u003d CmpGE(SIMD::UInt(vertexCount), laneOrdinal);\n```\n\t\nNot sure which is better.",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 85,
+        "endChar": 90
+      },
+      "revId": "38b8f9e52304a1153d88afd3df558021d0130bd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54e0b03c_7297cd24",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4308,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-01T15:47:32Z",
+      "side": 1,
+      "message": "Can this be 4 or 8?",
+      "range": {
+        "startLine": 4308,
+        "startChar": 8,
+        "endLine": 4308,
+        "endChar": 24
+      },
+      "revId": "38b8f9e52304a1153d88afd3df558021d0130bd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
