@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05c74625_cb5815ad",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-01T16:45:08Z",
+      "side": 1,
+      "message": "https://gerrit.khronos.org/c/vk-gl-cts/+/10254 has landed",
+      "revId": "a7a948c5c24f417d3a5af92814762c6a95e23ac9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
