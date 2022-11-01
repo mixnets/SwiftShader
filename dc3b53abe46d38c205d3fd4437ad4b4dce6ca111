@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49ad3df6_3122e7c4",
+        "filename": "infra/config/generated/commit-queue.cfg",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 101586
+      },
+      "writtenOn": "2022-11-01T18:25:29Z",
+      "side": 1,
+      "message": "this should have gotten a new_patchset_run_access_list added",
+      "range": {
+        "startLine": 18,
+        "startChar": 4,
+        "endLine": 18,
+        "endChar": 21
+      },
+      "revId": "dc3b53abe46d38c205d3fd4437ad4b4dce6ca111",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
