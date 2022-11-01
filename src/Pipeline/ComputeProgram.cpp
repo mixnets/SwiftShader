@@ -175,8 +175,7 @@ void ComputeProgram::emit(SpirvRoutine *routine)
 	{
 		auto subgroupIndex = firstSubgroup + i;
 
-		// TODO: Replace SIMD::Int(0, 1, 2, 3) with SIMD-width equivalent
-		auto localInvocationIndex = SIMD::Int(subgroupIndex * SIMD::Width) + SIMD::Int(0, 1, 2, 3);
+		auto localInvocationIndex = SIMD::Int(subgroupIndex * SIMD::Width) + SIMD::Int([](int i) { return i; });
 
 		// Disable lanes where (invocationIDs >= invocationsPerWorkgroup)
 		auto activeLaneMask = CmpLT(localInvocationIndex, SIMD::Int(invocationsPerWorkgroup));
