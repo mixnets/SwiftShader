@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6ef1c9a_a82fdc93",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-01T19:45:19Z",
+      "side": 1,
+      "message": "This may not roll into Chromium successfully without rebaselining Blink golden images. In that case I\u0027ll make the subpixel bits conditional on the build system (in the same vein as using high-precision filtering for Chromium).",
+      "revId": "b461486057998ec6b74d7fc6df86ab5df8bdee53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
