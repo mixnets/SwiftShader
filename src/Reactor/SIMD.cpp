@@ -577,18 +577,6 @@ SIMD::Float::Float(const Reference<scalar::Float> &rhs)
 	*this = RValue<scalar::Float>(rhs.loadValue());
 }
 
-SIMD::Float::Float(RValue<packed::Float4> rhs)
-    : XYZW(this)
-{
-	ASSERT(SIMD::Width == 4);
-	*this = Insert128(*this, rhs, 0);
-}
-
-RValue<SIMD::Float> SIMD::Float::operator=(RValue<packed::Float4> rhs)
-{
-	return *this = SIMD::Float(rhs);
-}
-
 RValue<SIMD::Float> SIMD::Float::operator=(float x)
 {
 	return *this = SIMD::Float(x);
@@ -681,14 +669,22 @@ RValue<SIMD::Float> operator-(RValue<SIMD::Float> val)
 
 RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
 {
-	ASSERT(SIMD::Width == 4);
-	return SIMD::Float(Rcp(Extract128(x, 0), relaxedPrecision, exactAtPow2));
+	SIMD::Float result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Rcp(Extract128(x, lane128), relaxedPrecision, exactAtPow2), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision)
 {
-	ASSERT(SIMD::Width == 4);
-	return SIMD::Float(RcpSqrt(Extract128(x, 0), relaxedPrecision));
+	SIMD::Float result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, RcpSqrt(Extract128(x, lane128), relaxedPrecision), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::Float> Insert(RValue<SIMD::Float> x, RValue<scalar::Float> element, int i)

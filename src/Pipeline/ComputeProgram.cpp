@@ -59,9 +59,13 @@ void ComputeProgram::setWorkgroupBuiltins(Pointer<Byte> data, SpirvRoutine *rout
 	routine->invocationsPerSubgroup = *Pointer<Int>(data + OFFSET(Data, invocationsPerSubgroup));
 
 	routine->setInputBuiltin(shader.get(), spv::BuiltInNumWorkgroups, [&](const Spirv::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
-		value[builtin.FirstComponent + 0] = As<SIMD::Float>(SIMD::Int(routine->numWorkgroups.x));
-		value[builtin.FirstComponent + 1] = As<SIMD::Float>(SIMD::Int(routine->numWorkgroups.y));
-		value[builtin.FirstComponent + 2] = As<SIMD::Float>(SIMD::Int(routine->numWorkgroups.z));
+		SIMD::Int numWorkgroups;
+		numWorkgroups = Insert128(numWorkgroups, routine->numWorkgroups.x, 0);
+		value[builtin.FirstComponent + 0] = As<SIMD::Float>(numWorkgroups);
+		numWorkgroups = Insert128(numWorkgroups, routine->numWorkgroups.y, 0);
+		value[builtin.FirstComponent + 1] = As<SIMD::Float>(numWorkgroups);
+		numWorkgroups = Insert128(numWorkgroups, routine->numWorkgroups.z, 0);
+		value[builtin.FirstComponent + 2] = As<SIMD::Float>(numWorkgroups);
 	});
 
 	routine->setInputBuiltin(shader.get(), spv::BuiltInWorkgroupId, [&](const Spirv::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
@@ -71,9 +75,13 @@ void ComputeProgram::setWorkgroupBuiltins(Pointer<Byte> data, SpirvRoutine *rout
 	});
 
 	routine->setInputBuiltin(shader.get(), spv::BuiltInWorkgroupSize, [&](const Spirv::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
-		value[builtin.FirstComponent + 0] = As<SIMD::Float>(SIMD::Int(routine->workgroupSize.x));
-		value[builtin.FirstComponent + 1] = As<SIMD::Float>(SIMD::Int(routine->workgroupSize.y));
-		value[builtin.FirstComponent + 2] = As<SIMD::Float>(SIMD::Int(routine->workgroupSize.z));
+		SIMD::Int workgroupSize;
+		workgroupSize = Insert128(workgroupSize, routine->workgroupSize.x, 0);
+		value[builtin.FirstComponent + 0] = As<SIMD::Float>(workgroupSize);
+		workgroupSize = Insert128(workgroupSize, routine->workgroupSize.y, 0);
+		value[builtin.FirstComponent + 1] = As<SIMD::Float>(workgroupSize);
+		workgroupSize = Insert128(workgroupSize, routine->workgroupSize.z, 0);
+		value[builtin.FirstComponent + 2] = As<SIMD::Float>(workgroupSize);
 	});
 
 	routine->setInputBuiltin(shader.get(), spv::BuiltInNumSubgroups, [&](const Spirv::BuiltinMapping &builtin, Array<SIMD::Float> &value) {

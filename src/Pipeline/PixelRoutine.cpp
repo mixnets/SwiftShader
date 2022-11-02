@@ -153,10 +153,21 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[MAX_COLOR_BUFFERS], Pointer<Byte> 
 
 				for(unsigned int q : samples)
 				{
-					ASSERT(SIMD::Width == 4);
-					xCentroid += SIMD::Float(*Pointer<Float4>(constants + OFFSET(Constants, sampleX[q]) + 16 * cMask[q]));
-					yCentroid += SIMD::Float(*Pointer<Float4>(constants + OFFSET(Constants, sampleY[q]) + 16 * cMask[q]));
-					weight += SIMD::Float(*Pointer<Float4>(constants + OFFSET(Constants, weight) + 16 * cMask[q]));
+					SIMD::Float xCentroidQ = 0.0f;
+					SIMD::Float yCentroidQ = 0.0f;
+					SIMD::Float weightQ = 0.0f;
+
+					for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+					{
+						rr::Int cMaskOffset = 16 * ((cMask[q] >> (lane128 * 4)) & 0xF);
+						xCentroidQ = Insert128(xCentroidQ, *Pointer<Float4>(constants + OFFSET(Constants, sampleX[q]) + cMaskOffset), lane128);
+						yCentroidQ = Insert128(yCentroidQ, *Pointer<Float4>(constants + OFFSET(Constants, sampleY[q]) + cMaskOffset), lane128);
+						weightQ = Insert128(weightQ, *Pointer<Float4>(constants + OFFSET(Constants, weight) + cMaskOffset), lane128);
+					}
+
+					xCentroid += xCentroidQ;
+					yCentroid += yCentroidQ;
+					weight += weightQ;
 				}
 
 				weight = Rcp(weight, true /* relaxedPrecision */);
@@ -2387,10 +2398,10 @@ SIMD::Float4 PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, c
 
 	ASSERT(SIMD::Width == 4);
 	SIMD::Float4 destColor;
-	destColor.x = texelColor.x;
-	destColor.y = texelColor.y;
-	destColor.z = texelColor.z;
-	destColor.w = texelColor.w;
+	destColor.x = Insert128(destColor.x, texelColor.x, 0);
+	destColor.y = Insert128(destColor.y, texelColor.y, 0);
+	destColor.z = Insert128(destColor.z, texelColor.z, 0);
+	destColor.w = Insert128(destColor.w, texelColor.w, 0);
 
 	SIMD::Float4 sourceFactor;
 	SIMD::Float4 destFactor;
