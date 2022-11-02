@@ -277,50 +277,95 @@ void SpirvEmitter::EmitUnaryOp(Spirv::InsnIterator insn)
 			// Derivative instructions: FS invocations are laid out like so:
 			//    0 1
 			//    2 3
-			ASSERT(SIMD::Width == 4);  // All cross-lane instructions will need care when using a different width
-			dst.move(i, SIMD::Float(Extract(src.Float(i), 1) - Extract(src.Float(i), 0)));
+			{
+				SIMD::Float result;
+				int x0 = 0, x1 = 1;
+				for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++, x0 += 4, x1 += 4)
+				{
+					rr::Float dx = Extract(src.Float(i), x1) - Extract(src.Float(i), x0);
+					result = Insert128(result, rr::Float4(dx), lane128);
+				}
+				dst.move(i, result);
+			}
 			break;
 		case spv::OpDPdy:
 		case spv::OpDPdyCoarse:
-			dst.move(i, SIMD::Float(Extract(src.Float(i), 2) - Extract(src.Float(i), 0)));
+			{
+				SIMD::Float result;
+				int y0 = 0, y1 = 2;
+				for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++, y0 += 4, y1 += 4)
+				{
+					rr::Float dy = Extract(src.Float(i), y1) - Extract(src.Float(i), y0);
+					result = Insert128(result, rr::Float4(dy), lane128);
+				}
+				dst.move(i, result);
+			}
 			break;
 		case spv::OpFwidth:
 		case spv::OpFwidthCoarse:
-			dst.move(i, SIMD::Float(Abs(Extract(src.Float(i), 1) - Extract(src.Float(i), 0)) + Abs(Extract(src.Float(i), 2) - Extract(src.Float(i), 0))));
+			{
+				SIMD::Float result;
+				int p0 = 0, x1 = 1, y1 = 2;
+				for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++, p0 += 4, x1 += 4, y1 += 4)
+				{
+					rr::Float fwidth = Abs(Extract(src.Float(i), x1) - Extract(src.Float(i), p0)) + Abs(Extract(src.Float(i), y1) - Extract(src.Float(i), p0));
+					result = Insert128(result, rr::Float4(fwidth), lane128);
+				}
+				dst.move(i, result);
+			}
 			break;
 		case spv::OpDPdxFine:
 			{
-				auto firstRow = Extract(src.Float(i), 1) - Extract(src.Float(i), 0);
-				auto secondRow = Extract(src.Float(i), 3) - Extract(src.Float(i), 2);
-				SIMD::Float v = SIMD::Float(firstRow);
-				v = Insert(v, secondRow, 2);
-				v = Insert(v, secondRow, 3);
-				dst.move(i, v);
+				SIMD::Float dx;
+				int p00 = 0, p10 = 1, p01 = 2, p11 = 3;
+				for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++, p00 += 4, p10 += 4, p01 += 4, p11 += 4)
+				{
+					auto firstRow = Extract(src.Float(i), p10) - Extract(src.Float(i), p00);
+					auto secondRow = Extract(src.Float(i), p11) - Extract(src.Float(i), p01);
+					rr::Float4 v = rr::Float4(firstRow);
+					v = Insert(v, secondRow, 2);
+					v = Insert(v, secondRow, 3);
+					dx = Insert128(dx, v, lane128);
+				}
+				dst.move(i, dx);
 			}
 			break;
 		case spv::OpDPdyFine:
 			{
-				auto firstColumn = Extract(src.Float(i), 2) - Extract(src.Float(i), 0);
-				auto secondColumn = Extract(src.Float(i), 3) - Extract(src.Float(i), 1);
-				SIMD::Float v = SIMD::Float(firstColumn);
-				v = Insert(v, secondColumn, 1);
-				v = Insert(v, secondColumn, 3);
-				dst.move(i, v);
+				SIMD::Float dy;
+				int p00 = 0, p10 = 1, p01 = 2, p11 = 3;
+				for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++, p00 += 4, p10 += 4, p01 += 4, p11 += 4)
+				{
+					auto firstColumn = Extract(src.Float(i), p01) - Extract(src.Float(i), p00);
+					auto secondColumn = Extract(src.Float(i), p11) - Extract(src.Float(i), p10);
+					rr::Float4 v = rr::Float4(firstColumn);
+					v = Insert(v, secondColumn, 2);
+					v = Insert(v, secondColumn, 3);
+					dy = Insert128(dy, v, lane128);
+				}
+				dst.move(i, dy);
 			}
 			break;
 		case spv::OpFwidthFine:
 			{
-				auto firstRow = Extract(src.Float(i), 1) - Extract(src.Float(i), 0);
-				auto secondRow = Extract(src.Float(i), 3) - Extract(src.Float(i), 2);
-				SIMD::Float dpdx = SIMD::Float(firstRow);
-				dpdx = Insert(dpdx, secondRow, 2);
-				dpdx = Insert(dpdx, secondRow, 3);
-				auto firstColumn = Extract(src.Float(i), 2) - Extract(src.Float(i), 0);
-				auto secondColumn = Extract(src.Float(i), 3) - Extract(src.Float(i), 1);
-				SIMD::Float dpdy = SIMD::Float(firstColumn);
-				dpdy = Insert(dpdy, secondColumn, 1);
-				dpdy = Insert(dpdy, secondColumn, 3);
-				dst.move(i, Abs(dpdx) + Abs(dpdy));
+				SIMD::Float dx, dy;
+				int p00 = 0, p10 = 1, p01 = 2, p11 = 3;
+				for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++, p00 += 4, p10 += 4, p01 += 4, p11 += 4)
+				{
+					auto firstRow = Extract(src.Float(i), p10) - Extract(src.Float(i), p00);
+					auto secondRow = Extract(src.Float(i), p11) - Extract(src.Float(i), p01);
+					rr::Float4 dpdx = rr::Float4(firstRow);
+					dpdx = Insert(dpdx, secondRow, 2);
+					dpdx = Insert(dpdx, secondRow, 3);
+					dx = Insert128(dx, dpdx, lane128);
+					auto firstColumn = Extract(src.Float(i), p01) - Extract(src.Float(i), p00);
+					auto secondColumn = Extract(src.Float(i), p11) - Extract(src.Float(i), p10);
+					rr::Float4 dpdy = rr::Float4(firstColumn);
+					dpdy = Insert(dpdy, secondColumn, 1);
+					dpdy = Insert(dpdy, secondColumn, 3);
+					dy = Insert128(dy, dpdy, lane128);
+				}
+				dst.move(i, Abs(dx) + Abs(dy));
 			}
 			break;
 		case spv::OpQuantizeToF16:
