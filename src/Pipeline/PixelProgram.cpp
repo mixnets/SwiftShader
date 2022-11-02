@@ -87,22 +87,22 @@ void PixelProgram::setBuiltins(Int &x, Int &y, SIMD::Float (&z)[4], SIMD::Float 
 		y1 = 1.0f + y0;
 	}
 
-	routine.fragCoord[0] = SIMD::Float(Float(x)) + SIMD::Float(x0, x1, x0, x1);
-	routine.fragCoord[1] = SIMD::Float(Float(y)) + SIMD::Float(y0, y0, y1, y1);
+	routine.fragCoord[0] = SIMD::Float(Float(x)) + SIMD::Float([x0, x1](int i) { return ((i & 1) ? x1 : x0) + float(i >> 2); });
+	routine.fragCoord[1] = SIMD::Float(Float(y)) + SIMD::Float([y0, y1](int i) { return (i & 2) ? y1 : y0; });
 	routine.fragCoord[2] = z[0];  // sample 0
 	routine.fragCoord[3] = w;
 
 	routine.invocationsPerSubgroup = SIMD::Width;
 	routine.helperInvocation = ~maskAny(cMask, samples);
-	routine.windowSpacePosition[0] = SIMD::Int(x) + SIMD::Int(0, 1, 0, 1);
-	routine.windowSpacePosition[1] = SIMD::Int(y) + SIMD::Int(0, 0, 1, 1);
+	routine.windowSpacePosition[0] = SIMD::Int(x) + SIMD::Int([](int i) { return (i & 1) + (i >> 2); });
+	routine.windowSpacePosition[1] = SIMD::Int(y) + SIMD::Int([](int i) { return (i & 2) >> 1; });
 	routine.layer = *Pointer<Int>(data + OFFSET(DrawData, layer));
 
 	// PointCoord formula reference: https://www.khronos.org/registry/vulkan/specs/1.2/html/vkspec.html#primsrast-points-basic
 	// Note we don't add a 0.5 offset to x and y here (like for fragCoord) because pointCoordX/Y have 0.5 subtracted as part of the viewport transform.
 	SIMD::Float pointSizeInv = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointSizeInv)));
-	routine.pointCoord[0] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(x)) + SIMD::Float(0.0f, 1.0f, 0.0f, 1.0f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, x0)))));
-	routine.pointCoord[1] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(y)) + SIMD::Float(0.0f, 0.0f, 1.0f, 1.0f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, y0)))));
+	routine.pointCoord[0] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(x)) + SIMD::Float([](int i) { return ((i & 1) ? 1.0f : 0.0f) + float(i >> 2); })) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, x0)))));
+	routine.pointCoord[1] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(y)) + SIMD::Float([](int i) { return (i & 2) ? 1.0f : 0.0f; })) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, y0)))));
 
 	routine.setInputBuiltin(spirvShader, spv::BuiltInViewIndex, [&](const Spirv::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 1);

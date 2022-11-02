@@ -42,13 +42,6 @@ SIMD::Int::Int(int broadcast)
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
-SIMD::Int::Int(int x, int y, int z, int w)
-    : XYZW(this)
-{
-	std::vector<int64_t> constantVector = { x, y, z, w };
-	storeValue(Nucleus::createConstantVector(constantVector, type()));
-}
-
 SIMD::Int::Int(std::vector<int> v)
     : XYZW(this)
 {
@@ -267,13 +260,6 @@ SIMD::UInt::UInt(int broadcast)
     : XYZW(this)
 {
 	std::vector<int64_t> constantVector = { broadcast };
-	storeValue(Nucleus::createConstantVector(constantVector, type()));
-}
-
-SIMD::UInt::UInt(int x, int y, int z, int w)
-    : XYZW(this)
-{
-	std::vector<int64_t> constantVector = { x, y, z, w };
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 
@@ -510,13 +496,6 @@ SIMD::Float::Float(float broadcast)
 	ASSERT(std::isfinite(broadcast));
 
 	std::vector<double> constantVector = { broadcast };
-	storeValue(Nucleus::createConstantVector(constantVector, type()));
-}
-
-SIMD::Float::Float(float x, float y, float z, float w)
-    : XYZW(this)
-{
-	std::vector<double> constantVector = { x, y, z, w };
 	storeValue(Nucleus::createConstantVector(constantVector, type()));
 }
 

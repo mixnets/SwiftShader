@@ -53,7 +53,6 @@ public:
 
 	Int();
 	Int(int broadcast);
-	Int(int x, int y, int z, int w);
 	Int(std::vector<int> v);
 	Int(std::function<int(int)> LaneValueProducer);
 	Int(RValue<SIMD::Int> rhs);
@@ -83,7 +82,6 @@ public:
 
 	UInt();
 	UInt(int broadcast);
-	UInt(int x, int y, int z, int w);
 	UInt(std::vector<int> v);
 	UInt(std::function<int(int)> LaneValueProducer);
 	UInt(RValue<SIMD::UInt> rhs);
@@ -113,7 +111,6 @@ public:
 
 	Float();
 	Float(float broadcast);
-	Float(float x, float y, float z, float w);
 	Float(std::vector<float> v);
 	Float(std::function<float(int)> LaneValueProducer);
 	Float(RValue<SIMD::Float> rhs);
@@ -644,7 +641,8 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, SIMD::In
 				assert(SIMD::Width == 4);
 
 				// All equal. One of these writes will win -- elect the winning lane.
-				auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+				SIMD::Int v0111;
+				v0111 = Insert128(v0111, rr::Int4(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF), 0);
 				auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
 				auto maskedVal = As<SIMD::Int>(val) & elect;
 				auto scalarVal = Extract(maskedVal, 0) |

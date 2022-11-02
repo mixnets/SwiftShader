@@ -66,8 +66,6 @@ static RValue<TYPE> BinaryOperation(
 
 void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 {
-	ASSERT(SIMD::Width == 4);  // EmitGroupNonUniform makes many assumptions that the SIMD vector width is 4
-
 	auto &type = shader.getType(Type::ID(insn.word(1)));
 	Object::ID resultId = insn.word(2);
 	auto scope = spv::Scope(shader.GetConstScalarInt(insn.word(3)));
@@ -79,12 +77,14 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 	{
 	case spv::OpGroupNonUniformElect:
 		{
+			ASSERT(SIMD::Width == 4);
 			// Result is true only in the active invocation with the lowest id
 			// in the group, otherwise result is false.
 			SIMD::Int active = activeLaneMask();  // Considers helper invocations active. See b/151137030
 			// TODO: Would be nice if we could write this as:
 			//   elect = active & ~(active.Oxyz | active.OOxy | active.OOOx)
-			auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+			SIMD::Int v0111;
+			v0111 = Insert128(v0111, rr::Int4(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF), 0);
 			auto elect = active & ~(v0111 & (active.xxyz | active.xxxy | active.xxxx));
 			dst.move(0, elect);
 		}
@@ -166,6 +166,7 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 
 	case spv::OpGroupNonUniformBroadcastFirst:
 		{
+			ASSERT(SIMD::Width == 4);
 			auto valueId = Object::ID(insn.word(4));
 			Operand value(shader, *this, valueId);
 			// Result is true only in the active invocation with the lowest id
@@ -173,7 +174,8 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 			SIMD::Int active = activeLaneMask();  // Considers helper invocations active. See b/151137030
 			// TODO: Would be nice if we could write this as:
 			//   elect = active & ~(active.Oxyz | active.OOxy | active.OOOx)
-			auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+			SIMD::Int v0111;
+			v0111 = Insert128(v0111, rr::Int4(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF), 0);
 			auto elect = active & ~(v0111 & (active.xxyz | active.xxxy | active.xxxx));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
