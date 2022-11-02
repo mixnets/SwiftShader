@@ -799,96 +799,138 @@ RValue<SIMD::Float> Log2(RValue<SIMD::Float> x)
 
 RValue<Int> SignMask(RValue<SIMD::Int> x)
 {
-	ASSERT(SIMD::Width == 4);
-	return SignMask(Extract128(x, 0));
+	rr::Int result = SignMask(Extract128(x, 0));
+	for(int lane128 = 1; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result |= SignMask(Extract128(x, lane128));
+	}
+	return result;
 }
 
 RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::UInt result;
-	return Insert128(result, Ctlz(Extract128(x, 0), isZeroUndef), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Ctlz(Extract128(x, lane128), isZeroUndef), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> x, bool isZeroUndef)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::UInt result;
-	return Insert128(result, Cttz(Extract128(x, 0), isZeroUndef), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Cttz(Extract128(x, lane128), isZeroUndef), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::Int result;
-	return Insert128(result, MulHigh(Extract128(x, 0), Extract128(y, 0)), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, MulHigh(Extract128(x, lane128), Extract128(y, lane128)), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::UInt result;
-	return Insert128(result, MulHigh(Extract128(x, 0), Extract128(y, 0)), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, MulHigh(Extract128(x, lane128), Extract128(y, lane128)), lane128);
+	}
+	return result;
 }
 
 RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools)
 {
-	ASSERT(SIMD::Width == 4);
-	return AnyTrue(Extract128(bools, 0));
+	Bool result = AnyTrue(Extract128(bools, 0));
+	for(int lane128 = 1; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = result || AnyTrue(Extract128(bools, lane128));
+	}
+	return result;
 }
 
 RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
 {
-	ASSERT(SIMD::Width == 4);
-	return AnyFalse(Extract128(bools, 0));
+	Bool result = AnyFalse(Extract128(bools, 0));
+	for(int lane128 = 1; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = result || AnyFalse(Extract128(bools, lane128));
+	}
+	return result;
 }
 
 RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)
 {
-	ASSERT(SIMD::Width == 4);
-	return Divergent(Extract128(ints, 0));
+	auto broadcastFirst = SIMD::Int(Extract(ints, 0));
+	return AnyTrue(CmpNEQ(broadcastFirst, ints));
 }
 
 RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::Int result;
-	return Insert128(result, Swizzle(Extract128(x, 0), select), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Swizzle(Extract128(x, lane128), select), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::UInt> Swizzle(RValue<SIMD::UInt> x, uint16_t select)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::UInt result;
-	return Insert128(result, Swizzle(Extract128(x, 0), select), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Swizzle(Extract128(x, lane128), select), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::Float> Swizzle(RValue<SIMD::Float> x, uint16_t select)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::Float result;
-	return Insert128(result, Swizzle(Extract128(x, 0), select), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Swizzle(Extract128(x, lane128), select), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::Int> Shuffle(RValue<SIMD::Int> x, RValue<SIMD::Int> y, uint16_t select)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::Int result;
-	return Insert128(result, Shuffle(Extract128(x, 0), Extract128(y, 0), select), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Shuffle(Extract128(x, lane128), Extract128(y, lane128), select), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::UInt> Shuffle(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y, uint16_t select)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::UInt result;
-	return Insert128(result, Shuffle(Extract128(x, 0), Extract128(y, 0), select), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Shuffle(Extract128(x, lane128), Extract128(y, lane128), select), lane128);
+	}
+	return result;
 }
 
 RValue<SIMD::Float> Shuffle(RValue<SIMD::Float> x, RValue<SIMD::Float> y, uint16_t select)
 {
-	ASSERT(SIMD::Width == 4);
 	SIMD::Float result;
-	return Insert128(result, Shuffle(Extract128(x, 0), Extract128(y, 0), select), 0);
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Shuffle(Extract128(x, lane128), Extract128(y, lane128), select), lane128);
+	}
+	return result;
 }
 
 SIMD::Pointer::Pointer(scalar::Pointer<Byte> base, rr::Int limit)
@@ -1023,13 +1065,8 @@ SIMD::Int SIMD::Pointer::isInBounds(unsigned int accessSize, OutOfBoundsBehavior
 
 	if(!hasDynamicOffsets && !hasDynamicLimit)
 	{
-		ASSERT(SIMD::Width == 4);
 		// Common fast paths.
-		return SIMD::Int(
-		    (staticOffsets[0] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0,
-		    (staticOffsets[1] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0,
-		    (staticOffsets[2] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0,
-		    (staticOffsets[3] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0);
+		return SIMD::Int([this, accessSize](int i) { return (this->staticOffsets[i] + accessSize - 1 < this->staticLimit) ? 0xFFFFFFFF : 0; });
 	}
 
 	return CmpGE(offsets(), 0) & CmpLT(offsets() + SIMD::Int(accessSize - 1), limit());
