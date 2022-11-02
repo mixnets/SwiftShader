@@ -77,16 +77,10 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 	{
 	case spv::OpGroupNonUniformElect:
 		{
-			ASSERT(SIMD::Width == 4);
 			// Result is true only in the active invocation with the lowest id
 			// in the group, otherwise result is false.
 			SIMD::Int active = activeLaneMask();  // Considers helper invocations active. See b/151137030
-			// TODO: Would be nice if we could write this as:
-			//   elect = active & ~(active.Oxyz | active.OOxy | active.OOOx)
-			SIMD::Int v0111;
-			v0111 = Insert128(v0111, rr::Int4(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF), 0);
-			auto elect = active & ~(v0111 & (active.xxyz | active.xxxy | active.xxxx));
-			dst.move(0, elect);
+			dst.move(0, Elect(active));
 		}
 		break;
 
@@ -166,17 +160,12 @@ void SpirvEmitter::EmitGroupNonUniform(InsnIterator insn)
 
 	case spv::OpGroupNonUniformBroadcastFirst:
 		{
-			ASSERT(SIMD::Width == 4);
 			auto valueId = Object::ID(insn.word(4));
 			Operand value(shader, *this, valueId);
 			// Result is true only in the active invocation with the lowest id
 			// in the group, otherwise result is false.
 			SIMD::Int active = activeLaneMask();  // Considers helper invocations active. See b/151137030
-			// TODO: Would be nice if we could write this as:
-			//   elect = active & ~(active.Oxyz | active.OOxy | active.OOOx)
-			SIMD::Int v0111;
-			v0111 = Insert128(v0111, rr::Int4(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF), 0);
-			auto elect = active & ~(v0111 & (active.xxyz | active.xxxy | active.xxxx));
+			auto elect = Elect(active);
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
 				dst.move(i, OrAll(value.Int(i) & elect));

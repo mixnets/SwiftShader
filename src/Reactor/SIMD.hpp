@@ -273,6 +273,8 @@ RValue<scalar::Int> Extract(RValue<SIMD::Int> val, int i);
 RValue<SIMD::Int> Insert(RValue<SIMD::Int> val, RValue<scalar::Int> element, int i);
 RValue<packed::Int4> Extract128(RValue<SIMD::Int> val, int i);
 RValue<SIMD::Int> Insert128(RValue<SIMD::Int> val, RValue<packed::Int4> element, int i);
+// Returns mask & ~(0, x, x|y, x|y|z, ...)
+RValue<SIMD::Int> Elect(RValue<SIMD::Int> mask);
 
 RValue<SIMD::UInt> operator+(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 RValue<SIMD::UInt> operator-(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
@@ -638,17 +640,13 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, SIMD::In
 		{
 			If(AnyTrue(mask))
 			{
-				assert(SIMD::Width == 4);
-
 				// All equal. One of these writes will win -- elect the winning lane.
-				SIMD::Int v0111;
-				v0111 = Insert128(v0111, rr::Int4(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF), 0);
-				auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
-				auto maskedVal = As<SIMD::Int>(val) & elect;
-				auto scalarVal = Extract(maskedVal, 0) |
-				                 Extract(maskedVal, 1) |
-				                 Extract(maskedVal, 2) |
-				                 Extract(maskedVal, 3);
+				SIMD::Int maskedVal = As<SIMD::Int>(val) & Elect(mask);
+				rr::Int scalarVal = Extract(maskedVal, 0);
+				for(int i = 1; i < SIMD::Width; i++)
+				{
+					scalarVal = scalarVal | Extract(maskedVal, i);
+				}
 				*scalar::Pointer<EL>(base + staticOffsets[0], alignment) = As<EL>(scalarVal);
 			}
 		}
