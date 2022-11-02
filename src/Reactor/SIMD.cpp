@@ -251,6 +251,18 @@ RValue<SIMD::Int> Insert(RValue<SIMD::Int> x, RValue<scalar::Int> element, int i
 	return RValue<SIMD::Int>(Nucleus::createInsertElement(x.value(), element.value(), i));
 }
 
+RValue<SIMD::Int> Elect(RValue<SIMD::Int> mask)
+{
+	SIMD::Int combinedMask(0);
+	rr::Int maskOr(0);
+	for(int i = 1; i < SIMD::Width; i++)
+	{
+		maskOr |= Extract(mask, i - 1);
+		combinedMask = Insert(combinedMask, maskOr, i);  // combinedMask contains: 0, x, x|y, x|y|z, ...
+	}
+	return mask & ~combinedMask;
+}
+
 SIMD::UInt::UInt()
     : XYZW(this)
 {
