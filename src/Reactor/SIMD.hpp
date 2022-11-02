@@ -66,9 +66,6 @@ public:
 	Int(const scalar::Int &rhs);
 	Int(const Reference<scalar::Int> &rhs);
 
-	template<int T>
-	Int(const SwizzleMask1<packed::Int4, T> &rhs);
-
 	RValue<SIMD::Int> operator=(int broadcast);
 	RValue<SIMD::Int> operator=(RValue<SIMD::Int> rhs);
 	RValue<SIMD::Int> operator=(const Int &rhs);
@@ -125,11 +122,6 @@ public:
 	Float(RValue<scalar::Float> rhs);
 	Float(const scalar::Float &rhs);
 	Float(const Reference<scalar::Float> &rhs);
-
-	Float(RValue<packed::Float4> rhs);
-	RValue<SIMD::Float> operator=(RValue<packed::Float4> rhs);
-	template<int T>
-	Float(const SwizzleMask1<packed::Float4, T> &rhs);
 
 	RValue<SIMD::Float> operator=(float broadcast);
 	RValue<SIMD::Float> operator=(RValue<SIMD::Float> rhs);
@@ -474,20 +466,6 @@ inline RValue<SIMD::Float>::RValue(float f)
     : val(broadcast(f, SIMD::Float::type()))
 {
 	RR_DEBUG_INFO_EMIT_VAR(val);
-}
-
-template<int T>
-SIMD::Int::Int(const SwizzleMask1<packed::Int4, T> &rhs)
-    : XYZW(this)
-{
-	*this = rhs.operator RValue<scalar::Int>();
-}
-
-template<int T>
-SIMD::Float::Float(const SwizzleMask1<packed::Float4, T> &rhs)
-    : XYZW(this)
-{
-	*this = rhs.operator RValue<scalar::Float>();
 }
 
 template<typename T>
