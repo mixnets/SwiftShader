@@ -22,6 +22,8 @@
 #include "VkMemory.hpp"
 #include "VkStringify.hpp"
 
+#include "Reactor/SIMD.hpp"
+
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 
 // Helper struct which reads the parsed allocation info and
@@ -106,14 +108,16 @@ VkResult DeviceMemory::Allocate(const VkAllocationCallbacks *pAllocator, const V
 VkResult DeviceMemory::Allocate(const VkAllocationCallbacks *pAllocator, const VkMemoryAllocateInfo *pAllocateInfo, VkDeviceMemory *pMemory,
                                 const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, Device *device)
 {
+	static const int padding = rr::SIMD::Width * rr::SIMD::Width - 1;
+
 	VkMemoryAllocateInfo allocateInfo = *pAllocateInfo;
 	// Add 15 bytes of padding to ensure that any type of attribute within
-	// buffers and images can be read using 16-byte accesses.
-	if(allocateInfo.allocationSize > UINT64_MAX - 15)
+	// buffers and images can be read using <SIMD::Width * SIMD::Width> byte accesses.
+	if(allocateInfo.allocationSize > UINT64_MAX - padding)
 	{
 		return VK_ERROR_OUT_OF_DEVICE_MEMORY;
 	}
-	allocateInfo.allocationSize += 15;
+	allocateInfo.allocationSize += padding;
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
 	if(AHardwareBufferExternalMemory::SupportsAllocateInfo(extendedAllocationInfo))
