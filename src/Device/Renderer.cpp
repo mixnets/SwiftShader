@@ -38,6 +38,8 @@
 #include "marl/defer.h"
 #include "marl/trace.h"
 
+#include <vector>
+
 #undef max
 
 #ifndef NDEBUG
@@ -48,7 +50,7 @@ unsigned int maxPrimitives = 1 << 21;
 namespace sw {
 
 template<typename T>
-inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topology, VkProvokingVertexModeEXT provokingVertexMode, T indices, unsigned int start, unsigned int triangleCount)
+inline bool setBatchIndices(std::array<unsigned int, 3> *batch, VkPrimitiveTopology topology, VkProvokingVertexModeEXT provokingVertexMode, T indices, unsigned int start, unsigned int triangleCount)
 {
 	bool provokeFirst = (provokingVertexMode == VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT);
 
@@ -600,11 +602,12 @@ void DrawCall::processVertices(vk::Device *device, DrawCall *draw, BatchData *ba
 {
 	MARL_SCOPED_EVENT("VERTEX draw %d, batch %d", draw->id, batch->id);
 
-	unsigned int triangleIndices[MaxBatchSize + 1][3];  // One extra for SIMD width overrun. TODO: Adjust to dynamic batch size.
+	// Extra padding for SIMD width overrun. TODO: Adjust to dynamic batch size.
+	std::vector<std::array<unsigned int, 3>> triangleIndices(MaxBatchSize + getPaddingSize());
 	{
 		MARL_SCOPED_EVENT("processPrimitiveVertices");
 		processPrimitiveVertices(
-		    triangleIndices,
+		    &triangleIndices[0],
 		    draw->data->indices,
 		    draw->indexType,
 		    batch->firstPrimitive,
@@ -669,8 +672,13 @@ void Renderer::synchronize()
 	ticket.done();
 }
 
+int DrawCall::getPaddingSize()
+{
+	return (rr::SIMD::Width >> 1) - 1;  // Extra size for SIMD width overrun.
+}
+
 void DrawCall::processPrimitiveVertices(
-    unsigned int triangleIndicesOut[MaxBatchSize + 1][3],
+    std::array<unsigned int, 3> *triangleIndicesOut,
     const void *primitiveIndices,
     VkIndexType indexType,
     unsigned int start,
@@ -717,9 +725,13 @@ void DrawCall::processPrimitiveVertices(
 	if(topology != VK_PRIMITIVE_TOPOLOGY_POINT_LIST)
 	{
 		// Repeat the last index to allow for SIMD width overrun.
-		triangleIndicesOut[triangleCount][0] = triangleIndicesOut[triangleCount - 1][2];
-		triangleIndicesOut[triangleCount][1] = triangleIndicesOut[triangleCount - 1][2];
-		triangleIndicesOut[triangleCount][2] = triangleIndicesOut[triangleCount - 1][2];
+		for(int i = 0; i < getPaddingSize(); i++)
+		{
+			for(int j = 0; j < 3; j++)
+			{
+				triangleIndicesOut[triangleCount + i][j] = triangleIndicesOut[triangleCount - 1][2];
+			}
+		}
 	}
 }
 

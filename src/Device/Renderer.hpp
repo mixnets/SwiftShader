@@ -26,6 +26,7 @@
 #include "marl/pool.h"
 #include "marl/ticket.h"
 
+#include <array>
 #include <atomic>
 
 namespace vk {
@@ -178,8 +179,9 @@ struct DrawCall
 
 	DrawData *data;
 
+	static int getPaddingSize();
 	static void processPrimitiveVertices(
-	    unsigned int triangleIndicesOut[MaxBatchSize + 1][3],
+	    std::array<unsigned int, 3> *triangleIndicesOut,
 	    const void *primitiveIndices,
 	    VkIndexType indexType,
 	    unsigned int start,
