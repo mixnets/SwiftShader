@@ -17,6 +17,8 @@
 #include "System/Debug.hpp"
 #include "System/Math.hpp"
 
+#include "Reactor/SIMD.hpp"
+
 namespace vk {
 
 bool Format::isUnsignedNormalized() const
@@ -2157,8 +2159,8 @@ size_t Format::bytes() const
 
 size_t Format::pitchB(int width, int border) const
 {
-	// Render targets require 2x2 quads
-	width = sw::align<2>(width + 2 * border);
+	// Render targets require NxN quads, where N = SIMD::Width / 2
+	width = sw::align(width + 2 * border, rr::SIMD::Width >> 1);
 
 	switch(format)
 	{
@@ -2226,7 +2228,7 @@ size_t Format::pitchB(int width, int border) const
 	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 	case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
-		return sw::align<16>(width);  // Y plane only  // TODO: ASSERT to ensure this is only called per-aspect?
+		return sw::align(width, rr::SIMD::Width * rr::SIMD::Width);  // Y plane only  // TODO: ASSERT to ensure this is only called per-aspect?
 	default:
 		return bytes() * width;
 	}
@@ -2234,8 +2236,8 @@ size_t Format::pitchB(int width, int border) const
 
 size_t Format::sliceBUnpadded(int width, int height, int border) const
 {
-	// Render targets require 2x2 quads
-	height = sw::align<2>(height + 2 * border);
+	// Render targets require NxN quads, where N = SIMD::Width / 2
+	height = sw::align(height + 2 * border, rr::SIMD::Width >> 1);
 
 	switch(format)
 	{
@@ -2307,7 +2309,7 @@ size_t Format::sliceBUnpadded(int width, int height, int border) const
 
 size_t Format::sliceB(int width, int height, int border) const
 {
-	return sw::align<16>(sliceBUnpadded(width, height, border));
+	return sw::align(sliceBUnpadded(width, height, border), rr::SIMD::Width * rr::SIMD::Width);
 }
 
 sw::float4 Format::getScale() const
