@@ -16,6 +16,7 @@
 #define sw_x86_hpp
 
 #include "Reactor.hpp"
+#include "SIMD.hpp"
 
 namespace rr {
 namespace x86 {
@@ -27,9 +28,9 @@ RValue<Float> rcpss(RValue<Float> val);
 RValue<Float> sqrtss(RValue<Float> val);
 RValue<Float> rsqrtss(RValue<Float> val);
 
-RValue<Float4> rcpps(RValue<Float4> val);
-RValue<Float4> sqrtps(RValue<Float4> val);
-RValue<Float4> rsqrtps(RValue<Float4> val);
+RValue<SIMD::Float> rcpps(RValue<SIMD::Float> val);
+RValue<SIMD::Float> sqrtps(RValue<SIMD::Float> val);
+RValue<SIMD::Float> rsqrtps(RValue<SIMD::Float> val);
 RValue<Float4> maxps(RValue<Float4> x, RValue<Float4> y);
 RValue<Float4> minps(RValue<Float4> x, RValue<Float4> y);
 

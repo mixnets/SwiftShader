@@ -1999,9 +1999,9 @@ RValue<Float4> Abs(RValue<Float4> x);
 RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y);
 RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y);
 
-RValue<Float4> Rcp(RValue<Float4> x, bool relaxedPrecision, bool exactAtPow2 = false);
-RValue<Float4> RcpSqrt(RValue<Float4> x, bool relaxedPrecision);
-RValue<Float4> Sqrt(RValue<Float4> x);
+RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2 = false);
+RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision);
+RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x);
 RValue<Float4> Insert(RValue<Float4> val, RValue<Float> element, int i);
 RValue<Float> Extract(RValue<Float4> x, int i);
 RValue<Float4> Swizzle(RValue<Float4> x, uint16_t select);
