@@ -4264,8 +4264,76 @@ RValue<SIMD::Int> RoundIntClamped(RValue<SIMD::Float> cast)
 #endif
 }
 
+RValue<Int> SignMask(RValue<SIMD::Int> x)
+{
+	rr::Int result = SignMask(Extract128(x, 0));
+	for(int lane128 = 1; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result |= SignMask(Extract128(x, lane128));
+	}
+	return result;
+}
+
+RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
+{
+	SIMD::Int result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, MulHigh(Extract128(x, lane128), Extract128(y, lane128)), lane128);
+	}
+	return result;
+}
+
+RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools)
+{
+	Bool result = AnyTrue(Extract128(bools, 0));
+	for(int lane128 = 1; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = result || AnyTrue(Extract128(bools, lane128));
+	}
+	return result;
+}
+
+RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
+{
+	Bool result = AnyFalse(Extract128(bools, 0));
+	for(int lane128 = 1; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = result || AnyFalse(Extract128(bools, lane128));
+	}
+	return result;
+}
+
+RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)
+{
+	auto broadcastFirst = SIMD::Int(Extract(ints, 0));
+	return AnyTrue(CmpNEQ(broadcastFirst, ints));
+}
+
+RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select)
+{
+	SIMD::Int result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Swizzle(Extract128(x, lane128), select), lane128);
+	}
+	return result;
+}
+
+RValue<SIMD::Int> Shuffle(RValue<SIMD::Int> x, RValue<SIMD::Int> y, uint16_t select)
+{
+	SIMD::Int result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Shuffle(Extract128(x, lane128), Extract128(y, lane128), select), lane128);
+	}
+	return result;
+}
+
 RValue<Int4> Extract128(RValue<SIMD::Int> val, int i)
 {
+	ASSERT(i >= 0 && i < SIMD::Width / 4);
+
 	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
 
 	return As<Int4>(V(jit->builder->CreateExtractElement(v128, i)));
@@ -4273,6 +4341,8 @@ RValue<Int4> Extract128(RValue<SIMD::Int> val, int i)
 
 RValue<SIMD::Int> Insert128(RValue<SIMD::Int> val, RValue<Int4> element, int i)
 {
+	ASSERT(i >= 0 && i < SIMD::Width / 4);
+
 	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
 	llvm::Value *a = jit->builder->CreateBitCast(V(element.value()), llvm::IntegerType::get(*jit->context, 128));
 
@@ -4367,8 +4437,60 @@ RValue<SIMD::UInt> Min(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 	return (x & less) | (y & ~less);
 }
 
+RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef)
+{
+	SIMD::UInt result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Ctlz(Extract128(x, lane128), isZeroUndef), lane128);
+	}
+	return result;
+}
+
+RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> x, bool isZeroUndef)
+{
+	SIMD::UInt result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Cttz(Extract128(x, lane128), isZeroUndef), lane128);
+	}
+	return result;
+}
+
+RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
+{
+	SIMD::UInt result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, MulHigh(Extract128(x, lane128), Extract128(y, lane128)), lane128);
+	}
+	return result;
+}
+
+RValue<SIMD::UInt> Swizzle(RValue<SIMD::UInt> x, uint16_t select)
+{
+	SIMD::UInt result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Swizzle(Extract128(x, lane128), select), lane128);
+	}
+	return result;
+}
+
+RValue<SIMD::UInt> Shuffle(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y, uint16_t select)
+{
+	SIMD::UInt result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Shuffle(Extract128(x, lane128), Extract128(y, lane128), select), lane128);
+	}
+	return result;
+}
+
 RValue<UInt4> Extract128(RValue<SIMD::UInt> val, int i)
 {
+	ASSERT(i >= 0 && i < SIMD::Width / 4);
+
 	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
 
 	return As<UInt4>(V(jit->builder->CreateExtractElement(v128, i)));
@@ -4376,6 +4498,8 @@ RValue<UInt4> Extract128(RValue<SIMD::UInt> val, int i)
 
 RValue<SIMD::UInt> Insert128(RValue<SIMD::UInt> val, RValue<UInt4> element, int i)
 {
+	ASSERT(i >= 0 && i < SIMD::Width / 4);
+
 	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
 	llvm::Value *a = jit->builder->CreateBitCast(V(element.value()), llvm::IntegerType::get(*jit->context, 128));
 
@@ -4547,8 +4671,50 @@ RValue<SIMD::Float> Ceil(RValue<SIMD::Float> x)
 	return -Floor(-x);
 }
 
+RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
+{
+	SIMD::Float result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Rcp(Extract128(x, lane128), relaxedPrecision, exactAtPow2), lane128);
+	}
+	return result;
+}
+
+RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision)
+{
+	SIMD::Float result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, RcpSqrt(Extract128(x, lane128), relaxedPrecision), lane128);
+	}
+	return result;
+}
+
+RValue<SIMD::Float> Swizzle(RValue<SIMD::Float> x, uint16_t select)
+{
+	SIMD::Float result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Swizzle(Extract128(x, lane128), select), lane128);
+	}
+	return result;
+}
+
+RValue<SIMD::Float> Shuffle(RValue<SIMD::Float> x, RValue<SIMD::Float> y, uint16_t select)
+{
+	SIMD::Float result;
+	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
+	{
+		result = Insert128(result, Shuffle(Extract128(x, lane128), Extract128(y, lane128), select), lane128);
+	}
+	return result;
+}
+
 RValue<Float4> Extract128(RValue<SIMD::Float> val, int i)
 {
+	ASSERT(i >= 0 && i < SIMD::Width / 4);
+
 	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
 
 	return As<Float4>(V(jit->builder->CreateExtractElement(v128, i)));
@@ -4556,6 +4722,8 @@ RValue<Float4> Extract128(RValue<SIMD::Float> val, int i)
 
 RValue<SIMD::Float> Insert128(RValue<SIMD::Float> val, RValue<Float4> element, int i)
 {
+	ASSERT(i >= 0 && i < SIMD::Width / 4);
+
 	llvm::Value *v128 = jit->builder->CreateBitCast(V(val.value()), llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 128), SIMD::Width / 4));
 	llvm::Value *a = jit->builder->CreateBitCast(V(element.value()), llvm::IntegerType::get(*jit->context, 128));
 

@@ -168,7 +168,7 @@ Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Ice::Type retT
 
 // Wrapper for calls on C functions with Ice types
 template<typename Return, typename... CArgs, typename... RArgs>
-Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(CArgs...), RArgs &&...args)
+Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(CArgs...), RArgs &&... args)
 {
 	static_assert(sizeof...(CArgs) == sizeof...(RArgs), "Expected number of args don't match");
 
@@ -4887,6 +4887,53 @@ RValue<SIMD::Int> RoundIntClamped(RValue<SIMD::Float> cast)
 	}
 }
 
+RValue<Int> SignMask(RValue<SIMD::Int> x)
+{
+	ASSERT(SIMD::Width == 4);
+	return SignMask(Extract128(x, 0));
+}
+
+RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::Int result;
+	return Insert128(result, MulHigh(Extract128(x, 0), Extract128(y, 0)), 0);
+}
+
+RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools)
+{
+	ASSERT(SIMD::Width == 4);
+	return AnyTrue(Extract128(bools, 0));
+}
+
+RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
+{
+	ASSERT(SIMD::Width == 4);
+	return AnyFalse(Extract128(bools, 0));
+}
+
+RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)
+{
+	ASSERT(SIMD::Width == 4);
+	return Divergent(Extract128(ints, 0));
+}
+
+RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+
+	SIMD::Int result;
+	return Insert128(result, Swizzle(Extract128(x, 0), select), 0);
+}
+
+RValue<SIMD::Int> Shuffle(RValue<SIMD::Int> x, RValue<SIMD::Int> y, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+
+	SIMD::Int result;
+	return Insert128(result, Shuffle(Extract128(x, 0), Extract128(y, 0), select), 0);
+}
+
 RValue<Int4> Extract128(RValue<SIMD::Int> val, int i)
 {
 	ASSERT(SIMD::Width == 4);
@@ -5026,6 +5073,41 @@ RValue<SIMD::UInt> Min(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 	::basicBlock->appendInst(select);
 
 	return RValue<SIMD::UInt>(V(result));
+}
+
+RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::UInt result;
+	return Insert128(result, Ctlz(Extract128(x, 0), isZeroUndef), 0);
+}
+
+RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> x, bool isZeroUndef)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::UInt result;
+	return Insert128(result, Cttz(Extract128(x, 0), isZeroUndef), 0);
+}
+
+RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::UInt result;
+	return Insert128(result, MulHigh(Extract128(x, 0), Extract128(y, 0)), 0);
+}
+
+RValue<SIMD::UInt> Swizzle(RValue<SIMD::UInt> x, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::UInt result;
+	return Insert128(result, Swizzle(Extract128(x, 0), select), 0);
+}
+
+RValue<SIMD::UInt> Shuffle(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::UInt result;
+	return Insert128(result, Shuffle(Extract128(x, 0), Extract128(y, 0), select), 0);
 }
 
 RValue<UInt4> Extract128(RValue<SIMD::UInt> val, int i)
@@ -5311,6 +5393,34 @@ RValue<SIMD::Float> Ceil(RValue<SIMD::Float> x)
 	{
 		return -Floor(-x);
 	}
+}
+
+RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::Float result;
+	return Insert128(result, Rcp(Extract128(x, 0), relaxedPrecision, exactAtPow2), 0);
+}
+
+RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::Float result;
+	return Insert128(result, RcpSqrt(Extract128(x, 0), relaxedPrecision), 0);
+}
+
+RValue<SIMD::Float> Swizzle(RValue<SIMD::Float> x, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::Float result;
+	return Insert128(result, Swizzle(Extract128(x, 0), select), 0);
+}
+
+RValue<SIMD::Float> Shuffle(RValue<SIMD::Float> x, RValue<SIMD::Float> y, uint16_t select)
+{
+	ASSERT(SIMD::Width == 4);
+	SIMD::Float result;
+	return Insert128(result, Shuffle(Extract128(x, 0), Extract128(y, 0), select), 0);
 }
 
 RValue<Float4> Extract128(RValue<SIMD::Float> val, int i)
