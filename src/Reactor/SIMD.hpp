@@ -356,9 +356,6 @@ RValue<SIMD::Float> Abs(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Max(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
 RValue<SIMD::Float> Min(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
 
-RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2 = false);
-RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision);
-RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x);
 RValue<SIMD::Float> Insert(RValue<SIMD::Float> val, RValue<rr ::Float> element, int i);
 RValue<rr ::Float> Extract(RValue<SIMD::Float> x, int i);
 RValue<packed::Float4> Extract128(RValue<SIMD::Float> val, int i);

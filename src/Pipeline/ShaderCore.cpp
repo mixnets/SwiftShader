@@ -687,19 +687,14 @@ SIMD::Float sRGBtoLinear(const SIMD::Float &c)
 	return As<SIMD::Float>((linear & As<SIMD::Int>(lc)) | (~linear & As<SIMD::Int>(ec)));  // TODO: IfThenElse()
 }
 
-RValue<Float4> reciprocal(RValue<Float4> x, bool pp, bool exactAtPow2)
-{
-	return Rcp(x, pp, exactAtPow2);
-}
-
 RValue<SIMD::Float> reciprocal(RValue<SIMD::Float> x, bool pp, bool exactAtPow2)
 {
 	return Rcp(x, pp, exactAtPow2);
 }
 
-RValue<Float4> reciprocalSquareRoot(RValue<Float4> x, bool absolute, bool pp)
+RValue<SIMD::Float> reciprocalSquareRoot(RValue<SIMD::Float> x, bool absolute, bool pp)
 {
-	Float4 abs = x;
+	SIMD::Float abs = x;
 
 	if(absolute)
 	{

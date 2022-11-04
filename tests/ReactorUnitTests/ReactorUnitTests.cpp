@@ -3030,8 +3030,8 @@ INSTANTIATE_TEST_SUITE_P(IntrinsicTestParams_Float4, IntrinsicTest_Float4, testi
 	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Exp(v); },   expf,         {0.f, 1.f, PI}  },
 	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Log(v); },   logf,         {1.f, PI, 123.f}  },
 	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Exp2(v); },  exp2f,        {0.f, 1.f, PI, 123.f}  },
-	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Log2(v); },  log2f,        {1.f, PI, 123.f}  },
-	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Sqrt(v); },  sqrtf,        {0.f, 1.f, PI, 123.f}  }
+	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Log2(v); },  log2f,        {1.f, PI, 123.f}  }
+//	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Sqrt(v); },  sqrtf,        {0.f, 1.f, PI, 123.f}  }
 ));
 // clang-format on
 
