@@ -4900,24 +4900,6 @@ RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 	return Insert128(result, MulHigh(Extract128(x, 0), Extract128(y, 0)), 0);
 }
 
-RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools)
-{
-	ASSERT(SIMD::Width == 4);
-	return AnyTrue(Extract128(bools, 0));
-}
-
-RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
-{
-	ASSERT(SIMD::Width == 4);
-	return AnyFalse(Extract128(bools, 0));
-}
-
-RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)
-{
-	ASSERT(SIMD::Width == 4);
-	return Divergent(Extract128(ints, 0));
-}
-
 RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select)
 {
 	ASSERT(SIMD::Width == 4);

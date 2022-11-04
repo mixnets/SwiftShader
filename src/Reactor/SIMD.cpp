@@ -768,6 +768,50 @@ RValue<SIMD::Float> Log2(RValue<SIMD::Float> x)
 	return ScalarizeCall(log2f, x);
 }
 
+RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools)
+{
+	return SignMask(bools) != 0;
+}
+
+RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
+{
+	return SignMask(~bools) != 0;  // TODO(b/214588983): Compare against mask of 4 1's to avoid bitwise NOT.
+}
+
+RValue<Bool> AllTrue(const RValue<SIMD::Int> &bools)
+{
+	return SignMask(~bools) == 0;  // TODO(b/214588983): Compare against mask of 4 1's to avoid bitwise NOT.
+}
+
+RValue<Bool> AllFalse(const RValue<SIMD::Int> &bools)
+{
+	return SignMask(bools) == 0;
+}
+
+RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)
+{
+	auto broadcastFirst = SIMD::Int(Extract(ints, 0));
+	return AnyTrue(CmpNEQ(broadcastFirst, ints));
+}
+
+RValue<Bool> Divergent(const RValue<SIMD::Float> &floats)
+{
+	auto broadcastFirst = SIMD::Float(Extract(floats, 0));
+	return AnyTrue(CmpNEQ(broadcastFirst, floats));
+}
+
+RValue<Bool> Uniform(const RValue<SIMD::Int> &ints)
+{
+	auto broadcastFirst = SIMD::Int(Extract(ints, 0));
+	return AllFalse(CmpNEQ(broadcastFirst, ints));
+}
+
+RValue<Bool> Uniform(const RValue<SIMD::Float> &floats)
+{
+	auto broadcastFirst = SIMD::Float(Extract(floats, 0));
+	return AllFalse(CmpNEQ(broadcastFirst, floats));
+}
+
 SIMD::Pointer::Pointer(scalar::Pointer<Byte> base, rr::Int limit)
     : base(base)
     , dynamicLimit(limit)
