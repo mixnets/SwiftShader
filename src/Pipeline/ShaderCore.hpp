@@ -151,9 +151,8 @@ SIMD::UInt floatToHalfBits(SIMD::UInt floatBits, bool storeInUpperBits);
 SIMD::Float linearToSRGB(const SIMD::Float &c);
 SIMD::Float sRGBtoLinear(const SIMD::Float &c);
 
-RValue<Float4> reciprocal(RValue<Float4> x, bool pp = false, bool exactAtPow2 = false);
 RValue<SIMD::Float> reciprocal(RValue<SIMD::Float> x, bool pp = false, bool exactAtPow2 = false);
-RValue<Float4> reciprocalSquareRoot(RValue<Float4> x, bool abs, bool pp = false);
+RValue<SIMD::Float> reciprocalSquareRoot(RValue<SIMD::Float> x, bool abs, bool pp = false);
 
 RValue<SIMD::Float> mulAdd(RValue<SIMD::Float> x, RValue<SIMD::Float> y, RValue<SIMD::Float> z);  // TODO(chromium:1299047)
 

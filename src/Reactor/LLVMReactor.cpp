@@ -61,6 +61,47 @@ using FixedVectorType = VectorType;
 
 namespace {
 
+enum class Intrinsic
+{
+	rcp_ps,
+	rsqrt_ps,
+	max_ps,
+	min_ps,
+	round_ps,
+	movmsk_ps,
+};
+
+llvm::Intrinsic::X86Intrinsics GetIntrinsic(Intrinsic intrinsic)
+{
+	auto intrinsicKey = [](Intrinsic i, int j) { return (size_t)i << 32 | (unsigned int)j; };
+
+	ASSERT(rr::SIMD::Width != 16);  // Some AVX 512 instructions are missing
+	static const std::unordered_map<size_t, llvm::Intrinsic::X86Intrinsics> intrinsicsMap = {
+		{ intrinsicKey(Intrinsic::rcp_ps, 4), llvm::Intrinsic::x86_sse_rcp_ps },
+		{ intrinsicKey(Intrinsic::rcp_ps, 8), llvm::Intrinsic::x86_avx_rcp_ps_256 },
+		{ intrinsicKey(Intrinsic::rcp_ps, 16), llvm::Intrinsic::x86_avx512_rcp28_ps },
+		{ intrinsicKey(Intrinsic::rsqrt_ps, 4), llvm::Intrinsic::x86_sse_rsqrt_ps },
+		{ intrinsicKey(Intrinsic::rsqrt_ps, 8), llvm::Intrinsic::x86_avx_rsqrt_ps_256 },
+		{ intrinsicKey(Intrinsic::rsqrt_ps, 16), llvm::Intrinsic::x86_avx512_rsqrt28_ps },
+		{ intrinsicKey(Intrinsic::max_ps, 4), llvm::Intrinsic::x86_sse_max_ps },
+		{ intrinsicKey(Intrinsic::max_ps, 8), llvm::Intrinsic::x86_avx_max_ps_256 },
+		{ intrinsicKey(Intrinsic::max_ps, 16), llvm::Intrinsic::x86_avx512_max_ps_512 },
+		{ intrinsicKey(Intrinsic::min_ps, 4), llvm::Intrinsic::x86_sse_min_ps },
+		{ intrinsicKey(Intrinsic::min_ps, 8), llvm::Intrinsic::x86_avx_min_ps_256 },
+		{ intrinsicKey(Intrinsic::min_ps, 16), llvm::Intrinsic::x86_avx512_min_ps_512 },
+		{ intrinsicKey(Intrinsic::round_ps, 4), llvm::Intrinsic::x86_sse41_round_ps },
+		{ intrinsicKey(Intrinsic::round_ps, 8), llvm::Intrinsic::x86_avx_round_ps_256 },
+		// { intrinsicKey(Intrinsic::round_ps, 16), TBD },
+		{ intrinsicKey(Intrinsic::movmsk_ps, 4), llvm::Intrinsic::x86_sse_movmsk_ps },
+		{ intrinsicKey(Intrinsic::movmsk_ps, 8), llvm::Intrinsic::x86_avx_movmsk_ps_256 },
+		// { intrinsicKey(Intrinsic::movmsk_ps, 16), TBD },
+	};
+
+	auto it = intrinsicsMap.find(intrinsicKey(intrinsic, rr::SIMD::Width));
+	ASSERT(it != intrinsicsMap.end());
+	return it->second;
+}
+
 // Used to automatically invoke llvm_shutdown() when driver is unloaded
 llvm::llvm_shutdown_obj llvmShutdownObj;
 
@@ -2883,18 +2924,18 @@ bool HasRcpApprox()
 #endif
 }
 
-RValue<Float4> RcpApprox(RValue<Float4> x, bool exactAtPow2)
+RValue<SIMD::Float> RcpApprox(RValue<SIMD::Float> x, bool exactAtPow2)
 {
 #if defined(__i386__) || defined(__x86_64__)
 	if(exactAtPow2)
 	{
 		// rcpps uses a piecewise-linear approximation which minimizes the relative error
 		// but is not exact at power-of-two values. Rectify by multiplying by the inverse.
-		return x86::rcpps(x) * Float4(1.0f / _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ps1(1.0f))));
+		return x86::rcpps(x) * SIMD::Float(1.0f / _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ps1(1.0f))));
 	}
 	return x86::rcpps(x);
 #else
-	UNREACHABLE("RValue<Float4> RcpApprox() not available on this platform");
+	UNREACHABLE("RValue<SIMD::Float> RcpApprox() not available on this platform");
 	return { 0.0f };
 #endif
 }
@@ -2924,7 +2965,7 @@ bool HasRcpSqrtApprox()
 #endif
 }
 
-RValue<Float4> RcpSqrtApprox(RValue<Float4> x)
+RValue<SIMD::Float> RcpSqrtApprox(RValue<SIMD::Float> x)
 {
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::rsqrtps(x);
@@ -3100,13 +3141,13 @@ RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
 #endif
 }
 
-RValue<Float4> Sqrt(RValue<Float4> x)
+RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::sqrtps(x);
 #else
-	return As<Float4>(V(lowerSQRT(V(x.value()))));
+	return As<SIMD::Float>(V(lowerSQRT(V(x.value()))));
 #endif
 }
 
@@ -3449,9 +3490,9 @@ RValue<Int4> cvtps2dq(RValue<Float4> val)
 
 RValue<Float> rcpss(RValue<Float> val)
 {
-	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
+	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(SIMD::Float::type()))), val.value(), 0);
 
-	return RValue<Float>(Nucleus::createExtractElement(createInstruction(llvm::Intrinsic::x86_sse_rcp_ss, vector), Float::type(), 0));
+	return RValue<Float>(Nucleus::createExtractElement(createInstruction(GetIntrinsic(Intrinsic::rcp_ps), vector), Float::type(), 0));
 }
 
 RValue<Float> sqrtss(RValue<Float> val)
@@ -3466,19 +3507,19 @@ RValue<Float> rsqrtss(RValue<Float> val)
 	return RValue<Float>(Nucleus::createExtractElement(createInstruction(llvm::Intrinsic::x86_sse_rsqrt_ss, vector), Float::type(), 0));
 }
 
-RValue<Float4> rcpps(RValue<Float4> val)
+RValue<SIMD::Float> rcpps(RValue<SIMD::Float> val)
 {
-	return RValue<Float4>(createInstruction(llvm::Intrinsic::x86_sse_rcp_ps, val.value()));
+	return RValue<SIMD::Float>(createInstruction(GetIntrinsic(Intrinsic::rcp_ps), val.value()));
 }
 
-RValue<Float4> sqrtps(RValue<Float4> val)
+RValue<SIMD::Float> sqrtps(RValue<SIMD::Float> val)
 {
-	return RValue<Float4>(V(jit->builder->CreateUnaryIntrinsic(llvm::Intrinsic::sqrt, V(val.value()))));
+	return RValue<SIMD::Float>(V(jit->builder->CreateUnaryIntrinsic(llvm::Intrinsic::sqrt, V(val.value()))));
 }
 
-RValue<Float4> rsqrtps(RValue<Float4> val)
+RValue<SIMD::Float> rsqrtps(RValue<SIMD::Float> val)
 {
-	return RValue<Float4>(createInstruction(llvm::Intrinsic::x86_sse_rsqrt_ps, val.value()));
+	return RValue<SIMD::Float>(createInstruction(GetIntrinsic(Intrinsic::rsqrt_ps), val.value()));
 }
 
 RValue<Float4> maxps(RValue<Float4> x, RValue<Float4> y)
@@ -3515,7 +3556,7 @@ RValue<Float4> roundps(RValue<Float4> val, unsigned char imm)
 {
 	ASSERT(!__has_feature(memory_sanitizer));  // TODO(b/172238865): Not correctly instrumented by MemorySanitizer.
 
-	return RValue<Float4>(createInstruction(llvm::Intrinsic::x86_sse41_round_ps, val.value(), Nucleus::createConstantInt(imm)));
+	return RValue<Float4>(createInstruction(GetIntrinsic(Intrinsic::round_ps), val.value(), Nucleus::createConstantInt(imm)));
 }
 
 RValue<Float4> floorps(RValue<Float4> val)
@@ -3760,7 +3801,7 @@ RValue<Int> movmskps(RValue<Float4> x)
 		v = As<Float4>(As<Int4>(v) & Int4(0x80000000u)).value();
 	}
 
-	return RValue<Int>(createInstruction(llvm::Intrinsic::x86_sse_movmsk_ps, v));
+	return RValue<Int>(createInstruction(GetIntrinsic(Intrinsic::movmsk_ps), v));
 }
 
 RValue<Int> pmovmskb(RValue<Byte8> x)
@@ -4493,12 +4534,6 @@ RValue<SIMD::Float> Min(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
 	return As<SIMD::Float>(V(lowerPFMINMAX(V(x.value()), V(y.value()), llvm::FCmpInst::FCMP_OLT)));
 }
 
-RValue<SIMD::Float> Sqrt(RValue<SIMD::Float> x)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-	return As<SIMD::Float>(V(lowerSQRT(V(x.value()))));
-}
-
 RValue<SIMD::Int> CmpEQ(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
@@ -4603,26 +4638,6 @@ RValue<SIMD::Float> Ceil(RValue<SIMD::Float> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	return -Floor(-x);
-}
-
-RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
-{
-	SIMD::Float result;
-	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
-	{
-		result = Insert128(result, Rcp(Extract128(x, lane128), relaxedPrecision, exactAtPow2), lane128);
-	}
-	return result;
-}
-
-RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision)
-{
-	SIMD::Float result;
-	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
-	{
-		result = Insert128(result, RcpSqrt(Extract128(x, lane128), relaxedPrecision), lane128);
-	}
-	return result;
 }
 
 RValue<SIMD::Float> Swizzle(RValue<SIMD::Float> x, uint16_t select)

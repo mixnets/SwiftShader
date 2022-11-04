@@ -1310,7 +1310,9 @@ Int4 SamplerCore::cubeFace(Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z
 	// V = !yMajor ? -y : (n ^ z)
 	V = As<Float4>((~yMajor & As<Int4>(-y)) | (yMajor & (n ^ As<Int4>(z))));
 
-	M = reciprocal(M) * 0.5f;
+	SIMD::Float M2;
+	M2 = Insert128(M2, M, 0);
+	M = Extract128(reciprocal(M2), 0) * 0.5f;
 	U = U * M + 0.5f;
 	V = V * M + 0.5f;
 
