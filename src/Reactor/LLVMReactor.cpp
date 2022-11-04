@@ -3297,12 +3297,12 @@ RValue<UInt> Ctlz(RValue<UInt> v, bool isZeroUndef)
 	                                                       isZeroUndef ? llvm::ConstantInt::getTrue(*jit->context) : llvm::ConstantInt::getFalse(*jit->context) })));
 }
 
-RValue<UInt4> Ctlz(RValue<UInt4> v, bool isZeroUndef)
+RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> v, bool isZeroUndef)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::ctlz, { T(UInt4::type()) });
-	return RValue<UInt4>(V(jit->builder->CreateCall(func, { V(v.value()),
-	                                                        isZeroUndef ? llvm::ConstantInt::getTrue(*jit->context) : llvm::ConstantInt::getFalse(*jit->context) })));
+	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::ctlz, { T(SIMD::UInt::type()) });
+	return RValue<SIMD::UInt>(V(jit->builder->CreateCall(func, { V(v.value()),
+	                                                             isZeroUndef ? llvm::ConstantInt::getTrue(*jit->context) : llvm::ConstantInt::getFalse(*jit->context) })));
 }
 
 RValue<UInt> Cttz(RValue<UInt> v, bool isZeroUndef)
@@ -3313,12 +3313,12 @@ RValue<UInt> Cttz(RValue<UInt> v, bool isZeroUndef)
 	                                                       isZeroUndef ? llvm::ConstantInt::getTrue(*jit->context) : llvm::ConstantInt::getFalse(*jit->context) })));
 }
 
-RValue<UInt4> Cttz(RValue<UInt4> v, bool isZeroUndef)
+RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> v, bool isZeroUndef)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::cttz, { T(UInt4::type()) });
-	return RValue<UInt4>(V(jit->builder->CreateCall(func, { V(v.value()),
-	                                                        isZeroUndef ? llvm::ConstantInt::getTrue(*jit->context) : llvm::ConstantInt::getFalse(*jit->context) })));
+	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::cttz, { T(SIMD::UInt::type()) });
+	return RValue<SIMD::UInt>(V(jit->builder->CreateCall(func, { V(v.value()),
+	                                                             isZeroUndef ? llvm::ConstantInt::getTrue(*jit->context) : llvm::ConstantInt::getFalse(*jit->context) })));
 }
 
 RValue<Int> MinAtomic(RValue<Pointer<Int>> x, RValue<Int> y, std::memory_order memoryOrder)
@@ -4435,26 +4435,6 @@ RValue<SIMD::UInt> Min(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 	RValue<SIMD::UInt> less = CmpLT(x, y);
 	return (x & less) | (y & ~less);
-}
-
-RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef)
-{
-	SIMD::UInt result;
-	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
-	{
-		result = Insert128(result, Ctlz(Extract128(x, lane128), isZeroUndef), lane128);
-	}
-	return result;
-}
-
-RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> x, bool isZeroUndef)
-{
-	SIMD::UInt result;
-	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
-	{
-		result = Insert128(result, Cttz(Extract128(x, lane128), isZeroUndef), lane128);
-	}
-	return result;
 }
 
 RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
