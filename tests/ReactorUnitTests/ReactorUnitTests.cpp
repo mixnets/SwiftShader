@@ -16,6 +16,7 @@
 #include "Coroutine.hpp"
 #include "Print.hpp"
 #include "Reactor.hpp"
+#include "SIMD.hpp"
 
 #include "gtest/gtest.h"
 
@@ -3055,11 +3056,11 @@ TEST(ReactorUnitTests, Intrinsics_Ctlz)
 	}
 
 	{
-		Function<Void(Pointer<UInt4>, UInt x)> function;
+		Function<Void(Pointer<SIMD::UInt>, UInt x)> function;
 		{
-			Pointer<UInt4> out = function.Arg<0>();
+			Pointer<SIMD::UInt> out = function.Arg<0>();
 			UInt x = function.Arg<1>();
-			*out = rr::Ctlz(UInt4(x), false);
+			*out = rr::Ctlz(SIMD::UInt(x), false);
 		}
 		auto routine = function(testName().c_str());
 		auto callable = (void (*)(uint32_t *, uint32_t))routine->getEntry();
@@ -3113,11 +3114,11 @@ TEST(ReactorUnitTests, Intrinsics_Cttz)
 	}
 
 	{
-		Function<Void(Pointer<UInt4>, UInt x)> function;
+		Function<Void(Pointer<SIMD::UInt>, UInt x)> function;
 		{
-			Pointer<UInt4> out = function.Arg<0>();
+			Pointer<SIMD::UInt> out = function.Arg<0>();
 			UInt x = function.Arg<1>();
-			*out = rr::Cttz(UInt4(x), false);
+			*out = rr::Cttz(SIMD::UInt(x), false);
 		}
 		auto routine = function(testName().c_str());
 		auto callable = (void (*)(uint32_t *, uint32_t))routine->getEntry();
