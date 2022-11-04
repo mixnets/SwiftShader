@@ -3777,10 +3777,10 @@ bool HasRcpApprox()
 	return false;
 }
 
-RValue<Float4> RcpApprox(RValue<Float4> x, bool exactAtPow2)
+RValue<SIMD::Float> RcpApprox(RValue<SIMD::Float> x, bool exactAtPow2)
 {
 	// TODO(b/175612820): Update once we implement x86 SSE rcp_ss and rsqrt_ss intrinsics in Subzero
-	UNREACHABLE("RValue<Float4> RcpApprox()");
+	UNREACHABLE("RValue<SIMD::Float> RcpApprox()");
 	return { 0.0f };
 }
 
@@ -3796,7 +3796,7 @@ bool HasRcpSqrtApprox()
 	return false;
 }
 
-RValue<Float4> RcpSqrtApprox(RValue<Float4> x)
+RValue<SIMD::Float> RcpSqrtApprox(RValue<SIMD::Float> x)
 {
 	// TODO(b/175612820): Update once we implement x86 SSE rcp_ss and rsqrt_ss intrinsics in Subzero
 	UNREACHABLE("RValue<Float4> RcpSqrtApprox()");
@@ -3808,31 +3808,6 @@ RValue<Float> RcpSqrtApprox(RValue<Float> x)
 	// TODO(b/175612820): Update once we implement x86 SSE rcp_ss and rsqrt_ss intrinsics in Subzero
 	UNREACHABLE("RValue<Float> RcpSqrtApprox()");
 	return { 0.0f };
-}
-
-RValue<Float4> Sqrt(RValue<Float4> x)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-	if(emulateIntrinsics || CPUID::ARM)
-	{
-		Float4 result;
-		result.x = Sqrt(Float(Float4(x).x));
-		result.y = Sqrt(Float(Float4(x).y));
-		result.z = Sqrt(Float(Float4(x).z));
-		result.w = Sqrt(Float(Float4(x).w));
-
-		return result;
-	}
-	else
-	{
-		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = { Ice::Intrinsics::Sqrt, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F };
-		auto sqrt = Ice::InstIntrinsic::create(::function, 1, result, intrinsic);
-		sqrt->addArg(x.value());
-		::basicBlock->appendInst(sqrt);
-
-		return RValue<Float4>(V(result));
-	}
 }
 
 RValue<Int> SignMask(RValue<Float4> x)
@@ -5348,20 +5323,6 @@ RValue<SIMD::Float> Ceil(RValue<SIMD::Float> x)
 	{
 		return -Floor(-x);
 	}
-}
-
-RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
-{
-	ASSERT(SIMD::Width == 4);
-	SIMD::Float result;
-	return Insert128(result, Rcp(Extract128(x, 0), relaxedPrecision, exactAtPow2), 0);
-}
-
-RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision)
-{
-	ASSERT(SIMD::Width == 4);
-	SIMD::Float result;
-	return Insert128(result, RcpSqrt(Extract128(x, 0), relaxedPrecision), 0);
 }
 
 RValue<SIMD::Float> Swizzle(RValue<SIMD::Float> x, uint16_t select)

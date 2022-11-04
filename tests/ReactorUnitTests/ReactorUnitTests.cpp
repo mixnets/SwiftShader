@@ -2860,6 +2860,7 @@ struct IntrinsicTestParams
 
 using IntrinsicTestParams_Float = IntrinsicTestParams<RValue<Float>(RValue<Float>), float(float), float>;
 using IntrinsicTestParams_Float4 = IntrinsicTestParams<RValue<Float4>(RValue<Float4>), float(float), float>;
+using IntrinsicTestParams_SIMD_Float = IntrinsicTestParams<RValue<SIMD::Float>(RValue<SIMD::Float>), float(float), float>;
 using IntrinsicTestParams_Float4_Float4 = IntrinsicTestParams<RValue<Float4>(RValue<Float4>, RValue<Float4>), float(float, float), std::pair<float, float>>;
 
 // TODO(b/147818976): Each function has its own precision requirements for Vulkan, sometimes broken down
@@ -2925,6 +2926,13 @@ struct type4_value
 using float4_value = type4_value<float4>;
 using int4_value = type4_value<int4>;
 
+template<typename RoutineType, typename T>
+T *invokeRoutine(RoutineType &routine, T *v)
+{
+	routine(v);
+	return v;
+}
+
 // Invoke a void(type4_value<T>*) routine on &v.v, returning wrapped result in v
 template<typename RoutineType, typename T>
 type4_value<T> invokeRoutine(RoutineType &routine, type4_value<T> v)
@@ -2963,6 +2971,34 @@ struct IntrinsicTest_Float4 : public testing::TestWithParam<IntrinsicTestParams_
 			EXPECT_NEAR(result.v[1], expected.v[1], INTRINSIC_PRECISION);
 			EXPECT_NEAR(result.v[2], expected.v[2], INTRINSIC_PRECISION);
 			EXPECT_NEAR(result.v[3], expected.v[3], INTRINSIC_PRECISION);
+		}
+	}
+};
+
+struct IntrinsicTest_SIMD_Float : public testing::TestWithParam<IntrinsicTestParams_SIMD_Float>
+{
+	void test()
+	{
+		FunctionT<void(float *)> function;
+		{
+			Pointer<rr::Float> a0 = function.Arg<0>();
+			Pointer<SIMD::Float> a = As<Pointer<SIMD::Float>>(a0);
+			*a = GetParam().testFunc(*a);
+			Return();
+		}
+
+		auto routine = function(testName().c_str());
+
+		for(auto &&v : GetParam().testValues)
+		{
+			SCOPED_TRACE(v);
+			std::vector<float> v_full(SIMD::Width, v);
+			memcpy(&v_full[0], invokeRoutine(routine, &v_full[0]), SIMD::Width * sizeof(float));
+			float4_value expected = float4_value{ GetParam().refFunc(v) };
+			for(int i = 0; i < SIMD::Width; i++)
+			{
+				EXPECT_NEAR(v_full[i], expected.v[i % 4], INTRINSIC_PRECISION);
+			}
 		}
 	}
 };
@@ -3030,8 +3066,13 @@ INSTANTIATE_TEST_SUITE_P(IntrinsicTestParams_Float4, IntrinsicTest_Float4, testi
 	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Exp(v); },   expf,         {0.f, 1.f, PI}  },
 	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Log(v); },   logf,         {1.f, PI, 123.f}  },
 	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Exp2(v); },  exp2f,        {0.f, 1.f, PI, 123.f}  },
-	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Log2(v); },  log2f,        {1.f, PI, 123.f}  },
-	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Sqrt(v); },  sqrtf,        {0.f, 1.f, PI, 123.f}  }
+	IntrinsicTestParams_Float4{ [](RValue<Float4> v) { return rr::Log2(v); },  log2f,        {1.f, PI, 123.f}  }
+));
+// clang-format on
+
+// clang-format off
+INSTANTIATE_TEST_SUITE_P(IntrinsicTestParams_SIMD_Float, IntrinsicTest_SIMD_Float, testing::Values(
+	IntrinsicTestParams_SIMD_Float{ [](RValue<rr::SIMD::Float> v) { return rr::Sqrt(v); },  sqrtf,        {0.f, 1.f, PI, 123.f}  }
 ));
 // clang-format on
 
@@ -3047,6 +3088,10 @@ TEST_P(IntrinsicTest_Float, Test)
 	test();
 }
 TEST_P(IntrinsicTest_Float4, Test)
+{
+	test();
+}
+TEST_P(IntrinsicTest_SIMD_Float, Test)
 {
 	test();
 }

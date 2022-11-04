@@ -18,6 +18,7 @@
 #include "CPUID.hpp"
 #include "Debug.hpp"
 #include "Print.hpp"
+#include "SIMD.hpp"
 
 #if defined(_WIN32)
 #	ifndef WIN32_LEAN_AND_MEAN
@@ -4762,7 +4763,7 @@ int DebugPrintf(const char *format, ...)
 
 // Functions implemented by backends
 bool HasRcpApprox();
-RValue<Float4> RcpApprox(RValue<Float4> x, bool exactAtPow2 = false);
+RValue<SIMD::Float> RcpApprox(RValue<SIMD::Float> x, bool exactAtPow2 = false);
 RValue<Float> RcpApprox(RValue<Float> x, bool exactAtPow2 = false);
 
 template<typename T>
@@ -4794,7 +4795,7 @@ static RValue<T> DoRcp(RValue<T> x, bool relaxedPrecision, bool exactAtPow2)
 	return rcp;
 }
 
-RValue<Float4> Rcp(RValue<Float4> x, bool relaxedPrecision, bool exactAtPow2)
+RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	return DoRcp(x, relaxedPrecision, exactAtPow2);
@@ -4808,11 +4809,17 @@ RValue<Float> Rcp(RValue<Float> x, bool relaxedPrecision, bool exactAtPow2)
 
 // Functions implemented by backends
 bool HasRcpSqrtApprox();
-RValue<Float4> RcpSqrtApprox(RValue<Float4> x);
+RValue<SIMD::Float> RcpSqrtApprox(RValue<SIMD::Float> x);
 RValue<Float> RcpSqrtApprox(RValue<Float> x);
 
 template<typename T>
 struct CastToIntType;
+
+template<>
+struct CastToIntType<SIMD::Float>
+{
+	using type = SIMD::Int;
+};
 
 template<>
 struct CastToIntType<Float4>
@@ -4861,7 +4868,7 @@ static RValue<T> DoRcpSqrt(RValue<T> x, bool relaxedPrecision)
 	}
 }
 
-RValue<Float4> RcpSqrt(RValue<Float4> x, bool relaxedPrecision)
+RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision)
 {
 	return DoRcpSqrt(x, relaxedPrecision);
 }
