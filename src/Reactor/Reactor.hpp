@@ -1678,7 +1678,6 @@ RValue<Int4> Insert(RValue<Int4> val, RValue<Int> element, int i);
 RValue<Int> SignMask(RValue<Int4> x);
 RValue<Int4> Swizzle(RValue<Int4> x, uint16_t select);
 RValue<Int4> Shuffle(RValue<Int4> x, RValue<Int4> y, uint16_t select);
-RValue<Int4> MulHigh(RValue<Int4> x, RValue<Int4> y);
 
 class UInt4 : public LValue<UInt4>, public XYZW<UInt4>
 {
@@ -1764,7 +1763,6 @@ inline RValue<UInt4> CmpGE(RValue<UInt4> x, RValue<UInt4> y)
 }
 RValue<UInt4> Max(RValue<UInt4> x, RValue<UInt4> y);
 RValue<UInt4> Min(RValue<UInt4> x, RValue<UInt4> y);
-RValue<UInt4> MulHigh(RValue<UInt4> x, RValue<UInt4> y);
 RValue<UInt> Extract(RValue<UInt4> val, int i);
 RValue<UInt4> Insert(RValue<UInt4> val, RValue<UInt> element, int i);
 //	RValue<UInt4> RoundInt(RValue<Float4> cast);

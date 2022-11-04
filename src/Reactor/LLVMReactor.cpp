@@ -2706,18 +2706,18 @@ RValue<Int4> RoundIntClamped(RValue<Float4> cast)
 #endif
 }
 
-RValue<Int4> MulHigh(RValue<Int4> x, RValue<Int4> y)
+RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	// TODO: For x86, build an intrinsics version of this which uses shuffles + pmuludq.
-	return As<Int4>(V(lowerMulHigh(V(x.value()), V(y.value()), true)));
+	return As<SIMD::Int>(V(lowerMulHigh(V(x.value()), V(y.value()), true)));
 }
 
-RValue<UInt4> MulHigh(RValue<UInt4> x, RValue<UInt4> y)
+RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	// TODO: For x86, build an intrinsics version of this which uses shuffles + pmuludq.
-	return As<UInt4>(V(lowerMulHigh(V(x.value()), V(y.value()), false)));
+	return As<SIMD::UInt>(V(lowerMulHigh(V(x.value()), V(y.value()), false)));
 }
 
 RValue<Short8> PackSigned(RValue<Int4> x, RValue<Int4> y)
@@ -4274,16 +4274,6 @@ RValue<Int> SignMask(RValue<SIMD::Int> x)
 	return result;
 }
 
-RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
-{
-	SIMD::Int result;
-	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
-	{
-		result = Insert128(result, MulHigh(Extract128(x, lane128), Extract128(y, lane128)), lane128);
-	}
-	return result;
-}
-
 RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select)
 {
 	SIMD::Int result;
@@ -4409,16 +4399,6 @@ RValue<SIMD::UInt> Min(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 	RValue<SIMD::UInt> less = CmpLT(x, y);
 	return (x & less) | (y & ~less);
-}
-
-RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
-{
-	SIMD::UInt result;
-	for(int lane128 = 0; lane128 < SIMD::Width / 4; lane128++)
-	{
-		result = Insert128(result, MulHigh(Extract128(x, lane128), Extract128(y, lane128)), lane128);
-	}
-	return result;
 }
 
 RValue<SIMD::UInt> Swizzle(RValue<SIMD::UInt> x, uint16_t select)
