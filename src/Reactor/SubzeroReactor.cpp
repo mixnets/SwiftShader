@@ -2880,7 +2880,7 @@ RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y)
 	}
 }
 
-RValue<Int4> MulHigh(RValue<Int4> x, RValue<Int4> y)
+RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	// TODO: For x86, build an intrinsics version of this which uses shuffles + pmuludq.
@@ -2888,7 +2888,7 @@ RValue<Int4> MulHigh(RValue<Int4> x, RValue<Int4> y)
 	return Scalarize([](auto a, auto b) { return Int((Long(a) * Long(b)) >> Long(Int(32))); }, x, y);
 }
 
-RValue<UInt4> MulHigh(RValue<UInt4> x, RValue<UInt4> y)
+RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	// TODO: For x86, build an intrinsics version of this which uses shuffles + pmuludq.
@@ -4893,13 +4893,6 @@ RValue<Int> SignMask(RValue<SIMD::Int> x)
 	return SignMask(Extract128(x, 0));
 }
 
-RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
-{
-	ASSERT(SIMD::Width == 4);
-	SIMD::Int result;
-	return Insert128(result, MulHigh(Extract128(x, 0), Extract128(y, 0)), 0);
-}
-
 RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select)
 {
 	ASSERT(SIMD::Width == 4);
@@ -5055,13 +5048,6 @@ RValue<SIMD::UInt> Min(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 	::basicBlock->appendInst(select);
 
 	return RValue<SIMD::UInt>(V(result));
-}
-
-RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
-{
-	ASSERT(SIMD::Width == 4);
-	SIMD::UInt result;
-	return Insert128(result, MulHigh(Extract128(x, 0), Extract128(y, 0)), 0);
 }
 
 RValue<SIMD::UInt> Swizzle(RValue<SIMD::UInt> x, uint16_t select)
