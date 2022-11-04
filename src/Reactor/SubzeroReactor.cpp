@@ -4192,13 +4192,13 @@ RValue<UInt> Ctlz(RValue<UInt> x, bool isZeroUndef)
 	}
 }
 
-RValue<UInt4> Ctlz(RValue<UInt4> x, bool isZeroUndef)
+RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	if(emulateIntrinsics)
 	{
 		UNIMPLEMENTED_NO_BUG("Subzero Ctlz()");
-		return UInt4(0);
+		return SIMD::UInt(0);
 	}
 	else
 	{
@@ -4226,13 +4226,13 @@ RValue<UInt> Cttz(RValue<UInt> x, bool isZeroUndef)
 	}
 }
 
-RValue<UInt4> Cttz(RValue<UInt4> x, bool isZeroUndef)
+RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> x, bool isZeroUndef)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	if(emulateIntrinsics)
 	{
 		UNIMPLEMENTED_NO_BUG("Subzero Cttz()");
-		return UInt4(0);
+		return SIMD::UInt(0);
 	}
 	else
 	{
@@ -5073,20 +5073,6 @@ RValue<SIMD::UInt> Min(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
 	::basicBlock->appendInst(select);
 
 	return RValue<SIMD::UInt>(V(result));
-}
-
-RValue<SIMD::UInt> Ctlz(RValue<SIMD::UInt> x, bool isZeroUndef)
-{
-	ASSERT(SIMD::Width == 4);
-	SIMD::UInt result;
-	return Insert128(result, Ctlz(Extract128(x, 0), isZeroUndef), 0);
-}
-
-RValue<SIMD::UInt> Cttz(RValue<SIMD::UInt> x, bool isZeroUndef)
-{
-	ASSERT(SIMD::Width == 4);
-	SIMD::UInt result;
-	return Insert128(result, Cttz(Extract128(x, 0), isZeroUndef), 0);
 }
 
 RValue<SIMD::UInt> MulHigh(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y)
