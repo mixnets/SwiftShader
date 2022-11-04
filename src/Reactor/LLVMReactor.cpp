@@ -4284,32 +4284,6 @@ RValue<SIMD::Int> MulHigh(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 	return result;
 }
 
-RValue<Bool> AnyTrue(const RValue<SIMD::Int> &bools)
-{
-	Bool result = AnyTrue(Extract128(bools, 0));
-	for(int lane128 = 1; lane128 < SIMD::Width / 4; lane128++)
-	{
-		result = result || AnyTrue(Extract128(bools, lane128));
-	}
-	return result;
-}
-
-RValue<Bool> AnyFalse(const RValue<SIMD::Int> &bools)
-{
-	Bool result = AnyFalse(Extract128(bools, 0));
-	for(int lane128 = 1; lane128 < SIMD::Width / 4; lane128++)
-	{
-		result = result || AnyFalse(Extract128(bools, lane128));
-	}
-	return result;
-}
-
-RValue<Bool> Divergent(const RValue<SIMD::Int> &ints)
-{
-	auto broadcastFirst = SIMD::Int(Extract(ints, 0));
-	return AnyTrue(CmpNEQ(broadcastFirst, ints));
-}
-
 RValue<SIMD::Int> Swizzle(RValue<SIMD::Int> x, uint16_t select)
 {
 	SIMD::Int result;

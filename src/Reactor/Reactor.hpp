@@ -2284,16 +2284,6 @@ enum class OutOfBoundsBehavior
 	UndefinedBehavior,   // Program may terminate.
 };
 
-RValue<Bool> AnyTrue(const RValue<Int4> &bools);
-RValue<Bool> AnyFalse(const RValue<Int4> &bools);
-RValue<Bool> AllTrue(const RValue<Int4> &bools);
-RValue<Bool> AllFalse(const RValue<Int4> &bools);
-
-RValue<Bool> Divergent(const RValue<Int4> &ints);
-RValue<Bool> Divergent(const RValue<Float4> &floats);
-RValue<Bool> Uniform(const RValue<Int4> &ints);
-RValue<Bool> Uniform(const RValue<Float4> &floats);
-
 // Fence adds a memory barrier that enforces ordering constraints on memory
 // operations. memoryOrder can only be one of:
 // std::memory_order_acquire, std::memory_order_release,

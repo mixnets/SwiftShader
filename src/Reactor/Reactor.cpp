@@ -4442,50 +4442,6 @@ RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset)
 	return lhs = lhs - offset;
 }
 
-RValue<Bool> AnyTrue(const RValue<Int4> &bools)
-{
-	return SignMask(bools) != 0;
-}
-
-RValue<Bool> AnyFalse(const RValue<Int4> &bools)
-{
-	return SignMask(~bools) != 0;  // TODO(b/214588983): Compare against mask of 4 1's to avoid bitwise NOT.
-}
-
-RValue<Bool> AllTrue(const RValue<Int4> &bools)
-{
-	return SignMask(~bools) == 0;  // TODO(b/214588983): Compare against mask of 4 1's to avoid bitwise NOT.
-}
-
-RValue<Bool> AllFalse(const RValue<Int4> &bools)
-{
-	return SignMask(bools) == 0;
-}
-
-RValue<Bool> Divergent(const RValue<Int4> &ints)
-{
-	auto broadcastFirst = Int4(Extract(ints, 0));
-	return AnyTrue(CmpNEQ(broadcastFirst, ints));
-}
-
-RValue<Bool> Divergent(const RValue<Float4> &floats)
-{
-	auto broadcastFirst = Float4(Extract(floats, 0));
-	return AnyTrue(CmpNEQ(broadcastFirst, floats));
-}
-
-RValue<Bool> Uniform(const RValue<Int4> &ints)
-{
-	auto broadcastFirst = Int4(Extract(ints, 0));
-	return AllFalse(CmpNEQ(broadcastFirst, ints));
-}
-
-RValue<Bool> Uniform(const RValue<Float4> &floats)
-{
-	auto broadcastFirst = Float4(Extract(floats, 0));
-	return AllFalse(CmpNEQ(broadcastFirst, floats));
-}
-
 void Return()
 {
 	Nucleus::createRetVoid();
