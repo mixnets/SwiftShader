@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c9805df_b86f7662",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-11-08T18:18:22Z",
+      "side": 1,
+      "message": "Are those really rasterization \"errors\"? You\u0027ve improved precision, so that should be \"better rendering\", no?\n\nFWIW, I had accepted 160 such GOLD differences in ANGLE when the 4-\u003e8 change rolled previously.",
+      "range": {
+        "startLine": 11,
+        "startChar": 19,
+        "endLine": 11,
+        "endChar": 66
+      },
+      "revId": "a113fba5d9469933a4ddd7652cefa3a3640fc25b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
