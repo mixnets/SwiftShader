@@ -1663,6 +1663,9 @@ inline RValue<Int4> CmpGE(RValue<Int4> x, RValue<Int4> y)
 RValue<Int4> Abs(RValue<Int4> x);
 RValue<Int4> Max(RValue<Int4> x, RValue<Int4> y);
 RValue<Int4> Min(RValue<Int4> x, RValue<Int4> y);
+RValue<SIMD::Int> Abs(RValue<SIMD::Int> x);
+RValue<SIMD::Int> Max(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
+RValue<SIMD::Int> Min(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
 // Convert to nearest integer. If a converted value is outside of the integer
 // range, the returned result is undefined.
 RValue<Int4> RoundInt(RValue<Float4> cast);
@@ -1998,6 +2001,9 @@ RValue<Float4> FMA(RValue<Float4> x, RValue<Float4> y, RValue<Float4> z);
 RValue<Float4> Abs(RValue<Float4> x);
 RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y);
 RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y);
+RValue<SIMD::Float> Abs(RValue<SIMD::Float> x);
+RValue<SIMD::Float> Max(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Float> Min(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
 
 RValue<SIMD::Float> Rcp(RValue<SIMD::Float> x, bool relaxedPrecision, bool exactAtPow2 = false);
 RValue<SIMD::Float> RcpSqrt(RValue<SIMD::Float> x, bool relaxedPrecision);

@@ -71,7 +71,7 @@ enum class Intrinsic
 	movmsk_ps,
 };
 
-llvm::Intrinsic::X86Intrinsics GetIntrinsic(Intrinsic intrinsic)
+llvm::Intrinsic::X86Intrinsics GetIntrinsic(Intrinsic intrinsic, int simd_width)
 {
 	auto intrinsicKey = [](Intrinsic i, int j) { return (size_t)i << 32 | (unsigned int)j; };
 
@@ -85,10 +85,12 @@ llvm::Intrinsic::X86Intrinsics GetIntrinsic(Intrinsic intrinsic)
 		{ intrinsicKey(Intrinsic::rsqrt_ps, 16), llvm::Intrinsic::x86_avx512_rsqrt28_ps },
 		{ intrinsicKey(Intrinsic::max_ps, 4), llvm::Intrinsic::x86_sse_max_ps },
 		{ intrinsicKey(Intrinsic::max_ps, 8), llvm::Intrinsic::x86_avx_max_ps_256 },
-		{ intrinsicKey(Intrinsic::max_ps, 16), llvm::Intrinsic::x86_avx512_max_ps_512 },
+		// x86_avx512_max_ps_512 causes LLVM Error: Do not know how to split the result of this operator!
+		// { intrinsicKey(Intrinsic::max_ps, 16), llvm::Intrinsic::x86_avx512_max_ps_512 },
 		{ intrinsicKey(Intrinsic::min_ps, 4), llvm::Intrinsic::x86_sse_min_ps },
 		{ intrinsicKey(Intrinsic::min_ps, 8), llvm::Intrinsic::x86_avx_min_ps_256 },
-		{ intrinsicKey(Intrinsic::min_ps, 16), llvm::Intrinsic::x86_avx512_min_ps_512 },
+		// x86_avx512_min_ps_512 causes LLVM Error: Do not know how to split the result of this operator!
+		// { intrinsicKey(Intrinsic::min_ps, 16), llvm::Intrinsic::x86_avx512_min_ps_512 },
 		{ intrinsicKey(Intrinsic::round_ps, 4), llvm::Intrinsic::x86_sse41_round_ps },
 		{ intrinsicKey(Intrinsic::round_ps, 8), llvm::Intrinsic::x86_avx_round_ps_256 },
 		// { intrinsicKey(Intrinsic::round_ps, 16), TBD },
@@ -97,9 +99,14 @@ llvm::Intrinsic::X86Intrinsics GetIntrinsic(Intrinsic intrinsic)
 		// { intrinsicKey(Intrinsic::movmsk_ps, 16), TBD },
 	};
 
-	auto it = intrinsicsMap.find(intrinsicKey(intrinsic, rr::SIMD::Width));
+	auto it = intrinsicsMap.find(intrinsicKey(intrinsic, simd_width));
 	ASSERT(it != intrinsicsMap.end());
 	return it->second;
+}
+
+llvm::Intrinsic::X86Intrinsics GetIntrinsic(Intrinsic intrinsic)
+{
+	return GetIntrinsic(intrinsic, rr::SIMD::Width);
 }
 
 // Used to automatically invoke llvm_shutdown() when driver is unloaded
@@ -3522,14 +3529,24 @@ RValue<SIMD::Float> rsqrtps(RValue<SIMD::Float> val)
 	return RValue<SIMD::Float>(createInstruction(GetIntrinsic(Intrinsic::rsqrt_ps), val.value()));
 }
 
+RValue<SIMD::Float> maxps(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
+{
+	return RValue<SIMD::Float>(createInstruction(GetIntrinsic(Intrinsic::max_ps), x.value(), y.value()));
+}
+
+RValue<SIMD::Float> minps(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
+{
+	return RValue<SIMD::Float>(createInstruction(GetIntrinsic(Intrinsic::min_ps), x.value(), y.value()));
+}
+
 RValue<Float4> maxps(RValue<Float4> x, RValue<Float4> y)
 {
-	return RValue<Float4>(createInstruction(llvm::Intrinsic::x86_sse_max_ps, x.value(), y.value()));
+	return RValue<Float4>(createInstruction(GetIntrinsic(Intrinsic::max_ps, 4), x.value(), y.value()));
 }
 
 RValue<Float4> minps(RValue<Float4> x, RValue<Float4> y)
 {
-	return RValue<Float4>(createInstruction(llvm::Intrinsic::x86_sse_min_ps, x.value(), y.value()));
+	return RValue<Float4>(createInstruction(GetIntrinsic(Intrinsic::min_ps, 4), x.value(), y.value()));
 }
 
 RValue<Float> roundss(RValue<Float> val, unsigned char imm)
@@ -4525,13 +4542,21 @@ RValue<SIMD::Float> Abs(RValue<SIMD::Float> x)
 RValue<SIMD::Float> Max(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
+#if defined(__i386__) || defined(__x86_64__)
+	return x86::maxps(x, y);
+#else
 	return As<SIMD::Float>(V(lowerPFMINMAX(V(x.value()), V(y.value()), llvm::FCmpInst::FCMP_OGT)));
+#endif
 }
 
 RValue<SIMD::Float> Min(RValue<SIMD::Float> x, RValue<SIMD::Float> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
+#if defined(__i386__) || defined(__x86_64__)
+	return x86::minps(x, y);
+#else
 	return As<SIMD::Float>(V(lowerPFMINMAX(V(x.value()), V(y.value()), llvm::FCmpInst::FCMP_OLT)));
+#endif
 }
 
 RValue<SIMD::Int> CmpEQ(RValue<SIMD::Float> x, RValue<SIMD::Float> y)

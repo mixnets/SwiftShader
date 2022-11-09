@@ -1343,29 +1343,58 @@ TEST(ReactorUnitTests, MinMax)
 	{
 		Pointer<Byte> out = function.Arg<0>();
 
-		*Pointer<Float4>(out + 16 * 0) = Min(Float4(1.0f, 0.0f, -0.0f, +0.0f), Float4(0.0f, 1.0f, +0.0f, -0.0f));
-		*Pointer<Float4>(out + 16 * 1) = Max(Float4(1.0f, 0.0f, -0.0f, +0.0f), Float4(0.0f, 1.0f, +0.0f, -0.0f));
+		float v1f[] = { 1.0f, 0.0f, -0.0f, +0.0f };
+		float v2f[] = { 0.0f, 1.0f, +0.0f, -0.0f };
+		int v1i[] = { 1, 0, -1, -0 };
+		int v2i[] = { 0, 1, 0, +0 };
+		unsigned int v1u[] = { 1u, 0u, -1u, -0u };
+		unsigned int v2u[] = { 0u, 1u, 0u, +0u };
 
-		*Pointer<Int4>(out + 16 * 2) = Min(Int4(1, 0, -1, -0), Int4(0, 1, 0, +0));
-		*Pointer<Int4>(out + 16 * 3) = Max(Int4(1, 0, -1, -0), Int4(0, 1, 0, +0));
-		*Pointer<UInt4>(out + 16 * 4) = Min(UInt4(1, 0, -1, -0), UInt4(0, 1, 0, +0));
-		*Pointer<UInt4>(out + 16 * 5) = Max(UInt4(1, 0, -1, -0), UInt4(0, 1, 0, +0));
+		*Pointer<Float4>(out + 16 * 0) = Min(Float4(v1f[0], v1f[1], v1f[2], v1f[3]), Float4(v2f[0], v2f[1], v2f[2], v2f[3]));
+		*Pointer<Float4>(out + 16 * 1) = Max(Float4(v1f[0], v1f[1], v1f[2], v1f[3]), Float4(v2f[0], v2f[1], v2f[2], v2f[3]));
 
-		*Pointer<Short4>(out + 16 * 6) = Min(Short4(1, 0, -1, -0), Short4(0, 1, 0, +0));
-		*Pointer<Short4>(out + 16 * 7) = Max(Short4(1, 0, -1, -0), Short4(0, 1, 0, +0));
-		*Pointer<UShort4>(out + 16 * 8) = Min(UShort4(1, 0, -1, -0), UShort4(0, 1, 0, +0));
-		*Pointer<UShort4>(out + 16 * 9) = Max(UShort4(1, 0, -1, -0), UShort4(0, 1, 0, +0));
+		*Pointer<Int4>(out + 16 * 2) = Min(Int4(v1i[0], v1i[1], v1i[2], v1i[3]), Int4(v2i[0], v2i[1], v2i[2], v2i[3]));
+		*Pointer<Int4>(out + 16 * 3) = Max(Int4(v1i[0], v1i[1], v1i[2], v1i[3]), Int4(v2i[0], v2i[1], v2i[2], v2i[3]));
+		*Pointer<UInt4>(out + 16 * 4) = Min(UInt4(v1u[0], v1u[1], v1u[2], v1u[3]), UInt4(v2u[0], v2u[1], v2u[2], v2u[3]));
+		*Pointer<UInt4>(out + 16 * 5) = Max(UInt4(v1u[0], v1u[1], v1u[2], v1u[3]), UInt4(v2u[0], v2u[1], v2u[2], v2u[3]));
+
+		*Pointer<Short4>(out + 16 * 6) = Min(Short4(v1i[0], v1i[1], v1i[2], v1i[3]), Short4(v2i[0], v2i[1], v2i[2], v2i[3]));
+		*Pointer<Short4>(out + 16 * 7) = Max(Short4(v1i[0], v1i[1], v1i[2], v1i[3]), Short4(v2i[0], v2i[1], v2i[2], v2i[3]));
+		*Pointer<UShort4>(out + 16 * 8) = Min(UShort4(v1u[0], v1u[1], v1u[2], v1u[3]), UShort4(v2u[0], v2u[1], v2u[2], v2u[3]));
+		*Pointer<UShort4>(out + 16 * 9) = Max(UShort4(v1u[0], v1u[1], v1u[2], v1u[3]), UShort4(v2u[0], v2u[1], v2u[2], v2u[3]));
+
+		*Pointer<SIMD::Float>(out + 16 * 10) =
+		    Min(SIMD::Float([v1f](int i) { return v1f[i % 4]; }),
+		        SIMD::Float([v2f](int i) { return v2f[i % 4]; }));
+		*Pointer<SIMD::Float>(out + 16 * 10 + (SIMD::Width * 4)) =
+		    Max(SIMD::Float([v1f](int i) { return v1f[i % 4]; }),
+		        SIMD::Float([v2f](int i) { return v2f[i % 4]; }));
+
+		*Pointer<SIMD::Int>(out + 16 * 10 + (SIMD::Width * 8)) =
+		    Min(SIMD::Int([v1i](int i) { return v1i[i % 4]; }),
+		        SIMD::Int([v2i](int i) { return v2i[i % 4]; }));
+		*Pointer<SIMD::Int>(out + 16 * 10 + (SIMD::Width * 12)) =
+		    Max(SIMD::Int([v1i](int i) { return v1i[i % 4]; }),
+		        SIMD::Int([v2i](int i) { return v2i[i % 4]; }));
+
+		*Pointer<SIMD::UInt>(out + 16 * 10 + (SIMD::Width * 16)) =
+		    Min(SIMD::UInt([v1u](int i) { return v1u[i % 4]; }),
+		        SIMD::UInt([v2u](int i) { return v2u[i % 4]; }));
+		*Pointer<SIMD::UInt>(out + 16 * 10 + (SIMD::Width * 20)) =
+		    Max(SIMD::UInt([v1u](int i) { return v1u[i % 4]; }),
+		        SIMD::UInt([v2u](int i) { return v2u[i % 4]; }));
 
 		Return(0);
 	}
 
 	auto routine = function(testName().c_str());
 
-	unsigned int out[10][4];
+	const int vectorSize = 10 + 6 * (SIMD::Width / 4);
+	std::vector<std::array<unsigned int, 4>> out(vectorSize);
 
-	memset(&out, 0, sizeof(out));
+	memset(&out[0][0], 0, vectorSize * sizeof(unsigned int) * 4);
 
-	routine(&out);
+	routine(&out[0][0]);
 
 	EXPECT_EQ(out[0][0], 0x00000000u);
 	EXPECT_EQ(out[0][1], 0x00000000u);
@@ -1416,6 +1445,55 @@ TEST(ReactorUnitTests, MinMax)
 	EXPECT_EQ(out[9][1], 0x0000FFFFu);
 	EXPECT_EQ(out[9][2], 0x00000000u);
 	EXPECT_EQ(out[9][3], 0x00000000u);
+
+	int idx = 10;
+	for(int i = 0; i < SIMD::Width / 4; i++, idx++)
+	{
+		EXPECT_EQ(out[idx][0], 0x00000000u);
+		EXPECT_EQ(out[idx][1], 0x00000000u);
+		EXPECT_EQ(out[idx][2], 0x00000000u);
+		EXPECT_EQ(out[idx][3], 0x80000000u);
+	}
+
+	for(int i = 0; i < SIMD::Width / 4; i++, idx++)
+	{
+		EXPECT_EQ(out[idx][0], 0x3F800000u);
+		EXPECT_EQ(out[idx][1], 0x3F800000u);
+		EXPECT_EQ(out[idx][2], 0x00000000u);
+		EXPECT_EQ(out[idx][3], 0x80000000u);
+	}
+
+	for(int i = 0; i < SIMD::Width / 4; i++, idx++)
+	{
+		EXPECT_EQ(out[idx][0], 0x00000000u);
+		EXPECT_EQ(out[idx][1], 0x00000000u);
+		EXPECT_EQ(out[idx][2], 0xFFFFFFFFu);
+		EXPECT_EQ(out[idx][3], 0x00000000u);
+	}
+
+	for(int i = 0; i < SIMD::Width / 4; i++, idx++)
+	{
+		EXPECT_EQ(out[idx][0], 0x00000001u);
+		EXPECT_EQ(out[idx][1], 0x00000001u);
+		EXPECT_EQ(out[idx][2], 0x00000000u);
+		EXPECT_EQ(out[idx][3], 0x00000000u);
+	}
+
+	for(int i = 0; i < SIMD::Width / 4; i++, idx++)
+	{
+		EXPECT_EQ(out[idx][0], 0x00000000u);
+		EXPECT_EQ(out[idx][1], 0x00000000u);
+		EXPECT_EQ(out[idx][2], 0x00000000u);
+		EXPECT_EQ(out[idx][3], 0x00000000u);
+	}
+
+	for(int i = 0; i < SIMD::Width / 4; i++, idx++)
+	{
+		EXPECT_EQ(out[idx][0], 0x00000001u);
+		EXPECT_EQ(out[idx][1], 0x00000001u);
+		EXPECT_EQ(out[idx][2], 0xFFFFFFFFu);
+		EXPECT_EQ(out[idx][3], 0x00000000u);
+	}
 }
 
 TEST(ReactorUnitTests, NotNeg)

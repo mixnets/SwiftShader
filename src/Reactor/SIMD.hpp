@@ -258,9 +258,6 @@ inline RValue<SIMD::Int> CmpGE(RValue<SIMD::Int> x, RValue<SIMD::Int> y)
 {
 	return CmpNLT(x, y);
 }
-RValue<SIMD::Int> Abs(RValue<SIMD::Int> x);
-RValue<SIMD::Int> Max(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
-RValue<SIMD::Int> Min(RValue<SIMD::Int> x, RValue<SIMD::Int> y);
 // Convert to nearest integer. If a converted value is outside of the integer
 // range, the returned result is undefined.
 RValue<SIMD::Int> RoundInt(RValue<SIMD::Float> cast);
@@ -351,10 +348,6 @@ RValue<SIMD::Float> operator-(RValue<SIMD::Float> val);
 RValue<SIMD::Float> MulAdd(RValue<SIMD::Float> x, RValue<SIMD::Float> y, RValue<SIMD::Float> z);
 // Computes a fused `x * y + z` operation. Caps::fmaIsFast indicates whether it emits an FMA instruction.
 RValue<SIMD::Float> FMA(RValue<SIMD::Float> x, RValue<SIMD::Float> y, RValue<SIMD::Float> z);
-
-RValue<SIMD::Float> Abs(RValue<SIMD::Float> x);
-RValue<SIMD::Float> Max(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
-RValue<SIMD::Float> Min(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
 
 RValue<SIMD::Float> Insert(RValue<SIMD::Float> val, RValue<rr ::Float> element, int i);
 RValue<rr ::Float> Extract(RValue<SIMD::Float> x, int i);

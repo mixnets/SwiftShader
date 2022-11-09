@@ -31,6 +31,8 @@ RValue<Float> rsqrtss(RValue<Float> val);
 RValue<SIMD::Float> rcpps(RValue<SIMD::Float> val);
 RValue<SIMD::Float> sqrtps(RValue<SIMD::Float> val);
 RValue<SIMD::Float> rsqrtps(RValue<SIMD::Float> val);
+RValue<SIMD::Float> maxps(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
+RValue<SIMD::Float> minps(RValue<SIMD::Float> x, RValue<SIMD::Float> y);
 RValue<Float4> maxps(RValue<Float4> x, RValue<Float4> y);
 RValue<Float4> minps(RValue<Float4> x, RValue<Float4> y);
 
