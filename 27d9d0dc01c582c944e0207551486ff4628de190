@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32380fbd_5f8d331b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-09T15:33:42Z",
+      "side": 1,
+      "message": "Could be worth understanding why?",
+      "range": {
+        "startLine": 9,
+        "startChar": 47,
+        "endLine": 9,
+        "endChar": 62
+      },
+      "revId": "27d9d0dc01c582c944e0207551486ff4628de190",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ff396c0_6c6b8908",
+        "filename": "tests/VulkanWrapper/Util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-09T15:33:42Z",
+      "side": 1,
+      "message": "This is not robust against glslang modifying this struct upstream.",
+      "range": {
+        "startLine": 23,
+        "startChar": 6,
+        "endLine": 23,
+        "endChar": 23
+      },
+      "revId": "27d9d0dc01c582c944e0207551486ff4628de190",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
