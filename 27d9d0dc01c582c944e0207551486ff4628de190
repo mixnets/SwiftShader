@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b574c0f6_594877a2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2022-11-09T18:53:26Z",
+      "side": 1,
+      "message": "This is the CL where they changed it: https://github.com/KhronosGroup/glslang/commit/90c5214344bc9ec0e7c5cc09e86dad82b8b7abc9",
+      "parentUuid": "32380fbd_5f8d331b",
+      "range": {
+        "startLine": 9,
+        "startChar": 47,
+        "endLine": 9,
+        "endChar": 62
+      },
+      "revId": "27d9d0dc01c582c944e0207551486ff4628de190",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5ff396c0_6c6b8908",
         "filename": "tests/VulkanWrapper/Util.cpp",
         "patchSetId": 1
