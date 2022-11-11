@@ -108,7 +108,6 @@ struct Constants
 
 	unsigned short sRGBtoLinearFF_FF00[256];
 
-	unsigned short linearToSRGB12_16[4096];
 	unsigned short sRGBtoLinear12_16[4096];
 
 	// Centroid parameters
