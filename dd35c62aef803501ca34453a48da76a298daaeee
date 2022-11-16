@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b1f15d1_6f5129fe",
+        "filename": "kokoro/ubuntu/docker.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2022-11-16T11:00:28Z",
+      "side": 1,
+      "message": "I think this is just subtree + gerrit weirdness, where it\u0027s getting confused with the identical relative-path files. I think.",
+      "revId": "dd35c62aef803501ca34453a48da76a298daaeee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
