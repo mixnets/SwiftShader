@@ -675,7 +675,8 @@ SIMD::Float linearToSRGB(const SIMD::Float &c)
 	SIMD::Float lc = Min(c, 0.0031308f) * 12.92f;
 	SIMD::Float ec = MulAdd(1.055f, Pow<Mediump>(c, (1.0f / 2.4f)), -0.055f);  // TODO(b/149574741): Use a custom approximation.
 
-	return Max(lc, ec);
+	SIMD::Int linear = CmpLT(c, 0.0031308f);
+	return As<SIMD::Float>((linear & As<SIMD::Int>(lc)) | (~linear & As<SIMD::Int>(ec)));  // TODO: IfThenElse()
 }
 
 SIMD::Float sRGBtoLinear(const SIMD::Float &c)
@@ -902,7 +903,8 @@ Float4 linearToSRGB(const Float4 &c)
 	Float4 lc = Min(c, 0.0031308f) * 12.92f;
 	Float4 ec = MulAdd(1.055f, Pow<Mediump>(c, (1.0f / 2.4f)), -0.055f);  // TODO(b/149574741): Use a custom approximation.
 
-	return Max(lc, ec);
+	Int4 linear = CmpLT(c, 0.0031308f);
+	return As<Float4>((linear & As<Int4>(lc)) | (~linear & As<Int4>(ec)));  // TODO: IfThenElse()
 }
 
 Float4 sRGBtoLinear(const Float4 &c)
