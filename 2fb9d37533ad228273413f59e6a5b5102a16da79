@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1458f3f_38856d5d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2022-11-17T21:19:55Z",
+      "side": 1,
+      "message": "It might be useful to make a macro to define writing a for loop over simd 128 lanes, just to reduce the chance of a typo that\u0027s hard to see.\nEspecially since some of these are starting at 1, others at 0, and in other part of the code you\u0027re counting backwards.",
+      "revId": "2fb9d37533ad228273413f59e6a5b5102a16da79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
