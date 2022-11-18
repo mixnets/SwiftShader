@@ -16,13 +16,25 @@ cmake_minimum_required(VERSION 3.13)
 
 project(SwiftShader C CXX ASM)
 
+<<<<<<< HEAD   (6a259c Handle AHARDWAREBUFFER_FORMAT_R8_UNORM AHBs)
 set(CMAKE_CXX_STANDARD 17)
 set(CXX_STANDARD_REQUIRED ON)
 # MSVC doesn't define __cplusplus by default
 if(MSVC)
     string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
+=======
+option(SPIRV_HEADERS_SKIP_EXAMPLES "Skip building examples"
+      ${SPIRV_HEADERS_SKIP_EXAMPLES})
+
+option(SPIRV_HEADERS_SKIP_INSTALL "Skip install"
+      ${SPIRV_HEADERS_SKIP_INSTALL})
+
+if(NOT ${SPIRV_HEADERS_SKIP_EXAMPLES})
+  set(SPIRV_HEADERS_ENABLE_EXAMPLES ON)
+>>>>>>> BRANCH (1e25e5 Squashed 'third_party/SPIRV-Headers/' changes from 0bcc62492)
 endif()
 
+<<<<<<< HEAD   (6a259c Handle AHARDWAREBUFFER_FORMAT_R8_UNORM AHBs)
 ###########################################################
 # Detect system
 ###########################################################
@@ -40,6 +52,14 @@ elseif(FUCHSIA)
     find_package(FuchsiaLibraries)
 else()
     message(FATAL_ERROR "Platform is not supported")
+=======
+if(NOT ${SPIRV_HEADERS_SKIP_INSTALL})
+  set(SPIRV_HEADERS_ENABLE_INSTALL ON)
+  # legacy
+  add_custom_target(install-headers
+      COMMAND cmake -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv
+          $ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/include/spirv)
+>>>>>>> BRANCH (1e25e5 Squashed 'third_party/SPIRV-Headers/' changes from 0bcc62492)
 endif()
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch")
