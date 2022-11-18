@@ -69,6 +69,24 @@
       "parentUuid": "1c898c96_d56f0514",
       "revId": "d89bb01103849929db4ea6e93f00df3fbff78344",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "52de4758_1a489ca8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-18T14:52:44Z",
+      "side": 1,
+      "message": "Oh, I see, the build error happens while \"testing parent of change\".\nThat\u0027s a bit unreliable. The tests seemed to pass ok with the change, so I think we can land this.",
+      "parentUuid": "611a1139_5643bbc7",
+      "revId": "d89bb01103849929db4ea6e93f00df3fbff78344",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
