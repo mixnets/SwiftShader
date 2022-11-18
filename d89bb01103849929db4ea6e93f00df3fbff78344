@@ -51,6 +51,24 @@
       "parentUuid": "2b76b9dd_f2ffe062",
       "revId": "d89bb01103849929db4ea6e93f00df3fbff78344",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "611a1139_5643bbc7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-18T14:49:35Z",
+      "side": 1,
+      "message": "The build error happens with the original version of the validate_builtins file, not the new version, so it might have happened for one of the previous CLs in the stack of CLs.",
+      "parentUuid": "1c898c96_d56f0514",
+      "revId": "d89bb01103849929db4ea6e93f00df3fbff78344",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
