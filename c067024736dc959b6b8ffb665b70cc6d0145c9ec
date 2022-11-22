@@ -22,6 +22,30 @@
       },
       "revId": "c067024736dc959b6b8ffb665b70cc6d0145c9ec",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da7e75b3_94facd8b",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-22T19:22:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c0644f93_a41a1557",
+      "range": {
+        "startLine": 176,
+        "startChar": 17,
+        "endLine": 176,
+        "endChar": 21
+      },
+      "revId": "c067024736dc959b6b8ffb665b70cc6d0145c9ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
