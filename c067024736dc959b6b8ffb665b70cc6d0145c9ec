@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0644f93_a41a1557",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-22T14:46:13Z",
+      "side": 1,
+      "message": "I would call this `transpose4x4zyxw()` since it\u0027s not necessarily the corresponding color channels in these components.",
+      "range": {
+        "startLine": 176,
+        "startChar": 17,
+        "endLine": 176,
+        "endChar": 21
+      },
+      "revId": "c067024736dc959b6b8ffb665b70cc6d0145c9ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
