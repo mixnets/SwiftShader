@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68bb9ba9_cf17eaa1",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4272,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2022-11-22T19:54:35Z",
+      "side": 1,
+      "message": "nit: IMO this pattern is less easy to read/maintain than just a single loop starting at 0. but up to you",
+      "range": {
+        "startLine": 4269,
+        "startChar": 1,
+        "endLine": 4272,
+        "endChar": 45
+      },
+      "revId": "c79cb2bb0c2a5b69ab3d653f6117a58e9e0f0114",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
