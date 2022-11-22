@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "598d724c_2dff573f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-22T14:44:03Z",
+      "side": 1,
+      "message": "Can you elaborate?",
+      "range": {
+        "startLine": 9,
+        "startChar": 16,
+        "endLine": 9,
+        "endChar": 47
+      },
+      "revId": "d6f298be27de1fc97a6f6d580b2a07f7438a2fc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c28b3ae8_5ee7e438",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-22T14:44:03Z",
+      "side": 1,
+      "message": "Is this still needed when doing the explicit linear-exponential transition?",
+      "range": {
+        "startLine": 675,
+        "startChar": 18,
+        "endLine": 675,
+        "endChar": 36
+      },
+      "revId": "d6f298be27de1fc97a6f6d580b2a07f7438a2fc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
