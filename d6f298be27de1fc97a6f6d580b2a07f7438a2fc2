@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ea2e4c25_3736f9e2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-22T16:09:07Z",
+      "side": 1,
+      "message": "Without this change, we were failing these SwANGLE tests:\n`dEQP-GLES3.functional.fragment_ops.blend.fbo_srgb.equation_src_func_dst_func.*`\nIt looks like Vulkan tests were mostly using either 0 or 1, which is why we didn\u0027t see errors in `dEQP-VK.*`.\nI\u0027ll try to get more details.",
+      "parentUuid": "598d724c_2dff573f",
+      "range": {
+        "startLine": 9,
+        "startChar": 16,
+        "endLine": 9,
+        "endChar": 47
+      },
+      "revId": "d6f298be27de1fc97a6f6d580b2a07f7438a2fc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c28b3ae8_5ee7e438",
         "filename": "src/Pipeline/ShaderCore.cpp",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2022-11-22T14:44:03Z",
       "side": 1,
       "message": "Is this still needed when doing the explicit linear-exponential transition?",
+      "range": {
+        "startLine": 675,
+        "startChar": 18,
+        "endLine": 675,
+        "endChar": 36
+      },
+      "revId": "d6f298be27de1fc97a6f6d580b2a07f7438a2fc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d45c8a3_4477a865",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-22T16:09:07Z",
+      "side": 1,
+      "message": "Probably not, will remove.",
+      "parentUuid": "c28b3ae8_5ee7e438",
       "range": {
         "startLine": 675,
         "startChar": 18,
