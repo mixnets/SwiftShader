@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f89151af_88450db0",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3234,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-22T19:23:27Z",
+      "side": 1,
+      "message": "Nothing :) will remove.",
+      "parentUuid": "fccb787a_bd52d398",
+      "range": {
+        "startLine": 3234,
+        "startChar": 23,
+        "endLine": 3234,
+        "endChar": 28
+      },
+      "revId": "ef4432584934005f9805a7e94a4f465b73943e7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1b741cb2_0cfeb353",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-11-22T14:54:02Z",
       "side": 1,
       "message": "Isn\u0027t this already 4-bit always?",
+      "range": {
+        "startLine": 3238,
+        "startChar": 73,
+        "endLine": 3238,
+        "endChar": 92
+      },
+      "revId": "ef4432584934005f9805a7e94a4f465b73943e7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7de6a1c6_1f695828",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3238,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-22T19:23:27Z",
+      "side": 1,
+      "message": "It\u0027s a direct copy of line 1481 above. I\u0027ll remove it.",
+      "parentUuid": "1b741cb2_0cfeb353",
       "range": {
         "startLine": 3238,
         "startChar": 73,
