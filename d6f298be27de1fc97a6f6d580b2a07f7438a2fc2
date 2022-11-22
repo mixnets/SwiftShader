@@ -48,6 +48,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "27793a16_b1f1c5c3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-22T20:56:51Z",
+      "side": 1,
+      "message": "Logged https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/4133",
+      "parentUuid": "ea2e4c25_3736f9e2",
+      "range": {
+        "startLine": 9,
+        "startChar": 16,
+        "endLine": 9,
+        "endChar": 47
+      },
+      "revId": "d6f298be27de1fc97a6f6d580b2a07f7438a2fc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c28b3ae8_5ee7e438",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "Probably not, will remove.",
       "parentUuid": "c28b3ae8_5ee7e438",
+      "range": {
+        "startLine": 675,
+        "startChar": 18,
+        "endLine": 675,
+        "endChar": 36
+      },
+      "revId": "d6f298be27de1fc97a6f6d580b2a07f7438a2fc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fdd8b631_1490814b",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-22T20:56:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d45c8a3_4477a865",
       "range": {
         "startLine": 675,
         "startChar": 18,
