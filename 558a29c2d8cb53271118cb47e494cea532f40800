@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "006e4582_9e64dc45",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 21
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-23T16:16:19Z",
+      "side": 1,
+      "message": "Aren\u0027t we going to need floating-point readColor support as well to do all blending in floating-point and avoid requiring another set of rebaselines?",
+      "range": {
+        "startLine": 7,
+        "startChar": 11,
+        "endLine": 7,
+        "endChar": 21
+      },
+      "revId": "558a29c2d8cb53271118cb47e494cea532f40800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b6a97b2_809e0a4a",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-23T16:16:19Z",
+      "side": 1,
+      "message": "I don\u0027t think we still need this switch statement. `alphaBlend()` and `writeColor()` would assert if they don\u0027t support the format.",
+      "range": {
+        "startLine": 270,
+        "startChar": 2,
+        "endLine": 270,
+        "endChar": 8
+      },
+      "revId": "558a29c2d8cb53271118cb47e494cea532f40800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
