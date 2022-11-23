@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "95859bb0_5927e5c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-23T15:49:42Z",
+      "side": 1,
+      "message": "nit: Best to mention that in the commit message to make it easier to track/blame. Also the failing GL tests would be worth mentioning as the thing broken today without this patch.",
+      "parentUuid": "27793a16_b1f1c5c3",
+      "range": {
+        "startLine": 9,
+        "startChar": 16,
+        "endLine": 9,
+        "endChar": 47
+      },
+      "revId": "d6f298be27de1fc97a6f6d580b2a07f7438a2fc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c28b3ae8_5ee7e438",
         "filename": "src/Pipeline/ShaderCore.cpp",
         "patchSetId": 1
