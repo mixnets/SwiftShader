@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6589ec3_35940c4e",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3320,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-23T16:12:26Z",
+      "side": 1,
+      "message": "Please double-check if this is the right combo of write mask bit order and array entry component order.\n\nAlso cases below.",
+      "range": {
+        "startLine": 3320,
+        "startChar": 65,
+        "endLine": 3320,
+        "endChar": 93
+      },
+      "revId": "7d4b2dbc191a4abbe8cbbe7b8728799e67029fc5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
