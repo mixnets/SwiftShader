@@ -97,6 +97,7 @@ private:
 	SIMD::Float lumRGB(SIMD::Float4 &c);
 	void premultiply(SIMD::Float4 &c);
 
+	int colorWriteMask(int index);
 	void writeStencil(Pointer<Byte> &sBuffer, const Int &x, const Int sMask[4], const Int zMask[4], const Int cMask[4], const SampleSet &samples);
 	void writeDepth(Pointer<Byte> &zBuffer, const Int &x, const Int zMask[4], const SampleSet &samples);
 	void occlusionSampleCount(const Int zMask[4], const Int sMask[4], const SampleSet &samples);
