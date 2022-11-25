@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2a342047_7395262e",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2678,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-25T19:08:43Z",
+      "side": 1,
+      "message": "Unfortunately, some formats, like 4-bit BGRA or 565 BGR, shouldn\u0027t go through this path.",
+      "parentUuid": "9c5569c2_8c3bb68a",
+      "range": {
+        "startLine": 2678,
+        "startChar": 1,
+        "endLine": 2678,
+        "endChar": 15
+      },
+      "revId": "5f232a9814611562d8f58fb6a3170a926e8f3ac9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "34607672_e28eccf9",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2022-11-25T19:06:06Z",
       "side": 1,
       "message": "These two didn\u0027t have this logic before, so the code here doesn\u0027t matter. But also the code is incorrect for these if it did matter, no?",
+      "range": {
+        "startLine": 2682,
+        "startChar": 0,
+        "endLine": 2683,
+        "endChar": 41
+      },
+      "revId": "5f232a9814611562d8f58fb6a3170a926e8f3ac9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d7492a7_a39ac18d",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2683,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-25T19:08:43Z",
+      "side": 1,
+      "message": "That was a bug, it should\u0027ve been and this CL fixes that.",
+      "parentUuid": "34607672_e28eccf9",
       "range": {
         "startLine": 2682,
         "startChar": 0,
