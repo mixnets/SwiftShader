@@ -22,6 +22,29 @@
       },
       "revId": "5f232a9814611562d8f58fb6a3170a926e8f3ac9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34607672_e28eccf9",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2683,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-11-25T19:06:06Z",
+      "side": 1,
+      "message": "These two didn\u0027t have this logic before, so the code here doesn\u0027t matter. But also the code is incorrect for these if it did matter, no?",
+      "range": {
+        "startLine": 2682,
+        "startChar": 0,
+        "endLine": 2683,
+        "endChar": 41
+      },
+      "revId": "5f232a9814611562d8f58fb6a3170a926e8f3ac9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
