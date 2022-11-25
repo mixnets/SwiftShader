@@ -97,6 +97,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "daa630a0_99bb646b",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3416,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-11-25T17:19:08Z",
+      "side": 1,
+      "message": "It was about channel order, but actually I read that wrong. Same suggestion as below",
+      "parentUuid": "504b0413_9b368387",
+      "range": {
+        "startLine": 3416,
+        "startChar": 64,
+        "endLine": 3416,
+        "endChar": 70
+      },
+      "revId": "1ff49cb88086a027819b8df6148fe98a0bfab8ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f4c70630_e0762380",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 7
