@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6f4d1f99_0aadcc04",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2558,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-25T17:16:21Z",
+      "side": 1,
+      "message": "It\u0027a already clamped between 0 and 1 on the line above",
+      "parentUuid": "3e29070d_5fdb00b0",
+      "range": {
+        "startLine": 2558,
+        "startChar": 38,
+        "endLine": 2558,
+        "endChar": 39
+      },
+      "revId": "1ff49cb88086a027819b8df6148fe98a0bfab8ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "951d6533_7a7fc104",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 7
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "504b0413_9b368387",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3416,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-25T17:16:21Z",
+      "side": 1,
+      "message": "This is 565, so 5+6\u003d11",
+      "parentUuid": "951d6533_7a7fc104",
+      "range": {
+        "startLine": 3416,
+        "startChar": 64,
+        "endLine": 3416,
+        "endChar": 70
+      },
+      "revId": "1ff49cb88086a027819b8df6148fe98a0bfab8ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f4c70630_e0762380",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 7
@@ -60,6 +108,30 @@
       "writtenOn": "2022-11-25T17:13:31Z",
       "side": 1,
       "message": "nit: for uniformity with other cases, you could reorder these so the lines read `.z \u003c\u003c 11 | .y \u003c\u003c 5 | .x`",
+      "range": {
+        "startLine": 3448,
+        "startChar": 64,
+        "endLine": 3448,
+        "endChar": 70
+      },
+      "revId": "1ff49cb88086a027819b8df6148fe98a0bfab8ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb351854_ecf3c661",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3448,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-25T17:16:21Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f4c70630_e0762380",
       "range": {
         "startLine": 3448,
         "startChar": 64,
