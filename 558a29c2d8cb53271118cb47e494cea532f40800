@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "66bcf7c1_7ee9ea16",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 21
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-25T15:08:13Z",
+      "side": 1,
+      "message": "I think we\u0027re good on that side. There\u0027s only on call to readPixel() here:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Pipeline/PixelRoutine.cpp;l\u003d2360\nand it\u0027s immediately converted to float after that call.",
+      "parentUuid": "006e4582_9e64dc45",
+      "range": {
+        "startLine": 7,
+        "startChar": 11,
+        "endLine": 7,
+        "endChar": 21
+      },
+      "revId": "558a29c2d8cb53271118cb47e494cea532f40800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3b6a97b2_809e0a4a",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-11-23T16:16:19Z",
       "side": 1,
       "message": "I don\u0027t think we still need this switch statement. `alphaBlend()` and `writeColor()` would assert if they don\u0027t support the format.",
+      "range": {
+        "startLine": 270,
+        "startChar": 2,
+        "endLine": 270,
+        "endChar": 8
+      },
+      "revId": "558a29c2d8cb53271118cb47e494cea532f40800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8adb34a_cbc91d91",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-25T15:08:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b6a97b2_809e0a4a",
       "range": {
         "startLine": 270,
         "startChar": 2,
