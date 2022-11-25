@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "606c424f_6e39010f",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 29
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-25T19:21:51Z",
+      "side": 1,
+      "message": "Eliminating `linearToSRGB12_16` but not this one means we would have two different ways of applying the sRGB transform and the inverse one. So they\u0027re not symmetrical.\n\nI think it\u0027s best to eliminate this as well and use the floating-point sRGB functions only (for color blending).",
+      "range": {
+        "startLine": 113,
+        "startChar": 16,
+        "endLine": 113,
+        "endChar": 33
+      },
+      "revId": "59a561313aa939c0ca6bf40b0bd2db183f6e1fcd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
