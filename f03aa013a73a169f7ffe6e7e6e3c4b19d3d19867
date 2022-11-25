@@ -22,6 +22,30 @@
       },
       "revId": "f03aa013a73a169f7ffe6e7e6e3c4b19d3d19867",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a9780fcf_cab1849e",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3068,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-25T15:00:39Z",
+      "side": 1,
+      "message": "This has been refactored here:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/69910",
+      "parentUuid": "10a2d69e_67d206f9",
+      "range": {
+        "startLine": 3068,
+        "startChar": 2,
+        "endLine": 3068,
+        "endChar": 32
+      },
+      "revId": "f03aa013a73a169f7ffe6e7e6e3c4b19d3d19867",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
