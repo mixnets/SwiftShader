@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "83478413_93a8c99f",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2678,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-25T19:44:12Z",
+      "side": 1,
+      "message": "Actually 565 BGR does, but 4 bit BGRA doesn\u0027t",
+      "parentUuid": "2a342047_7395262e",
+      "range": {
+        "startLine": 2678,
+        "startChar": 1,
+        "endLine": 2678,
+        "endChar": 15
+      },
+      "revId": "5f232a9814611562d8f58fb6a3170a926e8f3ac9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "34607672_e28eccf9",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 1
