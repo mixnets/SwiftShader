@@ -16,6 +16,24 @@
       "message": "I think we first need SwiftShader rolling into ANGLE and Chromium successfully again?",
       "revId": "2bad68bc251398fdcf544858713b38c451120bb4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b00497ad_e4ce59a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 36
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-28T21:29:58Z",
+      "side": 1,
+      "message": "Yes, we need all the rolls to be green first, and then I\u0027ll do a manual DEPS roll in Chromium with this change.",
+      "parentUuid": "c4cad2c2_4db2f9b6",
+      "revId": "2bad68bc251398fdcf544858713b38c451120bb4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
