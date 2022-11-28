@@ -34,6 +34,24 @@
       "parentUuid": "c4cad2c2_4db2f9b6",
       "revId": "2bad68bc251398fdcf544858713b38c451120bb4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "952289bb_158575b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 36
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-11-28T21:37:58Z",
+      "side": 1,
+      "message": "Oh, I just noticed that the SPIV-Tools patch only fixed a portion of the failures, I\u0027ll get more info on the remaining failures and log an issue.",
+      "parentUuid": "b00497ad_e4ce59a9",
+      "revId": "2bad68bc251398fdcf544858713b38c451120bb4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
