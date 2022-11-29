@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4533feba_71e18e76",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-11-29T18:50:11Z",
+      "side": 1,
+      "message": "Loko told me there\u0027s actually two ways to create a DebugUtilsMessenger. This one is owned by the instance. I wasn\u0027t aware of that.",
+      "revId": "626414439861fde58e902a1b9c13e659962ac794",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
