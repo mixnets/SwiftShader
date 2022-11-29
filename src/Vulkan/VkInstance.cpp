@@ -26,10 +26,6 @@ Instance::Instance(const VkInstanceCreateInfo *pCreateInfo, void *mem, VkPhysica
 
 void Instance::destroy(const VkAllocationCallbacks *pAllocator)
 {
-	if(messenger)
-	{
-		vk::destroy(static_cast<VkDebugUtilsMessengerEXT>(*messenger), pAllocator);
-	}
 	vk::destroy(physicalDevice, pAllocator);
 }
 
