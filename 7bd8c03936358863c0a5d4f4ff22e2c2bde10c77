@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f65e43b4_6e07400b",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-02T18:16:36Z",
+      "side": 1,
+      "message": "Reverted",
+      "parentUuid": "f3682fbb_c1cb3147",
+      "range": {
+        "startLine": 148,
+        "startChar": 20,
+        "endLine": 148,
+        "endChar": 42
+      },
+      "revId": "7bd8c03936358863c0a5d4f4ff22e2c2bde10c77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4b8881b0_b17060f2",
@@ -47,6 +71,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1f4135f_f6da6623",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 808,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-02T18:16:36Z",
+      "side": 1,
+      "message": "Reverted",
+      "parentUuid": "4b8881b0_b17060f2",
+      "range": {
+        "startLine": 808,
+        "startChar": 2,
+        "endLine": 808,
+        "endChar": 31
+      },
+      "revId": "7bd8c03936358863c0a5d4f4ff22e2c2bde10c77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bbfc3f3d_894b0ddb",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-12-02T18:10:24Z",
       "side": 1,
       "message": "Again I would avoid using these here.\n\nAlso `mapEntryCount` is a 32-bit variable so it can\u0027t cause `UINT64_MAX` overflow.",
+      "range": {
+        "startLine": 27,
+        "startChar": 21,
+        "endLine": 27,
+        "endChar": 43
+      },
+      "revId": "7bd8c03936358863c0a5d4f4ff22e2c2bde10c77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "828c73d8_6a88edc6",
+        "filename": "src/Vulkan/VkSpecializationInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-02T18:16:36Z",
+      "side": 1,
+      "message": "Reverted",
+      "parentUuid": "bbfc3f3d_894b0ddb",
       "range": {
         "startLine": 27,
         "startChar": 21,
