@@ -805,6 +805,7 @@ SIMD::Pointer SpirvEmitter::GetTexelAddress(ImageInstructionSignature instructio
 			oobMask |= As<SIMD::Int>(CmpNLT(As<SIMD::UInt>(sample), sampleCount));
 		}
 
+		ASSERT(rr::SIMD::Width == 4);                    // The maximum offset depends on how much memory will be loaded or stored in a single operation
 		constexpr int32_t OOB_OFFSET = 0x7FFFFFFF - 16;  // SIMD pointer offsets are signed 32-bit, so this is the largest offset (for 16-byte texels).
 		static_assert(OOB_OFFSET >= vk::MAX_MEMORY_ALLOCATION_SIZE, "the largest offset must be guaranteed to be out-of-bounds");
 

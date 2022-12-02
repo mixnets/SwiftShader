@@ -24,7 +24,6 @@
 #include "System/Debug.hpp"
 #include "System/Half.hpp"
 #include "System/Math.hpp"
-#include "System/Memory.hpp"
 #include "System/Timer.hpp"
 #include "Vulkan/VkConfig.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
@@ -146,13 +145,12 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 
 DrawCall::DrawCall()
 {
-	// TODO(b/140991626): Use allocateUninitialized() instead of allocateZeroOrPoison() to improve startup peformance.
-	data = (DrawData *)sw::allocateZeroOrPoison(sizeof(DrawData));
+	data = (DrawData *)vk::allocateHostMemory(sizeof(DrawData), alignof(DrawData), vk::NULL_ALLOCATION_CALLBACKS, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
 }
 
 DrawCall::~DrawCall()
 {
-	sw::freeMemory(data);
+	vk::freeHostMemory(data, vk::NULL_ALLOCATION_CALLBACKS);
 }
 
 Renderer::Renderer(vk::Device *device)

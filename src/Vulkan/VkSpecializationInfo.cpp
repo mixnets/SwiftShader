@@ -14,8 +14,6 @@
 
 #include "VkSpecializationInfo.hpp"
 
-#include "System/Memory.hpp"
-
 #include <cstring>
 
 namespace vk {
@@ -26,12 +24,12 @@ SpecializationInfo::SpecializationInfo(const VkSpecializationInfo *specializatio
 	{
 		info.mapEntryCount = specializationInfo->mapEntryCount;
 		size_t entriesSize = specializationInfo->mapEntryCount * sizeof(VkSpecializationMapEntry);
-		void *mapEntries = sw::allocate(entriesSize);
+		void *mapEntries = vk::allocateHostMemory(entriesSize, vk::HOST_MEMORY_ALLOCATION_ALIGNMENT, vk::NULL_ALLOCATION_CALLBACKS, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT);
 		memcpy(mapEntries, specializationInfo->pMapEntries, entriesSize);
 		info.pMapEntries = reinterpret_cast<VkSpecializationMapEntry *>(mapEntries);
 
 		info.dataSize = specializationInfo->dataSize;
-		void *data = sw::allocate(specializationInfo->dataSize);
+		void *data = vk::allocateHostMemory(specializationInfo->dataSize, vk::HOST_MEMORY_ALLOCATION_ALIGNMENT, vk::NULL_ALLOCATION_CALLBACKS, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT);
 		memcpy(data, specializationInfo->pData, specializationInfo->dataSize);
 		info.pData = data;
 	}
@@ -44,8 +42,8 @@ SpecializationInfo::SpecializationInfo(const SpecializationInfo &copy)
 
 SpecializationInfo::~SpecializationInfo()
 {
-	sw::freeMemory(const_cast<VkSpecializationMapEntry *>(info.pMapEntries));
-	sw::freeMemory(const_cast<void *>(info.pData));
+	vk::freeHostMemory(const_cast<VkSpecializationMapEntry *>(info.pMapEntries), vk::NULL_ALLOCATION_CALLBACKS);
+	vk::freeHostMemory(const_cast<void *>(info.pData), vk::NULL_ALLOCATION_CALLBACKS);
 }
 
 bool SpecializationInfo::operator<(const SpecializationInfo &rhs) const
