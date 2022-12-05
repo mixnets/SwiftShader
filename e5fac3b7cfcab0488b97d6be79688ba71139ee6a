@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a11a9080_e48544e8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101622
+      },
+      "writtenOn": "2022-12-05T04:28:58Z",
+      "side": 1,
+      "message": "حذف",
+      "revId": "e5fac3b7cfcab0488b97d6be79688ba71139ee6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
