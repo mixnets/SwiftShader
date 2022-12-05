@@ -16,6 +16,29 @@
       "message": "حذف",
       "revId": "e5fac3b7cfcab0488b97d6be79688ba71139ee6a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68bee728_6519420d",
+        "filename": "tests/regres/testlists/vk-master-QUALITY_WARNING.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-05T13:55:43Z",
+      "side": 1,
+      "message": "Known flake: b/259270235",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 106
+      },
+      "revId": "e5fac3b7cfcab0488b97d6be79688ba71139ee6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
