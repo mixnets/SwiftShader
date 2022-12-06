@@ -894,7 +894,6 @@ dEQP-VK.image.swapchain_mutable.wayland.2d.r8g8b8a8_unorm_r8g8b8a8_snorm_draw_lo
 dEQP-VK.image.swapchain_mutable.wayland.2d.r8g8b8a8_unorm_r8g8b8a8_snorm_draw_texture_format_list
 dEQP-VK.image.swapchain_mutable.wayland.2d.r8g8b8a8_unorm_r8g8b8a8_snorm_store_copy_format_list
 dEQP-VK.image.swapchain_mutable.wayland.2d.r8g8b8a8_unorm_r8g8b8a8_snorm_store_load_format_list
-dEQP-VK.image.swapchain_mutable.wayland.2d.r8g8b8a8_unorm_r8g8b8a8_snorm_store_texture_format_list
 dEQP-VK.image.swapchain_mutable.wayland.2d.r8g8b8a8_unorm_r8g8b8a8_srgb_clear_copy_format_list
 dEQP-VK.image.swapchain_mutable.wayland.2d.r8g8b8a8_unorm_r8g8b8a8_srgb_copy_copy_format_list
 dEQP-VK.image.swapchain_mutable.wayland.2d.r8g8b8a8_unorm_r8g8b8a8_srgb_draw_copy_format_list
@@ -3170,7 +3169,6 @@ dEQP-VK.wsi.android.shared_presentable_image.scale_none.horizontal_mirror.pre_mu
 dEQP-VK.wsi.android.shared_presentable_image.scale_none.horizontal_mirror_rotate_180.inherit.continuous
 dEQP-VK.wsi.android.shared_presentable_image.scale_none.horizontal_mirror_rotate_180.inherit.demand
 dEQP-VK.wsi.android.shared_presentable_image.scale_none.horizontal_mirror_rotate_180.opaque.continuous
-dEQP-VK.wsi.android.shared_presentable_image.scale_none.horizontal_mirror_rotate_180.opaque.demand
 dEQP-VK.wsi.android.shared_presentable_image.scale_none.horizontal_mirror_rotate_180.post_multiplied.continuous
 dEQP-VK.wsi.android.shared_presentable_image.scale_none.horizontal_mirror_rotate_180.post_multiplied.demand
 dEQP-VK.wsi.android.shared_presentable_image.scale_none.horizontal_mirror_rotate_180.pre_multiplied.continuous
