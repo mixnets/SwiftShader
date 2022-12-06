@@ -46,6 +46,30 @@
       },
       "revId": "caf9b66de159d6b852cef8eb4b0042b21062c3d8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49621c8b_11cb3a4f",
+        "filename": "tests/regres/deqp.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-06T21:23:12Z",
+      "side": 1,
+      "message": "This wasn\u0027t clear. I meant: I mentioned it in the VK-GL-CTS issue:\nhttps://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3932#note_388785",
+      "parentUuid": "695cc5c4_88e4e415",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 57
+      },
+      "revId": "caf9b66de159d6b852cef8eb4b0042b21062c3d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
