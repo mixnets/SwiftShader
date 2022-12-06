@@ -3508,7 +3508,6 @@ dEQP-VK.wsi.macos.incremental_present.scale_none.fifo_relaxed.rotate_270.pre_mul
 dEQP-VK.wsi.macos.incremental_present.scale_none.fifo_relaxed.rotate_90.inherit.incremental_present
 dEQP-VK.wsi.macos.incremental_present.scale_none.fifo_relaxed.rotate_90.inherit.reference
 dEQP-VK.wsi.macos.incremental_present.scale_none.fifo_relaxed.rotate_90.opaque.incremental_present
-dEQP-VK.wsi.macos.incremental_present.scale_none.fifo_relaxed.rotate_90.opaque.reference
 dEQP-VK.wsi.macos.incremental_present.scale_none.fifo_relaxed.rotate_90.post_multiplied.incremental_present
 dEQP-VK.wsi.macos.incremental_present.scale_none.fifo_relaxed.rotate_90.post_multiplied.reference
 dEQP-VK.wsi.macos.incremental_present.scale_none.fifo_relaxed.rotate_90.pre_multiplied.incremental_present
