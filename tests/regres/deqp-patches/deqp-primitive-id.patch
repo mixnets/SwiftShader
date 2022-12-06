@@ -1,0 +1,16 @@
+ external/vulkancts/modules/vulkan/pipeline/vktPipelineMiscTests.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/external/vulkancts/modules/vulkan/pipeline/vktPipelineMiscTests.cpp b/external/vulkancts/modules/vulkan/pipeline/vktPipelineMiscTests.cpp
+index 585f31f00..c52a4e8b7 100644
+--- a/external/vulkancts/modules/vulkan/pipeline/vktPipelineMiscTests.cpp
++++ b/external/vulkancts/modules/vulkan/pipeline/vktPipelineMiscTests.cpp
+@@ -173,6 +173,8 @@ void ImplicitPrimitiveIDPassthroughCase::checkSupport (Context &context) const
+ 	if (m_withTessellationPassthrough)
+ 		context.requireDeviceCoreFeature(DEVICE_CORE_FEATURE_TESSELLATION_SHADER);
+ 
++	context.requireDeviceCoreFeature(DEVICE_CORE_FEATURE_GEOMETRY_SHADER);
++
+ 	checkPipelineLibraryRequirements(context.getInstanceInterface(), context.getPhysicalDevice(), m_pipelineConstructionType);
+ }
+ 
