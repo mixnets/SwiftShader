@@ -634,6 +634,11 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT:
 			getPhysicalDeviceGraphicsPipelineLibraryFeatures(reinterpret_cast<struct VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT *>(curExtension));
 			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT:
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT:
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT:
+			// TODO(b/261590057): These are not promoted and should be removed once the test is fixed.
+			break;
 		case VK_STRUCTURE_TYPE_MAX_ENUM:  // TODO(b/176893525): This may not be legal. dEQP tests that this value is ignored.
 			break;
 		default:
