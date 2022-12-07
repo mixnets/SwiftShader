@@ -3364,7 +3364,6 @@ dEQP-VK.wsi.macos.colorspace.hdr
 dEQP-VK.wsi.macos.display_timing.fifo.display_timing
 dEQP-VK.wsi.macos.display_timing.fifo.reference
 dEQP-VK.wsi.macos.display_timing.fifo_relaxed.display_timing
-dEQP-VK.wsi.macos.display_timing.fifo_relaxed.reference
 dEQP-VK.wsi.macos.display_timing.immediate.display_timing
 dEQP-VK.wsi.macos.display_timing.immediate.reference
 dEQP-VK.wsi.macos.display_timing.mailbox.display_timing
@@ -5063,7 +5062,6 @@ dEQP-VK.wsi.xlib.incremental_present.scale_none.fifo_relaxed.horizontal_mirror.o
 dEQP-VK.wsi.xlib.incremental_present.scale_none.fifo_relaxed.horizontal_mirror.opaque.reference
 dEQP-VK.wsi.xlib.incremental_present.scale_none.fifo_relaxed.horizontal_mirror.post_multiplied.incremental_present
 dEQP-VK.wsi.xlib.incremental_present.scale_none.fifo_relaxed.horizontal_mirror.post_multiplied.reference
-dEQP-VK.wsi.xlib.incremental_present.scale_none.fifo_relaxed.horizontal_mirror.pre_multiplied.incremental_present
 dEQP-VK.wsi.xlib.incremental_present.scale_none.fifo_relaxed.horizontal_mirror.pre_multiplied.reference
 dEQP-VK.wsi.xlib.incremental_present.scale_none.fifo_relaxed.horizontal_mirror_rotate_180.inherit.incremental_present
 dEQP-VK.wsi.xlib.incremental_present.scale_none.fifo_relaxed.horizontal_mirror_rotate_180.inherit.reference
