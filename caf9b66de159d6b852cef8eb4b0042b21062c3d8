@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5ecd4a2_8c9b095e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-07T21:59:09Z",
+      "side": 1,
+      "message": "The issue has been logged upstream (https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3932#note_388659). We don\u0027t have test suppressions per se, so we can either live with the failure or apply the upstream patch (https://gerrit.khronos.org/c/vk-gl-cts/+/10678) until it makes it to github and Regres picks it up. My main Regres issue has been fixed, so I can hold landing this for now.",
+      "parentUuid": "63c7449d_0fcb0c40",
+      "revId": "caf9b66de159d6b852cef8eb4b0042b21062c3d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a96b49ca_032fb06b",
