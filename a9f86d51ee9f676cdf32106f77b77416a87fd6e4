@@ -33,6 +33,24 @@
       "message": "Wait, VK_EXT_graphics_pipeline_library is allowing this for compute?",
       "revId": "a9f86d51ee9f676cdf32106f77b77416a87fd6e4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9bb73f1_ccb68d90",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 590,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-07T17:28:31Z",
+      "side": 1,
+      "message": "Yes, according to the spec:\n\"If the graphicsPipelineLibrary feature is enabled and an instance of VkShaderModuleCreateInfo is included in the pNext chain, module can be VK_NULL_HANDLE. If module is not VK_NULL_HANDLE, the shader code used by the pipeline is defined by module. If module is VK_NULL_HANDLE, the shader code is defined by the chained VkShaderModuleCreateInfo if present.\"\n\nThis appears to be true for any use of VkShaderModuleCreateInfo.",
+      "parentUuid": "cc58a8ab_4c973a63",
+      "revId": "a9f86d51ee9f676cdf32106f77b77416a87fd6e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
