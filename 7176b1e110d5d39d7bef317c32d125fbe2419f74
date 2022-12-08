@@ -62,6 +62,30 @@
       },
       "revId": "7176b1e110d5d39d7bef317c32d125fbe2419f74",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0126585_b50c7a8f",
+        "filename": "src/WSI/VkSwapchainKHR.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-08T22:03:10Z",
+      "side": 1,
+      "message": "**Is** the extra \"index\" temporary variable there to help debugging?",
+      "parentUuid": "3229beee_3235c5d8",
+      "range": {
+        "startLine": 231,
+        "startChar": 2,
+        "endLine": 232,
+        "endChar": 22
+      },
+      "revId": "7176b1e110d5d39d7bef317c32d125fbe2419f74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
