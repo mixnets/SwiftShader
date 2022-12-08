@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a1b402d_470384b6",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-08T04:52:32Z",
+      "side": 0,
+      "message": "Fixed by https://swiftshader-review.googlesource.com/c/SwiftShader/+/70148",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 92
+      },
+      "revId": "6f73609d079a320c1d3a00475ba9c30fafeccec9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ef8399e_836376c8",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-08T04:52:32Z",
+      "side": 0,
+      "message": "Fixed by https://swiftshader-review.googlesource.com/c/SwiftShader/+/70168",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 55
+      },
+      "revId": "6f73609d079a320c1d3a00475ba9c30fafeccec9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
