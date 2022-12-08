@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff6239ea_23f7b846",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-08T22:02:12Z",
+      "side": 1,
+      "message": "There are no Vulkan tests for this?\nIf there are, they can be added in a \"Tests:\" section in the description.",
+      "revId": "7176b1e110d5d39d7bef317c32d125fbe2419f74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "711b0537_23703747",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-08T22:02:12Z",
+      "side": 1,
+      "message": "Nit: Why add a return value with only one possible value returned?",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 186,
+        "endChar": 8
+      },
+      "revId": "7176b1e110d5d39d7bef317c32d125fbe2419f74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3229beee_3235c5d8",
+        "filename": "src/WSI/VkSwapchainKHR.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-08T22:02:12Z",
+      "side": 1,
+      "message": "Nit: This would still simple enough to me:\n\n    releaseImage(pImageIndices[i]);\n    \nIf the extra \"index\" temporary variable there to help debugging?",
+      "range": {
+        "startLine": 231,
+        "startChar": 2,
+        "endLine": 232,
+        "endChar": 22
+      },
+      "revId": "7176b1e110d5d39d7bef317c32d125fbe2419f74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
