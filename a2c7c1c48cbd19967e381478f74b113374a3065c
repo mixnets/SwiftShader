@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "935a659e_776bfc44",
+        "filename": "src/WSI/DirectFBSurfaceEXT.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-09T15:14:21Z",
+      "side": 1,
+      "message": "I think you can revert the changes in all the files where you just moved the \"setCommonSurfaceCapabilities\" function lower.",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 98
+      },
+      "revId": "a2c7c1c48cbd19967e381478f74b113374a3065c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
