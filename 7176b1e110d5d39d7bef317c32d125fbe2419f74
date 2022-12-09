@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5158d05_6d3abb61",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-09T15:01:06Z",
+      "side": 1,
+      "message": "There are, not merged yet, so not public. Added to Tests:, but it\u0027ll be a while before they can be picked up.",
+      "parentUuid": "ff6239ea_23f7b846",
+      "revId": "7176b1e110d5d39d7bef317c32d125fbe2419f74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "711b0537_23703747",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-12-08T22:02:12Z",
       "side": 1,
       "message": "Nit: Why add a return value with only one possible value returned?",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 186,
+        "endChar": 8
+      },
+      "revId": "7176b1e110d5d39d7bef317c32d125fbe2419f74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "82d6c2f0_0e7947e1",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-09T15:01:06Z",
+      "side": 1,
+      "message": "\"Historical reasons\" at one point during development there was another return value. Fixed it.",
+      "parentUuid": "711b0537_23703747",
       "range": {
         "startLine": 186,
         "startChar": 0,
@@ -78,6 +120,30 @@
       "side": 1,
       "message": "**Is** the extra \"index\" temporary variable there to help debugging?",
       "parentUuid": "3229beee_3235c5d8",
+      "range": {
+        "startLine": 231,
+        "startChar": 2,
+        "endLine": 232,
+        "endChar": 22
+      },
+      "revId": "7176b1e110d5d39d7bef317c32d125fbe2419f74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a57832a_c4d362b9",
+        "filename": "src/WSI/VkSwapchainKHR.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-09T15:01:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0126585_b50c7a8f",
       "range": {
         "startLine": 231,
         "startChar": 2,
