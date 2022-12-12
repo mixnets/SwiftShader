@@ -76,6 +76,44 @@
 #	include "WSI/Win32SurfaceKHR.hpp"
 #endif
 
+#ifdef VK_LUNARG_direct_driver_loading
+#error "VK_LUNARG_direct_driver_loading is already defined in the Vulkan headers, you can remove this section"
+#else
+#define VK_LUNARG_direct_driver_loading 1
+#define VK_LUNARG_DIRECT_DRIVER_LOADING_SPEC_VERSION 1
+#define VK_LUNARG_DIRECT_DRIVER_LOADING_EXTENSION_NAME "VK_LUNARG_direct_driver_loading"
+
+typedef enum VkDirectDriverLoadingModeLUNARG
+{
+	VK_DIRECT_DRIVER_LOADING_MODE_EXCLUSIVE_LUNARG = 0,
+	VK_DIRECT_DRIVER_LOADING_MODE_INCLUSIVE_LUNARG = 1,
+	VK_DIRECT_DRIVER_LOADING_MODE_MAX_ENUM_LUNARG = 0x7FFFFFFF
+} VkDirectDriverLoadingModeLUNARG;
+typedef VkFlags VkDirectDriverLoadingFlagsLUNARG;
+typedef PFN_vkVoidFunction(VKAPI_PTR *PFN_vkGetInstanceProcAddrLUNARG)(
+    VkInstance instance, const char *pName);
+
+typedef struct VkDirectDriverLoadingInfoLUNARG
+{
+	VkStructureType sType;
+	void *pNext;
+	VkDirectDriverLoadingFlagsLUNARG flags;
+	PFN_vkGetInstanceProcAddrLUNARG pfnGetInstanceProcAddr;
+} VkDirectDriverLoadingInfoLUNARG;
+
+typedef struct VkDirectDriverLoadingListLUNARG
+{
+	VkStructureType sType;
+	void *pNext;
+	VkDirectDriverLoadingModeLUNARG mode;
+	uint32_t driverCount;
+	const VkDirectDriverLoadingInfoLUNARG *pDrivers;
+} VkDirectDriverLoadingListLUNARG;
+
+static constexpr VkStructureType VK_STRUCTURE_TYPE_DIRECT_DRIVER_LOADING_INFO_LUNARG = static_cast<VkStructureType>(1000459000);
+static constexpr VkStructureType VK_STRUCTURE_TYPE_DIRECT_DRIVER_LOADING_LIST_LUNARG = static_cast<VkStructureType>(1000459001);
+#endif
+
 #include "marl/mutex.h"
 #include "marl/scheduler.h"
 #include "marl/thread.h"
@@ -284,6 +322,7 @@ static const ExtensionProperties instanceExtensionProperties[] = {
 	{ { VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME, VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_SPEC_VERSION } },
 	{ { VK_EXT_DEBUG_UTILS_EXTENSION_NAME, VK_EXT_DEBUG_UTILS_SPEC_VERSION } },
 	{ { VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME, VK_EXT_HEADLESS_SURFACE_SPEC_VERSION } },
+	{ { VK_LUNARG_DIRECT_DRIVER_LOADING_EXTENSION_NAME, VK_LUNARG_DIRECT_DRIVER_LOADING_SPEC_VERSION } },
 #ifndef __ANDROID__
 	{ { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_SURFACE_SPEC_VERSION } },
 	{ { VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME, VK_KHR_GET_SURFACE_CAPABILITIES_2_SPEC_VERSION } },
@@ -555,6 +594,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo *pCre
 			//  VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO are reserved for
 			//  internal use by the loader, and do not have corresponding
 			//  Vulkan structures in this Specification."
+			break;
+		case VK_STRUCTURE_TYPE_DIRECT_DRIVER_LOADING_LIST_LUNARG:
+			{
+				// This contains information for the Vulkan Loader and has no impact on SwiftShader, so it can be ignored
+				const VkDirectDriverLoadingInfoLUNARG *directDriverLoadingInfoLUNARG = reinterpret_cast<const VkDirectDriverLoadingInfoLUNARG *>(createInfo);
+				(void)directDriverLoadingInfoLUNARG;
+				break;
+			}
 			break;
 		default:
 			UNSUPPORTED("pCreateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
