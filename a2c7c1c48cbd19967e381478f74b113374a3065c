@@ -22,6 +22,30 @@
       },
       "revId": "a2c7c1c48cbd19967e381478f74b113374a3065c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "316f3dd1_c01a44b9",
+        "filename": "src/WSI/DirectFBSurfaceEXT.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-12T17:16:43Z",
+      "side": 1,
+      "message": "That actually reminded me to fix something in `setCommonSurfaceCapabilities`. That function is going to use the extents set here, so it does need to get called after.",
+      "parentUuid": "935a659e_776bfc44",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 98
+      },
+      "revId": "a2c7c1c48cbd19967e381478f74b113374a3065c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
