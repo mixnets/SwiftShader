@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ed87422_23fa48d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-12T20:19:49Z",
+      "side": 1,
+      "message": "I\u0027m not actually familiar with the ext",
+      "revId": "c1e11eab420f159e0cddae8cc0eace3639e53231",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57d4cf1f_d4ba1576",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-12T20:19:49Z",
+      "side": 1,
+      "message": "Should be in the new headers?",
+      "revId": "c1e11eab420f159e0cddae8cc0eace3639e53231",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7ca83f3_ab2b5c29",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 604,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-12T20:19:49Z",
+      "side": 1,
+      "message": "nit: you can just remove this and keep the comment. Like `VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO` just above for example.",
+      "range": {
+        "startLine": 599,
+        "startChar": 0,
+        "endLine": 604,
+        "endChar": 4
+      },
+      "revId": "c1e11eab420f159e0cddae8cc0eace3639e53231",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
