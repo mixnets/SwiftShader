@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb1fee0c_d6904448",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-12T20:02:09Z",
+      "side": 1,
+      "message": "Yeesh, I noticed this 2 seconds too late.",
+      "range": {
+        "startLine": 7,
+        "startChar": 13,
+        "endLine": 7,
+        "endChar": 16
+      },
+      "revId": "29dc5eb377f9f2f3908fafdd82f0b5e163b446dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
