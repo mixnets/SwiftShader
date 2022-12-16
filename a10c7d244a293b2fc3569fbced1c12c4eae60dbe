@@ -34,6 +34,24 @@
       "parentUuid": "4fd9fb11_64c6d01d",
       "revId": "a10c7d244a293b2fc3569fbced1c12c4eae60dbe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea69c9ab_cc50fe56",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7273
+      },
+      "writtenOn": "2022-12-16T15:23:32Z",
+      "side": 1,
+      "message": "here is the fix https://swiftshader-review.googlesource.com/c/SwiftShader/+/70448 . Sorry for breaking the autoroll.",
+      "parentUuid": "d8550d94_6d0d2d84",
+      "revId": "a10c7d244a293b2fc3569fbced1c12c4eae60dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
