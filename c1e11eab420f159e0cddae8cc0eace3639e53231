@@ -18,6 +18,23 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "23544a8a_3a24608e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-12-16T06:19:43Z",
+      "side": 1,
+      "message": "This isn\u0027t implemented by ICDs: https://github.com/KhronosGroup/Vulkan-Docs/blob/0e28607b55dc1eee4ff80967f1e0a7e99356d075/proposals/VK_LUNARG_direct_driver_loading.adoc#53-resolved-do-drivers-implement-this-extension",
+      "revId": "c1e11eab420f159e0cddae8cc0eace3639e53231",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57d4cf1f_d4ba1576",
