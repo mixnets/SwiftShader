@@ -35,6 +35,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eea9971d_3e5b2f82",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-20T21:30:46Z",
+      "side": 1,
+      "message": "Yeas, I\u0027m aware of that (sorry for the long delay, I had other things to take care of first). SwiftShader does receive the extra direct driver loading related enum and would call UNSUPPORTED if we don\u0027t handle it.",
+      "parentUuid": "23544a8a_3a24608e",
+      "revId": "c1e11eab420f159e0cddae8cc0eace3639e53231",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57d4cf1f_d4ba1576",
@@ -65,6 +83,30 @@
       "writtenOn": "2022-12-12T20:19:49Z",
       "side": 1,
       "message": "nit: you can just remove this and keep the comment. Like `VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO` just above for example.",
+      "range": {
+        "startLine": 599,
+        "startChar": 0,
+        "endLine": 604,
+        "endChar": 4
+      },
+      "revId": "c1e11eab420f159e0cddae8cc0eace3639e53231",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da6d8b64_9a35fe1c",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 604,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-20T21:30:46Z",
+      "side": 1,
+      "message": "Yes, I was waiting to see if there would be anything to do here, but there isn\u0027t, I\u0027ll remove this and just add a comment.",
+      "parentUuid": "a7ca83f3_ab2b5c29",
       "range": {
         "startLine": 599,
         "startChar": 0,
