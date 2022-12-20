@@ -88,6 +88,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b7738e2_80615e37",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-20T22:46:48Z",
+      "side": 1,
+      "message": "It is",
+      "parentUuid": "57d4cf1f_d4ba1576",
+      "revId": "c1e11eab420f159e0cddae8cc0eace3639e53231",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a7ca83f3_ab2b5c29",
