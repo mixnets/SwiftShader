@@ -53,6 +53,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b20e83e8_02f4ffe7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-20T21:35:03Z",
+      "side": 1,
+      "message": "Sounds like a Vulkan loader bug. They shouldn\u0027t forward this to the driver.",
+      "parentUuid": "eea9971d_3e5b2f82",
+      "revId": "c1e11eab420f159e0cddae8cc0eace3639e53231",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57d4cf1f_d4ba1576",
