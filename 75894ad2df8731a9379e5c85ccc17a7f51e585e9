@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3628b78a_78a93c42",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-20T22:31:15Z",
+      "side": 1,
+      "message": "Sister CL here: https://chromium-review.googlesource.com/c/angle/angle/+/4116731",
+      "revId": "75894ad2df8731a9379e5c85ccc17a7f51e585e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
