@@ -16,6 +16,24 @@
       "message": "Hi Alexis, I think this CL is causing trace test on ANGLE failing on Linux: https://chromium-review.googlesource.com/c/angle/angle/+/4117722.\n\nAn example of failed trace image comparison result: https://angle-gold.skia.org/detail?grouping\u003dname%3Dwar_planet_online%26source_type%3Dangle\u0026digest\u003d5828216ab9f9d30bb19225883dfc924d\u0026changelist_id\u003d4117722\u0026crs\u003dgerrit.",
       "revId": "3b2177fcfcba440eb64b8b523217e0b908f24f40",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be1b60d1_b1099f8f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-21T20:31:32Z",
+      "side": 1,
+      "message": "That\u0027s expected. We should accept those diffs (assuming nothing is broken)",
+      "parentUuid": "ceacf9c2_2d2fb477",
+      "revId": "3b2177fcfcba440eb64b8b523217e0b908f24f40",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
