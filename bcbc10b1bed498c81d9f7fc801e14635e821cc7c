@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57edeb99_0dfe3def",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2022-12-21T21:36:19Z",
+      "side": 1,
+      "message": "I think adding this here doesn\u0027t make sense; it\u0027s still the loader that\u0027s implementing this functionality and exposing the extension. If you use this with and older loader, it can even confuse apps (if the loader doesn\u0027t strip it away)",
+      "revId": "bcbc10b1bed498c81d9f7fc801e14635e821cc7c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
