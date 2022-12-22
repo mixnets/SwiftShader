@@ -16,6 +16,24 @@
       "message": "I think adding this here doesn\u0027t make sense; it\u0027s still the loader that\u0027s implementing this functionality and exposing the extension. If you use this with and older loader, it can even confuse apps (if the loader doesn\u0027t strip it away)",
       "revId": "bcbc10b1bed498c81d9f7fc801e14635e821cc7c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "231a7e97_a8a191e5",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-22T03:21:15Z",
+      "side": 1,
+      "message": "Feel free to remove it if you encounter any issues, but, while I understand that the nature of this extension is different than other extensions because it targets the loader directly, it would still be a bit odd to not be able to expose an extension we support.",
+      "parentUuid": "57edeb99_0dfe3def",
+      "revId": "bcbc10b1bed498c81d9f7fc801e14635e821cc7c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
