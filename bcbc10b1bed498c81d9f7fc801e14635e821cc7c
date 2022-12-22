@@ -34,6 +34,24 @@
       "parentUuid": "57edeb99_0dfe3def",
       "revId": "bcbc10b1bed498c81d9f7fc801e14635e821cc7c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4726f66a_31a63a6d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-12-22T07:16:38Z",
+      "side": 1,
+      "message": "\u003e ...it would still be a bit odd to not be able to expose an extension we support.\n\nThis CL does not implement this extension though. Nor should it. Follow-up at https://swiftshader-review.googlesource.com/c/SwiftShader/+/70548",
+      "parentUuid": "231a7e97_a8a191e5",
+      "revId": "bcbc10b1bed498c81d9f7fc801e14635e821cc7c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
