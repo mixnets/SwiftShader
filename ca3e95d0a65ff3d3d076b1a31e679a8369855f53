@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8cadc38_f51d230e",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 624,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2022-12-22T05:38:46Z",
+      "side": 1,
+      "message": "This probably needs to be something like:\n\n```\n#if LLVM_VERSION_MAJOR \u003e\u003d 16\n    declaration-\u003einsertInto(\u0026entryBlock, entryBlock.begin());\n#else\n    entryBlock.getInstList().push_front(declaration);\n#endif\n ```",
+      "range": {
+        "startLine": 624,
+        "startChar": 0,
+        "endLine": 624,
+        "endChar": 58
+      },
+      "revId": "ca3e95d0a65ff3d3d076b1a31e679a8369855f53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
