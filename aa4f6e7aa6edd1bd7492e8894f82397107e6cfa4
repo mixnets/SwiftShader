@@ -16,6 +16,23 @@
       "message": "Test change and Kokoro failure seem unrelated. PTAL.",
       "revId": "aa4f6e7aa6edd1bd7492e8894f82397107e6cfa4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa973692_db9cee11",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2022-12-24T08:22:54Z",
+      "side": 1,
+      "message": "I\u0027m afraid this harms readability and doesn\u0027t add safety which can easily be maintained. See b/231953135#comment4 for more arguments, and alternatives.",
+      "revId": "aa4f6e7aa6edd1bd7492e8894f82397107e6cfa4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
