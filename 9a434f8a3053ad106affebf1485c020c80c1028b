@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e3704ce_48dcd0d1",
+        "filename": "src/Device/SetupProcessor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2023-01-03T08:02:43Z",
+      "side": 1,
+      "message": "The correct behavior is to apply depth bias to all triangle topologies, regardless of polygon mode: https://github.com/KhronosGroup/Vulkan-Docs/issues/1596. Which is what we had on the left hand side.",
+      "range": {
+        "startLine": 73,
+        "startChar": 73,
+        "endLine": 73,
+        "endChar": 77
+      },
+      "revId": "9a434f8a3053ad106affebf1485c020c80c1028b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
