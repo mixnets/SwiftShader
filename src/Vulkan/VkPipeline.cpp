@@ -38,6 +38,15 @@ sw::SpirvBinary optimizeSpirv(const vk::PipelineCache::SpirvBinaryKey &key)
 	const sw::SpirvBinary &code = key.getBinary();
 	const VkSpecializationInfo *specializationInfo = key.getSpecializationInfo();
 	bool optimize = key.getOptimization();
+	constexpr bool showSpirv = false;
+
+	if constexpr(showSpirv)
+	{
+		spvtools::SpirvTools core(vk::SPIRV_VERSION);
+		std::string preOpt;
+		core.Disassemble(code, &preOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
+		std::cout << "PRE-OPT: " << preOpt << std::endl;
+	}
 
 	spvtools::Optimizer opt{ vk::SPIRV_VERSION };
 
@@ -98,15 +107,12 @@ sw::SpirvBinary optimizeSpirv(const vk::PipelineCache::SpirvBinaryKey &key)
 	opt.Run(code.data(), code.size(), &optimized, optimizerOptions);
 	ASSERT(optimized.size() > 0);
 
-	if(false)
+	if constexpr(showSpirv)
 	{
 		spvtools::SpirvTools core(vk::SPIRV_VERSION);
-		std::string preOpt;
-		core.Disassemble(code, &preOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
 		std::string postOpt;
 		core.Disassemble(optimized, &postOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
-		std::cout << "PRE-OPT: " << preOpt << std::endl
-		          << "POST-OPT: " << postOpt << std::endl;
+		std::cout << "POST-OPT: " << postOpt << std::endl;
 	}
 
 	return optimized;
