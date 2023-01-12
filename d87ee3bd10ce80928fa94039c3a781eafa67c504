@@ -33,6 +33,24 @@
       "message": "Shabi, how do I submit this?\n\n```\nSubmit requirements votes\nYou don\u0027t have permission to vote\nTrigger Votes\nYou don\u0027t have permission to vote\n```",
       "revId": "d87ee3bd10ce80928fa94039c3a781eafa67c504",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be44e5c0_e942e316",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-01-12T15:50:48Z",
+      "side": 1,
+      "message": "First, do `Presubmit-Ready +1` and wait for `Regres` to report back. That runs the Vulkan CTS. Also do `Commit-Queue +1` at the same time to run SwANGLE tests.\n\nOnce the test results are good (and you have `Code-Review +2`), you should do `Verified +1` **yourself** and `Commit-Queue +2` to land.",
+      "parentUuid": "300c29b7_0907198c",
+      "revId": "d87ee3bd10ce80928fa94039c3a781eafa67c504",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
