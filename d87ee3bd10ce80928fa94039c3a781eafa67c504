@@ -86,6 +86,24 @@
       "message": "Seems to have passed the presubmit but commit-queeu got reset?...",
       "revId": "d87ee3bd10ce80928fa94039c3a781eafa67c504",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d710848c_24df6a5a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-01-13T03:47:59Z",
+      "side": 1,
+      "message": "There\u0027s no response from Regres, which probably means Nicolas has turned down his instance too. In other words there\u0027s no CTS testing happening on SwiftShader changes anymore. There was some discussion on the SwiftShader chat about what to do about it, I don\u0027t think we can land anything until that\u0027s resolved.\n\nPerhaps we could spin Regres up somewhere while a proper solution is worked on. @ynovikov@google.com",
+      "parentUuid": "9db66d77_bcfffb59",
+      "revId": "d87ee3bd10ce80928fa94039c3a781eafa67c504",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
