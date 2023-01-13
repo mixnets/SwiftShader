@@ -139,6 +139,24 @@
       "parentUuid": "d710848c_24df6a5a",
       "revId": "d87ee3bd10ce80928fa94039c3a781eafa67c504",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0fb95e68_799c0c16",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101646
+      },
+      "writtenOn": "2023-01-13T15:02:33Z",
+      "side": 1,
+      "message": "Ah, looks like manually setting `Verified +1` allows to submit. Thanks Yuly.",
+      "parentUuid": "2c457cb1_d32196dc",
+      "revId": "d87ee3bd10ce80928fa94039c3a781eafa67c504",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
