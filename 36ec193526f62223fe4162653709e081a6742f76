@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3110ea03_b0c1c442",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2023-01-18T19:07:46Z",
+      "side": 1,
+      "message": "Looks like this is consistent with the rest of the code, like:\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Vulkan/VkTimelineSemaphore.cpp;l\u003d77\n\nCC\u0027d srisser@, who wrote this code.",
+      "revId": "36ec193526f62223fe4162653709e081a6742f76",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
