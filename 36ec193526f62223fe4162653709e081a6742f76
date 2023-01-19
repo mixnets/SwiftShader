@@ -50,6 +50,24 @@
       "message": "Anything else I need to do here? Kokoro seems upset but I don\u0027t know what to do about it, or if it matters. :)",
       "revId": "36ec193526f62223fe4162653709e081a6742f76",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18b242af_0276e3aa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-01-19T16:39:44Z",
+      "side": 1,
+      "message": "```\n[10:32:58][ERROR] ***********************************************************\n[10:32:58][ERROR] CONFIGURATION FAILED VALIDATION CHECKS!\n[10:32:58][ERROR] ***********************************************************\n[10:32:58][ERROR] This build has the following configuration errors:\n[10:32:58][ERROR] Invalid username in authorization section: nicolascapens\n[10:32:58] Failed to start execution\n```\n\nDon\u0027t know which configuration it\u0027s talking about, `nicolascapens` doesn\u0027t exist in the source repo at least.",
+      "parentUuid": "a80aecbf_234301aa",
+      "revId": "36ec193526f62223fe4162653709e081a6742f76",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
