@@ -1,0 +1,19 @@
+<<<<<<< HEAD   (3e7020 Update SPIR-V Headers to aa331ab0f)
+=======
+name: Wasm Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+      - name: Build web
+        run: docker-compose -f source/wasm/docker-compose.yml --project-directory . up
+      - name: Run tests
+        run: node test/wasm/test.js
+>>>>>>> BRANCH (690215 Squashed 'third_party/SPIRV-Tools/' changes from 43c99b5ee08)

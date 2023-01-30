@@ -20,7 +20,58 @@ config("swiftshader_config") {
   asmflags = []
 
   if (is_clang) {
+<<<<<<< HEAD   (3e7020 Update SPIR-V Headers to aa331ab0f)
     cflags += [ "-Wno-shadow" ]
+=======
+    cflags += [
+      "-Wno-implicit-fallthrough",
+      "-Wno-newline-eof",
+      "-Wno-unreachable-code-break",
+      "-Wno-unreachable-code-return",
+    ]
+  } else if (!is_win) {
+    # Work around a false-positive on a Skia GCC 10 builder.
+    cflags += [ "-Wno-format-truncation" ]
+  } else {
+    # Make MSVC report the correct value for __cplusplus
+    cflags += [ "/Zc:__cplusplus" ]
+  }
+}
+
+source_set("spvtools_headers") {
+  sources = [
+    "include/spirv-tools/instrument.hpp",
+    "include/spirv-tools/libspirv.h",
+    "include/spirv-tools/libspirv.hpp",
+    "include/spirv-tools/linker.hpp",
+    "include/spirv-tools/optimizer.hpp",
+  ]
+
+  public_configs = [ ":spvtools_public_config" ]
+}
+
+group("spvtools_language_headers") {
+  public_deps = [
+    ":spvtools_language_header_cldebuginfo100",
+    ":spvtools_language_header_debuginfo",
+    ":spvtools_language_header_vkdebuginfo100",
+  ]
+}
+
+static_library("spvtools") {
+  deps = [
+    ":spvtools_core_tables_unified1",
+    ":spvtools_generators_inc",
+    ":spvtools_glsl_tables_glsl1-0",
+    ":spvtools_language_header_cldebuginfo100",
+    ":spvtools_language_header_debuginfo",
+    ":spvtools_language_header_vkdebuginfo100",
+    ":spvtools_opencl_tables_opencl1-0",
+  ]
+  foreach(table_def, spvtools_vendor_tables) {
+    target_name = table_def[0]
+    deps += [ ":spvtools_vendor_tables_$target_name" ]
+>>>>>>> BRANCH (690215 Squashed 'third_party/SPIRV-Tools/' changes from 43c99b5ee08)
   }
 
   if (is_debug) {
