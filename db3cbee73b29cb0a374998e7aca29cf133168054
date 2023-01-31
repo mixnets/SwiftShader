@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4887c695_65043cdc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101701
+      },
+      "writtenOn": "2023-01-31T10:40:21Z",
+      "side": 1,
+      "message": "kokoro rerun",
+      "revId": "db3cbee73b29cb0a374998e7aca29cf133168054",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
