@@ -33,6 +33,24 @@
       "message": "What\u0027s needed to mark this as verified? I expected some CI step to do that but it seems that\u0027s not the case.",
       "revId": "db3cbee73b29cb0a374998e7aca29cf133168054",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27e0f798_fbaffda0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-02-01T15:41:41Z",
+      "side": 1,
+      "message": "Verified+1 comes from yourself, but I\u0027m actually waiting for Regres to report the result of testing. I don\u0027t know what\u0027s going on there yet, but just realized there is no `Tests: dEQP-VK....` tag in the commit message. If you can dig up what tests are affected by this, please put that in the commit message.\n\nIt might also be that there are no Regres instances running. @ynovikov@google.com any progress there?",
+      "parentUuid": "5da91eb2_247b3b5b",
+      "revId": "db3cbee73b29cb0a374998e7aca29cf133168054",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
