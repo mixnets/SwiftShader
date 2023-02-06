@@ -16,6 +16,23 @@
       "message": "Verified locally that it passes CTS",
       "revId": "617e80f2d84fa19c1339c4e44d1ad383d6688bf5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "07c1b323_61e49354",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2023-02-06T07:47:26Z",
+      "side": 1,
+      "message": "We should really fix the WSI implementation so that present modes *are* honored (not too bad for X11 with the Present extension, etc) but this is fine in short term",
+      "revId": "617e80f2d84fa19c1339c4e44d1ad383d6688bf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
