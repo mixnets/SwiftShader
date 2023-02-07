@@ -18,6 +18,7 @@
 #include "Pipeline/Constants.hpp"
 #include "Pipeline/PixelProgram.hpp"
 #include "System/Debug.hpp"
+#include "System/PlatformTrace.hpp"
 #include "Vulkan/VkImageView.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 
@@ -190,16 +191,24 @@ PixelProcessor::RoutineType PixelProcessor::routine(const State &state,
                                                     const SpirvShader *pixelShader,
                                                     const vk::DescriptorSet::Bindings &descriptorSets)
 {
+	SCOPED_PLATFORM_TRACE("PixelProcessor::routine %0.8X", state.shaderID);
+
 	auto routine = routineCache->lookup(state);
 
 	if(!routine)
 	{
+		SCOPED_PLATFORM_TRACE("Cache Miss");
+
 		QuadRasterizer *generator = new PixelProgram(state, pipelineLayout, pixelShader, descriptorSets);
 		generator->generate();
 		routine = (*generator)("PixelRoutine_%0.8X", state.shaderID);
 		delete generator;
 
 		routineCache->add(state, routine);
+	}
+	else
+	{
+		SCOPED_PLATFORM_TRACE("Cache Hit");
 	}
 
 	return routine;

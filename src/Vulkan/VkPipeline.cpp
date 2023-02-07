@@ -23,6 +23,7 @@
 #include "VkStringify.hpp"
 #include "Pipeline/ComputeProgram.hpp"
 #include "Pipeline/SpirvShader.hpp"
+#include "System/PlatformTrace.hpp"
 
 #include "marl/trace.h"
 
@@ -35,6 +36,8 @@ namespace {
 // optimizeSpirv() applies and freezes specializations into constants, and runs spirv-opt.
 sw::SpirvBinary optimizeSpirv(const vk::PipelineCache::SpirvBinaryKey &key)
 {
+	SCOPED_PLATFORM_TRACE("optimizeSpirv");
+
 	const sw::SpirvBinary &code = key.getBinary();
 	const VkSpecializationInfo *specializationInfo = key.getSpecializationInfo();
 	bool optimize = key.getOptimization();

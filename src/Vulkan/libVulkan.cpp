@@ -48,6 +48,7 @@
 #include "Reactor/Nucleus.hpp"
 #include "System/CPUID.hpp"
 #include "System/Debug.hpp"
+#include "System/PlatformTrace.hpp"
 #include "System/SwiftConfig.hpp"
 #include "WSI/HeadlessSurfaceKHR.hpp"
 #include "WSI/VkSwapchainKHR.hpp"
@@ -2229,6 +2230,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateGraphicsPipelines(VkDevice device, VkPipe
 {
 	TRACE("(VkDevice device = %p, VkPipelineCache pipelineCache = %p, uint32_t createInfoCount = %d, const VkGraphicsPipelineCreateInfo* pCreateInfos = %p, const VkAllocationCallbacks* pAllocator = %p, VkPipeline* pPipelines = %p)",
 	      device, static_cast<void *>(pipelineCache), int(createInfoCount), pCreateInfos, pAllocator, pPipelines);
+
+	SCOPED_PLATFORM_TRACE("vkCreateGraphicsPipelines");
 
 	memset(pPipelines, 0, sizeof(void *) * createInfoCount);
 
