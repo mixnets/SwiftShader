@@ -18,6 +18,7 @@
 #include "Pipeline/VertexProgram.hpp"
 #include "System/Debug.hpp"
 #include "System/Math.hpp"
+#include "System/PlatformTrace.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 
 #include <cstring>
@@ -97,16 +98,24 @@ VertexProcessor::RoutineType VertexProcessor::routine(const State &state,
                                                       const SpirvShader *vertexShader,
                                                       const vk::DescriptorSet::Bindings &descriptorSets)
 {
+	SCOPED_PLATFORM_TRACE("VertexProcessor::routine %0.8X", state.shaderID);
+
 	auto routine = routineCache->lookup(state);
 
 	if(!routine)  // Create one
 	{
+		SCOPED_PLATFORM_TRACE("Cache Miss");
+
 		VertexRoutine *generator = new VertexProgram(state, pipelineLayout, vertexShader, descriptorSets);
 		generator->generate();
 		routine = (*generator)("VertexRoutine_%0.8X", state.shaderID);
 		delete generator;
 
 		routineCache->add(state, routine);
+	}
+	else
+	{
+		SCOPED_PLATFORM_TRACE("Cache Hit");
 	}
 
 	return routine;
