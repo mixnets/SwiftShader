@@ -401,6 +401,18 @@ static void getPhysicalDeviceSwapchainMaintenance1FeaturesKHR(T *features)
 }
 
 template<typename T>
+static void getPhysicalDeviceImageCompressionControlFeaturesEXT(T *features)
+{
+	features->imageCompressionControl = VK_FALSE;
+}
+
+template<typename T>
+static void getPhysicalDeviceImageCompressionControlSwapchainFeaturesEXT(T *features)
+{
+	features->imageCompressionControlSwapchain = VK_FALSE;
+}
+
+template<typename T>
 static void getPhysicalDeviceVulkan12Features(T *features)
 {
 	features->samplerMirrorClampToEdge = VK_TRUE;
@@ -642,6 +654,12 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT:
 			getPhysicalDeviceSwapchainMaintenance1FeaturesKHR(reinterpret_cast<struct VkPhysicalDeviceSwapchainMaintenance1FeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT:
+			getPhysicalDeviceImageCompressionControlFeaturesEXT(reinterpret_cast<struct VkPhysicalDeviceImageCompressionControlFeaturesEXT *>(curExtension));
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT:
+			getPhysicalDeviceImageCompressionControlSwapchainFeaturesEXT(reinterpret_cast<struct VkPhysicalDeviceImageCompressionControlSwapchainFeaturesEXT *>(curExtension));
 			break;
 		case VK_STRUCTURE_TYPE_MAX_ENUM:  // TODO(b/176893525): This may not be legal. dEQP tests that this value is ignored.
 			break;
