@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2675bda7_8bc22752",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-02-08T05:45:56Z",
+      "side": 1,
+      "message": "This sounds dubious. If the application side is expected to be able to read these fields even though `VK_EXT_image_compression_control` is not supported then SwiftShader no longer helps detect when that\u0027s falsely being relied on. These warnings serve a purpose, and I recommend changing Android\u0027s libvulkan to not use `VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT` if the extension is not supported, or demand in the CDD that it is supported (potentially with the feature bits all set to false, and implement it in SwiftShader. Another option might be to opt out of the warnings: b/176893525.\n\nSee also https://gitlab.khronos.org/vulkan/vulkan/-/issues/2442 for an ongoing discussion about the dangers of requesting drivers to ignore unsupported structures.",
+      "range": {
+        "startLine": 9,
+        "startChar": 4,
+        "endLine": 9,
+        "endChar": 30
+      },
+      "revId": "1641c38f3e0400f9a04764d5ae36bfaa5b69cc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
