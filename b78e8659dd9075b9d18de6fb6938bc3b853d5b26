@@ -16,6 +16,24 @@
       "message": "You\u0027re missing a bug ID in your description. Otherwise LGTM.",
       "revId": "b78e8659dd9075b9d18de6fb6938bc3b853d5b26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9d17815_8b0b0593",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-02-23T14:39:17Z",
+      "side": 1,
+      "message": "Thanks. \"Done\" 😊.",
+      "parentUuid": "11c2c971_4eb8647e",
+      "revId": "b78e8659dd9075b9d18de6fb6938bc3b853d5b26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
