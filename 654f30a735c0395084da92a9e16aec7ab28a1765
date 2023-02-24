@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f606760e_1af7df08",
+        "filename": "src/Vulkan/VkTimelineSemaphore.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 101701
+      },
+      "writtenOn": "2023-02-24T16:42:43Z",
+      "side": 1,
+      "message": "I\u0027m considering removing this method. Since Device uses the constructor to populate the WaitForAny, this method is essentially dead code from the start.",
+      "range": {
+        "startLine": 65,
+        "startChar": 2,
+        "endLine": 65,
+        "endChar": 67
+      },
+      "revId": "654f30a735c0395084da92a9e16aec7ab28a1765",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
