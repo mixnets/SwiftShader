@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c5633f3c_8ebb746e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101701
+      },
+      "writtenOn": "2023-02-24T16:44:13Z",
+      "side": 1,
+      "message": "This CL implements the changes I outlined in the doc I sent you a while back. Would you like me to make that doc public and link it in the CL description? If no, I think the description itself explains the situation quite well.",
+      "revId": "654f30a735c0395084da92a9e16aec7ab28a1765",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f606760e_1af7df08",
         "filename": "src/Vulkan/VkTimelineSemaphore.hpp",
         "patchSetId": 2
