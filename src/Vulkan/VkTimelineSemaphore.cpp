@@ -28,14 +28,14 @@ TimelineSemaphore::TimelineSemaphore(const VkSemaphoreCreateInfo *pCreateInfo, v
 	SemaphoreCreateInfo info(pCreateInfo);
 	ASSERT(info.semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
 	type = info.semaphoreType;
-	shared = marl::Allocator::Default->make_shared<TimelineSemaphore::Shared>(marl::Allocator::Default, info.initialPayload);
+	counter = info.initialPayload;
 }
 
 TimelineSemaphore::TimelineSemaphore()
     : Semaphore(VK_SEMAPHORE_TYPE_TIMELINE)
+    , counter(0)
 {
 	type = VK_SEMAPHORE_TYPE_TIMELINE;
-	shared = marl::Allocator::Default->make_shared<TimelineSemaphore::Shared>(marl::Allocator::Default, 0);
 }
 
 size_t TimelineSemaphore::ComputeRequiredAllocationSize(const VkSemaphoreCreateInfo *pCreateInfo)
@@ -49,29 +49,22 @@ void TimelineSemaphore::destroy(const VkAllocationCallbacks *pAllocator)
 
 void TimelineSemaphore::signal(uint64_t value)
 {
-	return shared->signal(value);
-}
-
-void TimelineSemaphore::Shared::signal(uint64_t value)
-{
 	marl::lock lock(mutex);
 	if(counter < value)
 	{
 		counter = value;
 		cv.notify_all();
-		for(auto dep : deps)
+		for(auto &[waitObject, waitValue] : any_waits)
 		{
-			dep->signal(id, counter);
+			if(counter >= waitValue)
+			{
+				waitObject->signal();
+			}
 		}
 	}
 }
 
 void TimelineSemaphore::wait(uint64_t value)
-{
-	shared->wait(value);
-}
-
-void TimelineSemaphore::Shared::wait(uint64_t value)
 {
 	marl::lock lock(mutex);
 	cv.wait(lock, [&]() { return counter >= value; });
@@ -79,67 +72,109 @@ void TimelineSemaphore::Shared::wait(uint64_t value)
 
 uint64_t TimelineSemaphore::getCounterValue()
 {
-	return shared->getCounterValue();
-}
-
-uint64_t TimelineSemaphore::Shared::getCounterValue()
-{
 	marl::lock lock(mutex);
 	return counter;
 }
 
-std::atomic<int> TimelineSemaphore::Shared::nextId;
-
-TimelineSemaphore::Shared::Shared(marl::Allocator *allocator, uint64_t initialState)
-    : cv(allocator)
-    , counter(initialState)
-    , id(nextId++)
+TimelineSemaphore::WaitForAny::WaitForAny() = default;
+TimelineSemaphore::WaitForAny::WaitForAny(const VkSemaphoreWaitInfo *pWaitInfo)
 {
-}
-
-void TimelineSemaphore::Shared::signal(int parentId, uint64_t value)
-{
-	marl::lock lock(mutex);
-	auto it = waitMap.find(parentId);
-	// Either we aren't waiting for a signal, or parentId is not something we're waiting for
-	// Reject any signals that we aren't waiting on
-	if(counter == 0 && it != waitMap.end() && value == it->second)
+	for(uint32_t i = 0; i < pWaitInfo->semaphoreCount; i++)
 	{
-		// Stop waiting on all parents once we find a signal
-		waitMap.clear();
-		counter = 1;
-		cv.notify_all();
-		for(auto dep : deps)
+		TimelineSemaphore *semaphore = DynamicCast<TimelineSemaphore>(pWaitInfo->pSemaphores[i]);
+		uint64_t waitValue = pWaitInfo->pValues[i];
+		switch(addWaitInternal(*semaphore, waitValue))
 		{
-			dep->signal(id, counter);
+		case Result::kAdded:
+			semaphores.push_back(semaphore);
+			break;
+		case Result::kAlreadySignaled:
+			is_signaled = true;
+			break;
+		case Result::kAlreadyAdded:
+			// Do nothing.
+			break;
 		}
 	}
 }
 
-void TimelineSemaphore::addDependent(TimelineSemaphore &other, uint64_t waitValue)
+TimelineSemaphore::WaitForAny::~WaitForAny()
 {
-	shared->addDependent(other);
-	other.addDependency(shared->id, waitValue);
+	removeAllWaits();
 }
 
-void TimelineSemaphore::Shared::addDependent(TimelineSemaphore &other)
+TimelineSemaphore::WaitForAny::Result
+TimelineSemaphore::WaitForAny::addWait(TimelineSemaphore &semaphore, uint64_t waitValue)
+{
+	const Result result = addWaitInternal(semaphore, waitValue);
+	switch(result)
+	{
+	case Result::kAdded:
+		{
+			marl::lock lock(mutex);
+			semaphores.push_back(&semaphore);
+			break;
+		}
+	case Result::kAlreadySignaled:
+		signal();
+		break;
+	case Result::kAlreadyAdded:
+		// Do nothing.
+		break;
+	}
+	return result;
+}
+
+TimelineSemaphore::WaitForAny::Result
+TimelineSemaphore::WaitForAny::addWaitInternal(TimelineSemaphore &semaphore, uint64_t waitValue)
+{
+	// Lock the semaphore's mutex, so that its current state can be checked and,
+	// if necessary, its list of waits can be updated. Since concurrent
+	// modification of the list of waits is not allowed, there's no need to lock
+	// the wait object's mutex.
+	marl::lock lock(semaphore.mutex);
+	if(semaphore.counter >= waitValue)
+	{
+		return Result::kAlreadySignaled;
+	}
+
+	auto it = semaphore.any_waits.find(this);
+	if(it == semaphore.any_waits.end())
+	{
+		semaphore.any_waits[this] = waitValue;
+		return Result::kAdded;
+	}
+
+	// If the same dependency is added more than once, only wait for the
+	// lowest expected value provided.
+	it->second = std::min(it->second, waitValue);
+	return Result::kAlreadyAdded;
+}
+
+void TimelineSemaphore::WaitForAny::removeAllWaits()
+{
+	for(TimelineSemaphore *semaphore : semaphores)
+	{
+		marl::lock lock(semaphore->mutex);
+		semaphore->any_waits.erase(this);
+	}
+	semaphores.resize(0);
+}
+
+void TimelineSemaphore::WaitForAny::wait()
 {
 	marl::lock lock(mutex);
-	deps.push_back(other.shared);
+	cv.wait(lock, [&]() { return is_signaled; });
 }
 
-void TimelineSemaphore::addDependency(int id, uint64_t waitValue)
-{
-	shared->addDependency(id, waitValue);
-}
-
-void TimelineSemaphore::Shared::addDependency(int id, uint64_t waitValue)
+void TimelineSemaphore::WaitForAny::signal()
 {
 	marl::lock lock(mutex);
-	auto mapPos = waitMap.find(id);
-	ASSERT(mapPos == waitMap.end());
-
-	waitMap.insert(mapPos, std::make_pair(id, waitValue));
+	if(!is_signaled)
+	{
+		is_signaled = true;
+		cv.notify_all();
+	}
 }
 
 }  // namespace vk
