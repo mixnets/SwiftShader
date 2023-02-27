@@ -33,7 +33,7 @@ class ThreadLocal {
   inline ThreadLocal(T v) {
     pthread_key_create(&key, NULL);
     pthread_setspecific(key, v);
-  };
+  }
   inline ~ThreadLocal() { pthread_key_delete(key); }
   inline operator T() const { return static_cast<T>(pthread_getspecific(key)); }
   inline ThreadLocal& operator=(T v) {
@@ -51,9 +51,9 @@ class ThreadLocal {
 
 #else
 
-#define MARL_DECLARE_THREAD_LOCAL(TYPE, NAME) static thread_local TYPE NAME;
+#define MARL_DECLARE_THREAD_LOCAL(TYPE, NAME) static thread_local TYPE NAME
 #define MARL_INSTANTIATE_THREAD_LOCAL(TYPE, NAME, VALUE) \
-  thread_local TYPE NAME = VALUE;
+  thread_local TYPE NAME = VALUE
 
 #endif
 
