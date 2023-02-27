@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "91acb69a_c8e2bdb3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-02-27T19:17:26Z",
+      "side": 1,
+      "message": "If:\n• You\u0027re happy with landing this\n• It successfully rolls everywhere without causing static initializer errors\n• It looks like it might actually fix the false positive that\u0027s been haunting us\n\nI\u0027ll upstream this to marl.",
+      "revId": "cbea874ab05a367b463d3591663aff84f76f0ef9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
