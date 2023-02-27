@@ -18,6 +18,7 @@ import("//testing/test.gni")
 
 config("marl_config") {
   include_dirs = [ "include" ]
+  defines = [ "MARL_USE_PTHREAD_THREAD_LOCAL=1" ]
 }
 
 swiftshader_source_set("Marl_headers") {
