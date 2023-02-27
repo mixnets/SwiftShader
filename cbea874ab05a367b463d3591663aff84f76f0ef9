@@ -16,6 +16,29 @@
       "message": "If:\n• You\u0027re happy with landing this\n• It successfully rolls everywhere without causing static initializer errors\n• It looks like it might actually fix the false positive that\u0027s been haunting us\n\nI\u0027ll upstream this to marl.",
       "revId": "cbea874ab05a367b463d3591663aff84f76f0ef9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f7d36ac_732b4ae5",
+        "filename": "third_party/marl/include/marl/thread_local.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2023-02-27T19:28:09Z",
+      "side": 1,
+      "message": "nit: Delete the other copy/move operators?",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 3
+      },
+      "revId": "cbea874ab05a367b463d3591663aff84f76f0ef9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
