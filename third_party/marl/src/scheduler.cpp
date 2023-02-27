@@ -17,6 +17,7 @@
 #include "marl/scheduler.h"
 
 #include "marl/debug.h"
+#include "marl/sanitizers.h"
 #include "marl/thread.h"
 #include "marl/trace.h"
 
@@ -84,19 +85,20 @@ namespace marl {
 ////////////////////////////////////////////////////////////////////////////////
 // Scheduler
 ////////////////////////////////////////////////////////////////////////////////
-thread_local Scheduler* Scheduler::bound = nullptr;
+MARL_INSTANTIATE_THREAD_LOCAL(Scheduler*, Scheduler::bound, nullptr);
 
+CLANG_NO_SANITIZE_MEMORY
 Scheduler* Scheduler::get() {
-  MSAN_UNPOISON(&bound, sizeof(Scheduler*));
   return bound;
 }
 
+CLANG_NO_SANITIZE_MEMORY
 void Scheduler::setBound(Scheduler* scheduler) {
-  MSAN_UNPOISON(&bound, sizeof(Scheduler*));
   bound = scheduler;
 }
 
 void Scheduler::bind() {
+  // See https://github.com/google/marl/issues/184
   MARL_ASSERT(get() == nullptr, "Scheduler already bound");
   setBound(this);
   {
@@ -233,6 +235,9 @@ Scheduler::Fiber::Fiber(Allocator::unique_ptr<OSFiber>&& impl, uint32_t id)
   MARL_ASSERT(worker != nullptr, "No Scheduler::Worker bound");
 }
 
+// TODO(chromium:1211047): Testing the static thread_local Worker::current for
+// null causes a MemorySantizer false positive.
+CLANG_NO_SANITIZE_MEMORY
 Scheduler::Fiber* Scheduler::Fiber::current() {
   auto worker = Worker::getCurrent();
   return worker != nullptr ? worker->getCurrentFiber() : nullptr;
@@ -354,7 +359,9 @@ bool Scheduler::WaitingFibers::Timeout::operator<(const Timeout& o) const {
 ////////////////////////////////////////////////////////////////////////////////
 // Scheduler::Worker
 ////////////////////////////////////////////////////////////////////////////////
-thread_local Scheduler::Worker* Scheduler::Worker::current = nullptr;
+MARL_INSTANTIATE_THREAD_LOCAL(Scheduler::Worker*,
+                              Scheduler::Worker::current,
+                              nullptr);
 
 Scheduler::Worker::Worker(Scheduler* scheduler, Mode mode, uint32_t id)
     : id(id),
