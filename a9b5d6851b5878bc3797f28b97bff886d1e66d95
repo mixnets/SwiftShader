@@ -51,6 +51,24 @@
       "parentUuid": "158b7c83_1e2035dd",
       "revId": "a9b5d6851b5878bc3797f28b97bff886d1e66d95",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0211743b_4964f2eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-02-28T15:09:32Z",
+      "side": 1,
+      "message": "Yes, I got that from the commit message, but why is it getting compiled in the first place? These tests are for \"offline\" development of approximate math functions (see https://github.com/google/swiftshader/blob/master/docs/Exp-Log-Optimization.pdf). They don\u0027t test any production code itself so they shouldn\u0027t be built and run regularly.\n\nIf these warnings are bothering anyone working on the math functions, they should just be silenced. Test code shouldn\u0027t be subject to such pedantic warnings in my opinion.",
+      "parentUuid": "5311b7b2_dec5247a",
+      "revId": "a9b5d6851b5878bc3797f28b97bff886d1e66d95",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
