@@ -19,11 +19,11 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include <cstdlib>
 #include <cmath>
+#include <cstdlib>
 
-using std::isnan;
 using std::isinf;
+using std::isnan;
 using std::signbit;
 
 using namespace sw;
@@ -186,11 +186,6 @@ TEST(MathTest, Log2RelaxedExhaustive)
 	CPUID::setFlushToZero(true);
 
 	float worst_margin = 0;
-	float worst_ulp = 0;
-	float worst_x = 0;
-	float worst_val = 0;
-	float worst_ref = 0;
-
 	float worst_abs = 0;
 
 	for(float x = 0.0f; x <= INFINITY; x = inc(x))
@@ -224,10 +219,6 @@ TEST(MathTest, Log2RelaxedExhaustive)
 			if(margin > worst_margin)
 			{
 				worst_margin = margin;
-				worst_ulp = ulp;
-				worst_x = x;
-				worst_val = val;
-				worst_ref = ref;
 			}
 		}
 	}
@@ -269,10 +260,6 @@ TEST(MathTest, Exp2RelaxedExhaustive)
 	CPUID::setFlushToZero(true);
 
 	float worst_margin = 0;
-	float worst_ulp = 0;
-	float worst_x = 0;
-	float worst_val = 0;
-	float worst_ref = 0;
 
 	for(float x = -10; x <= 10; x = inc(x))
 	{
@@ -292,10 +279,6 @@ TEST(MathTest, Exp2RelaxedExhaustive)
 		if(margin > worst_margin)
 		{
 			worst_margin = margin;
-			worst_ulp = ulp;
-			worst_x = x;
-			worst_val = val;
-			worst_ref = ref;
 		}
 	}
 
@@ -341,11 +324,6 @@ TEST(MathTest, Log2Exhaustive)
 	CPUID::setFlushToZero(true);
 
 	float worst_margin = 0;
-	float worst_ulp = 0;
-	float worst_x = 0;
-	float worst_val = 0;
-	float worst_ref = 0;
-
 	float worst_abs = 0;
 
 	for(float x = 0.0f; x <= INFINITY; x = inc(x))
@@ -379,10 +357,6 @@ TEST(MathTest, Log2Exhaustive)
 			if(margin > worst_margin)
 			{
 				worst_margin = margin;
-				worst_ulp = ulp;
-				worst_x = x;
-				worst_val = val;
-				worst_ref = ref;
 			}
 		}
 	}
@@ -426,10 +400,6 @@ TEST(MathTest, Exp2Exhaustive)
 	CPUID::setFlushToZero(true);
 
 	float worst_margin = 0;
-	float worst_ulp = 0;
-	float worst_x = 0;
-	float worst_val = 0;
-	float worst_ref = 0;
 
 	for(float x = -10; x <= 10; x = inc(x))
 	{
@@ -449,10 +419,6 @@ TEST(MathTest, Exp2Exhaustive)
 		if(margin > worst_margin)
 		{
 			worst_margin = margin;
-			worst_ulp = ulp;
-			worst_x = x;
-			worst_val = val;
-			worst_ref = ref;
 		}
 	}
 
