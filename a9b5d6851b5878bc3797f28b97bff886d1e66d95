@@ -33,6 +33,24 @@
       "message": "These serve a purpose during debugging. How do you end up being affected by this?",
       "revId": "a9b5d6851b5878bc3797f28b97bff886d1e66d95",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5311b7b2_dec5247a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-02-28T13:34:43Z",
+      "side": 1,
+      "message": "It spews a bunch of warnings when compiling.",
+      "parentUuid": "158b7c83_1e2035dd",
+      "revId": "a9b5d6851b5878bc3797f28b97bff886d1e66d95",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
