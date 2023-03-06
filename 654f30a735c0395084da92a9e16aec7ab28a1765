@@ -53,6 +53,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f9534c2_7af95918",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101701
+      },
+      "writtenOn": "2023-03-06T18:01:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a162f2a_03822cb8",
+      "revId": "654f30a735c0395084da92a9e16aec7ab28a1765",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f606760e_1af7df08",
@@ -90,6 +108,30 @@
       "side": 1,
       "message": "Sure, remove if unused!",
       "parentUuid": "f606760e_1af7df08",
+      "range": {
+        "startLine": 65,
+        "startChar": 2,
+        "endLine": 65,
+        "endChar": 67
+      },
+      "revId": "654f30a735c0395084da92a9e16aec7ab28a1765",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "39782f10_912178a4",
+        "filename": "src/Vulkan/VkTimelineSemaphore.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 101701
+      },
+      "writtenOn": "2023-03-06T18:01:02Z",
+      "side": 1,
+      "message": "Done! I cleaned up the implementation a bit as well. addWaitInternal is renamed addWait and moved into TimelineSemaphore, together with a new removeWait. Now WaitForAny no longer manipulates the internals of TimelineSemaphore directly, but calls these APIs instead.",
+      "parentUuid": "647df213_19ce6efe",
       "range": {
         "startLine": 65,
         "startChar": 2,
