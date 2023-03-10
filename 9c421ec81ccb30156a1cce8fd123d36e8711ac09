@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a69d94c5_a507c011",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101566
+      },
+      "writtenOn": "2023-03-10T20:13:30Z",
+      "side": 1,
+      "message": "added chromium meta-bug",
+      "revId": "9c421ec81ccb30156a1cce8fd123d36e8711ac09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
