@@ -26,15 +26,15 @@ import sys
 import tempfile
 from os import path
 
-# LLVM_BRANCH must match the value of the same variable in third_party/update-llvm-10.sh
-LLVM_BRANCH = "release/10.x"
+# LLVM_BRANCH must match the value of the same variable in third_party/update-llvm-15.sh
+LLVM_BRANCH = "release/15.x"
 
-# LLVM_COMMIT must be set to the commit hash that we last updated to when running third_party/update-llvm-10.sh.
-# Run 'git show -s origin/llvm10-clean' and look for 'llvm-10-update: <hash>' to retrieve it.
-LLVM_COMMIT = "d32170dbd5b0d54436537b6b75beaf44324e0c28"
+# LLVM_COMMIT must be set to the commit hash that we last updated to when running third_party/update-llvm-15.sh.
+# Run 'git show -s origin/llvm15-clean' and look for 'llvm-15-update: <hash>' to retrieve it.
+LLVM_COMMIT = "8dfdcc7b7bf66834a761bd8de445840ef68e4d1a"
 
 SCRIPT_DIR = path.dirname(path.realpath(sys.argv[0]))
-LLVM_STAGING_DIR = path.abspath(path.join(tempfile.gettempdir(), "llvm-10"))
+LLVM_STAGING_DIR = path.abspath(path.join(tempfile.gettempdir(), "llvm-15"))
 LLVM_DIR = path.abspath(path.join(LLVM_STAGING_DIR, "llvm"))
 LLVM_OBJS = path.join(LLVM_STAGING_DIR, "build")
 LLVM_CONFIGS = path.abspath(path.join(SCRIPT_DIR, '..', 'configs'))
@@ -117,6 +117,7 @@ LLVM_CMAKE_OPTIONS = [
     '-DLLVM_ENABLE_LIBEDIT=OFF',
     '-DLLVM_ENABLE_LIBPFM=OFF',
     '-DLLVM_ENABLE_ZLIB=OFF',
+    '-DLLVM_INCLUDE_BENCHMARKS=OFF',
     '-DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=ON'
 ]
 
@@ -193,9 +194,11 @@ def clone_llvm():
                 'git remote add origin https://github.com/llvm/llvm-project.git', 2)
             run_command('git config core.sparsecheckout true', 2)
             run_command('echo /llvm > .git/info/sparse-checkout', 2)
+            run_command('echo /cmake >> .git/info/sparse-checkout', 2)
 
     with pushd(LLVM_STAGING_DIR):
         run_command('echo /llvm > .git/info/sparse-checkout', 2)
+        run_command('echo /cmake >> .git/info/sparse-checkout', 2)
         run_command('git fetch origin {}'.format(LLVM_BRANCH), 2)
         run_command('git checkout {}'.format(LLVM_COMMIT), 2)
     return
