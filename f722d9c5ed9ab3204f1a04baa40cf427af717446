@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fec6a79c_5c1b09a2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-03-13T14:55:30Z",
+      "side": 1,
+      "message": "Kokoro gets upset if you don\u0027t include a `Bug:` line.\n\n`Bug: None` would work, if you don\u0027t have a bug for this.",
+      "revId": "f722d9c5ed9ab3204f1a04baa40cf427af717446",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
