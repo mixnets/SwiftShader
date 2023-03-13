@@ -16,6 +16,24 @@
       "message": "Kokoro gets upset if you don\u0027t include a `Bug:` line.\n\n`Bug: None` would work, if you don\u0027t have a bug for this.",
       "revId": "f722d9c5ed9ab3204f1a04baa40cf427af717446",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5165502c_fd52ed7c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 101271
+      },
+      "writtenOn": "2023-03-13T14:58:33Z",
+      "side": 1,
+      "message": "Thanks, fixed",
+      "parentUuid": "fec6a79c_5c1b09a2",
+      "revId": "f722d9c5ed9ab3204f1a04baa40cf427af717446",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
