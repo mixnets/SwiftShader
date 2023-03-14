@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "983ef268_d6d5590d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-03-14T12:53:20Z",
+      "side": 1,
+      "message": "Thanks for the review.\nFWIW I seem to not have the permission to +2 the CL to send it to the CQ.",
+      "revId": "038411d24756299708f77b2447bcac00c493acc8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
