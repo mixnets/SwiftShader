@@ -193,9 +193,9 @@ set(DEFAULT_REACTOR_BACKEND "LLVM")
 set(REACTOR_BACKEND ${DEFAULT_REACTOR_BACKEND} CACHE STRING "JIT compiler back-end used by Reactor")
 set_property(CACHE REACTOR_BACKEND PROPERTY STRINGS LLVM LLVM-Submodule Subzero)
 
-set(DEFAULT_SWIFTSHADER_LLVM_VERSION "10.0")
+set(DEFAULT_SWIFTSHADER_LLVM_VERSION "16.0")
 set(SWIFTSHADER_LLVM_VERSION ${DEFAULT_SWIFTSHADER_LLVM_VERSION} CACHE STRING "LLVM version to use")
-set_property(CACHE SWIFTSHADER_LLVM_VERSION PROPERTY STRINGS "10.0")
+set_property(CACHE SWIFTSHADER_LLVM_VERSION PROPERTY STRINGS "16.0")
 
 # If defined, overrides the default optimization level of the current reactor backend.
 # Set to one of the rr::Optimization::Level enum values.
