@@ -157,6 +157,24 @@
       "message": "I\u0027m doing a local dEQP test run with this. I\u0027ll let you know what results I get.",
       "revId": "364ff5d63c79c1aac0730f85d27db12a42179949",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93e517ad_1a33f692",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2023-03-16T17:29:32Z",
+      "side": 1,
+      "message": "I can\u0027t seem to get the local runner to perform reasonably. A full dEQP run used to take ~1h on this machine, now it\u0027s claiming it\u0027ll take 6 days, with and without this change. 😞",
+      "parentUuid": "0a4f73f1_7feee059",
+      "revId": "364ff5d63c79c1aac0730f85d27db12a42179949",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
