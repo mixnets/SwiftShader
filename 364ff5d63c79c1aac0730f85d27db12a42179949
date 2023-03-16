@@ -33,6 +33,23 @@
       "message": "Unfortunately the \"swangle\" bots do not build the LLVM configuration though. I can explain how to test that in chat.",
       "revId": "364ff5d63c79c1aac0730f85d27db12a42179949",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1d2d2937_09d497b1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101766
+      },
+      "writtenOn": "2023-03-16T15:27:44Z",
+      "side": 1,
+      "message": "I get an error when building on Linux:\n\n```\n/home/ben/src/SwiftShader/third_party/llvm-16.0/llvm/lib/Support/Unix/Process.inc:452:10: error: use of undeclared identifier \u0027arc4random\u0027\n  return arc4random();\n         ^\n1 error generated.\n```",
+      "revId": "364ff5d63c79c1aac0730f85d27db12a42179949",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
