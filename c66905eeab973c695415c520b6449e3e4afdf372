@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e3e012a7_eb44ba19",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2023-03-16T17:30:50Z",
+      "side": 1,
+      "message": "LGTM, with the exception of the `HAVE_DECL_ARC4RANDOM` flag.",
+      "revId": "c66905eeab973c695415c520b6449e3e4afdf372",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
