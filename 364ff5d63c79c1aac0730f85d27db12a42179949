@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b88e1c9e_9ec0a1b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2023-03-16T14:13:17Z",
+      "side": 1,
+      "message": "We will have to update the BUILD.gn files for the new LLVM too. That\u0027s how Chrome builds SwiftShader.",
+      "revId": "364ff5d63c79c1aac0730f85d27db12a42179949",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
