@@ -68,6 +68,60 @@
       "parentUuid": "1d2d2937_09d497b1",
       "revId": "364ff5d63c79c1aac0730f85d27db12a42179949",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f86bb76_0ee55bc3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-03-16T15:54:46Z",
+      "side": 1,
+      "message": "Thanks for testing the patch locally!\n\nIf you got that error message, I assume you updated the main CMakeListst.txt to make it point to LLVM 16.0 instead of 10.0?\nIs that correct?\n\nI don\u0027t understand why you are seeing an error I am not seeing.\nMaybe you and I are using different compilers?\nAre you perhaps using `clang`? (on my workstation `gcc` is used).\n\n\u003e #define HAVE_DECL_ARC4RANDOM 0\nWill do!",
+      "parentUuid": "899f8387_1f5f9787",
+      "revId": "364ff5d63c79c1aac0730f85d27db12a42179949",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd259bf3_6760e8e0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-03-16T15:54:46Z",
+      "side": 1,
+      "message": "Yes. I plan on having `generate_build_files.py` generate Android.bp and BUILD.gn (see for example this experimental CL: https://swiftshader-review.googlesource.com/c/SwiftShader/+/71009/3/third_party/llvm-16.0/scripts/generate_build_files.py )",
+      "parentUuid": "b88e1c9e_9ec0a1b7",
+      "revId": "364ff5d63c79c1aac0730f85d27db12a42179949",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6319db48_6887c849",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-03-16T15:54:46Z",
+      "side": 1,
+      "message": "Thank you. I will chat with you, either later today or tomorrow.",
+      "parentUuid": "1e19c78a_c135cf6e",
+      "revId": "364ff5d63c79c1aac0730f85d27db12a42179949",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
