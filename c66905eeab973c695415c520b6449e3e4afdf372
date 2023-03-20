@@ -16,6 +16,24 @@
       "message": "LGTM, with the exception of the `HAVE_DECL_ARC4RANDOM` flag.",
       "revId": "c66905eeab973c695415c520b6449e3e4afdf372",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f9ae7ce_88025cc6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-03-20T15:21:23Z",
+      "side": 1,
+      "message": "Thank you.\nWill change the `HAVE_DECL_ARC4RANDOM` flag in the CL that changes the config.",
+      "parentUuid": "e3e012a7_eb44ba19",
+      "revId": "c66905eeab973c695415c520b6449e3e4afdf372",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
