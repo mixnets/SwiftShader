@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0b4ed85_8405dac3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101761
+      },
+      "writtenOn": "2023-03-20T09:18:33Z",
+      "side": 1,
+      "message": "@syoussefi@google.com \u003c I don\u0027t have committer permissions, so I will need somebody else to land the patch.",
+      "revId": "51b677a2ad8dc033271b4ec556524fd1c220dde1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
