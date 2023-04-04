@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc1b405d_6b393916",
+        "filename": "third_party/llvm-16.0/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2023-04-04T23:20:18Z",
+      "side": 0,
+      "message": "Does the stripping script run builds on multiple architectures? These appear to be needed by the arm64 builds (see https://android-review.googlesource.com/c/platform/external/swiftshader/+/2524095/1?tab\u003dchecks).",
+      "range": {
+        "startLine": 246,
+        "startChar": 8,
+        "endLine": 246,
+        "endChar": 51
+      },
+      "revId": "e684d61543790ef1e5ce9771891650031f1d80b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
