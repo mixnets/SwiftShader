@@ -16,7 +16,7 @@
 #include "llvm/ExecutionEngine/JITLink/JITLink.h"
 #include "llvm/ExecutionEngine/JITLink/TableManager.h"
 
-namespace llvm::jitlink::i386 {
+namespace llvm::jitlink::llvm_i386 {
 /// Represets i386 fixups
 enum EdgeKind_i386 : Edge::Kind {
 
@@ -144,7 +144,7 @@ inline bool isInRangeForImmS16(int32_t Value) {
 /// Apply fixup expression for edge to block content.
 inline Error applyFixup(LinkGraph &G, Block &B, const Edge &E,
                         const Symbol *GOTSymbol) {
-  using namespace i386;
+  using namespace llvm_i386;
   using namespace llvm::support;
 
   char *BlockWorkingMem = B.getAlreadyMutableContent().data();
@@ -152,24 +152,24 @@ inline Error applyFixup(LinkGraph &G, Block &B, const Edge &E,
   auto FixupAddress = B.getAddress() + E.getOffset();
 
   switch (E.getKind()) {
-  case i386::None: {
+  case llvm_i386::None: {
     break;
   }
 
-  case i386::Pointer32: {
+  case llvm_i386::Pointer32: {
     uint32_t Value = E.getTarget().getAddress().getValue() + E.getAddend();
     *(ulittle32_t *)FixupPtr = Value;
     break;
   }
 
-  case i386::PCRel32: {
+  case llvm_i386::PCRel32: {
     int32_t Value =
         E.getTarget().getAddress() - (FixupAddress + 4) + E.getAddend();
     *(little32_t *)FixupPtr = Value;
     break;
   }
 
-  case i386::Pointer16: {
+  case llvm_i386::Pointer16: {
     uint32_t Value = E.getTarget().getAddress().getValue() + E.getAddend();
     if (LLVM_LIKELY(isInRangeForImmU16(Value)))
       *(ulittle16_t *)FixupPtr = Value;
@@ -178,7 +178,7 @@ inline Error applyFixup(LinkGraph &G, Block &B, const Edge &E,
     break;
   }
 
-  case i386::PCRel16: {
+  case llvm_i386::PCRel16: {
     int32_t Value =
         E.getTarget().getAddress() - (FixupAddress + 4) + E.getAddend();
     if (LLVM_LIKELY(isInRangeForImmS16(Value)))
@@ -188,13 +188,13 @@ inline Error applyFixup(LinkGraph &G, Block &B, const Edge &E,
     break;
   }
 
-  case i386::Delta32: {
+  case llvm_i386::Delta32: {
     int32_t Value = E.getTarget().getAddress() - FixupAddress + E.getAddend();
     *(little32_t *)FixupPtr = Value;
     break;
   }
 
-  case i386::Delta32FromGOT: {
+  case llvm_i386::Delta32FromGOT: {
     assert(GOTSymbol && "No GOT section symbol");
     int32_t Value =
         E.getTarget().getAddress() - GOTSymbol->getAddress() + E.getAddend();
@@ -245,14 +245,14 @@ public:
   bool visitEdge(LinkGraph &G, Block *B, Edge &E) {
     Edge::Kind KindToSet = Edge::Invalid;
     switch (E.getKind()) {
-    case i386::Delta32FromGOT: {
+    case llvm_i386::Delta32FromGOT: {
       // we need to make sure that the GOT section exists, but don't otherwise
       // need to fix up this edge
       getGOTSection(G);
       return false;
     }
-    case i386::RequestGOTAndTransformToDelta32FromGOT:
-      KindToSet = i386::Delta32FromGOT;
+    case llvm_i386::RequestGOTAndTransformToDelta32FromGOT:
+      KindToSet = llvm_i386::Delta32FromGOT;
       break;
     default:
       return false;
@@ -283,6 +283,6 @@ private:
   Section *GOTSection = nullptr;
 };
 
-} // namespace llvm::jitlink::i386
+} // namespace llvm::jitlink::llvm_i386
 
 #endif // LLVM_EXECUTIONENGINE_JITLINK_I386_H

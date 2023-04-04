@@ -29,7 +29,7 @@ constexpr StringRef ELFGOTSymbolName = "_GLOBAL_OFFSET_TABLE_";
 Error buildTables_ELF_i386(LinkGraph &G) {
   LLVM_DEBUG(dbgs() << "Visiting edges in graph:\n");
 
-  i386::GOTTableManager GOT;
+  llvm_i386::GOTTableManager GOT;
   visitExistingEdges(G, GOT);
   return Error::success();
 }
@@ -57,7 +57,7 @@ private:
             [&](LinkGraph &LG, Symbol &Sym) -> SectionRangeSymbolDesc {
               if (Sym.getName() == ELFGOTSymbolName)
                 if (auto *GOTSection = G.findSectionByName(
-                        i386::GOTTableManager::getSectionName())) {
+                        llvm_i386::GOTTableManager::getSectionName())) {
                   GOTSymbol = &Sym;
                   return {*GOTSection, true};
                 }
@@ -77,7 +77,7 @@ private:
     // record it, otherwise we'll create our own.
     // If there's a GOT section but we didn't find an external GOT symbol...
     if (auto *GOTSection =
-            G.findSectionByName(i386::GOTTableManager::getSectionName())) {
+            G.findSectionByName(llvm_i386::GOTTableManager::getSectionName())) {
 
       // Check for an existing defined symbol.
       for (auto *Sym : GOTSection->symbols())
@@ -104,15 +104,15 @@ private:
   }
 
   Error applyFixup(LinkGraph &G, Block &B, const Edge &E) const {
-    return i386::applyFixup(G, B, E, GOTSymbol);
+    return llvm_i386::applyFixup(G, B, E, GOTSymbol);
   }
 };
 
 template <typename ELFT>
 class ELFLinkGraphBuilder_i386 : public ELFLinkGraphBuilder<ELFT> {
 private:
-  static Expected<i386::EdgeKind_i386> getRelocationKind(const uint32_t Type) {
-    using namespace i386;
+  static Expected<llvm_i386::EdgeKind_i386> getRelocationKind(const uint32_t Type) {
+    using namespace llvm_i386;
     switch (Type) {
     case ELF::R_386_NONE:
       return EdgeKind_i386::None;
@@ -175,7 +175,7 @@ private:
                   Base::GraphSymbols.size()),
           inconvertibleErrorCode());
 
-    Expected<i386::EdgeKind_i386> Kind = getRelocationKind(Rel.getType(false));
+    Expected<llvm_i386::EdgeKind_i386> Kind = getRelocationKind(Rel.getType(false));
     if (!Kind)
       return Kind.takeError();
 
@@ -183,7 +183,7 @@ private:
     int64_t Addend = 0;
 
     switch (*Kind) {
-    case i386::EdgeKind_i386::Delta32: {
+    case llvm_i386::EdgeKind_i386::Delta32: {
       const char *FixupContent = BlockToFix.getContent().data() +
                                  (FixupAddress - BlockToFix.getAddress());
       Addend = *(const support::ulittle32_t *)FixupContent;
@@ -197,7 +197,7 @@ private:
     Edge GE(*Kind, Offset, *GraphSymbol, Addend);
     LLVM_DEBUG({
       dbgs() << "    ";
-      printEdge(dbgs(), BlockToFix, GE, i386::getEdgeKindName(*Kind));
+      printEdge(dbgs(), BlockToFix, GE, llvm_i386::getEdgeKindName(*Kind));
       dbgs() << "\n";
     });
 
@@ -209,7 +209,7 @@ public:
   ELFLinkGraphBuilder_i386(StringRef FileName, const object::ELFFile<ELFT> &Obj,
                            const Triple T)
       : ELFLinkGraphBuilder<ELFT>(Obj, std::move(T), FileName,
-                                  i386::getEdgeKindName) {}
+                                  llvm_i386::getEdgeKindName) {}
 };
 
 Expected<std::unique_ptr<LinkGraph>>

@@ -14,7 +14,7 @@
 
 #define DEBUG_TYPE "jitlink"
 
-namespace llvm::jitlink::i386 {
+namespace llvm::jitlink::llvm_i386 {
 
 const char *getEdgeKindName(Edge::Kind K) {
   switch (K) {
@@ -40,4 +40,4 @@ const char *getEdgeKindName(Edge::Kind K) {
 }
 
 const char NullPointerContent[PointerSize] = {0x00, 0x00, 0x00, 0x00};
-} // namespace llvm::jitlink::i386
+} // namespace llvm::jitlink::llvm_i386
