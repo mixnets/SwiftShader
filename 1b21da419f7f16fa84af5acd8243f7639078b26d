@@ -22,6 +22,30 @@
       },
       "revId": "1b21da419f7f16fa84af5acd8243f7639078b26d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d1a8b89_ac6b8ea9",
+        "filename": "third_party/llvm-16.0/llvm/include/llvm/ExecutionEngine/JITLink/i386.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2023-04-05T17:23:23Z",
+      "side": 1,
+      "message": "I think keeping the same namespace name is not an option because you end up with effectively `llvm::jitlink::1` (https://godbolt.org/z/n9ajxbb33).\n\nWould you prefer a comment above each edit? or perhaps renaming the namespace to something like `llvm::jitlink::android_build_fix_i386`? or just a new README file in `third_party/llvm-16.0/` ?",
+      "parentUuid": "c78b9c2e_fdc949e1",
+      "range": {
+        "startLine": 19,
+        "startChar": 25,
+        "endLine": 19,
+        "endChar": 34
+      },
+      "revId": "1b21da419f7f16fa84af5acd8243f7639078b26d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
