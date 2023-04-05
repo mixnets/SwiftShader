@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c78b9c2e_fdc949e1",
+        "filename": "third_party/llvm-16.0/llvm/include/llvm/ExecutionEngine/JITLink/i386.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-04-05T12:55:24Z",
+      "side": 1,
+      "message": "I\u0027m worried that renaming a namespace will make future cherry-pick harder.\n\nI\u0027m not 100% certain this is possible or that it would fix the build issue, but consider removing `using namespace i386;`, and use the full namespace instead of `i386:`.\nFor example,\n`case i386::None:`\nwould become:\n`case llvm_i386::None:`.\n\n\nIf keeping the same namespace name is not an option, a comment saying that `llvm::jitlink::i386` was renamed to `llvm::jitlink::llvm_i386` would be good.",
+      "range": {
+        "startLine": 19,
+        "startChar": 25,
+        "endLine": 19,
+        "endChar": 34
+      },
+      "revId": "1b21da419f7f16fa84af5acd8243f7639078b26d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
