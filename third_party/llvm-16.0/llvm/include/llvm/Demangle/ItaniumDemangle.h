@@ -28,6 +28,7 @@
 #include <limits>
 #include <new>
 #include <utility>
+#include <type_traits>
 
 DEMANGLE_NAMESPACE_BEGIN
 
