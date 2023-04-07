@@ -46,6 +46,30 @@
       },
       "revId": "e684d61543790ef1e5ce9771891650031f1d80b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0206972d_2af539c4",
+        "filename": "third_party/llvm-16.0/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-04-07T09:26:54Z",
+      "side": 0,
+      "message": "Adding back those files should help with the arm build:\n-    \"/lib/CodeGen/ComplexDeinterleavingPass.cpp\",\n-    \"/lib/CodeGen/GlobalISel/Combiner.cpp\",\n-    \"/lib/CodeGen/GlobalISel/CombinerHelper.cpp\",\n-    \"/lib/CodeGen/GlobalMerge.cpp\",\n-    \"/lib/CodeGen/RegAllocPBQP.cpp\",",
+      "parentUuid": "39ab1eaf_bb2607a2",
+      "range": {
+        "startLine": 246,
+        "startChar": 8,
+        "endLine": 246,
+        "endChar": 51
+      },
+      "revId": "e684d61543790ef1e5ce9771891650031f1d80b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
