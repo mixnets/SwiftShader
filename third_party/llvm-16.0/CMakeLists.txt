@@ -593,6 +593,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/MC/MCAsmInfoCOFF.cpp
     ${LLVM_DIR}/lib/MC/MCAsmInfoDarwin.cpp
     ${LLVM_DIR}/lib/MC/MCAsmInfoELF.cpp
+    ${LLVM_DIR}/lib/MC/MCAsmMacro.cpp
     ${LLVM_DIR}/lib/MC/MCAsmStreamer.cpp
     ${LLVM_DIR}/lib/MC/MCAssembler.cpp
     ${LLVM_DIR}/lib/MC/MCCodeEmitter.cpp
@@ -752,6 +753,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Support/KnownBits.cpp
     ${LLVM_DIR}/lib/Support/LEB128.cpp
     ${LLVM_DIR}/lib/Support/LineIterator.cpp
+    ${LLVM_DIR}/lib/Support/Locale.cpp
     ${LLVM_DIR}/lib/Support/LowLevelType.cpp
     ${LLVM_DIR}/lib/Support/MD5.cpp
     ${LLVM_DIR}/lib/Support/ManagedStatic.cpp
@@ -803,6 +805,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Support/WithColor.cpp
     ${LLVM_DIR}/lib/Support/YAMLParser.cpp
     ${LLVM_DIR}/lib/Support/YAMLTraits.cpp
+    ${LLVM_DIR}/lib/Support/circular_raw_ostream.cpp
     ${LLVM_DIR}/lib/Support/raw_ostream.cpp
     ${LLVM_DIR}/lib/Support/regcomp.c
     ${LLVM_DIR}/lib/Support/regerror.c
