@@ -104,6 +104,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Analysis/PtrUseVisitor.cpp
     ${LLVM_DIR}/lib/Analysis/RegionInfo.cpp
     ${LLVM_DIR}/lib/Analysis/RegionPass.cpp
+    ${LLVM_DIR}/lib/Analysis/RegionPrinter.cpp
     ${LLVM_DIR}/lib/Analysis/ReplayInlineAdvisor.cpp
     ${LLVM_DIR}/lib/Analysis/ScalarEvolution.cpp
     ${LLVM_DIR}/lib/Analysis/ScalarEvolutionAliasAnalysis.cpp
@@ -322,6 +323,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/CodeGen/MachineVerifier.cpp
     ${LLVM_DIR}/lib/CodeGen/MacroFusion.cpp
     ${LLVM_DIR}/lib/CodeGen/ModuloSchedule.cpp
+    ${LLVM_DIR}/lib/CodeGen/MultiHazardRecognizer.cpp
     ${LLVM_DIR}/lib/CodeGen/OptimizePHIs.cpp
     ${LLVM_DIR}/lib/CodeGen/PHIElimination.cpp
     ${LLVM_DIR}/lib/CodeGen/PHIEliminationUtils.cpp
@@ -592,6 +594,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/IRPrinter/IRPrintingPasses.cpp
     ${LLVM_DIR}/lib/IRReader/IRReader.cpp
     ${LLVM_DIR}/lib/Linker/IRMover.cpp
+    ${LLVM_DIR}/lib/MC/ConstantPools.cpp
     ${LLVM_DIR}/lib/MC/ELFObjectWriter.cpp
     ${LLVM_DIR}/lib/MC/MCAsmBackend.cpp
     ${LLVM_DIR}/lib/MC/MCAsmInfo.cpp
@@ -616,6 +619,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/MC/MCInstPrinter.cpp
     ${LLVM_DIR}/lib/MC/MCInstrAnalysis.cpp
     ${LLVM_DIR}/lib/MC/MCInstrDesc.cpp
+    ${LLVM_DIR}/lib/MC/MCInstrInfo.cpp
     ${LLVM_DIR}/lib/MC/MCLinkerOptimizationHint.cpp
     ${LLVM_DIR}/lib/MC/MCMachOStreamer.cpp
     ${LLVM_DIR}/lib/MC/MCMachObjectTargetWriter.cpp
@@ -846,6 +850,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/IPO/ArgumentPromotion.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/Attributor.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/AttributorAttributes.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/BarrierNoopPass.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/BlockExtractor.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/CalledValuePropagation.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/ConstantMerge.cpp
