@@ -34,6 +34,24 @@
       "parentUuid": "0c1f4532_cc01ebf7",
       "revId": "ac451908291bb87ea4b6d1e71c8d686598a9c512",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "616b184b_a34d63bb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-04-11T12:11:31Z",
+      "side": 1,
+      "message": "Ok.\n\nBen, do you think that `generate_build_files.py` will make maintenance harder, and that we should remove it?\n\nFor me I feel like that script makes things easier, but I\u0027m biased because I wrote it and I\u0027m familiar with it, so I\u0027d like your opinion.",
+      "parentUuid": "cd37d067_a7309c86",
+      "revId": "ac451908291bb87ea4b6d1e71c8d686598a9c512",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
