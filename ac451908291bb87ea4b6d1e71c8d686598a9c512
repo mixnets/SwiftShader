@@ -106,6 +106,24 @@
       "parentUuid": "00c74928_0a139d68",
       "revId": "ac451908291bb87ea4b6d1e71c8d686598a9c512",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "703c08a2_34b1bed8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2023-04-11T19:55:26Z",
+      "side": 1,
+      "message": "Android presubmit seems happy (see aosp/2531760).",
+      "parentUuid": "21291e59_a91504f0",
+      "revId": "ac451908291bb87ea4b6d1e71c8d686598a9c512",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
