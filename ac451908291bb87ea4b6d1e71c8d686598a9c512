@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c1f4532_cc01ebf7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-04-11T10:48:56Z",
+      "side": 1,
+      "message": "Thanks.\nCan you add those files back to third_party/llvm-16.0/scripts/generate_build_files.py as well?\n\nYou can then just run that script to regenerate the Android.bp and CMakeLists.txt file.",
+      "revId": "ac451908291bb87ea4b6d1e71c8d686598a9c512",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
