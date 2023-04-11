@@ -70,6 +70,24 @@
       "parentUuid": "616b184b_a34d63bb",
       "revId": "ac451908291bb87ea4b6d1e71c8d686598a9c512",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00c74928_0a139d68",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-04-11T16:28:57Z",
+      "side": 1,
+      "message": "Okay. Let\u0027s keep trying to maintain the script for now.\n\nJason, in generate_build_files.py, can you add something like:\n\n```\nfiles_llvm_android \u003d files_llvm.copy()\nfiles_llvm_android.extend({\n\"/lib/Analysis/RegionPrinter.cpp\",\n\"/lib/CodeGen/MultiHazardRecognizer.cpp\",\n...\n}\n\n...\n\n\n\u0027files_llvm\u0027 : format_file_list_for_android_bp(files_llvm_android),\n```\n?",
+      "parentUuid": "506ebb32_7bf25328",
+      "revId": "ac451908291bb87ea4b6d1e71c8d686598a9c512",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
