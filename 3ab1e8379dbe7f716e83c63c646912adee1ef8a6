@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2581ebb9_5e165723",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-04-13T14:08:53Z",
+      "side": 1,
+      "message": "I tried to update chrome\u0027s DEPS file to point to a personal github fork of swiftshader, but it didn\u0027t work: chrome\u0027s DEPS file can only point to github repos hosted by Google.",
+      "revId": "3ab1e8379dbe7f716e83c63c646912adee1ef8a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
