@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4783ccc8_f9bee72c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-04-18T01:56:57Z",
+      "side": 1,
+      "message": "If you haven\u0027t already, please open an issue with VK-GL-CTS to add a test for this.",
+      "revId": "d68d7e34e5e9c72d554a6fefda560aa73f6fa02a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a25efb4d_3eb7b0d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-04-18T01:56:57Z",
+      "side": 1,
+      "message": "Rubber-stamp!",
+      "revId": "d68d7e34e5e9c72d554a6fefda560aa73f6fa02a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
