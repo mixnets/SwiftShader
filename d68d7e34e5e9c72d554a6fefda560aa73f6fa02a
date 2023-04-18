@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "9eeb27c2_9c9d15a0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-04-18T10:59:27Z",
+      "side": 1,
+      "message": "https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/4415",
+      "parentUuid": "4783ccc8_f9bee72c",
+      "revId": "d68d7e34e5e9c72d554a6fefda560aa73f6fa02a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "a25efb4d_3eb7b0d3",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 4
