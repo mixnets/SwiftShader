@@ -16,6 +16,23 @@
       "message": "(friendly post weekend bump)",
       "revId": "ad73132cf949390aa965ffca830e5b456197b284",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4e8f647_a5db6a2a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2023-04-25T17:52:33Z",
+      "side": 1,
+      "message": "LGTM, as far as I can tell this addresses Ben\u0027s comment.",
+      "revId": "ad73132cf949390aa965ffca830e5b456197b284",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
