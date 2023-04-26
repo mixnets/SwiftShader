@@ -16,11 +16,31 @@ cmake_minimum_required(VERSION 3.13)
 
 project(SwiftShader C CXX ASM)
 
+<<<<<<< HEAD   (8dbdb9 Update commit-msg hook path for update-marl.sh)
 set(CMAKE_CXX_STANDARD 17)
 set(CXX_STANDARD_REQUIRED ON)
 # MSVC doesn't define __cplusplus by default
 if(MSVC)
     string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
+=======
+set(CMAKE_CXX_STANDARD 11)
+
+project(Marl
+    VERSION   "${MARL_VERSION_MAJOR}.${MARL_VERSION_MINOR}.${MARL_VERSION_PATCH}"
+    LANGUAGES C CXX ASM
+)
+
+if (EMSCRIPTEN)
+    add_compile_options(-O3 -pthread)
+endif()
+
+include(CheckCXXSourceCompiles)
+
+# MARL_IS_SUBPROJECT is 1 if added via add_subdirectory() from another project.
+get_directory_property(MARL_IS_SUBPROJECT PARENT_DIRECTORY)
+if(MARL_IS_SUBPROJECT)
+    set(MARL_IS_SUBPROJECT 1)
+>>>>>>> BRANCH (3dc3ac Squashed 'third_party/marl/' changes from 9c689c9a8..e5ffc99)
 endif()
 
 ###########################################################
@@ -284,6 +304,50 @@ endif()
 ###########################################################
 # Convenience macros
 ###########################################################
+<<<<<<< HEAD   (8dbdb9 Update commit-msg hook path for update-marl.sh)
+=======
+set(MARL_LIST
+    ${MARL_SRC_DIR}/debug.cpp
+    ${MARL_SRC_DIR}/memory.cpp
+    ${MARL_SRC_DIR}/scheduler.cpp
+    ${MARL_SRC_DIR}/thread.cpp
+    ${MARL_SRC_DIR}/trace.cpp
+)
+if(NOT MSVC)
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_aarch64.c
+        ${MARL_SRC_DIR}/osfiber_arm.c
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_loongarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_mips64.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_rv64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+        ${MARL_SRC_DIR}/osfiber_loongarch64.c
+        ${MARL_SRC_DIR}/osfiber_mips64.c
+        ${MARL_SRC_DIR}/osfiber_ppc64.c
+        ${MARL_SRC_DIR}/osfiber_rv64.c
+        ${MARL_SRC_DIR}/osfiber_x64.c
+        ${MARL_SRC_DIR}/osfiber_x86.c
+        ${MARL_SRC_DIR}/osfiber_emscripten.cpp
+    )
+    # CMAKE_OSX_ARCHITECTURES settings aren't propagated to assembly files when
+    # building for Apple platforms (https://gitlab.kitware.com/cmake/cmake/-/issues/20771),
+    # we treat assembly files as C files to work around this bug.
+    set_source_files_properties(
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_loongarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_mips64.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+        PROPERTIES LANGUAGE C
+    )
+endif(NOT MSVC)
+>>>>>>> BRANCH (3dc3ac Squashed 'third_party/marl/' changes from 9c689c9a8..e5ffc99)
 
 # Recursively calls source_group on the files of the directory
 # so that Visual Studio has the files in a folder tree
@@ -962,6 +1026,58 @@ if(SWIFTSHADER_BUILD_BENCHMARKS)
     add_subdirectory(${TESTS_DIR}/VulkanBenchmarks) # Add VulkanBenchmarks target
 endif()
 
+<<<<<<< HEAD   (8dbdb9 Update commit-msg hook path for update-marl.sh)
 if(SWIFTSHADER_BUILD_TESTS)
     add_subdirectory(${TESTS_DIR}/VulkanUnitTests) # Add VulkanUnitTests target
 endif()
+=======
+# benchmarks
+if(MARL_BUILD_BENCHMARKS)
+    set(MARL_BENCHMARK_LIST
+        ${MARL_SRC_DIR}/blockingcall_bench.cpp
+        ${MARL_SRC_DIR}/defer_bench.cpp
+        ${MARL_SRC_DIR}/event_bench.cpp
+        ${MARL_SRC_DIR}/marl_bench.cpp
+        ${MARL_SRC_DIR}/non_marl_bench.cpp
+        ${MARL_SRC_DIR}/scheduler_bench.cpp
+        ${MARL_SRC_DIR}/ticket_bench.cpp
+        ${MARL_SRC_DIR}/waitgroup_bench.cpp
+    )
+
+    add_executable(marl-benchmarks ${MARL_BENCHMARK_LIST})
+    set_target_properties(${target} PROPERTIES FOLDER "Benchmarks")
+
+    marl_set_target_options(marl-benchmarks)
+
+    target_compile_definitions(marl-benchmarks PRIVATE
+        "MARL_FULL_BENCHMARK=${MARL_FULL_BENCHMARK}"
+    )
+
+    target_link_libraries(marl-benchmarks PRIVATE benchmark::benchmark marl)
+endif(MARL_BUILD_BENCHMARKS)
+
+# examples
+if(MARL_BUILD_EXAMPLES)
+    function(build_example target)
+        add_executable(${target} "${CMAKE_CURRENT_SOURCE_DIR}/examples/${target}.cpp")
+        set_target_properties(${target} PROPERTIES FOLDER "Examples")
+        marl_set_target_options(${target})
+        target_link_libraries(${target} PRIVATE marl)
+        if (EMSCRIPTEN)
+            target_link_options(${target} PRIVATE
+                    -O1
+                    -pthread -sPTHREAD_POOL_SIZE=2 -sPROXY_TO_PTHREAD
+                    -sASYNCIFY # -sASYNCIFY_STACK_SIZE=1000000
+                    -sALLOW_MEMORY_GROWTH=1 -sASSERTIONS
+                    -sENVIRONMENT=web,worker
+                    "SHELL:--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/examples/shell.emscripten.html")
+            set_target_properties(${target} PROPERTIES SUFFIX .html)
+        endif()
+    endfunction(build_example)
+
+    build_example(fractal)
+    build_example(hello_task)
+    build_example(primes)
+    build_example(tasks_in_tasks)
+endif(MARL_BUILD_EXAMPLES)
+>>>>>>> BRANCH (3dc3ac Squashed 'third_party/marl/' changes from 9c689c9a8..e5ffc99)
