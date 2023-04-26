@@ -18,7 +18,8 @@ git commit --amend -m "$LOG_MSG"
 
 # Use filter-branch to apply the Gerrit commit hook to both CLs
 GIT_DIR=$(readlink -f "$(git rev-parse --git-dir)")
+PROJECT_DIR=$(dirname ${GIT_DIR})
 TMP_MSG="${GIT_DIR}/COMMIT_MSG_REWRITE"
 FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --msg-filter \
-  "cat > ${TMP_MSG} && \"${GIT_DIR}/hooks/commit-msg\" ${TMP_MSG} && cat \"${TMP_MSG}\"" HEAD...HEAD~1
+  "cat > ${TMP_MSG} && \"${PROJECT_DIR}/third_party/git-hooks/commit-msg\" ${TMP_MSG} && cat \"${TMP_MSG}\"" HEAD...HEAD~1
 rm -rf "${TMP_MSG}"
