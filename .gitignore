@@ -17,6 +17,7 @@ cmake-build-debug/
 # The /build/ directory is recommended for CMake build output
 !/build
 /build/*
+/host-build/*
 
 
 # Ignored files #
