@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28805726_7522fe42",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101296
+      },
+      "writtenOn": "2023-05-03T13:28:52Z",
+      "side": 1,
+      "message": "Ok so I finally managed to properly write a toolchain file for riscv.\n\nTo compile the changes follow these steps:\n- Build Swiftshader on the host with -DREACTOR_BACKEND\u003dLLVM-Submodule\n- Move the build folder to host-build\n- Grab the latest prebuilt toolchain (riscv64-glibc-ubuntu-xyz.tar.gz ) from https://github.com/riscv-collab/riscv-gnu-toolchain/releases (of course clang works too but I didn’t find a prebuilt toolchain)\n- Build Swiftshader using the tablegen from host-build and the RISC-V toolchain\n- If it occurs fix the\n```\nswiftshader/third_party/llvm-project/llvm/include/llvm/Support/FormatProviders.h:371:70: error: missing braces around initializer for \u0027std::__array_traits\u003cconst char*, 3\u003e::_Type\u0027 {aka \u0027const char* [3]\u0027} [-Werror\u003dmissing-braces]\n  371 |     for (const char *D : std::array\u003cconst char *, 3\u003e{\"[]\", \"\u003c\u003e\", \"()\"}) {\n```\nerror. This seems to be some issue with the version of gcc/clang and the llvm source code version.\n\n\nTo try the testcases with the changes follow these steps:\n- Grab a RISC-V qemu image (for example following this tutorial https://colatkinson.site/linux/riscv/2021/01/27/riscv-qemu/)\n- Update the archive for riscv unstable using the following steps\n- Edit /etc/apt/sources.list to use this as the only source\n```\ndeb http://ftp.ports.debian.org/debian-ports/ unstable main\n```\n- Grab the latest keys like this\n```\nwget \"https://deb.debian.org/debian-ports/pool/main/d/debian-ports-archive-keyring/debian-ports-archive-keyring_2023.02.01_all.deb\"\nsudo dpkg -i debian-ports-archive-keyring_2023.02.01_all.deb\n```\n- Run `apt update \u0026\u0026 upgrade` and reject any change prompts if they occur\n- You now have the latest version of glibc which matches your swiftshader binary\n- Tar the Swiftshader build folder and copy it over with scp\n- Try the testcases with LD_LIBRARY_PATH\n\nTo test an actual application (Vulkan demos by Sascha Willems):\n- (Install sudo and add user to sudoers)\n- apt install libx11-xcb-dev libglm-dev libc6-dev xorg\n- If you want to cross-compile the samples grab my branch https://github.com/developandplay/Vulkan/tree/riscv-cross-compile\n- Otherwise grab a compiler on the target and compile from the main branch https://github.com/SaschaWillems/Vulkan\n- Run `python download_assets.py`\n- For cross-compilation create the folder sysrootmounted in the same place as the default sysroot of the compiler\n- Then use sshfs to mount it to sysrootmounted\n```\nsshfs -p 2222 -o idmap\u003duser,follow_symlinks debian@localhost:/ sysrootmounted/\n```\n- Compile the samples and copy them to your target\n- Test the samples with LD_LIBRARY_PATH e.g. LD_LIBRARY_PATH\u003d/path/to/libvk_swiftshader sudo xinit ./gears $* -- :1\n- To leave the xorg program press: Ctrl + Alt + F1 + Super\n\nFor me the gears example runs without any issues.\nThe test cases are running through about as succesfully as with LLVM 15.\nI can generate a more detailed summary of the testcases.\nHope you can reproduce it and we can merge this initial succesfull build.",
+      "revId": "4aec06ecfecb0a1f28f9002aa83abc4f79044688",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
