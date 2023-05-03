@@ -28,7 +28,11 @@ __pragma(warning(push))
 
 #include "llvm/ExecutionEngine/Orc/CompileUtils.h"
 #include "llvm/ExecutionEngine/Orc/IRCompileLayer.h"
-#include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
+#if defined(__riscv) && __riscv_xlen == 64
+#	include "llvm/ExecutionEngine/Orc/ObjectLinkingLayer.h"
+#else
+#	include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
+#endif
 #include "llvm/ExecutionEngine/SectionMemoryManager.h"
 #include "llvm/IR/DiagnosticInfo.h"
 #include "llvm/IR/Verifier.h"
@@ -222,7 +226,15 @@ JITGlobals *JITGlobals::get()
 			jitTargetMachineBuilder.getFeatures().AddFeature(feature.first(), feature.second);
 		}
 
-#if LLVM_VERSION_MAJOR >= 11 /* TODO(b/165000222): Unconditional after LLVM 11 upgrade */
+#if defined(__riscv) && __riscv_xlen == 64
+		jitTargetMachineBuilder.setCPU("generic-rv64");
+		jitTargetMachineBuilder.getFeatures().AddFeature("+m");
+		jitTargetMachineBuilder.getFeatures().AddFeature("+a");
+		jitTargetMachineBuilder.getFeatures().AddFeature("+f");
+		jitTargetMachineBuilder.getFeatures().AddFeature("+d");
+		jitTargetMachineBuilder.getFeatures().AddFeature("+c");
+		jitTargetMachineBuilder.setCodeModel(llvm::CodeModel::Medium);
+#elif LLVM_VERSION_MAJOR >= 11 /* TODO(b/165000222): Unconditional after LLVM 11 upgrade */
 		jitTargetMachineBuilder.setCPU(std::string(llvm::sys::getHostCPUName()));
 #else
 		jitTargetMachineBuilder.setCPU(llvm::sys::getHostCPUName());
@@ -456,14 +468,38 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 
 #ifdef __ANDROID__
 	// forwarders since we can't take address of builtins
-	static void sync_synchronize() { __sync_synchronize(); }
-	static uint32_t sync_fetch_and_add_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_add_4(ptr, val); }
-	static uint32_t sync_fetch_and_and_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_and_4(ptr, val); }
-	static uint32_t sync_fetch_and_or_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_or_4(ptr, val); }
-	static uint32_t sync_fetch_and_xor_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_xor_4(ptr, val); }
-	static uint32_t sync_fetch_and_sub_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_sub_4(ptr, val); }
-	static uint32_t sync_lock_test_and_set_4(uint32_t *ptr, uint32_t val) { return __sync_lock_test_and_set_4(ptr, val); }
-	static uint32_t sync_val_compare_and_swap_4(uint32_t *ptr, uint32_t expected, uint32_t desired) { return __sync_val_compare_and_swap_4(ptr, expected, desired); }
+	static void sync_synchronize()
+	{
+		__sync_synchronize();
+	}
+	static uint32_t sync_fetch_and_add_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_add_4(ptr, val);
+	}
+	static uint32_t sync_fetch_and_and_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_and_4(ptr, val);
+	}
+	static uint32_t sync_fetch_and_or_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_or_4(ptr, val);
+	}
+	static uint32_t sync_fetch_and_xor_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_xor_4(ptr, val);
+	}
+	static uint32_t sync_fetch_and_sub_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_sub_4(ptr, val);
+	}
+	static uint32_t sync_lock_test_and_set_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_lock_test_and_set_4(ptr, val);
+	}
+	static uint32_t sync_val_compare_and_swap_4(uint32_t *ptr, uint32_t expected, uint32_t desired)
+	{
+		return __sync_val_compare_and_swap_4(ptr, expected, desired);
+	}
 
 	static uint32_t sync_fetch_and_max_4(uint32_t *ptr, uint32_t val)
 	{
@@ -746,9 +782,13 @@ public:
 #if LLVM_VERSION_MAJOR >= 13
 	    , session(std::move(Unwrap(llvm::orc::SelfExecutorProcessControl::Create())))
 #endif
+#if defined(__riscv) && __riscv_xlen == 64
+	    , objectLayer(session, cantFail(llvm::jitlink::InProcessMemoryManager::Create()))
+#else
 	    , objectLayer(session, [this]() {
 		    return std::make_unique<llvm::SectionMemoryManager>(&memoryMapper);
 	    })
+#endif
 	    , addresses(count)
 	{
 		bool fatalCompileIssue = false;
@@ -861,7 +901,11 @@ private:
 	std::string name;
 	llvm::orc::ExecutionSession session;
 	MemoryMapper memoryMapper;
+#if defined(__riscv) && __riscv_xlen == 64
+	llvm::orc::ObjectLinkingLayer objectLayer;
+#else
 	llvm::orc::RTDyldObjectLinkingLayer objectLayer;
+#endif
 	std::vector<const void *> addresses;
 };
 
