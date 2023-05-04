@@ -34,6 +34,29 @@
       "parentUuid": "df285f12_d59668af",
       "revId": "fa4e6484c0c96c9feebf510cc5b08e53d8f465da",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66648bf5_9e3e77d3",
+        "filename": "build/riscv-linux.cmake",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-05-04T09:30:33Z",
+      "side": 1,
+      "message": "Just curious here: What\u0027s LLVM `@bd6783b3` got that [`third_party/llvm-16.0`](https://swiftshader.googlesource.com/SwiftShader/+/refs/heads/master/third_party/llvm-16.0/) is missing?",
+      "range": {
+        "startLine": 14,
+        "startChar": 19,
+        "endLine": 14,
+        "endChar": 33
+      },
+      "revId": "fa4e6484c0c96c9feebf510cc5b08e53d8f465da",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
