@@ -81,6 +81,30 @@
       },
       "revId": "fa4e6484c0c96c9feebf510cc5b08e53d8f465da",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3382d26b_42043565",
+        "filename": "build/riscv-linux.cmake",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 101296
+      },
+      "writtenOn": "2023-05-08T11:51:44Z",
+      "side": 1,
+      "message": "Included the changes for to make it work with the cut down version of LLVM16 for swiftshader.\nWe should probably split up the commit once we have some initial feedback from @jif@google.com but I just wanted to have everything in one place for now...So you can test it more easily.",
+      "parentUuid": "c3b8157e_a6d9189e",
+      "range": {
+        "startLine": 14,
+        "startChar": 19,
+        "endLine": 14,
+        "endChar": 33
+      },
+      "revId": "fa4e6484c0c96c9feebf510cc5b08e53d8f465da",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
