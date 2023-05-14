@@ -135,7 +135,9 @@
 /* #undef HAVE_MALLCTL */
 
 /* Define to 1 if you have the `mallinfo' function. */
+#ifdef __GLIBC__
 #define HAVE_MALLINFO 1
+#endif
 
 /* Define to 1 if you have the `mallinfo2' function. */
 /* #undef HAVE_MALLINFO2 */

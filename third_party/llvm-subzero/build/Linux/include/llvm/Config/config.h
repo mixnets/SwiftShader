@@ -17,7 +17,9 @@
 #define ENABLE_CRASH_OVERRIDES 0
 
 /* Define to 1 if you have the `backtrace' function. */
+#ifdef __GLIBC__
 #define HAVE_BACKTRACE 1
+#endif
 
 /* Define to 1 if you have the <CrashReporterClient.h> header file. */
 /* #undef HAVE_CRASHREPORTERCLIENT_H */

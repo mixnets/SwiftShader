@@ -125,7 +125,9 @@
 /* #undef HAVE_MALLCTL */
 
 /* Define to 1 if you have the `mallinfo' function. */
+#ifdef __GLIBC__
 #define HAVE_MALLINFO 1
+#endif
 
 /* Define to 1 if you have the <malloc/malloc.h> header file. */
 /* #undef HAVE_MALLOC_MALLOC_H */
