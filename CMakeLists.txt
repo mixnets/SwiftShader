@@ -1,4 +1,8 @@
+<<<<<<< HEAD   (a62e8d [llvm] Use LLVM-style include guard in regex_impl.h)
 ﻿# Copyright 2020 The SwiftShader Authors. All Rights Reserved.
+=======
+# Copyright (c) 2015-2023 The Khronos Group Inc.
+>>>>>>> BRANCH (5297bf Squashed 'third_party/SPIRV-Headers/' changes from aa331ab0f)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6,12 +10,30 @@
 #
 #    http://www.apache.org/licenses/LICENSE-2.0
 #
+<<<<<<< HEAD   (a62e8d [llvm] Use LLVM-style include guard in regex_impl.h)
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+=======
+# MODIFICATIONS TO THIS FILE MAY MEAN IT NO LONGER ACCURATELY REFLECTS
+# KHRONOS STANDARDS. THE UNMODIFIED, NORMATIVE VERSIONS OF KHRONOS
+# SPECIFICATIONS AND HEADER INFORMATION ARE LOCATED AT
+#    https://www.khronos.org/registry/
+#
+# THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+cmake_minimum_required(VERSION 3.14)
+project(SPIRV-Headers LANGUAGES CXX VERSION 1.5.5)
+>>>>>>> BRANCH (5297bf Squashed 'third_party/SPIRV-Headers/' changes from aa331ab0f)
 
+<<<<<<< HEAD   (a62e8d [llvm] Use LLVM-style include guard in regex_impl.h)
 cmake_minimum_required(VERSION 3.13)
 
 project(SwiftShader C CXX ASM)
@@ -21,8 +43,14 @@ set(CXX_STANDARD_REQUIRED ON)
 # MSVC doesn't define __cplusplus by default
 if(MSVC)
     string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
+=======
+if (CMAKE_VERSION VERSION_LESS "3.21")
+    # https://cmake.org/cmake/help/latest/variable/PROJECT_IS_TOP_LEVEL.html
+    string(COMPARE EQUAL ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR} PROJECT_IS_TOP_LEVEL)
+>>>>>>> BRANCH (5297bf Squashed 'third_party/SPIRV-Headers/' changes from aa331ab0f)
 endif()
 
+<<<<<<< HEAD   (a62e8d [llvm] Use LLVM-style include guard in regex_impl.h)
 ###########################################################
 # Detect system
 ###########################################################
@@ -41,13 +69,46 @@ elseif(FUCHSIA)
 else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
+=======
+add_library(SPIRV-Headers INTERFACE)
+add_library(SPIRV-Headers::SPIRV-Headers ALIAS SPIRV-Headers)
+target_include_directories(SPIRV-Headers INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+>>>>>>> BRANCH (5297bf Squashed 'third_party/SPIRV-Headers/' changes from aa331ab0f)
 
+<<<<<<< HEAD   (a62e8d [llvm] Use LLVM-style include guard in regex_impl.h)
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(ARCH "aarch64")
     else()
         set(ARCH "arm")
+=======
+if (PROJECT_IS_TOP_LEVEL)
+    option(BUILD_TESTS "Build the tests")
+    if (BUILD_TESTS)
+        add_subdirectory(tests)
     endif()
+
+    include(GNUInstallDirs)
+    include(CMakePackageConfigHelpers)
+
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+    set(cmake_install_dir "${CMAKE_INSTALL_DATADIR}/cmake/SPIRV-Headers")
+    set(version_config "${CMAKE_CURRENT_BINARY_DIR}/generated/SPIRV-HeadersConfigVersion.cmake")
+
+    write_basic_package_version_file("${version_config}" COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)
+    install(FILES "${version_config}" DESTINATION "${cmake_install_dir}")
+
+    install(TARGETS SPIRV-Headers EXPORT "SPIRV-HeadersConfig" INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(EXPORT "SPIRV-HeadersConfig" NAMESPACE "SPIRV-Headers::" DESTINATION "${cmake_install_dir}")
+
+    if (IS_ABSOLUTE ${CMAKE_INSTALL_INCLUDEDIR})
+        set(SPIRV_HEADERS_PKGCONFIG_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+    else()
+        set(SPIRV_HEADERS_PKGCONFIG_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
+>>>>>>> BRANCH (5297bf Squashed 'third_party/SPIRV-Headers/' changes from aa331ab0f)
+    endif()
+<<<<<<< HEAD   (a62e8d [llvm] Use LLVM-style include guard in regex_impl.h)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^mips.*")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(ARCH "mips64el")
@@ -964,4 +1025,8 @@ endif()
 
 if(SWIFTSHADER_BUILD_TESTS)
     add_subdirectory(${TESTS_DIR}/VulkanUnitTests) # Add VulkanUnitTests target
+=======
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/SPIRV-Headers.pc.in ${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Headers.pc @ONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Headers.pc" DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
+>>>>>>> BRANCH (5297bf Squashed 'third_party/SPIRV-Headers/' changes from aa331ab0f)
 endif()
