@@ -1,4 +1,8 @@
+<<<<<<< HEAD   (db7560 Update SPIR-V Headers to 268a06176)
 ﻿# Copyright 2020 The SwiftShader Authors. All Rights Reserved.
+=======
+# Copyright (c) 2015-2023 The Khronos Group Inc.
+>>>>>>> BRANCH (ce7012 Squashed 'third_party/SPIRV-Tools/' changes from e9dc2c8ce..)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +31,7 @@ endif()
 # Detect system
 ###########################################################
 
+<<<<<<< HEAD   (db7560 Update SPIR-V Headers to 268a06176)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(LINUX TRUE)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
@@ -38,6 +43,39 @@ elseif(FUCHSIA)
     # NOTE: Building for Fuchsia requires a Fuchsia CMake-based SDK.
     # See https://fuchsia-review.googlesource.com/c/fuchsia/+/379673
     find_package(FuchsiaLibraries)
+=======
+option(ENABLE_RTTI "Enables RTTI" OFF)
+option(SPIRV_ALLOW_TIMERS "Allow timers via clock_gettime on supported platforms" ON)
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  add_definitions(-DSPIRV_LINUX)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    add_definitions(-DSPIRV_EMSCRIPTEN)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "CYGWIN")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+  add_definitions(-DSPIRV_MAC)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS")
+  add_definitions(-DSPIRV_IOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "tvOS")
+  add_definitions(-DSPIRV_TVOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
+  add_definitions(-DSPIRV_ANDROID)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
+  add_definitions(-DSPIRV_FREEBSD)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "OpenBSD")
+  add_definitions(-DSPIRV_OPENBSD)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
+  add_definitions(-DSPIRV_FUCHSIA)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
+  add_definitions(-DSPIRV_GNU)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "QNX")
+  add_definitions(-DSPIRV_QNX)
+>>>>>>> BRANCH (ce7012 Squashed 'third_party/SPIRV-Tools/' changes from e9dc2c8ce..)
 else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
@@ -584,8 +622,30 @@ else()
     endif()
 endif()
 
+<<<<<<< HEAD   (db7560 Update SPIR-V Headers to 268a06176)
 if(SWIFTSHADER_DCHECK_ALWAYS_ON)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DDCHECK_ALWAYS_ON")
+=======
+if(ENABLE_SPIRV_TOOLS_INSTALL)
+  if(WIN32 AND NOT MINGW)
+    macro(spvtools_config_package_dir TARGET PATH)
+      set(${PATH} ${TARGET}/cmake)
+    endmacro()
+  else()
+    macro(spvtools_config_package_dir TARGET PATH)
+      set(${PATH} ${CMAKE_INSTALL_LIBDIR}/cmake/${TARGET})
+    endmacro()
+  endif()
+
+  macro(spvtools_generate_config_file TARGET)
+    file(WRITE ${CMAKE_BINARY_DIR}/${TARGET}Config.cmake
+      "include(CMakeFindDependencyMacro)\n"
+      "find_dependency(${SPIRV_TOOLS})\n"
+      "include(\${CMAKE_CURRENT_LIST_DIR}/${TARGET}Targets.cmake)\n"
+      "set(${TARGET}_LIBRARIES ${TARGET})\n"
+      "get_target_property(${TARGET}_INCLUDE_DIRS ${TARGET} INTERFACE_INCLUDE_DIRECTORIES)\n")
+  endmacro()
+>>>>>>> BRANCH (ce7012 Squashed 'third_party/SPIRV-Tools/' changes from e9dc2c8ce..)
 endif()
 
 if(SWIFTSHADER_WARNINGS_AS_ERRORS)
