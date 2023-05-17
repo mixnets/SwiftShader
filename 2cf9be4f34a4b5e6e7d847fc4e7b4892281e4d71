@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22c81af5_f97aff37",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101221
+      },
+      "writtenOn": "2023-05-17T17:16:56Z",
+      "side": 1,
+      "message": "This naming required me to sed the SwiftShader patch for it to run with most common toolchain files.",
+      "revId": "2cf9be4f34a4b5e6e7d847fc4e7b4892281e4d71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cff536f_1d95ffb9",
+        "filename": "build/riscv-linux.cmake",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 101221
+      },
+      "writtenOn": "2023-05-17T17:16:56Z",
+      "side": 1,
+      "message": "Is there a particular reason for using rv64 instead of riscv64? Many cross-compilation toolchains prefer riscv64 for system, an example: https://github.com/opencv/opencv/blob/4.x/platforms/linux/riscv-gnu.toolchain.cmake",
+      "revId": "2cf9be4f34a4b5e6e7d847fc4e7b4892281e4d71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
