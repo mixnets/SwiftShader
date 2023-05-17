@@ -69,6 +69,24 @@
       "parentUuid": "5cff536f_1d95ffb9",
       "revId": "2cf9be4f34a4b5e6e7d847fc4e7b4892281e4d71",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fdc1ad1a_c0382705",
+        "filename": "build/riscv-linux.cmake",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 101221
+      },
+      "writtenOn": "2023-05-17T17:43:26Z",
+      "side": 1,
+      "message": "I also use QEMU with the cloudimg of Canonical for Ubuntu (23.04). Grepping Google for these, I found this interesting utility which also seems to prefer riscv64 system name: https://github.com/dockcross/dockcross/blob/master/linux-riscv64/Toolchain.cmake\n\nBut this naming is also my subjective experience. I don\u0027t have an exhaustive list but rather Debian QEMU images and 4-5 open source cross compilation apps.",
+      "parentUuid": "a01b3b3b_defe297c",
+      "revId": "2cf9be4f34a4b5e6e7d847fc4e7b4892281e4d71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
