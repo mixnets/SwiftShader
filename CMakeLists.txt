@@ -156,6 +156,7 @@ function(option_if_not_defined name description default)
     endif()
 endfunction()
 
+<<<<<<< HEAD   (8e1367 Update Marl to a089b4aaf)
 if(LINUX)
     option_if_not_defined(SWIFTSHADER_BUILD_WSI_XCB "Build the XCB WSI support" TRUE)
     option_if_not_defined(SWIFTSHADER_BUILD_WSI_WAYLAND "Build the Wayland WSI support" TRUE)
@@ -221,6 +222,22 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
 endif()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
+=======
+option_if_not_defined(MARL_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
+option_if_not_defined(MARL_BUILD_EXAMPLES "Build example applications" OFF)
+option_if_not_defined(MARL_BUILD_TESTS "Build tests" OFF)
+option_if_not_defined(MARL_BUILD_BENCHMARKS "Build benchmarks" OFF)
+option_if_not_defined(MARL_BUILD_SHARED "Build marl as a shared / dynamic library (default static)" OFF)
+option_if_not_defined(MARL_USE_PTHREAD_THREAD_LOCAL "Use pthreads for thread local storage" OFF)
+option_if_not_defined(MARL_ASAN "Build marl with address sanitizer" OFF)
+option_if_not_defined(MARL_MSAN "Build marl with memory sanitizer" OFF)
+option_if_not_defined(MARL_TSAN "Build marl with thread sanitizer" OFF)
+option_if_not_defined(MARL_UBSAN "Build marl with undefined-behavior sanitizer" OFF)
+option_if_not_defined(MARL_INSTALL "Create marl install target" OFF)
+option_if_not_defined(MARL_FULL_BENCHMARK "Run benchmarks for [0 .. numLogicalCPUs] with no stepping" OFF)
+option_if_not_defined(MARL_FIBERS_USE_UCONTEXT "Use ucontext instead of assembly for fibers (ignored for platforms that do not support ucontext)" OFF)
+option_if_not_defined(MARL_DEBUG_ENABLED "Enable debug checks even in release builds" OFF)
+>>>>>>> BRANCH (dc4e57 Squashed 'third_party/marl/' changes from a089b4aaf8..f4255c)
 
 ###########################################################
 # Directories
@@ -299,10 +316,54 @@ macro(group_all_sources directory)
     endforeach()
 endmacro()
 
+<<<<<<< HEAD   (8e1367 Update Marl to a089b4aaf)
 # Takes target library and a directory where the export map is
 # and add the linker options so that only the API symbols are
 # exported.
 macro(set_shared_library_export_map TARGET DIR)
+=======
+    if(MARL_USE_PTHREAD_THREAD_LOCAL)
+        target_compile_definitions(${target} PRIVATE "MARL_USE_PTHREAD_THREAD_LOCAL=1")
+        target_link_libraries(${target} PUBLIC pthread)
+    endif()
+
+    if(MARL_ASAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=address")
+        target_link_libraries(${target} PUBLIC "-fsanitize=address")
+    elseif(MARL_MSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=memory")
+        target_link_libraries(${target} PUBLIC "-fsanitize=memory")
+    elseif(MARL_TSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=thread")
+        target_link_libraries(${target} PUBLIC "-fsanitize=thread")
+    elseif(MARL_UBSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=undefined")
+        target_link_libraries(${target} PUBLIC "-fsanitize=undefined")
+    endif()
+
+    if(MARL_FIBERS_USE_UCONTEXT)
+        target_compile_definitions(${target} PRIVATE "MARL_FIBERS_USE_UCONTEXT=1")
+    endif()
+
+    if(MARL_DEBUG_ENABLED)
+        target_compile_definitions(${target} PRIVATE "MARL_DEBUG_ENABLED=1")
+    endif()
+
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^rv.*")
+        target_link_libraries(${target} INTERFACE atomic) #explicitly use -latomic for RISC-V linking
+    endif()
+
+    target_include_directories(${target} PUBLIC $<BUILD_INTERFACE:${MARL_INCLUDE_DIR}>)
+endfunction(marl_set_target_options)
+
+###########################################################
+# Targets
+###########################################################
+
+# marl
+if(MARL_BUILD_SHARED OR BUILD_SHARED_LIBS)
+    add_library(marl SHARED ${MARL_LIST})
+>>>>>>> BRANCH (dc4e57 Squashed 'third_party/marl/' changes from a089b4aaf8..f4255c)
     if(MSVC)
         set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " /DEF:\"${DIR}/${TARGET}.def\"")
     elseif(APPLE)
