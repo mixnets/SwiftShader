@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a83bff1_8afb74cc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6650
+      },
+      "writtenOn": "2023-06-01T12:45:33Z",
+      "side": 1,
+      "message": "Strange message from Regres for this:\n2023/06/01 12:43:10 Testing change \u002771728\u0027\n2023/06/01 12:43:10 Checking out \u0027e4e86cff05b2eb36abc345cb3eac5c63d83e3f34\u0027\n2023/06/01 12:43:11 Checked out commit \u0027e4e86cff05b2eb36abc345cb3eac5c63d83e3f34\u0027\n2023/06/01 12:43:11 failed to open dEQP config file from change (/usr/local/google/work/SwiftShader-Regres/tests/regres/cache/checkout/e4e86cff05b2eb36abc345cb3eac5c63d83e3f34/tests/regres/deqp.json), falling back to internal version\n2023/06/01 12:43:11 failed to test changelist \u0027e4e86cff05b2eb36abc345cb3eac5c63d83e3f34\u0027: failed to build dEQP \u002771728\u0027 for change: failed to load config file: failed to open dEQP config file: open /usr/local/google/work/SwiftShader-Regres/tests/regres/tests/regres/deqp.json: no such file or directory\n\nIs this because of the merge conflict?",
+      "revId": "e4e86cff05b2eb36abc345cb3eac5c63d83e3f34",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
