@@ -16,6 +16,23 @@
       "message": "Setting the code model to medium only on RISC-V is something other projects do, for example Halide:\n\nhttps://github.com/halide/Halide/blob/bd62a3563de0004936f6506fdc5921210cb3bf14/src/JITModule.cpp#L338",
       "revId": "3ed7371aedc83a0206051e34dde32d4d34a9a557",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "050342e6_13536b94",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-06-12T18:29:31Z",
+      "side": 1,
+      "message": "Martin,\nI tested your commit (https://swiftshader-review.googlesource.com/c/SwiftShader/+/71548) and it works, so I cleaned it up a little bit and uploaded it here.",
+      "revId": "3ed7371aedc83a0206051e34dde32d4d34a9a557",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
