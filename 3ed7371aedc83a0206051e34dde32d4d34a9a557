@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "792061b2_c69d6a83",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5375
+      },
+      "writtenOn": "2023-06-12T18:24:10Z",
+      "side": 1,
+      "message": "Setting the code model to medium only on RISC-V is something other projects do, for example Halide:\n\nhttps://github.com/halide/Halide/blob/bd62a3563de0004936f6506fdc5921210cb3bf14/src/JITModule.cpp#L338",
+      "revId": "3ed7371aedc83a0206051e34dde32d4d34a9a557",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
