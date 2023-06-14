@@ -16,6 +16,46 @@
       "message": "Looks good.\nThanks for adding the explanations.\nThey are all correct and the reasons why I picked those changes originally.",
       "revId": "d38e1ba2c35bfa6193945dd9a7ac2d3ae4b202b3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e6dfa69_254b9813",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-06-14T10:12:08Z",
+      "side": 1,
+      "message": "nit: It\u0027s more common to use `0` and `1`.",
+      "range": {
+        "startLine": 33,
+        "startChar": 40,
+        "endLine": 33,
+        "endChar": 45
+      },
+      "revId": "d38e1ba2c35bfa6193945dd9a7ac2d3ae4b202b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32d0d115_1901fad8",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-06-14T10:12:08Z",
+      "side": 1,
+      "message": "Please add a comment explaining why you have to add these.",
+      "revId": "d38e1ba2c35bfa6193945dd9a7ac2d3ae4b202b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
