@@ -16,6 +16,23 @@
       "message": "Please take a look.",
       "revId": "aad6a827f08d2fa17284214ce778b4af1f8ea615",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10b30e79_8d7cd37e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5215
+      },
+      "writtenOn": "2023-06-21T08:11:47Z",
+      "side": 1,
+      "message": "\u003e CV cannot start a Run for geofflang@chromium.org because the user is neither the CL owner nor a committer.\n\n\nMaybe it needs to be your google.com account? (that\u0027s what\u0027s listed in the OWNERS file)",
+      "revId": "aad6a827f08d2fa17284214ce778b4af1f8ea615",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
