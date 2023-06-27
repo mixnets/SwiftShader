@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "42138691_cfd3230c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-06-27T14:03:45Z",
+      "side": 1,
+      "message": "Sorry for sending this out again - merge conflict with the last change as I hadn\u0027t pulled latest (I did, but stung by the `master` vs `main` 😞)",
+      "revId": "47b5898a4fa760bc3c61e0f30107d83c0afa766b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
