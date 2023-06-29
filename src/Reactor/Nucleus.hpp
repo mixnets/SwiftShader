@@ -108,7 +108,9 @@ public:
 	static Value *createSRem(Value *lhs, Value *rhs);
 	static Value *createFRem(Value *lhs, Value *rhs);
 	static Value *createShl(Value *lhs, Value *rhs);
+	// `createLShr` returns a poison value if `rhs` is greater than 31.
 	static Value *createLShr(Value *lhs, Value *rhs);
+	static Value *createLShrNoPoison(Value *lhs, Value *rhs);
 	static Value *createAShr(Value *lhs, Value *rhs);
 	static Value *createAnd(Value *lhs, Value *rhs);
 	static Value *createOr(Value *lhs, Value *rhs);
