@@ -2488,6 +2488,9 @@ template<class T>
 RValue<T>::RValue(Value *value)
     : val(value)
 {
+	if (Nucleus::createBitCast(value, T::type()) != value) {
+		printf("type mismatch\n");
+	}
 	assert(Nucleus::createBitCast(value, T::type()) == value);  // Run-time type should match T, so bitcast is no-op.
 	RR_DEBUG_INFO_EMIT_VAR(val);
 }
