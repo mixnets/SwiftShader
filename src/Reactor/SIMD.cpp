@@ -396,6 +396,11 @@ RValue<SIMD::UInt> operator^(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs)
 	return RValue<SIMD::UInt>(Nucleus::createXor(lhs.value(), rhs.value()));
 }
 
+RValue<SIMD::UInt> LshlNoPoison(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs)
+{
+	return RValue<SIMD::UInt>(Nucleus::createLShrNoPoison(lhs.value(), rhs.value()));
+}
+
 RValue<SIMD::UInt> operator<<(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs)
 {
 	return RValue<SIMD::UInt>(Nucleus::createShl(lhs.value(), rhs.value()));
