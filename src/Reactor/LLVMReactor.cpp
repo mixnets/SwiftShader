@@ -23,12 +23,16 @@
 #include "SIMD.hpp"
 #include "x86.hpp"
 
+#include "llvm/IR/Constants.h"
 #include "llvm/IR/Intrinsics.h"
 #include "llvm/IR/IntrinsicsX86.h"
+#include "llvm/IR/Type.h"
+#include "llvm/IR/Value.h"
 #include "llvm/Support/Alignment.h"
 #include "llvm/Support/Error.h"
 #include "llvm/Support/ManagedStatic.h"
 
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <mutex>
@@ -354,6 +358,22 @@ llvm::Value *lowerMulHigh(llvm::Value *x, llvm::Value *y, bool sext)
 	llvm::IntegerType *intTy = llvm::cast<llvm::IntegerType>(ty->getElementType());
 	llvm::Value *mulh = jit->builder->CreateAShr(mult, intTy->getBitWidth());
 	return jit->builder->CreateTrunc(mulh, ty);
+}
+
+llvm::Value *createConstantVectorHelper(std::vector<int64_t> constants, llvm::Type *type)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+	ASSERT(llvm::isa<llvm::VectorType>(type));
+	const size_t numConstants = constants.size();                                             // Number of provided constants for the (emulated) type.
+	const size_t numElements = llvm::cast<llvm::FixedVectorType>(type)->getNumElements();  // Number of elements of the underlying vector type.
+	llvm::SmallVector<llvm::Constant *, 16> constantVector;
+
+	for(size_t i = 0; i < numElements; i++)
+	{
+		constantVector.push_back(llvm::ConstantInt::get(type->getContainedType(0), constants[i % numConstants]));
+	}
+
+	return llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant *>(constantVector));
 }
 
 }  // namespace
@@ -813,6 +833,51 @@ Value *Nucleus::createLShr(Value *lhs, Value *rhs)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	return V(jit->builder->CreateLShr(V(lhs), V(rhs)));
+}
+
+Value *Nucleus::createLShrNoPoison(Value *lhs, Value *rhs)
+{
+	// If `rhs` is equal to or larger than the number of bits in `lhs`,
+	// the llvm instruction `lshr` returns a poison value.
+	// See https://llvm.org/docs/LangRef.html#lshr-instruction
+	//
+	// It is possible to persuade llvm into not generating a poison value
+	// even if `rhs` is too large by creating the following IR:
+	//    if rhs >= 32
+	//       return undef
+	//    else
+	//       return lshr(lhs, rhs)
+	//
+	// The optimizer will realize that instead of returning `undef`
+	// (an undefined value), it might just as well always return `lshr`.
+	//
+	// You can verify this by compiling with -O3 the following LLVM IR:
+	//
+	// 	  define i32 @shiftbynonconst(i32 %a, i32 %shift) local_unnamed_addr #0 {
+	//      %ok = icmp slt i32 %shift, 32
+	//      %shifted = shl i32 %a, %shift
+	//      %result = select i1 %ok, i32 %shifted, i32 undef
+	//      ret i32 %result
+	//    }
+	//
+	// and noticing that the `select` (equivalent to the `if`) is optimized away:
+	//
+	//    shiftbynonconst:                        # @shiftbynonconst
+	//            mov     ecx, esi
+	//            mov     eax, edi
+	//            shl     eax, cl
+	//            ret
+	//
+	// The SIMD variant of the IR behave similarly.
+
+	RR_DEBUG_INFO_UPDATE_LOC();
+	llvm::Type* ty = V(lhs)->getType();
+	std::vector<int64_t> constants = {32};
+	auto constant_v = V(createConstantVectorHelper(constants, ty));
+	auto cmp = createICmpUGE(rhs, constant_v);
+	auto undef = V(llvm::UndefValue::get(ty));
+	auto shift = createLShr(lhs, rhs);
+	return createSelect(cmp, undef ,shift);
 }
 
 Value *Nucleus::createAShr(Value *lhs, Value *rhs)
@@ -1771,17 +1836,7 @@ Value *Nucleus::createNullPointer(Type *Ty)
 Value *Nucleus::createConstantVector(std::vector<int64_t> constants, Type *type)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	ASSERT(llvm::isa<llvm::VectorType>(T(type)));
-	const size_t numConstants = constants.size();                                             // Number of provided constants for the (emulated) type.
-	const size_t numElements = llvm::cast<llvm::FixedVectorType>(T(type))->getNumElements();  // Number of elements of the underlying vector type.
-	llvm::SmallVector<llvm::Constant *, 16> constantVector;
-
-	for(size_t i = 0; i < numElements; i++)
-	{
-		constantVector.push_back(llvm::ConstantInt::get(T(type)->getContainedType(0), constants[i % numConstants]));
-	}
-
-	return V(llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant *>(constantVector)));
+	return V(createConstantVectorHelper(constants, T(type)));
 }
 
 Value *Nucleus::createConstantVector(std::vector<double> constants, Type *type)
