@@ -321,6 +321,7 @@ RValue<SIMD::UInt> operator~(RValue<SIMD::UInt> val);
 //	RValue<Bool> operator!=(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 //	RValue<Bool> operator==(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 
+RValue<SIMD::UInt> LshlNoPoison(RValue<SIMD::UInt> lhs, RValue<SIMD::UInt> rhs);
 RValue<SIMD::UInt> CmpEQ(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
 RValue<SIMD::UInt> CmpLT(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);
 RValue<SIMD::UInt> CmpLE(RValue<SIMD::UInt> x, RValue<SIMD::UInt> y);

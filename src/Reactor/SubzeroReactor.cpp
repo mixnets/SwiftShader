@@ -1301,6 +1301,12 @@ Value *Nucleus::createLShr(Value *lhs, Value *rhs)
 	return createArithmetic(Ice::InstArithmetic::Lshr, lhs, rhs);
 }
 
+Value *Nucleus::createLShrNoPoison(Value *lhs, Value *rhs)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+	return createLShr(lhs, rhs);
+}
+
 Value *Nucleus::createAShr(Value *lhs, Value *rhs)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
