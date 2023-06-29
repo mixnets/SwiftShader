@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "SIMD.hpp"
 #include "SpirvShader.hpp"
 #include "SpirvShaderDebug.hpp"
 
@@ -190,7 +191,6 @@ void SpirvEmitter::EmitUnaryOp(Spirv::InsnIterator insn)
 	}
 
 	auto &dst = createIntermediate(insn.resultId(), type.componentCount);
-
 	for(auto i = 0u; i < type.componentCount; i++)
 	{
 		switch(insn.opcode())
@@ -217,7 +217,7 @@ void SpirvEmitter::EmitUnaryOp(Spirv::InsnIterator insn)
 				auto count = Operand(shader, *this, insn.word(5)).UInt(0);
 				auto one = SIMD::UInt(1);
 				auto v = src.UInt(i);
-				SIMD::UInt out = (v >> offset) & Bitmask32(count);
+				SIMD::UInt out = lshlNoPoison(v, offset) & Bitmask32(count);
 				if(insn.opcode() == spv::OpBitFieldSExtract)
 				{
 					auto sign = out & NthBit32(count - one);
