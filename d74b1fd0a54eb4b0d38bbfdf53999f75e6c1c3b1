@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be63720a_f2c5e8d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2023-07-05T16:45:40Z",
+      "side": 1,
+      "message": "LGTM but recommend holding off until after trunk stable migration.",
+      "revId": "d74b1fd0a54eb4b0d38bbfdf53999f75e6c1c3b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
