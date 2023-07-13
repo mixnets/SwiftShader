@@ -269,6 +269,7 @@ public:
   void setStackSizeLimit(uint32_t Limit) { StackSizeLimit = Limit; }
   uint32_t getStackSizeLimit() const { return StackSizeLimit; }
 
+
 private:
   friend class CfgAllocatorTraits; // for Allocator access.
 

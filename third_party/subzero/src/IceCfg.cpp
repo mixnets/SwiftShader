@@ -838,6 +838,14 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
     auto *ConstSize =
         llvm::dyn_cast<ConstantInteger32>(Alloca->getSizeInBytes());
     uint32_t Size = Utils::applyAlignment(ConstSize->getValue(), Alignment);
+
+    // Ensure that the Size does not exceed StackSizeLimit which can lead to
+    // undefined behavior below.
+    if (Size > StackSizeLimit) {
+      llvm::report_fatal_error("Local variable exceeds stack size limit");
+      return; // NOTREACHED
+    }
+
     if (BaseVariableType == BVT_FramePointer) {
       // Addressing is relative to the frame pointer.  Subtract the offset after
       // adding the size of the alloca, because it grows downwards from the
@@ -853,8 +861,17 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
           (BaseVariableType == BVT_StackPointer)
               ? getTarget()->maxOutArgsSizeBytes()
               : 0;
+
       Offsets.push_back(CurrentOffset + OutArgsOffsetOrZero);
     }
+
+    // Ensure that the addition below does not overflow or exceed
+    // StackSizeLimit as this leads to undefined behavior.
+    if (CurrentOffset + Size > StackSizeLimit) {
+      llvm::report_fatal_error("Local variable exceeds stack size limit");
+      return; // NOTREACHED
+    }
+
     // Update the running offset of the fused alloca region.
     CurrentOffset += Size;
   }
