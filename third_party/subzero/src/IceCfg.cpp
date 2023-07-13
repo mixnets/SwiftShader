@@ -837,7 +837,24 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
     uint32_t Alignment = std::max(Alloca->getAlignInBytes(), 1u);
     auto *ConstSize =
         llvm::dyn_cast<ConstantInteger32>(Alloca->getSizeInBytes());
-    uint32_t Size = Utils::applyAlignment(ConstSize->getValue(), Alignment);
+    uint32_t UnalignedSize = ConstSize->getValue();
+
+    // Ensure that the addition below in Utils::applyAlignment does not exceed
+    // StackSizeLimit as this leads to undefined behavior.
+    if (additionExceedsStackSizeLimit(UnalignedSize, Alignment)) {
+      llvm::report_fatal_error("Local variable exceeds stack size limit");
+      return; // NOTREACHED
+    }
+
+    uint32_t Size = Utils::applyAlignment(UnalignedSize, Alignment);
+
+    // Ensure that the addition below does not overflow or exceed
+    // StackSizeLimit as this leads to undefined behavior
+    if (additionExceedsStackSizeLimit(CurrentOffset, Size)) {
+      llvm::report_fatal_error("Local variable exceeds stack size limit");
+      return; // NOTREACHED
+    }
+
     if (BaseVariableType == BVT_FramePointer) {
       // Addressing is relative to the frame pointer.  Subtract the offset after
       // adding the size of the alloca, because it grows downwards from the
@@ -853,11 +870,27 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
           (BaseVariableType == BVT_StackPointer)
               ? getTarget()->maxOutArgsSizeBytes()
               : 0;
+
+      // Ensure that the addition below does not overflow or exceed
+      // StackSizeLimit as this leads to undefined behavior.
+      if (additionExceedsStackSizeLimit(CurrentOffset, OutArgsOffsetOrZero)) {
+        llvm::report_fatal_error("Local variables exceed stack size limit");
+        return; // NOTREACHED
+      }
+
       Offsets.push_back(CurrentOffset + OutArgsOffsetOrZero);
     }
     // Update the running offset of the fused alloca region.
     CurrentOffset += Size;
   }
+
+  // Ensure that the addition below in Utils::applyAlignment does not overflow
+  // or exceed StackSizeLimit as this leads to undefined behavior.
+  if (additionExceedsStackSizeLimit(CurrentOffset, CombinedAlignment)) {
+    llvm::report_fatal_error("Local variables exceed stack size limit");
+    return; // NOTREACHED
+  }
+
   // Round the offset up to the alignment granularity to use as the size.
   uint32_t TotalSize = Utils::applyAlignment(CurrentOffset, CombinedAlignment);
   // Ensure every alloca was assigned an offset.
