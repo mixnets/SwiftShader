@@ -837,7 +837,20 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
     uint32_t Alignment = std::max(Alloca->getAlignInBytes(), 1u);
     auto *ConstSize =
         llvm::dyn_cast<ConstantInteger32>(Alloca->getSizeInBytes());
-    uint32_t Size = Utils::applyAlignment(ConstSize->getValue(), Alignment);
+    uint32_t UnalignedSize = ConstSize->getValue();
+
+    if (UnalignedSize > StackSizeLimit || Alignment > StackSizeLimit) {
+      llvm::report_fatal_error("Local variable exceeds stack size limit");
+      return; // NOTREACHED
+    }
+
+    uint32_t Size = Utils::applyAlignment(UnalignedSize, Alignment);
+
+    if (CurrentOffset + Size > StackSizeLimit) {
+      llvm::report_fatal_error("Local variable exceeds stack size limit");
+      return; // NOTREACHED
+    }
+
     if (BaseVariableType == BVT_FramePointer) {
       // Addressing is relative to the frame pointer.  Subtract the offset after
       // adding the size of the alloca, because it grows downwards from the
@@ -853,11 +866,27 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
           (BaseVariableType == BVT_StackPointer)
               ? getTarget()->maxOutArgsSizeBytes()
               : 0;
+
+      if (CurrentOffset + OutArgsOffsetOrZero > StackSizeLimit) {
+        llvm::report_fatal_error("Local variables exceeds stack size limit");
+        return; // NOTREACHED
+      }
+
       Offsets.push_back(CurrentOffset + OutArgsOffsetOrZero);
     }
     // Update the running offset of the fused alloca region.
     CurrentOffset += Size;
   }
+
+  // CurrentOffset is guaranteed to be less than 1MB here. Prevent an overflow
+  // in Utils::applyAlignment below by ensuring CombinedAlignment is also less
+  // than StackSize Limit.
+  if (CombinedAlignment > StackSizeLimit ||
+      CurrentOffset + CombinedAlignment > StackSizeLimit) {
+    llvm::report_fatal_error("Local variables exceeds stack size limit");
+    return; // NOTREACHED
+  }
+
   // Round the offset up to the alignment granularity to use as the size.
   uint32_t TotalSize = Utils::applyAlignment(CurrentOffset, CombinedAlignment);
   // Ensure every alloca was assigned an offset.
