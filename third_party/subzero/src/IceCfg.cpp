@@ -32,6 +32,13 @@
 #include <memory>
 #include <utility>
 
+namespace {
+  bool AdditionOverflowsInt32(uint32_t a, uint32_t b)
+  {
+      return a + b < a || a + b > INT32_MAX;
+  }
+}
+
 namespace Ice {
 
 Cfg::Cfg(GlobalContext *Ctx, uint32_t SequenceNumber)
@@ -837,7 +844,21 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
     uint32_t Alignment = std::max(Alloca->getAlignInBytes(), 1u);
     auto *ConstSize =
         llvm::dyn_cast<ConstantInteger32>(Alloca->getSizeInBytes());
-    uint32_t Size = Utils::applyAlignment(ConstSize->getValue(), Alignment);
+    uint32_t UnalignedSize = ConstSize->getValue();
+
+    if (AdditionOverflowsInt32(UnalignedSize, Alignment)) {
+      llvm::report_fatal_error("sortAndCombineAllocas: Integer Overflow");
+      return; // NOTREACHED
+    }
+
+    uint32_t Size = Utils::applyAlignment(UnalignedSize, Alignment);
+
+
+    if (AdditionOverflowsInt32(CurrentOffset, Size)) {
+      llvm::report_fatal_error("sortAndCombineAllocas: Integer Overflow");
+      return; // NOTREACHED
+    }
+
     if (BaseVariableType == BVT_FramePointer) {
       // Addressing is relative to the frame pointer.  Subtract the offset after
       // adding the size of the alloca, because it grows downwards from the
@@ -853,15 +874,31 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
           (BaseVariableType == BVT_StackPointer)
               ? getTarget()->maxOutArgsSizeBytes()
               : 0;
+
+      if (AdditionOverflowsInt32(CurrentOffset, OutArgsOffsetOrZero)) {
+        llvm::report_fatal_error("sortAndCombineAllocas: Integer Overflow");
+        return; // NOTREACHED
+      }
+
       Offsets.push_back(CurrentOffset + OutArgsOffsetOrZero);
     }
     // Update the running offset of the fused alloca region.
     CurrentOffset += Size;
   }
+
+  if (AdditionOverflowsInt32(CurrentOffset, CombinedAlignment)) {
+    llvm::report_fatal_error("sortAndCombineAllocas: Integer Overflow");
+    return; // NOTREACHED
+  }
+
   // Round the offset up to the alignment granularity to use as the size.
   uint32_t TotalSize = Utils::applyAlignment(CurrentOffset, CombinedAlignment);
   // Ensure every alloca was assigned an offset.
   assert(Allocas.size() == Offsets.size());
+  if (Allocas.size() != Offsets.size()) {
+    llvm::report_fatal_error("sortAndCombineAllocas: Missing Offsets");
+    return; // NOTREACHED
+  }
 
   switch (BaseVariableType) {
   case BVT_UserPointer: {
