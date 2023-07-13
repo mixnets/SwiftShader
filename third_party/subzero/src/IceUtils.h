@@ -88,6 +88,9 @@ template <typename T> inline bool IsAligned(T X, intptr_t N) {
 /// Return Value adjusted to the next highest multiple of Alignment.
 inline uint32_t applyAlignment(uint32_t Value, uint32_t Alignment) {
   assert(llvm::isPowerOf2_32(Alignment));
+  if (Value + Alignment < Value) {
+    llvm::report_fatal_error("applyAlignment: Integer Overflow");
+  }
   return (Value + Alignment - 1) & -Alignment;
 }
 

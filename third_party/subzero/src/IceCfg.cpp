@@ -838,6 +838,10 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
     auto *ConstSize =
         llvm::dyn_cast<ConstantInteger32>(Alloca->getSizeInBytes());
     uint32_t Size = Utils::applyAlignment(ConstSize->getValue(), Alignment);
+
+    if (CurrentOffset + Size < CurrentOffset) {
+      llvm::report_fatal_error("sortAndCombineAllocas: Integer Overflow");
+    }
     if (BaseVariableType == BVT_FramePointer) {
       // Addressing is relative to the frame pointer.  Subtract the offset after
       // adding the size of the alloca, because it grows downwards from the
@@ -853,8 +857,15 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
           (BaseVariableType == BVT_StackPointer)
               ? getTarget()->maxOutArgsSizeBytes()
               : 0;
+
+      if (CurrentOffset + OutArgsOffsetOrZero < CurrentOffset) {
+        llvm::report_fatal_error("sortAndCombineAllocas: Integer Overflow");
+      }
+
       Offsets.push_back(CurrentOffset + OutArgsOffsetOrZero);
     }
+
+
     // Update the running offset of the fused alloca region.
     CurrentOffset += Size;
   }
@@ -862,6 +873,10 @@ void Cfg::sortAndCombineAllocas(CfgVector<InstAlloca *> &Allocas,
   uint32_t TotalSize = Utils::applyAlignment(CurrentOffset, CombinedAlignment);
   // Ensure every alloca was assigned an offset.
   assert(Allocas.size() == Offsets.size());
+  if (Allocas.size() != Offsets.size()) {
+    llvm::report_fatal_error("sortAndCombineAllocas: Missing Offsets");
+  }
+
 
   switch (BaseVariableType) {
   case BVT_UserPointer: {
