@@ -51,6 +51,24 @@
       "parentUuid": "4515494a_1ae0ecb8",
       "revId": "0dafb3a7af6aec775bd3123136b4cfc7c2df955e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ebe3214_1df7f5f9",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T02:03:25Z",
+      "side": 1,
+      "message": "\u003e Completely agreed! Maybe we can create a follow-up task to add CheckedNumerics to Subzero similar to what we did in ANGLE [1]? (which someone can pick up when we have more time)\n \nCreated a follow-up issue here! crbug.com/1464805",
+      "parentUuid": "83ab1388_3b7245c8",
+      "revId": "0dafb3a7af6aec775bd3123136b4cfc7c2df955e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
