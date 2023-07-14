@@ -122,6 +122,30 @@
       },
       "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9cf433ca_75bdc72f",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 851,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T05:46:16Z",
+      "side": 1,
+      "message": "Good idea! I went with the first suggestion so we could keep the \"return; // NOTREACHED\". I think in a follow-up CL when we add safe-math we\u0027ll have something more similar to what we do in ANGLE and do an `.IsValid()` check in the if statements.",
+      "parentUuid": "0cfba82b_a51ab91c",
+      "range": {
+        "startLine": 850,
+        "startChar": 8,
+        "endLine": 851,
+        "endChar": 40
+      },
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
