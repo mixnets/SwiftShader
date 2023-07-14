@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1dfa0e02_8dc3bd39",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-14T05:01:41Z",
+      "side": 1,
+      "message": "It would be better to treat the root cause rather than the symptoms. For http://crbug.com/1427865 the amount of local storage required for the array of 0x7ffffff vectors is absurdly excessive and will cause issues not just in SwiftShader\u0027s Subzero JIT but in many other parts of various graphics stacks.\n\nI suggest to address this in ANGLE for all backends at once by limiting array sizes to something approaching reason like 4096. Note this is still much higher than the register limit of 255 on NVIDIA\u0027s latest architecture, and way higher than the maximum of 32 registers to achieve full occupancy.\n\nSee also my prior discussion at http://crbug.com/1248665",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8364e8c4_e35d56c8",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 844,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-14T05:01:41Z",
+      "side": 1,
+      "message": "Is it guaranteed that this puts things in a safe state?",
+      "range": {
+        "startLine": 844,
+        "startChar": 6,
+        "endLine": 844,
+        "endChar": 30
+      },
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
