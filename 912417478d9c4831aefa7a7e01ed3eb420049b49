@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9b100f40_d921dde6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-14T07:59:08Z",
+      "side": 1,
+      "message": "Thanks for the references and for pointing out that ANGLE now rejects shaders exceeding a total limit of local variable storage! Unfortunately I don\u0027t have access to http://crbug.com/1464038 nor http://crbug.com/1464680, but I assume it\u0027s essentially the same issue but for WebGPU?\n\nIn that case I don\u0027t think this would become an endless cycle of bypasses. It just needs similar checks in Dawn/Tint to ensure shaders can be reasonably expected to compile and run without issues. Anything else should be regarded a security risk.\n\nI think it\u0027s important to point out that Vulkan is inherently extremely unsafe, and except for drivers implementing the Vulkan SC spec variant, vendors make little or no safety guarantees about non-typical usage. Instead they prioritize performance. Hence it is entirely the browser\u0027s responsibility to make it safe for web usage. That necessarily goes beyond what the Vulkan spec may or may not specify.\n\nSwiftShader is your canary in the coal mine. If you make it robust against outlier scenarios it will mask issues that the browser should prevent. What I\u0027m trying to say is that even though this is a serious security issue in Subzero and it makes sense to patch it I don\u0027t think that should excuse the browser from making changes that prevent it in the first place. So I find it dangerous to label the Subzero code as \"root cause\" when it\u0027s the browser making extra security demands and not yet fulfilling its shader sanity checking duties.",
+      "parentUuid": "1991ec20_8a5aa460",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8364e8c4_e35d56c8",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 6
@@ -91,6 +109,30 @@
       "side": 1,
       "message": "llvm::report_fatal_error` is guaranteed to halt the process turning this edge-case from a security bug into a stability bug (which is what we want to happen when an assumption we made about a security guarantee that leads to code execution is not met).\n\n[1] https://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/third_party/subzero/src/IceRegAlloc.cpp;l\u003d271;drc\u003d6649bd025e0106c372d624a736a6dfc7b8f37404",
       "parentUuid": "8364e8c4_e35d56c8",
+      "range": {
+        "startLine": 844,
+        "startChar": 6,
+        "endLine": 844,
+        "endChar": 30
+      },
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eaa0f145_2688abea",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 844,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-14T07:59:08Z",
+      "side": 1,
+      "message": "Thanks for verifying that!",
+      "parentUuid": "1260ef17_dac2bee2",
       "range": {
         "startLine": 844,
         "startChar": 6,

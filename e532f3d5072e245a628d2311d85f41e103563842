@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd0bea73_8f7a03bd",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 847,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-14T07:59:08Z",
+      "side": 1,
+      "message": "I would check this against `StackSizeLimit` and call `setError(\"Local variable exceeds stack size limit\");`",
+      "range": {
+        "startLine": 847,
+        "startChar": 13,
+        "endLine": 847,
+        "endChar": 26
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da516a19_2ce449b5",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 857,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-14T07:59:08Z",
+      "side": 1,
+      "message": "It\u0027s not immediately clear what each of these `AdditionOverflowsInt32` calls actually apply to. I would replace them all with the two checks suggested in my other comments.",
+      "range": {
+        "startLine": 857,
+        "startChar": 8,
+        "endLine": 857,
+        "endChar": 30
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "540e4829_0168ccc8",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 886,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-14T07:59:08Z",
+      "side": 1,
+      "message": "I would just check against `StackSizeLimit` again after this addition.",
+      "range": {
+        "startLine": 886,
+        "startChar": 0,
+        "endLine": 886,
+        "endChar": 26
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f79ea590_3482ea60",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 897,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-14T07:59:08Z",
+      "side": 1,
+      "message": "Do we still need this if we have the check below?",
+      "range": {
+        "startLine": 897,
+        "startChar": 0,
+        "endLine": 897,
+        "endChar": 43
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
