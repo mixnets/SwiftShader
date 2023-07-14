@@ -35,6 +35,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9cdb762b_c8244a9c",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 877,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T18:42:29Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "d0cab6e6_e08a0ab6",
+      "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "74ef874a_2874e2c1",
@@ -52,6 +70,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "940858af_dd2d8d8d",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 890,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T18:42:29Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "74ef874a_2874e2c1",
+      "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c6e8a116_b11632f0",
@@ -65,6 +101,24 @@
       "writtenOn": "2023-07-14T18:18:37Z",
       "side": 1,
       "message": "What happens if StackSizeLimit is more than half of INT32_MAX? Then could a+b still wrap around?",
+      "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4dcfdbdf_53881700",
+        "filename": "third_party/subzero/src/IceCfg.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T18:42:29Z",
+      "side": 1,
+      "message": "It shouldn\u0027t wrap around in that case because `INT32_MAX \u003d\u003d 0x7fffffff` so at the extreme case where StackSizeLimit is equal to INT32_MAX:\n\n```\na \u003d 0x7fffffff;\nb \u003d 0x7fffffff;\na + b \u003d 0xfffffffe;\n```",
+      "parentUuid": "c6e8a116_b11632f0",
       "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
