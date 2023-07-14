@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c88d61d4_a621c8d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5220
+      },
+      "writtenOn": "2023-07-14T00:22:21Z",
+      "side": 1,
+      "message": "CC\u0027ing syoussefi@ for another pair of eyes.",
+      "revId": "99c56dd6e185dcbce6d7c1ad5af15c669298f2c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a15232cf_bfcd8800",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 843,
+      "author": {
+        "id": 5220
+      },
+      "writtenOn": "2023-07-14T00:22:21Z",
+      "side": 1,
+      "message": "Should this return early? I don\u0027t know the semantics of llvm::report_fatal_error. Same question throughout this CL.",
+      "revId": "99c56dd6e185dcbce6d7c1ad5af15c669298f2c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
