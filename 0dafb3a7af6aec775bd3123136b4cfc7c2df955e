@@ -16,6 +16,23 @@
       "message": "ccing benclayton@ as well from WebGPU [1]. Just FYI\n\n[1] https://bugs.chromium.org/p/chromium/issues/detail?id\u003d1431761#c14",
       "revId": "0dafb3a7af6aec775bd3123136b4cfc7c2df955e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4515494a_1ae0ecb8",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 5220
+      },
+      "writtenOn": "2023-07-14T00:57:33Z",
+      "side": 1,
+      "message": "Wish we had a checked math library available to encapsulate these checks. Is it necessary to also check the condition:\n\n```\n(Size \u003e 0 \u0026\u0026 CurrentOffset + Size \u003d\u003d CurrentOffset)\n```\n\n?",
+      "revId": "0dafb3a7af6aec775bd3123136b4cfc7c2df955e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
