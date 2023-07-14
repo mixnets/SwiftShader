@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21ab1e87_e5149f69",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5220
+      },
+      "writtenOn": "2023-07-14T18:18:37Z",
+      "side": 1,
+      "message": "I\u0027d like to nominate bclayton@ to review this in my stead, but thanks Brandon for addressing my earlier (not fully well-informed :) ) feedback.",
+      "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0cab6e6_e08a0ab6",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 877,
+      "author": {
+        "id": 5220
+      },
+      "writtenOn": "2023-07-14T18:18:37Z",
+      "side": 1,
+      "message": "This should probably be \"Local variable exceeds\".",
+      "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74ef874a_2874e2c1",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 890,
+      "author": {
+        "id": 5220
+      },
+      "writtenOn": "2023-07-14T18:18:37Z",
+      "side": 1,
+      "message": "This should probably be \"Local variables exceed\".",
+      "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6e8a116_b11632f0",
+        "filename": "third_party/subzero/src/IceCfg.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 5220
+      },
+      "writtenOn": "2023-07-14T18:18:37Z",
+      "side": 1,
+      "message": "What happens if StackSizeLimit is more than half of INT32_MAX? Then could a+b still wrap around?",
+      "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

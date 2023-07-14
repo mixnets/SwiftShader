@@ -92,6 +92,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "54b381fe_d0efa8cc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5220
+      },
+      "writtenOn": "2023-07-14T18:18:37Z",
+      "side": 1,
+      "message": "Note that we took the security researcher\u0027s original exploit and reduced the size of the arrays so they fit underneath ANGLE\u0027s new size checks for all variables in the shader, and were still able to provoke a crash inside SwiftShader\u0027s sw::DrawCall::run. We aren\u0027t sure whether that crash can be weaponized, but it is important to eliminate the possibility. We are concerned that reducing ANGLE\u0027s current size checks any further may break real-world content.",
+      "parentUuid": "71828fc1_dbdf2645",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8364e8c4_e35d56c8",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 6
