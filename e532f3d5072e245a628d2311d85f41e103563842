@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dc43e946_e8086a9c",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 847,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T13:29:40Z",
+      "side": 1,
+      "message": "Done, I am happy to limit these allocations even further to `StackSizeLimit`!",
+      "parentUuid": "fd0bea73_8f7a03bd",
+      "range": {
+        "startLine": 847,
+        "startChar": 13,
+        "endLine": 847,
+        "endChar": 26
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "da516a19_2ce449b5",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 8
@@ -37,6 +61,54 @@
       "writtenOn": "2023-07-14T07:59:08Z",
       "side": 1,
       "message": "It\u0027s not immediately clear what each of these `AdditionOverflowsInt32` calls actually apply to. I would replace them all with the two checks suggested in my other comments.",
+      "range": {
+        "startLine": 857,
+        "startChar": 8,
+        "endLine": 857,
+        "endChar": 30
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa9ee6fc_e530af08",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 857,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T13:29:40Z",
+      "side": 1,
+      "message": "Done. However we also need",
+      "parentUuid": "da516a19_2ce449b5",
+      "range": {
+        "startLine": 857,
+        "startChar": 8,
+        "endLine": 857,
+        "endChar": 30
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eaef3b9a_cafdffd7",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 857,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T13:29:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da516a19_2ce449b5",
       "range": {
         "startLine": 857,
         "startChar": 8,
@@ -70,6 +142,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a4dcc63_372d1c35",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 886,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T13:29:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "540e4829_0168ccc8",
+      "range": {
+        "startLine": 886,
+        "startChar": 0,
+        "endLine": 886,
+        "endChar": 26
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f79ea590_3482ea60",
@@ -83,6 +179,30 @@
       "writtenOn": "2023-07-14T07:59:08Z",
       "side": 1,
       "message": "Do we still need this if we have the check below?",
+      "range": {
+        "startLine": 897,
+        "startChar": 0,
+        "endLine": 897,
+        "endChar": 43
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc558697_eccf1ef0",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 897,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T13:29:40Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "f79ea590_3482ea60",
       "range": {
         "startLine": 897,
         "startChar": 0,

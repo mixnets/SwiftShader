@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "71828fc1_dbdf2645",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T13:29:40Z",
+      "side": 1,
+      "message": "\u003e  Unfortunately I don\u0027t have access to http://crbug.com/1464038 nor http://crbug.com/1464680, but I assume it\u0027s essentially the same issue but for WebGPU?\n\nhttp://crbug.com/1464038 and http://crbug.com/1464680 are two new methods to bypass the ANGLE hardening and reach this bug. \n\n\u003e What I\u0027m trying to say is that even though this is a serious security issue in Subzero and it makes sense to patch it I don\u0027t think that should excuse the browser from making changes that prevent it in the first place. So I find it dangerous to label the Subzero code as \"root cause\" when it\u0027s the browser making extra security demands and not yet fulfilling its shader sanity checking duties.\n\nI agree with you that we should continue reducing the subset of valid GLSL we allow on the web by making changes to the ANGLE translaotr. However, it is not always the best avenue to fix security bugs as there are often simple ways to bypass sanitization especially when the sanitization is done over an AST that has no context about the underlying Shader compiler, and the underlying security issue is in a backend optimization. We need to both fix security vulnerabilities by reducing the subset of GLSL with ANGLE shader sanitization while also fixing the underlying issues at their root cause in SwiftShader/UMDs.",
+      "parentUuid": "9b100f40_d921dde6",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8364e8c4_e35d56c8",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 6
