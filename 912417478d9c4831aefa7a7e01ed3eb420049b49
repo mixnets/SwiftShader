@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1991ec20_8a5aa460",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T05:30:32Z",
+      "side": 1,
+      "message": "Limiting array sizes to something approaching reason like 4096 is very similar to the approach taken in crbug.com/1427865. This was easily bypassable by creating many smaller sized arrays which would eventually lead to an overflow here. Take a look at crbug.com/1431761, a variant of crbug.com/1427865, which was a variant of crbug.com/1248665. This will likely be a never ending cycle of bypasses that reach this bug (as we\u0027ve seen with two new variants: crbug.com/1464038 and crbug.com/1464680).\n\nThe root-cause of this issue is that there is an integer overflow in IceCfg::sortAndCombineAllocas that leads to an underallocation. To prevent more variants of this issue we need to address the root cause in SwiftShader. (Also the above strategy doesn\u0027t work with WebGPU which is now also a SwiftShader user :)).",
+      "parentUuid": "1dfa0e02_8dc3bd39",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8364e8c4_e35d56c8",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 6
@@ -49,6 +67,30 @@
       "writtenOn": "2023-07-14T05:01:41Z",
       "side": 1,
       "message": "Is it guaranteed that this puts things in a safe state?",
+      "range": {
+        "startLine": 844,
+        "startChar": 6,
+        "endLine": 844,
+        "endChar": 30
+      },
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1260ef17_dac2bee2",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 844,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T05:30:32Z",
+      "side": 1,
+      "message": "llvm::report_fatal_error` is guaranteed to halt the process turning this edge-case from a security bug into a stability bug (which is what we want to happen when an assumption we made about a security guarantee that leads to code execution is not met).\n\n[1] https://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/third_party/subzero/src/IceRegAlloc.cpp;l\u003d271;drc\u003d6649bd025e0106c372d624a736a6dfc7b8f37404",
+      "parentUuid": "8364e8c4_e35d56c8",
       "range": {
         "startLine": 844,
         "startChar": 6,
