@@ -33,6 +33,24 @@
       "message": "Wish we had a checked math library available to encapsulate these checks. Is it necessary to also check the condition:\n\n```\n(Size \u003e 0 \u0026\u0026 CurrentOffset + Size \u003d\u003d CurrentOffset)\n```\n\n?",
       "revId": "0dafb3a7af6aec775bd3123136b4cfc7c2df955e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83ab1388_3b7245c8",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T01:58:07Z",
+      "side": 1,
+      "message": "\u003e Wish we had a checked math library available to encapsulate these checks. \n\nCompletely agreed! Maybe we can create a follow-up task to add CheckedNumerics to Subzero similar to what we did in ANGLE [1]? (which someone can pick up when we have more time)\n\n\u003e Is it necessary to also check the condition: `(Size \u003e 0 \u0026\u0026 CurrentOffset + Size \u003d\u003d CurrentOffset)`\n\nI\u0027m not sure if those checks would do anything because we\u0027re working with unsigned 32 bit integers: so `(Size \u003e 0)` will always hold and there is no addition where `CurrentOffset + Size \u003d\u003d CurrentOffset where Size !\u003d 0` when working with 32 bit unsigned integers. \n\nI\u0027ve added a second check to ensure that none of the additions overflow INT32_MAX to ensure there is no undefined behavior when casting from uint32_t to int32_t (I believe there is another variant of the first bug here that we could hit because of this undefined behavior). Good catch!\n\n[1] https://chromium-review.googlesource.com/c/angle/angle/+/3289941",
+      "parentUuid": "4515494a_1ae0ecb8",
+      "revId": "0dafb3a7af6aec775bd3123136b4cfc7c2df955e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
