@@ -121,6 +121,24 @@
       "parentUuid": "c6e8a116_b11632f0",
       "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40f42f03_405a1735",
+        "filename": "third_party/subzero/src/IceCfg.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 5220
+      },
+      "writtenOn": "2023-07-14T18:52:28Z",
+      "side": 1,
+      "message": "Got it, thanks.",
+      "parentUuid": "4dcfdbdf_53881700",
+      "revId": "f33c26e5682976e478485cfb28b13318651b86f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
