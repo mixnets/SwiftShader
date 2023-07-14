@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e929f49f_2ce56152",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-07-14T05:26:14Z",
+      "side": 1,
+      "message": "FWIW, we\u0027re also doing that: https://chromium-review.googlesource.com/c/angle/angle/+/4685307\n\nThough the limit is a few MBs, because there\u0027s a dEQP test with a shader of a million ints 😐. The shader just uses `.length()` though so if ANGLE did dead-code elimination we _could_ reduce that limit greatly.\n\nNo short-term plan for DCE at the moment though.",
+      "parentUuid": "1dfa0e02_8dc3bd39",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8364e8c4_e35d56c8",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 6
