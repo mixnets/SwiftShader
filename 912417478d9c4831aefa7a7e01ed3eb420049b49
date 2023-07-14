@@ -39,6 +39,29 @@
       },
       "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0cfba82b_a51ab91c",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 851,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-07-14T05:23:59Z",
+      "side": 1,
+      "message": "This pattern is repeated a few times, please add a helper in the anonymous namespace above like:\n\n```\nbool AdditionOverflowsInt(uint32_t a, uint32_t b)\n{\n    return a + b \u003c a || a + b \u003e INT32_MAX;\n}\n```\n\nOr since return is not reached after `llvm::report_fatal_error`, might as well move the whole logic to that function and call it `ReportFatalErrorOnOverflow(a, b)`",
+      "range": {
+        "startLine": 850,
+        "startChar": 8,
+        "endLine": 851,
+        "endChar": 40
+      },
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
