@@ -211,6 +211,30 @@
       },
       "revId": "e532f3d5072e245a628d2311d85f41e103563842",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4742076d_6c60a7cc",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 897,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-14T13:31:01Z",
+      "side": 1,
+      "message": "This change was unrelated to the integer overflow and I changed it back to a debug assertion. This assumption looks safe after digging deeper.",
+      "parentUuid": "fc558697_eccf1ef0",
+      "range": {
+        "startLine": 897,
+        "startChar": 0,
+        "endLine": 897,
+        "endChar": 43
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
