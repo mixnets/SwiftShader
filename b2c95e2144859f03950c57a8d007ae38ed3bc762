@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a55ea65b_00e87907",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 847,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-16T09:04:48Z",
+      "side": 1,
+      "message": "This isn\u0027t necessary if `UnalignedSize` is already checked against `StackSizeLimit`. `Alignment` is guaranteed to be small.",
+      "range": {
+        "startLine": 842,
+        "startChar": 4,
+        "endLine": 847,
+        "endChar": 5
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4caddda5_48dede1f",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 856,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-16T09:04:48Z",
+      "side": 1,
+      "message": "This can be moved closer to the actual addition on line 884. But since we\u0027ve already guaranteed `Size \u003c\u003d StackSizeLimit`, and `CurrentOffset` starts at 0, it would actually suffice to just check `CurrentOffset \u003c\u003d StackSizeLimit` after the addition which in my opinion would greatly help readability.",
+      "range": {
+        "startLine": 851,
+        "startChar": 4,
+        "endLine": 856,
+        "endChar": 5
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29773620_5456d5f0",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 879,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-16T09:04:48Z",
+      "side": 1,
+      "message": "`OutArgsOffsetOrZero` is small and with `CurrentOffset` already checked against `StackSizeLimit` it\u0027s not possible for overflow to happen here.",
+      "range": {
+        "startLine": 874,
+        "startChar": 6,
+        "endLine": 879,
+        "endChar": 7
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a1631f5_61881329",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 892,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-16T09:04:48Z",
+      "side": 1,
+      "message": "Same as above; can\u0027t happen when you\u0027re already doing the other checks.\n\nI understand the desire to be extra careful but it quickly leads to code that is harder to read and harder to maintain.",
+      "range": {
+        "startLine": 887,
+        "startChar": 2,
+        "endLine": 892,
+        "endChar": 3
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7da4d28c_0844b9bc",
+        "filename": "third_party/subzero/src/IceCfg.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-16T09:04:48Z",
+      "side": 1,
+      "message": "FYI it\u0027s always going to be well below that: https://issuetracker.google.com/issues/192475710",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 272,
+        "endChar": 40
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

@@ -110,6 +110,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9bedd45c_28ded7e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-16T09:04:48Z",
+      "side": 1,
+      "message": "\u003e ...there are often simple ways to bypass sanitization especially when the sanitization is done over an AST that has no context about the underlying Shader compiler, and the underlying security issue is in a backend optimization.\n\nNote that the OpenGL spec allows shader compilation to fail for implementation-specific resource limitations, and that it makes no assumptions about optimizations taking place. ANGLE as a (Web)GL implementation can definitely use that to its advantage to reject suspicious shaders out of security concerns even just by looking at the AST. That reduces it to the practical issue Ken pointed out:\n\n\u003e We are concerned that reducing ANGLE\u0027s current size checks any further may break real-world content.\n\nDetermining whether that\u0027s actually the case would be really useful. Could some metrics be collected for this?\n\nIn my mind there should still be quite a large gap between a contrived-but-legit shader, and one apparently trying to exploit 32-bit arithmethic overflow. Also note that forcing a couple of ShaderToy samples to have to be rewritten would be a small price to pay for protecting users.\n\nThere are hundreds more places in Subzero\u0027s stack related arithmetic alone that assume we\u0027re dealing with numbers that stay well clear of causing numeric overflow. Focusing on just the ones identified by the security researchers is like removing one needle in a haystack containing hundreds. One should really be focusing on making sure that the assumptions made about small-ish numbers are true. Then it doesn\u0027t really matter what the actual arithmetic formulas look like. 32-bit variables are very large. Operations on them only become dangerous, in lots of different places, when allowing values that approach their limit to be passed down.",
+      "parentUuid": "54b381fe_d0efa8cc",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8364e8c4_e35d56c8",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 6

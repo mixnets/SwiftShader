@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8134a8fc_18100d18",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 847,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-16T09:04:48Z",
+      "side": 1,
+      "message": "Personally I would add an explicit comparison against `StackSizeLimit` here, and not hide it inside `additionExceedsStackSizeLimit()`. That way it becomes much clearer that this is a safe assumption in all of the code below it. Otherwise the risk is that a refactoring where line 849 gets moved (and 844 with it) would end up not checking the sanity of the alloca\u0027s size down another code path.",
+      "parentUuid": "dc43e946_e8086a9c",
+      "range": {
+        "startLine": 847,
+        "startChar": 13,
+        "endLine": 847,
+        "endChar": 26
+      },
+      "revId": "e532f3d5072e245a628d2311d85f41e103563842",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "da516a19_2ce449b5",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 8
