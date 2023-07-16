@@ -128,6 +128,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "09574a26_6c49e7b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101891
+      },
+      "writtenOn": "2023-07-16T15:30:24Z",
+      "side": 1,
+      "message": "This discussion illustrates the scale of the challenge ahead. We understand graphics libraries tend to assume their input is benign, which requires embedders to attempt to sanitize inputs. On the other hand, in this case input sanitization is equivalent to comprehensively enumerating all forms of badness within an expressive language, which we also understand to be generally unsolvable with known computer science.\n\nThis situation has strong parallels to Chrome using V8 to execute JavaScript from untrustworthy sources. However, in that case V8 benefits from both residing in a tight sandbox as well as Site Isolation to minimize the impact of V8 exploitation. As you know, code in the Chrome GPU process effectively has neither of those benefits. \n\nIt will be some time until a happier architectural solution is available for Chrome, so as we establish what principles to apply when deciding whether to mitigate a bug class with sanitization or point fixes, my request is to please stay flexible and help security fixes land (as you are doing, thank you!) even if we know they don\u0027t eliminate an entire bug class, and especially when they address a known bug without causing major disruption.",
+      "parentUuid": "9bedd45c_28ded7e4",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8364e8c4_e35d56c8",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 6
