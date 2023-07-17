@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f216aeb8_6d326bc9",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 840,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-07-17T16:32:41Z",
+      "side": 1,
+      "message": "nit: suggest making this `const` to enforce that it doesn\u0027t change after the check below.",
+      "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
