@@ -162,6 +162,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b659d05c_14ad44f1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-17T17:26:59Z",
+      "side": 1,
+      "message": "\u003e This discussion illustrates the scale of the challenge ahead. We understand graphics libraries tend to assume their input is benign, which requires embedders to attempt to sanitize inputs.\n\nWell put!\n\n\u003e On the other hand, in this case input sanitization is equivalent to comprehensively enumerating all forms of badness within an expressive language, which we also understand to be generally unsolvable with known computer science.\n\n\u003e This situation has strong parallels to Chrome using V8 to execute JavaScript from untrustworthy sources.\n\nFortunately it\u0027s not quite that bad. Graphics shaders have access to only a handful of resource types, and can\u0027t make external calls. Robust resource accesses is largely a solved problem (in theory).\n\nBut these stack overflow related issues have been remarkably recurrent. I don\u0027t think they have to be though. We can solve this with known computer science and sensible policy.\n\nThat said I applaud any effort to provide addition defence-in-depth to avoid endangering users and Chrome\u0027s reputation if/when input sanitization or robustness measures slip up. I\u0027ve spent years promoting the idea of site isolation for SwiftShader (https://issuetracker.google.com/issues/160140127) but it didn\u0027t gain enough traction to kick off the project. Note that while site isolation for all of graphics could be provided by Chrome itself, there\u0027s an argument to be made that potentially escaping the shader execution environment and accessing other CPU resources is uniquely a SwiftShader issue. Project Bunker would also offer benefits beyond security, and seems like a smaller effort overall.\n\nAnyway, it\u0027s exciting to see SwiftShader getting enabled for WebGPU and I\u0027d",
+      "parentUuid": "09574a26_6c49e7b6",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8364e8c4_e35d56c8",

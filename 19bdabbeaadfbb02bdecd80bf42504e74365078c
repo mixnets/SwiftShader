@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2f0faf1_a1768faa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-17T17:26:59Z",
+      "side": 1,
+      "message": "Nice! Looks like a net inprovement with great readability to me.",
+      "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f216aeb8_6d326bc9",
@@ -14,6 +31,29 @@
       "writtenOn": "2023-07-17T16:32:41Z",
       "side": 1,
       "message": "nit: suggest making this `const` to enforce that it doesn\u0027t change after the check below.",
+      "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc0fa05e_da825033",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 845,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-17T17:26:59Z",
+      "side": 1,
+      "message": "I don\u0027t have enough insight into all the bugs this patch addresses, but would it suffice to call `setError()` here and below instead of aborting? That should result in graceful shader compilation failure.",
+      "range": {
+        "startLine": 845,
+        "startChar": 12,
+        "endLine": 845,
+        "endChar": 30
+      },
       "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
