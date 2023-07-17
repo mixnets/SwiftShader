@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9504ff87_76bf4cbf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T16:22:39Z",
+      "side": 1,
+      "message": "s",
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a55ea65b_00e87907",
@@ -14,6 +31,30 @@
       "writtenOn": "2023-07-16T09:04:48Z",
       "side": 1,
       "message": "This isn\u0027t necessary if `UnalignedSize` is already checked against `StackSizeLimit`. `Alignment` is guaranteed to be small.",
+      "range": {
+        "startLine": 842,
+        "startChar": 4,
+        "endLine": 847,
+        "endChar": 5
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e923797_7398399e",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 847,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T16:22:39Z",
+      "side": 1,
+      "message": "Acknowledged. Same reasoning as https://swiftshader-review.googlesource.com/c/SwiftShader/+/71928/comment/fd0bea73_8f7a03bd/",
+      "parentUuid": "a55ea65b_00e87907",
       "range": {
         "startLine": 842,
         "startChar": 4,
@@ -47,6 +88,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae65f949_9ef3bd18",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 856,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T16:22:39Z",
+      "side": 1,
+      "message": "This was here before because we weren\u0027t working with StackSizeLimit and we could still overflow within `getFramePointerOffet`. Moving it down now that that is guaranteed not to overflow (doing the same for the other old checks as well!).",
+      "parentUuid": "4caddda5_48dede1f",
+      "range": {
+        "startLine": 851,
+        "startChar": 4,
+        "endLine": 856,
+        "endChar": 5
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "29773620_5456d5f0",
@@ -60,6 +125,30 @@
       "writtenOn": "2023-07-16T09:04:48Z",
       "side": 1,
       "message": "`OutArgsOffsetOrZero` is small and with `CurrentOffset` already checked against `StackSizeLimit` it\u0027s not possible for overflow to happen here.",
+      "range": {
+        "startLine": 874,
+        "startChar": 6,
+        "endLine": 879,
+        "endChar": 7
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8acffc40_5df330d5",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 879,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T16:22:39Z",
+      "side": 1,
+      "message": "Acknowledged. Same reason as https://swiftshader-review.googlesource.com/c/SwiftShader/+/71928/comment/4caddda5_48dede1f/",
+      "parentUuid": "29773620_5456d5f0",
       "range": {
         "startLine": 874,
         "startChar": 6,
@@ -93,6 +182,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a995b68_27060e1c",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 892,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T16:22:39Z",
+      "side": 1,
+      "message": "Acknowledged. Same reason as https://swiftshader-review.googlesource.com/c/SwiftShader/+/71928/comment/fd0bea73_8f7a03bd/",
+      "parentUuid": "5a1631f5_61881329",
+      "range": {
+        "startLine": 887,
+        "startChar": 2,
+        "endLine": 892,
+        "endChar": 3
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7da4d28c_0844b9bc",
@@ -106,6 +219,54 @@
       "writtenOn": "2023-07-16T09:04:48Z",
       "side": 1,
       "message": "FYI it\u0027s always going to be well below that: https://issuetracker.google.com/issues/192475710",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 272,
+        "endChar": 40
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2c16489_4627bef6",
+        "filename": "third_party/subzero/src/IceCfg.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T16:22:39Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "7da4d28c_0844b9bc",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 272,
+        "endChar": 40
+      },
+      "revId": "b2c95e2144859f03950c57a8d007ae38ed3bc762",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11df4fd6_6cce07d4",
+        "filename": "third_party/subzero/src/IceCfg.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T16:22:39Z",
+      "side": 1,
+      "message": "Acknowledged. Same reasoning as https://swiftshader-review.googlesource.com/c/SwiftShader/+/71928/comment/fd0bea73_8f7a03bd/",
+      "parentUuid": "7da4d28c_0844b9bc",
       "range": {
         "startLine": 272,
         "startChar": 0,

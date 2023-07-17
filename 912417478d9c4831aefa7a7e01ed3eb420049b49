@@ -146,6 +146,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e62e0db6_54390a58",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T16:22:39Z",
+      "side": 1,
+      "message": "\u003e Note that the OpenGL spec allows shader compilation to fail for implementation-specific resource limitations, and that it makes no assumptions about optimizations taking place. ANGLE as a (Web)GL implementation can definitely use that to its advantage to reject suspicious shaders out of security concerns even just by looking at the AST. \n\nWe are continuing to reduce attack surface that can be hit in SwiftShader and other UMDs by further restricting the subset of WebGL SL allowed on the web, and we are not going to quit using this strategy. However, bugs will still pop up in SwiftShader/UMDs - like this bug in sortAndCombinAllocas - that should also be addressed at their root cause within their respective codebases.\n\nFor example, if SwiftShader had a use-after-free in a backend optimization (like sortAndCombineAllocas) would you still argue that we attempt to reduce the subset of WebGL SL in a way that can\u0027t hit that use-after-free? This bug in sortAndCombineAllocas is a bug like that, that can be hit with a subset of GLSL that is difficult to reduce any further and by doing so we are creating code-golf like challenges for security researchers (which are very fun puzzles for us I might add :] https://crbug.com/1431761).\n\n\u003e There are hundreds more places in Subzero\u0027s stack related arithmetic alone that assume we\u0027re dealing with numbers that stay well clear of causing numeric overflow. Focusing on just the ones identified by the security researchers is like removing one needle in a haystack containing hundreds.\n\nI\u0027m not sure if this is a super healthy place for a codebase to be in, especially if we are coalescing integer additions in other areas of the codebase because even if we reduce the maximum variable size to `2`, `2 + 2 + ... + 2` will still overflow.",
+      "parentUuid": "09574a26_6c49e7b6",
+      "revId": "912417478d9c4831aefa7a7e01ed3eb420049b49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8364e8c4_e35d56c8",
         "filename": "third_party/subzero/src/IceCfg.cpp",
         "patchSetId": 6
