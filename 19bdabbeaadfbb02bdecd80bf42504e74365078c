@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e09ff58_a39d7c81",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T18:44:45Z",
+      "side": 1,
+      "message": "Awesome! Thanks for the code review :). I was very happy to learn we could restrict this even further to StackSizeLimit!",
+      "parentUuid": "b2f0faf1_a1768faa",
+      "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f216aeb8_6d326bc9",
@@ -35,6 +53,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e69205d_1659da55",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 840,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T18:44:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f216aeb8_6d326bc9",
+      "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bc0fa05e_da825033",
@@ -48,6 +84,30 @@
       "writtenOn": "2023-07-17T17:26:59Z",
       "side": 1,
       "message": "I don\u0027t have enough insight into all the bugs this patch addresses, but would it suffice to call `setError()` here and below instead of aborting? That should result in graceful shader compilation failure.",
+      "range": {
+        "startLine": 845,
+        "startChar": 12,
+        "endLine": 845,
+        "endChar": 30
+      },
+      "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6061f317_79418c1b",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 845,
+      "author": {
+        "id": 101888
+      },
+      "writtenOn": "2023-07-17T18:44:45Z",
+      "side": 1,
+      "message": "I think it\u0027s better to completely bail out here. `setError` is not guaranteed to leave Subzero in a stable state after sortAndCombineAlloca - as far as I can tell by auditing all of the `hasError()` calls -  which is what we were worried about here [1].\n\n[1] https://swiftshader-review.googlesource.com/c/SwiftShader/+/71928/comment/8364e8c4_e35d56c8/",
+      "parentUuid": "bc0fa05e_da825033",
       "range": {
         "startLine": 845,
         "startChar": 12,
