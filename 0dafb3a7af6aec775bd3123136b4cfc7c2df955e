@@ -105,6 +105,24 @@
       "parentUuid": "9680ec0b_b491b7bf",
       "revId": "0dafb3a7af6aec775bd3123136b4cfc7c2df955e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "060cea16_5423432c",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-07-18T15:19:25Z",
+      "side": 1,
+      "message": "There\u0027s a bunch of checked arithmetic utils in Tint you can pinch from.\nSee https://dawn.googlesource.com/dawn/+/refs/heads/main/src/tint/builtin/number.h#426 and below.",
+      "parentUuid": "9941d9de_fd1ac28b",
+      "revId": "0dafb3a7af6aec775bd3123136b4cfc7c2df955e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
