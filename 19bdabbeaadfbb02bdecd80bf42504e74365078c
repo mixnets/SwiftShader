@@ -116,6 +116,30 @@
       },
       "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78ff58fa_78c7b958",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 845,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-18T15:12:02Z",
+      "side": 1,
+      "message": "I agree aborting is better than continuing when there\u0027s a significant potential for a security issue down the road. But I should caution that to my knowledge this would be the first explicit abort in SwiftShader that is trivial to trigger. Especially with WebGPU where one can explicitly request a fallback driver this might create a robustness issue.\n\nChrome has a mechanism where if a GPU driver crashes three times it will fall back to SwiftShader, and last time I checked (years ago) if SwiftShader crashes three times the GPU process is disabled altogether. I\u0027m not 100% sure if that\u0027s still the case. Also, there was a desire to eliminate some of Skia\u0027s CPU rendering paths (especially the one with programmable shading) and just use SwiftShader, thus necessitating to always have a usable GPU process.\n\nAs far as I\u0027m aware it\u0027s actually benign to continue compilation with Subzero when the stack size limit is exceeded. It\u0027s just numbers. The actual overflow happens on executing the generated code. My concern for [1] was that if `llvm::report_fatal_error()` does not abort and `sortAndCombineAllocas()` returns early things would be in a more unstable state than just continuing.\n\nAnyway, I haven\u0027t done a thorough investigation (and don\u0027t have access to all the bug reports) to evaluate the balance between security risk and robustness risk. I\u0027ll leave it to other reviewers to make that assessment. The most important part is people being aware of the tradeoff and to take it into account for future design changes.",
+      "parentUuid": "6061f317_79418c1b",
+      "range": {
+        "startLine": 845,
+        "startChar": 12,
+        "endLine": 845,
+        "endChar": 30
+      },
+      "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
