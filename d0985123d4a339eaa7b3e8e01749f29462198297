@@ -33,6 +33,23 @@
       "message": "ping\n\nNote that this will be triggered by https://crrev.com/c/4505495.",
       "revId": "d0985123d4a339eaa7b3e8e01749f29462198297",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a58a848a_4649ea3f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2023-07-19T20:39:41Z",
+      "side": 1,
+      "message": "Whoops, LGTM!",
+      "revId": "d0985123d4a339eaa7b3e8e01749f29462198297",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
