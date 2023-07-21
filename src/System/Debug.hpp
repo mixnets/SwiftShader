@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // debug.h: Debugging utilities.
+#define DCHECK_ALWAYS_ON
 
 #ifndef Debug_hpp
 #define Debug_hpp

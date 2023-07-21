@@ -260,6 +260,7 @@ void LRUCache<KEY, DATA, HASH>::add(const Key &key, const Data &data)
 	else
 	{
 		// Unlink least recently used.
+		printf("removing LRU\n");
 		entry = tail;
 		unlink(entry);
 		set.erase(entry);

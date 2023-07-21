@@ -23,6 +23,8 @@
 
 #include <memory>
 
+bool IsExecutable(void* ptr);
+
 namespace sw {
 
 struct DrawData;

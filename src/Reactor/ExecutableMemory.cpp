@@ -55,6 +55,8 @@
 #	define __has_feature(x) 0
 #endif
 
+extern bool DoCheck();
+
 namespace rr {
 namespace {
 
@@ -85,7 +87,13 @@ void *allocateRaw(size_t bytes, size_t alignment)
 		return allocation;
 	}
 #else
+	ASSERT(DoCheck());
 	unsigned char *block = new unsigned char[bytes + sizeof(Allocation) + alignment];
+	if(!DoCheck())
+	{
+		printf("block: [0x%p .. 0x%p)\n", block, block + bytes + sizeof(Allocation) + alignment);
+		ASSERT(false);
+	}
 	unsigned char *aligned = nullptr;
 
 	if(block)
@@ -235,7 +243,9 @@ size_t memoryPageSize()
 
 void *allocate(size_t bytes, size_t alignment)
 {
+	ASSERT(DoCheck());
 	void *memory = allocateRaw(bytes, alignment);
+	ASSERT(DoCheck());
 
 	// Zero-initialize the memory, for security reasons.
 	// MemorySanitizer builds skip this so that we can detect when we
@@ -244,12 +254,17 @@ void *allocate(size_t bytes, size_t alignment)
 	{
 		memset(memory, 0, bytes);
 	}
+	ASSERT(DoCheck());
 
+	printf("allocate(bytes: 0x%llX, alignment: 0x%llX) -> 0x%p\n", bytes, alignment, memory);
 	return memory;
 }
 
 void deallocate(void *memory)
 {
+	ASSERT(DoCheck());
+	printf("deallocate(0x%p)\n", memory);
+
 #if defined(__linux__) && defined(REACTOR_ANONYMOUS_MMAP_NAME)
 	free(memory);
 #else
@@ -258,7 +273,9 @@ void deallocate(void *memory)
 		unsigned char *aligned = (unsigned char *)memory;
 		Allocation *allocation = (Allocation *)(aligned - sizeof(Allocation));
 
+		ASSERT(DoCheck());
 		delete[] allocation->block;
+		ASSERT(DoCheck());
 	}
 #endif
 }
@@ -370,10 +387,22 @@ void protectMemoryPages(void *memory, size_t bytes, int permissions)
 
 	bytes = roundUp(bytes, memoryPageSize());
 
+	printf("protectMemoryPages([0x%p .. 0x%p), %s)\n", memory, reinterpret_cast<char *>(memory) + bytes, [&] {
+		std::string out;
+		if(permissions & PERMISSION_READ) out += " PERMISSION_READ";
+		if(permissions & PERMISSION_WRITE) out += " PERMISSION_WRITE";
+		if(permissions & PERMISSION_EXECUTE) out += " PERMISSION_EXECUTE";
+		return out;
+	}()
+	                                                                                                         .c_str());
+
+	ASSERT(DoCheck());
+
 #if defined(_WIN32)
 	unsigned long oldProtection;
+	auto mode = permissionsToProtectMode(permissions);
 	BOOL result =
-	    VirtualProtect(memory, bytes, permissionsToProtectMode(permissions),
+	    VirtualProtect(memory, bytes, mode,
 	                   &oldProtection);
 	ASSERT(result);
 #elif defined(__Fuchsia__)
@@ -386,11 +415,18 @@ void protectMemoryPages(void *memory, size_t bytes, int permissions)
 	    mprotect(memory, bytes, permissionsToMmapProt(permissions));
 	ASSERT(result == 0);
 #endif
+
+	ASSERT(DoCheck());
 }
 
 void deallocateMemoryPages(void *memory, size_t bytes)
 {
+	ASSERT(DoCheck());
+
 #if defined(_WIN32)
+
+	printf("deallocateMemoryPages([0x%p .. 0x%p))\n", memory, reinterpret_cast<char *>(memory) + roundUp(bytes, memoryPageSize()));
+
 	unsigned long oldProtection;
 	BOOL result =
 	    VirtualProtect(memory, bytes, PAGE_READWRITE, &oldProtection);
@@ -412,6 +448,8 @@ void deallocateMemoryPages(void *memory, size_t bytes)
 	ASSERT(result == 0);
 	deallocate(memory);
 #endif
+
+	ASSERT(DoCheck());
 }
 
 }  // namespace rr

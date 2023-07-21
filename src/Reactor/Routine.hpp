@@ -65,7 +65,7 @@ public:
 		return function;
 	}
 
-private:
+// private:
 	std::shared_ptr<Routine> routine;
 	FunctionType function = nullptr;
 };

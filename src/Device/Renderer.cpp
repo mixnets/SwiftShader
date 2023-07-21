@@ -233,6 +233,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 
 		vertexState = vertexProcessor.update(pipelineState, vertexShader, inputs);
 		vertexRoutine = vertexProcessor.routine(vertexState, preRasterizationState.getPipelineLayout(), vertexShader, inputs.getDescriptorSets());
+		ASSERT(IsExecutable(reinterpret_cast<void*>(vertexRoutine.function)));
 
 		if(!hasRasterizerDiscard)
 		{
@@ -487,6 +488,8 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	}
 
 	draw->events = events;
+
+	ASSERT(IsExecutable(reinterpret_cast<void*>(vertexRoutine.function)));
 
 	DrawCall::run(device, draw, &drawTickets, clusterQueues);
 }
