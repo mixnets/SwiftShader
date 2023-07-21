@@ -140,6 +140,30 @@
       },
       "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b05f1f0e_948ad021",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 845,
+      "author": {
+        "id": 101121
+      },
+      "writtenOn": "2023-07-21T20:16:10Z",
+      "side": 1,
+      "message": "with respect to WebGPU, WGSL allows for failures for undiagnosed and unexpected reasons. Causes can include:\n\n\"The shaders are too complex, exceeding the capabilities of the implementation, but in a way not easily captured by prescribed limits.\"\n\nhttps://gpuweb.github.io/gpuweb/wgsl/#uncategorized-error \n\nSo there isn\u0027t a robustness problem from WebGPU\u0027s perspective.",
+      "parentUuid": "78ff58fa_78c7b958",
+      "range": {
+        "startLine": 845,
+        "startChar": 12,
+        "endLine": 845,
+        "endChar": 30
+      },
+      "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
