@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "245d4ab4_61e3a011",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-07-21T17:28:42Z",
+      "side": 1,
+      "message": "I\u0027ve just noticed that the autoroller has been red since this change landed:\nhttps://autoroll.skia.org/r/swiftshader-chromium-autoroll/roll-history\n\nWe might want to clamp the shift instead of using freeze.",
+      "revId": "3e73cce1c4706a1727077572a06643cd998bd615",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
