@@ -37,7 +37,7 @@
                 ]
             },
             "options": {
-                "cwd": "${workspaceRoot}/build",
+                "cwd": "${workspaceRoot}/out",
             },
             "presentation": {
                 "echo": false,
@@ -73,7 +73,7 @@
                 "-DREACTOR_VERIFY_LLVM_IR=1",
             ],
             "options": {
-                "cwd": "${workspaceRoot}/build"
+                "cwd": "${workspaceRoot}/out"
             },
             "problemMatcher": [],
         },
