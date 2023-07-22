@@ -164,6 +164,30 @@
       },
       "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef540be6_840db049",
+        "filename": "third_party/subzero/src/IceCfg.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 845,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2023-07-22T01:37:06Z",
+      "side": 1,
+      "message": "Thanks David, great to see that WebGPU/WGSL explicitly specifies the possibility of such errors.\n\nThat said, my robustness concern wasn\u0027t about reporting a compilation error, but about it causing process termination. I think the closest thing the spec describes is device loss, but I couldn\u0027t immediately find any spec text stating it could be the result of fatal compilation errors.",
+      "parentUuid": "b05f1f0e_948ad021",
+      "range": {
+        "startLine": 845,
+        "startChar": 12,
+        "endLine": 845,
+        "endChar": 30
+      },
+      "revId": "19bdabbeaadfbb02bdecd80bf42504e74365078c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
