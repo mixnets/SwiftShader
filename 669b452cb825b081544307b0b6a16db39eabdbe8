@@ -33,6 +33,24 @@
       "message": "Can we re-try on Kokoro? The change that this depended on landed in Chromium yesterday, so it was probably too soon to try this followup.",
       "revId": "669b452cb825b081544307b0b6a16db39eabdbe8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0482c937_c18ee2bd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2023-08-01T15:06:19Z",
+      "side": 1,
+      "message": "We can ignore it. It\u0027s been failing for a long time.",
+      "parentUuid": "a8f34d4e_ceed11a4",
+      "revId": "669b452cb825b081544307b0b6a16db39eabdbe8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
