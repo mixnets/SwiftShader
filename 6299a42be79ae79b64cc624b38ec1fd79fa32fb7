@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b705a89c_ccdd485f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101121
+      },
+      "writtenOn": "2023-08-03T14:24:20Z",
+      "side": 1,
+      "message": "Low urgency on this.\nClang 14 emits a bunch of warnings that can easily be avoided.",
+      "revId": "6299a42be79ae79b64cc624b38ec1fd79fa32fb7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
