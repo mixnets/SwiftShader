@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bbac7356_d57d331d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2023-08-09T20:36:14Z",
+      "side": 1,
+      "message": "(kokoro build error on macos seems unrelated\n\n```\n/tmpfs/src/git/SwiftShader/third_party/benchmark/src/complexity.cc:85:10: error: variable \u0027sigma_gn\u0027 set but not used [-Werror,-Wunused-but-set-variable]\n  double sigma_gn \u003d 0.0;\n```\n)",
+      "revId": "df2f2c80eff8d514fd3825c868c8555dcb4a935f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
