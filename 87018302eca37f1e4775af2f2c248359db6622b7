@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9255ed37_f9c18a18",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101941
+      },
+      "writtenOn": "2023-08-24T18:03:54Z",
+      "side": 1,
+      "message": "It looks like the failing thing has been failing for quite some time. I\u0027ll look into how hard it is to fix, but in the meantime, I don\u0027t think this CL should be blocked.\n\nFor the sake of posterity, the build error is:\n/git/SwiftShader/third_party/benchmark/src/complexity.cc:85:10: error: variable \u0027sigma_gn\u0027 set but not used [-Werror,-Wunused-but-set-variable]\n  double sigma_gn \u003d 0.0;\n         ^\n1 error generated.\n\nSo it should be a relatively easy fix.",
+      "revId": "87018302eca37f1e4775af2f2c248359db6622b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
