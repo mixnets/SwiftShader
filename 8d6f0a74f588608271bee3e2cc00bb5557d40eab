@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e06945f_e8934ad4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101941
+      },
+      "writtenOn": "2023-08-24T16:59:24Z",
+      "side": 1,
+      "message": "I don\u0027t have permissions to CQ or submit in this repository; if you\u0027re able to help with that or CQ for me, I would greatly appreciate that.",
+      "revId": "8d6f0a74f588608271bee3e2cc00bb5557d40eab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
