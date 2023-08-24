@@ -16,6 +16,23 @@
       "message": "It looks like the failing thing has been failing for quite some time. I\u0027ll look into how hard it is to fix, but in the meantime, I don\u0027t think this CL should be blocked.\n\nFor the sake of posterity, the build error is:\n/git/SwiftShader/third_party/benchmark/src/complexity.cc:85:10: error: variable \u0027sigma_gn\u0027 set but not used [-Werror,-Wunused-but-set-variable]\n  double sigma_gn \u003d 0.0;\n         ^\n1 error generated.\n\nSo it should be a relatively easy fix.",
       "revId": "87018302eca37f1e4775af2f2c248359db6622b7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2daa8914_236a6984",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101941
+      },
+      "writtenOn": "2023-08-24T18:06:08Z",
+      "side": 1,
+      "message": "Actually it looks like this was fixed upstream in 2021: https://github.com/google/benchmark/commit/e991355c02b93fe17713efe04cbc2e278e00fdbd\n\nSo I think this \"just\" requires a DEPS roll of benchmark in swiftshader.",
+      "revId": "87018302eca37f1e4775af2f2c248359db6622b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
