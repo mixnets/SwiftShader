@@ -22,6 +22,30 @@
       },
       "revId": "20edeea72b15369742f13c5ead9313378577e177",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d0ad690_a921268d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2023-09-06T16:51:44Z",
+      "side": 1,
+      "message": "Ack. Switched to field-by-field init to be safe.",
+      "parentUuid": "41e0e732_fc7c3fab",
+      "range": {
+        "startLine": 321,
+        "startChar": 0,
+        "endLine": 326,
+        "endChar": 73
+      },
+      "revId": "20edeea72b15369742f13c5ead9313378577e177",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
