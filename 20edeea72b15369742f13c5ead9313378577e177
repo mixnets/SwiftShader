@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41e0e732_fc7c3fab",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2023-09-06T16:33:17Z",
+      "side": 1,
+      "message": "Heads up that this kind of aggregate initialization is a C++20 feature. Chromium [0] allows it but I\u0027m not sure about all of Android.\n\n[0] https://chromium.googlesource.com/chromium/src/+/main/styleguide/c++/c++-features.md#core-allowlist-20",
+      "range": {
+        "startLine": 321,
+        "startChar": 0,
+        "endLine": 326,
+        "endChar": 73
+      },
+      "revId": "20edeea72b15369742f13c5ead9313378577e177",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
