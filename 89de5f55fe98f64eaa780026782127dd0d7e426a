@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc9ef45f_b578cd78",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101876
+      },
+      "writtenOn": "2023-09-07T05:57:41Z",
+      "side": 1,
+      "message": "Please trigger submit if you are happy with this change, as I don\u0027t have voting permissions in this repo.",
+      "revId": "89de5f55fe98f64eaa780026782127dd0d7e426a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
