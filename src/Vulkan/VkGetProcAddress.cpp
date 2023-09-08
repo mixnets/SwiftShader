@@ -380,6 +380,12 @@ static const std::unordered_map<std::string, PFN_vkVoidFunction> deviceFunctionP
 	MAKE_VULKAN_DEVICE_ENTRY(vkDestroyPrivateDataSlot),
 	MAKE_VULKAN_DEVICE_ENTRY(vkSetPrivateData),
 	MAKE_VULKAN_DEVICE_ENTRY(vkGetPrivateData),
+	// VK_EXT_host_image_copy
+	MAKE_VULKAN_DEVICE_ENTRY(vkCopyImageToImageEXT),
+	MAKE_VULKAN_DEVICE_ENTRY(vkCopyImageToMemoryEXT),
+	MAKE_VULKAN_DEVICE_ENTRY(vkCopyMemoryToImageEXT),
+	MAKE_VULKAN_DEVICE_ENTRY(vkGetImageSubresourceLayout2EXT),
+	MAKE_VULKAN_DEVICE_ENTRY(vkTransitionImageLayoutEXT),
 };
 
 // TODO(b/208256248): Avoid exit-time destructor.
