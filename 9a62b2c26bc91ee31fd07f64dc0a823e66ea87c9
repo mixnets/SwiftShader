@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "666aa131_ce2ae632",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-09-11T19:22:05Z",
+      "side": 1,
+      "message": "Not much changed, then. Caused my tab to repeatedly crash. 😊",
+      "revId": "9a62b2c26bc91ee31fd07f64dc0a823e66ea87c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
