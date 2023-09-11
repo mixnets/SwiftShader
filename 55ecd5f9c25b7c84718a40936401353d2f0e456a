@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e4c762ea_9397b700",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-09-11T19:32:19Z",
+      "side": 1,
+      "message": "+2 with one formatting nit.\nChris may want to look over the memory copying logic for a second pair of eyes.",
+      "revId": "55ecd5f9c25b7c84718a40936401353d2f0e456a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "179e852f_ed422630",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-09-11T19:32:19Z",
+      "side": 1,
+      "message": "nit: very odd formatting going on here. `clang-format` ?",
+      "range": {
+        "startLine": 144,
+        "startChar": 32,
+        "endLine": 144,
+        "endChar": 208
+      },
+      "revId": "55ecd5f9c25b7c84718a40936401353d2f0e456a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
