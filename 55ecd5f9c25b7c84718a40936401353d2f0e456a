@@ -39,6 +39,30 @@
       },
       "revId": "55ecd5f9c25b7c84718a40936401353d2f0e456a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a764fa5b_bd1397cf",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-09-11T19:44:52Z",
+      "side": 1,
+      "message": "`clang-format` in SwiftShader doesn\u0027t reformat the function declaration lines for some reason. Manually fixed.",
+      "parentUuid": "179e852f_ed422630",
+      "range": {
+        "startLine": 144,
+        "startChar": 32,
+        "endLine": 144,
+        "endChar": 208
+      },
+      "revId": "55ecd5f9c25b7c84718a40936401353d2f0e456a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
