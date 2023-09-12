@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4a46dd6_72ac538b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-09-12T19:25:08Z",
+      "side": 1,
+      "message": "The CL is passing deqp tests and whatever I\u0027ve tried locally with an ANGLE implementation. Going to land it, and follow up with any comments Chris may have.\n\nThat\u0027ll help me run it through ANGLE on our CQ for more coverage.",
+      "revId": "50d22c1c721f89187b5481cda6883de22c96d2be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
