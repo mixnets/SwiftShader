@@ -115,7 +115,7 @@ def describe(repo_path):
 
     success, output = command_output(['git', 'describe'], repo_path, may_fail=True)
     if not success:
-      output = command_output(['git', 'rev-parse', 'HEAD'], repo_path)
+      success, output = command_output(['git', 'rev-parse', 'HEAD'], repo_path)
 
     if success:
       # decode() is needed here for Python3 compatibility. In Python2,
