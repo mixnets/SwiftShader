@@ -353,6 +353,8 @@ VkFormat AHardwareBufferExternalMemory::GetVkFormatFromAHBFormat(uint32_t ahbFor
 {
 	switch(ahbFormat)
 	{
+	case AHARDWAREBUFFER_FORMAT_B8G8R8A8_UNORM:
+		return VK_FORMAT_B8G8R8A8_UNORM;
 	case AHARDWAREBUFFER_FORMAT_BLOB:
 		return VK_FORMAT_UNDEFINED;
 	case AHARDWAREBUFFER_FORMAT_D16_UNORM:
@@ -394,6 +396,53 @@ VkFormat AHardwareBufferExternalMemory::GetVkFormatFromAHBFormat(uint32_t ahbFor
 	}
 }
 
+VkFormat AHardwareBufferExternalMemory::GetExternalResolveColorFormat(uint32_t ahbFormat)
+{
+	// Format list built from PhysicalDevice::GetFormatProperties when VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT is set
+	switch(ahbFormat)
+	{
+	case AHARDWAREBUFFER_FORMAT_R10G10B10A2_UNORM:
+		return VK_FORMAT_A2B10G10R10_UNORM_PACK32;
+	case AHARDWAREBUFFER_FORMAT_R16G16B16A16_FLOAT:
+		return VK_FORMAT_R16G16B16A16_SFLOAT;
+	case AHARDWAREBUFFER_FORMAT_R5G6B5_UNORM:
+		return VK_FORMAT_R5G6B5_UNORM_PACK16;
+	case AHARDWAREBUFFER_FORMAT_R8_UNORM:
+		return VK_FORMAT_R8_UNORM;
+	case AHARDWAREBUFFER_FORMAT_B8G8R8A8_UNORM:
+		return VK_FORMAT_B8G8R8A8_UNORM;
+	case AHARDWAREBUFFER_FORMAT_R8G8B8A8_UNORM:
+		return VK_FORMAT_R8G8B8A8_UNORM;
+	case AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM:
+		return VK_FORMAT_R8G8B8A8_UNORM;
+	case AHARDWAREBUFFER_FORMAT_R8G8B8_UNORM:
+		return VK_FORMAT_R8G8B8_UNORM;
+	default:
+		UNSUPPORTED("AHardwareBufferExternalMemory::AHardwareBuffer_Format %d", int(ahbFormat));
+		return VK_FORMAT_UNDEFINED;
+	}
+}
+
+VkResult AHardwareBufferExternalMemory::GetAndroidHardwareBufferFormatProperties(const AHardwareBuffer_Desc &ahbDesc, VkAndroidHardwareBufferFormatResolvePropertiesANDROID *pProperties)
+{
+	pProperties->sType = VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_RESOLVE_PROPERTIES_ANDROID;
+	pProperties->pNext = nullptr;
+
+	// colorAttachmentFormat is a VkFormat specifying the format of color attachment images that
+	// must be used for color attachments when resolving to the specified external format.
+	// If the implementation supports external format resolves for the specified external format,
+	// this value will be set to a color format supporting the VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT
+	// in VkFormatProperties::optimalTilingFeatures as returned by vkGetPhysicalDeviceFormatProperties
+	// with format equal to colorAttachmentFormat
+
+	// colorAttachmentFormat must be a format that supports VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT in VkFormatProperties::optimalTilingFeatures.
+
+	// If external format resolves are not supported, this value will be set to VK_FORMAT_UNDEFINED.
+	pProperties->colorAttachmentFormat = GetExternalResolveColorFormat(ahbDesc.format);
+
+	return VK_SUCCESS;
+}
+
 VkResult AHardwareBufferExternalMemory::GetAndroidHardwareBufferFormatProperties(const AHardwareBuffer_Desc &ahbDesc, VkAndroidHardwareBufferFormatPropertiesANDROID *pFormat)
 {
 	pFormat->sType = VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID;
@@ -427,10 +476,28 @@ VkResult AHardwareBufferExternalMemory::GetAndroidHardwareBufferProperties(VkDev
 
 	if(pProperties->pNext != nullptr)
 	{
-		result = GetAndroidHardwareBufferFormatProperties(ahbDesc, (VkAndroidHardwareBufferFormatPropertiesANDROID *)pProperties->pNext);
-		if(result != VK_SUCCESS)
+		auto *nextInfo = reinterpret_cast<const VkBaseInStructure *>(pProperties->pNext);
+		while(nextInfo)
 		{
-			return result;
+			switch(nextInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID:
+				result = GetAndroidHardwareBufferFormatProperties(ahbDesc, (VkAndroidHardwareBufferFormatPropertiesANDROID *)pProperties->pNext);
+				break;
+			case VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_RESOLVE_PROPERTIES_ANDROID:
+				result = GetAndroidHardwareBufferFormatProperties(ahbDesc, (VkAndroidHardwareBufferFormatResolvePropertiesANDROID *)pProperties->pNext);
+				break;
+			default:
+				UNSUPPORTED("pProperties->pNext sType = %s", vk::Stringify(nextInfo->sType).c_str());
+				break;
+			}
+
+			if(result != VK_SUCCESS)
+			{
+				return result;
+			}
+
+			nextInfo = nextInfo->pNext;
 		}
 	}
 

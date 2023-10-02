@@ -438,6 +438,9 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	{ { VK_EXT_PIPELINE_ROBUSTNESS_EXTENSION_NAME, VK_EXT_PIPELINE_ROBUSTNESS_SPEC_VERSION } },
 	{ { VK_EXT_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_EXTENSION_NAME, VK_EXT_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_SPEC_VERSION } },
 	{ { VK_EXT_HOST_IMAGE_COPY_EXTENSION_NAME, VK_EXT_HOST_IMAGE_COPY_SPEC_VERSION } },
+#ifdef __ANDROID__
+	{ { VK_ANDROID_EXTERNAL_FORMAT_RESOLVE_EXTENSION_NAME, VK_ANDROID_EXTERNAL_FORMAT_RESOLVE_SPEC_VERSION } },
+#endif
 };
 
 static uint32_t numSupportedExtensions(const ExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
@@ -3805,6 +3808,14 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
+#ifdef __ANDROID__
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_PROPERTIES_ANDROID:
+			{
+				auto *properties = reinterpret_cast<VkPhysicalDeviceExternalFormatResolvePropertiesANDROID *>(extensionProperties);
+				vk::Cast(physicalDevice)->getProperties(properties);
+			}
+			break;
+#endif
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			UNSUPPORTED("pProperties->pNext sType = %s", vk::Stringify(extensionProperties->sType).c_str());

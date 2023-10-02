@@ -406,6 +406,14 @@ static void getPhysicalDeviceHostImageCopyFeatures(T *features)
 	features->hostImageCopy = VK_TRUE;
 }
 
+#ifdef __ANDROID__
+template<typename T>
+static void getPhysicalDeviceExternalFormatResolveFeaturesAndroid(T *features)
+{
+	features->externalFormatResolve = VK_TRUE;
+}
+#endif
+
 template<typename T>
 static void getPhysicalDeviceVulkan12Features(T *features)
 {
@@ -652,6 +660,11 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES_EXT:
 			getPhysicalDeviceHostImageCopyFeatures(reinterpret_cast<struct VkPhysicalDeviceHostImageCopyFeaturesEXT *>(curExtension));
 			break;
+#ifdef __ANDROID__
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_FEATURES_ANDROID:
+			getPhysicalDeviceExternalFormatResolveFeaturesAndroid(reinterpret_cast<struct VkPhysicalDeviceExternalFormatResolveFeaturesANDROID *>(curExtension));
+			break;
+#endif
 		case VK_STRUCTURE_TYPE_MAX_ENUM:  // TODO(b/176893525): This may not be legal. dEQP tests that this value is ignored.
 			break;
 		default:
@@ -1043,6 +1056,18 @@ void PhysicalDevice::getProperties(const VkPhysicalDeviceImageFormatInfo2 *pImag
 	}
 
 	ahbProperties->androidHardwareBufferUsage = ahbUsage;
+}
+
+void PhysicalDevice::getProperties(VkPhysicalDeviceExternalFormatResolvePropertiesANDROID *properties) const
+{
+	// ANGLE uses this
+	properties->nullColorAttachmentWithExternalFormatResolve = VK_TRUE;
+
+	// ??
+	properties->externalFormatResolveChromaOffsetX = static_cast<VkChromaLocation>(0);
+
+	// ??
+	properties->externalFormatResolveChromaOffsetY = static_cast<VkChromaLocation>(0);
 }
 #endif
 

@@ -61,7 +61,9 @@ public:
 	virtual VkResult exportAndroidHardwareBuffer(AHardwareBuffer **pAhb) const override final;
 
 	static VkFormat GetVkFormatFromAHBFormat(uint32_t ahbFormat);
+	static VkFormat GetExternalResolveColorFormat(uint32_t ahbFormat);
 	static VkResult GetAndroidHardwareBufferFormatProperties(const AHardwareBuffer_Desc &ahbDesc, VkAndroidHardwareBufferFormatPropertiesANDROID *pFormat);
+	static VkResult GetAndroidHardwareBufferFormatProperties(const AHardwareBuffer_Desc &ahbDesc, VkAndroidHardwareBufferFormatResolvePropertiesANDROID *pProperties);
 	static VkResult GetAndroidHardwareBufferProperties(VkDevice &device, const AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties);
 
 	bool hasExternalImagePlanes() const override final { return true; }

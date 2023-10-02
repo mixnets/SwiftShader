@@ -78,6 +78,7 @@ public:
 #ifdef __ANDROID__
 	void getProperties(VkPhysicalDevicePresentationPropertiesANDROID *properties) const;
 	void getProperties(const VkPhysicalDeviceImageFormatInfo2 *pImageFormatInfo, VkAndroidHardwareBufferUsageANDROID *properties) const;
+	void getProperties(VkPhysicalDeviceExternalFormatResolvePropertiesANDROID *properties) const;
 #endif
 	void getProperties(const VkPhysicalDeviceExternalBufferInfo *pExternalBufferInfo, VkExternalBufferProperties *pExternalBufferProperties) const;
 	void getProperties(const VkPhysicalDeviceExternalFenceInfo *pExternalFenceInfo, VkExternalFenceProperties *pExternalFenceProperties) const;
