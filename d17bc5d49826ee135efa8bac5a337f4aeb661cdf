@@ -34,6 +34,24 @@
       "parentUuid": "a82517d6_f8d450a4",
       "revId": "d17bc5d49826ee135efa8bac5a337f4aeb661cdf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c27213bc_76887ac9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 31371
+      },
+      "writtenOn": "2023-10-03T05:14:32Z",
+      "side": 1,
+      "message": "Hey, Kokoro is happy now.\n\nShabi I lost your vote if you can re-apply.",
+      "parentUuid": "3cd54440_368cf74a",
+      "revId": "d17bc5d49826ee135efa8bac5a337f4aeb661cdf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
