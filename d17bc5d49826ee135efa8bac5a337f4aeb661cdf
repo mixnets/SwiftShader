@@ -16,6 +16,24 @@
       "message": "Oh wait, there\u0027s a build error.\n\n```\n[ 81%] Building CXX object tests/VulkanWrapper/CMakeFiles/VulkanWrapper.dir/Buffer.cpp.o\nIn file included from /src/swiftshader/tests/VulkanWrapper/VulkanHeaders.hpp:33,\n                 from /src/swiftshader/tests/VulkanWrapper/Buffer.hpp:18,\n                 from /src/swiftshader/tests/VulkanWrapper/Buffer.cpp:15:\n/src/swiftshader/include/vulkan/vulkan.hpp:15:10: fatal error: vulkan/vulkan_hpp_macros.hpp: No such file or directory\n   15 | #include \u003cvulkan/vulkan_hpp_macros.hpp\u003e\n      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\ncompilation terminated.\ntests/VulkanWrapper/CMakeFiles/VulkanWrapper.dir/build.make:82: recipe for target \u0027tests/VulkanWrapper/CMakeFiles/VulkanWrapper.dir/Buffer.cpp.o\u0027 failed\nmake[2]: *** [tests/VulkanWrapper/CMakeFiles/VulkanWrapper.dir/Buffer.cpp.o] Error 1\nCMakeFiles/Makefile2:3740: recipe for target \u0027tests/VulkanWrapper/CMakeFiles/VulkanWrapper.dir/all\u0027 failed\nmake[1]: *** [tests/VulkanWrapper/CMakeFiles/VulkanWrapper.dir/all] Error 2\nmake[1]: *** Waiting for unfinished jobs....\n```",
       "revId": "d17bc5d49826ee135efa8bac5a337f4aeb661cdf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3cd54440_368cf74a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 31371
+      },
+      "writtenOn": "2023-10-03T03:59:19Z",
+      "side": 1,
+      "message": "Okay, figured out the problem, there are new files in the roll that need to be added to the CL.  I\u0027m still working on that, blocked by presubmit errors at the moment.  I\u0027m just going to sync chromium and be done with it.",
+      "parentUuid": "a82517d6_f8d450a4",
+      "revId": "d17bc5d49826ee135efa8bac5a337f4aeb661cdf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
