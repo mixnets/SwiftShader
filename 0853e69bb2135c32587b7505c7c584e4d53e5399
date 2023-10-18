@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5e3e00f6_136d3e20",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2023-10-18T22:41:07Z",
+      "side": 1,
+      "message": "This is not the right idea. For everything that isn\u0027t YUV, just return VK_FORMAT_UNDEFINED.\n\nFor YUV formats, return the (non-yuv) renderable color format of your choice, that you\u0027d like to use as the source of your resolve. That should usually be R8G8B8A8_UNORM",
+      "revId": "0853e69bb2135c32587b7505c7c584e4d53e5399",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
