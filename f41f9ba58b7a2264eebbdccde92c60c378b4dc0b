@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8303e797_977bc364",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-10-19T20:35:12Z",
+      "side": 1,
+      "message": "I thought Vulkan handle types were `void*`, which would make this very generally matching, but I checked:\n\n[`VK_DEFINE_HANDLE(VkPhysicalDevice)`](https://github.com/KhronosGroup/Vulkan-Headers/blob/main/include/vulkan/vulkan_core.h#L102)\nand\n[`#define VK_DEFINE_HANDLE(object) typedef struct object##_T* object;`](https://github.com/KhronosGroup/Vulkan-Headers/blob/main/include/vulkan/vulkan_core.h#L26)\n\nSo that\u0027s good.",
+      "range": {
+        "startLine": 77,
+        "startChar": 54,
+        "endLine": 77,
+        "endChar": 70
+      },
+      "revId": "f41f9ba58b7a2264eebbdccde92c60c378b4dc0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
