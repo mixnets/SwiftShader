@@ -3,6 +3,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "510d2042_a68f4832",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2023-10-19T20:36:29Z",
+      "side": 1,
+      "message": "Yay, thank you! Yeah therse are typed because they are dispatchable handles.",
+      "revId": "f41f9ba58b7a2264eebbdccde92c60c378b4dc0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "8303e797_977bc364",
         "filename": "src/Vulkan/VkGetProcAddress.cpp",
         "patchSetId": 7
