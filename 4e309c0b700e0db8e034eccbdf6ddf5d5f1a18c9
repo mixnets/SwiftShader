@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de84e8ca_c1bc02c4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2023-10-20T18:59:34Z",
+      "side": 1,
+      "message": "Also breaks AOSP (see results on aosp/2797141).",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 17
+      },
+      "revId": "4e309c0b700e0db8e034eccbdf6ddf5d5f1a18c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
