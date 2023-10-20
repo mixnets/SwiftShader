@@ -33,6 +33,58 @@
       "message": "The use of global state getting set when certain functions are called is terrifying. I trust that this is the only way to solve this problem.",
       "revId": "d852cf9d5a3c1a15d4fd21f6a2c52c9c537e59f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5138133_99f51ad7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2023-10-20T19:16:40Z",
+      "side": 1,
+      "message": "The other solutions are to remove the validation done at [1], or to default to 4 or above in [2]. Would any of these seem better to you? (Note that they do not strictly abide by the Vulkan loader ICD interface rules in this case).",
+      "parentUuid": "ef915bf2_b2cd1866",
+      "revId": "d852cf9d5a3c1a15d4fd21f6a2c52c9c537e59f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d35c7b16_2596a8ed",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2023-10-20T19:16:40Z",
+      "side": 1,
+      "message": "[2]",
+      "revId": "d852cf9d5a3c1a15d4fd21f6a2c52c9c537e59f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1dc499f3_d2d03cba",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 570,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2023-10-20T19:16:40Z",
+      "side": 1,
+      "message": "[1]",
+      "revId": "d852cf9d5a3c1a15d4fd21f6a2c52c9c537e59f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
