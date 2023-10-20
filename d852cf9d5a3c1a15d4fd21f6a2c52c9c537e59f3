@@ -16,6 +16,23 @@
       "message": "PTAL at the diff between PS 1 and 4.",
       "revId": "d852cf9d5a3c1a15d4fd21f6a2c52c9c537e59f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef915bf2_b2cd1866",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-10-20T19:13:17Z",
+      "side": 1,
+      "message": "The use of global state getting set when certain functions are called is terrifying. I trust that this is the only way to solve this problem.",
+      "revId": "d852cf9d5a3c1a15d4fd21f6a2c52c9c537e59f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
