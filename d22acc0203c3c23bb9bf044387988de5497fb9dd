@@ -16,6 +16,23 @@
       "message": "Swapping reviewers to Ben, in case there is arguing to be done!",
       "revId": "d22acc0203c3c23bb9bf044387988de5497fb9dd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40d1a444_d6b4d36f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-10-30T11:02:59Z",
+      "side": 1,
+      "message": "Sorry, but my opinion that this is more of a hindrance than a gain hasn\u0027t changed.\nPeople can and should put context in CL descriptions. Forcing a bespoke tag rule in the commit message doesn\u0027t strongly enforce additional context. People just reach for `Bug: none`, usually after having to scan Kokoro logs, and/or being told to by a reviewer.\nI\u0027m all for good contextual information in CL descriptions, and for associating CLs with relevant bugs, but I don\u0027t agree that this is the right way to do it.\n\nI would argue that all contributions to SwiftShader are now community contribution, regardless of whether the developer is internal or external.\n\nI don\u0027t have much more to add to this discussion. I would prefer this not to land.\n\nUnassigning myself.",
+      "revId": "d22acc0203c3c23bb9bf044387988de5497fb9dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
