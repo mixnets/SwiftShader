@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "aee485df_21214b3a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 102221
+      },
+      "writtenOn": "2023-11-07T22:21:57Z",
+      "side": 1,
+      "message": "Good question... I\u0027m not familiar with this code. Is the uninitialized memory a concern in this context, or does it not matter? I could zero the whole allocation, but I imagine that has performance implications. Zeroing the padding in between would be doable, We could replace `mem +\u003d Align8(size)` with a call to this function:\n\n```\n   static uint8_t BufferAllocated(uint8_t *mem, size_t size) {\n       size_t aligned \u003d Align8(size);\n       // Zero any padding bytes.\n       std::fill(mem + size, mem + aligned, 0);\n       return mem + aligned;\n   }\n```\n\nDunno if that\u0027s desirable in this context.\n\nOr... actually, is the buffer already zeroed? Looks like it might be? In that case, we probably don\u0027t want to do anything. (Explicitly zeroing it means MSan won\u0027t catch accesses to the padding bytes.)\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/swiftshader/src/Vulkan/VkMemory.cpp;drc\u003d33b63f98a30d91c295063032eda2ecbe0df65460;l\u003d50",
+      "parentUuid": "f8f71484_ff564ef6",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c098b867_b19f8676",
         "filename": "src/Vulkan/VkPipelineLayout.cpp",
         "patchSetId": 1
@@ -48,6 +66,24 @@
       "writtenOn": "2023-11-07T22:00:32Z",
       "side": 1,
       "message": "Add a `nullptr` check then? Otherwise isn\u0027t this doing `NULL, NULL+0` now?",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c3acf8f3_b5ead864",
+        "filename": "src/Vulkan/VkPipelineLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 102221
+      },
+      "writtenOn": "2023-11-07T22:21:57Z",
+      "side": 1,
+      "message": "`NULL + 0` is well-defined in C++. Likewise, it is perfectly legal to call `std::copy` on a (null, 0) empty slice. The (null, 0) thing is just a problem in C, and functions C++ inherits from C.",
+      "parentUuid": "c098b867_b19f8676",
       "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
@@ -69,6 +105,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "47e718ce_00841de1",
+        "filename": "src/Vulkan/VkStructConversion.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 102221
+      },
+      "writtenOn": "2023-11-07T22:21:57Z",
+      "side": 1,
+      "message": "Ah, I missed that one. Done.",
+      "parentUuid": "37600c29_92a88917",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f12163e2_21522ac2",
@@ -86,6 +140,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "53946e47_6fc4a8cc",
+        "filename": "src/Vulkan/VkStructConversion.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 604,
+      "author": {
+        "id": 102221
+      },
+      "writtenOn": "2023-11-07T22:21:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f12163e2_21522ac2",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a76ce913_d3a128e1",
@@ -99,6 +171,24 @@
       "writtenOn": "2023-11-07T22:00:32Z",
       "side": 1,
       "message": "Maybe a bit clearer? (taken from ANGLE\u0027s `roundUpPow2` implementation)\n\n```suggestion\n\t\tconstexpr size_t align \u003d 8;\n\t\treturn (size + align - 1) \u0026 ~(align - 1);\n```",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "652a230a_f52d13e5",
+        "filename": "src/Vulkan/VkStructConversion.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 102221
+      },
+      "writtenOn": "2023-11-07T22:21:57Z",
+      "side": 1,
+      "message": "Fix applied.",
+      "parentUuid": "a76ce913_d3a128e1",
       "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
