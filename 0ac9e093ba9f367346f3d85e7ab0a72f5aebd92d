@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c1d78578_f2fdf3fa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-11-07T22:35:43Z",
+      "side": 1,
+      "message": "I suspect it\u0027s not an issue, IIUC, this is turning an app struct into an internal struct that\u0027s not going to be used anything other than SwiftShader itself. Let\u0027s keep it as is, and get MSAN errors as a bonus.",
+      "parentUuid": "aee485df_21214b3a",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c098b867_b19f8676",
         "filename": "src/Vulkan/VkPipelineLayout.cpp",
         "patchSetId": 1
@@ -84,6 +102,24 @@
       "side": 1,
       "message": "`NULL + 0` is well-defined in C++. Likewise, it is perfectly legal to call `std::copy` on a (null, 0) empty slice. The (null, 0) thing is just a problem in C, and functions C++ inherits from C.",
       "parentUuid": "c098b867_b19f8676",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5dd0aeb_edc880c1",
+        "filename": "src/Vulkan/VkPipelineLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-11-07T22:35:43Z",
+      "side": 1,
+      "message": "Ack, it\u0027s just a bit hard to notice the fact that NULL is a possibility here without a null check.",
+      "parentUuid": "c3acf8f3_b5ead864",
       "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
