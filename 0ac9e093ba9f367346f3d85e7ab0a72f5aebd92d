@@ -71,6 +71,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ce8d5c9_157994ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 102221
+      },
+      "writtenOn": "2023-11-07T22:44:07Z",
+      "side": 1,
+      "message": "Sounds good.",
+      "parentUuid": "c1d78578_f2fdf3fa",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c098b867_b19f8676",
@@ -120,6 +138,24 @@
       "side": 1,
       "message": "Ack, it\u0027s just a bit hard to notice the fact that NULL is a possibility here without a null check.",
       "parentUuid": "c3acf8f3_b5ead864",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "84791f4b_8c445b42",
+        "filename": "src/Vulkan/VkPipelineLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 102221
+      },
+      "writtenOn": "2023-11-07T22:44:07Z",
+      "side": 1,
+      "message": "Yeah. I mean, I believe that (null, 0) should just by default be considered a valid empty slice representation, and that we shouldn\u0027t have to think about it when writing code. In C, that is not true, because C screwed this up. (See https://github.com/llvm/llvm-project/issues/49459 for a longer discussion.) In C++, this is broadly true, except for libc functions inherited from C. And so we have to deal with this mess.",
+      "parentUuid": "b5dd0aeb_edc880c1",
       "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
