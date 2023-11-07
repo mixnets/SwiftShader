@@ -16,6 +16,91 @@
       "message": "friendly ping",
       "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8f71484_ff564ef6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-11-07T22:00:32Z",
+      "side": 1,
+      "message": "Any concerns about the uninitialized memory this is now leaving in between the fields?",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c098b867_b19f8676",
+        "filename": "src/Vulkan/VkPipelineLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-11-07T22:00:32Z",
+      "side": 1,
+      "message": "Add a `nullptr` check then? Otherwise isn\u0027t this doing `NULL, NULL+0` now?",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37600c29_92a88917",
+        "filename": "src/Vulkan/VkStructConversion.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-11-07T22:00:32Z",
+      "side": 1,
+      "message": "Please use the `ASSERT` macro used elsewhere instead.",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f12163e2_21522ac2",
+        "filename": "src/Vulkan/VkStructConversion.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 604,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-11-07T22:00:32Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a76ce913_d3a128e1",
+        "filename": "src/Vulkan/VkStructConversion.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-11-07T22:00:32Z",
+      "side": 1,
+      "message": "Maybe a bit clearer? (taken from ANGLE\u0027s `roundUpPow2` implementation)\n\n```suggestion\n\t\tconstexpr size_t align \u003d 8;\n\t\treturn (size + align - 1) \u0026 ~(align - 1);\n```",
+      "revId": "0ac9e093ba9f367346f3d85e7ab0a72f5aebd92d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
