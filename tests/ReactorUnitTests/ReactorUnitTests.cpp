@@ -1849,14 +1849,19 @@ TEST(ReactorUnitTests, MulHigh)
 		    MulHigh(UInt4(0x7FFFFFFFu, 0x7FFFFFFFu, 0x80008000u, 0xFFFFFFFFu),
 		            UInt4(0x7FFFFFFFu, 0x80000000u, 0x80008000u, 0xFFFFFFFFu));
 
-		// (U)Short8 variants currently unimplemented.
+		*Pointer<Short8>(out + 16 * 6) =
+		    MulHigh(Short8(0x01AA, 0x02DD, 0x03EE, 0xF422, 0x01AA, 0x02DD, 0x03EE, 0xF422),
+		            Short8(0x01BB, 0x02CC, 0x03FF, 0xF411, 0x01BB, 0x02CC, 0x03FF, 0xF411));
+		*Pointer<UShort8>(out + 16 * 7) =
+		    MulHigh(UShort8(0x01AA, 0x02DD, 0x03EE, 0xF422, 0x01AA, 0x02DD, 0x03EE, 0xF422),
+		            UShort8(0x01BB, 0x02CC, 0x03FF, 0xF411, 0x01BB, 0x02CC, 0x03FF, 0xF411));
 
 		Return(0);
 	}
 
 	auto routine = function(testName().c_str());
 
-	unsigned int out[6][4];
+	unsigned int out[8][4];
 
 	memset(&out, 0, sizeof(out));
 
@@ -1887,6 +1892,16 @@ TEST(ReactorUnitTests, MulHigh)
 	EXPECT_EQ(out[5][1], 0x3FFFFFFFu);
 	EXPECT_EQ(out[5][2], 0x40008000u);
 	EXPECT_EQ(out[5][3], 0xFFFFFFFEu);
+
+	EXPECT_EQ(out[6][0], 0x00080002u);
+	EXPECT_EQ(out[6][1], 0x008D000Fu);
+	EXPECT_EQ(out[6][2], 0x00080002u);
+	EXPECT_EQ(out[6][3], 0x008D000Fu);
+
+	EXPECT_EQ(out[7][0], 0x00080002u);
+	EXPECT_EQ(out[7][1], 0xE8C0000Fu);
+	EXPECT_EQ(out[7][2], 0x00080002u);
+	EXPECT_EQ(out[7][3], 0xE8C0000Fu);
 }
 
 TEST(ReactorUnitTests, MulAdd)
