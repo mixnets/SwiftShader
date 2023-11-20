@@ -1508,13 +1508,17 @@ TEST(ReactorUnitTests, RoundInt)
 
 		*Pointer<Int4>(out + 0) = RoundInt(Float4(3.1f, 3.6f, -3.1f, -3.6f));
 		*Pointer<Int4>(out + 16) = RoundIntClamped(Float4(2147483648.0f, -2147483648.0f, 2147483520, -2147483520));
+		*Pointer<Int>(out + 32) = RoundInt(Float(3.1f));
+		*Pointer<Int>(out + 36) = RoundInt(Float(3.6f));
+		*Pointer<Int>(out + 40) = RoundInt(Float(-3.1f));
+		*Pointer<Int>(out + 44) = RoundInt(Float(-3.6f));
 
 		Return(0);
 	}
 
 	auto routine = function(testName().c_str());
 
-	int out[2][4];
+	int out[3][4];
 
 	memset(&out, 0, sizeof(out));
 
@@ -1532,6 +1536,11 @@ TEST(ReactorUnitTests, RoundInt)
 	EXPECT_LT(out[1][1], -2147483647);
 	EXPECT_EQ(out[1][2], 2147483520);
 	EXPECT_EQ(out[1][3], -2147483520);
+
+	EXPECT_EQ(out[2][0], 3);
+	EXPECT_EQ(out[2][1], 4);
+	EXPECT_EQ(out[2][2], -3);
+	EXPECT_EQ(out[2][3], -4);
 }
 
 TEST(ReactorUnitTests, FPtoUI)

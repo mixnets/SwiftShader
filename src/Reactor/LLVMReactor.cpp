@@ -2415,6 +2415,8 @@ RValue<Int> RoundInt(RValue<Float> cast)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::cvtss2si(cast);
+#elif defined(__riscv_vector)
+	return riscv64::cvtss2si(cast);
 #else
 	return RValue<Int>(V(lowerRoundInt(V(cast.value()), T(Int::type()))));
 #endif
@@ -3685,6 +3687,13 @@ RValue<Int4> pslld(RValue<Int4> x, unsigned char y)
 RValue<Int4> cvtps2dq(RValue<Float4> val)
 {
 	return RValue<Int4>(createInstructionFloat(llvm::Intrinsic::riscv_vfcvt_x_f_v, val.value(), 4));
+}
+
+RValue<Int> cvtss2si(RValue<Float> val)
+{
+	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
+
+	return RValue<Int>(Nucleus::createExtractElement(createInstructionFloat(llvm::Intrinsic::riscv_vfcvt_x_f_v, vector, 4), Int::type(), 0));
 }
 
 RValue<Float4> rsqrtps(RValue<Float4> val)

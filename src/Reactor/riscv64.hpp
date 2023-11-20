@@ -19,6 +19,7 @@
 
 namespace rr {
 namespace riscv64 {
+RValue<Int> cvtss2si(RValue<Float> val);
 RValue<Int4> cvtps2dq(RValue<Float4> val);
 
 RValue<Float4> maxps(RValue<Float4> x, RValue<Float4> y);
