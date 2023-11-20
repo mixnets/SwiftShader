@@ -47,8 +47,8 @@ __pragma(warning(push))
 #include "llvm/IR/DiagnosticInfo.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm/Support/CommandLine.h"
-#include "llvm/Support/Host.h"
 #include "llvm/Support/TargetSelect.h"
+#include "llvm/TargetParser/Host.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
 #include "llvm/Transforms/Instrumentation/AddressSanitizer.h"
 #include "llvm/Transforms/Instrumentation/MemorySanitizer.h"
@@ -246,6 +246,9 @@ JITGlobals *JITGlobals::get()
 		jitTargetMachineBuilder.getFeatures().AddFeature("+f");
 		jitTargetMachineBuilder.getFeatures().AddFeature("+d");
 		jitTargetMachineBuilder.getFeatures().AddFeature("+c");
+#		if defined(__riscv_vector)
+		jitTargetMachineBuilder.getFeatures().AddFeature("+v");
+#		endif
 		// The default code model is "Small".
 		// On RISC-V, using the default code model results in an
 		// "Unsupported riscv relocation" error.

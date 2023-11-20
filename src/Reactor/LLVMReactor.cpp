@@ -24,6 +24,7 @@
 #include "riscv64.hpp"
 #include "x86.hpp"
 
+#include "llvm/IR/Constants.h"
 #include "llvm/IR/Intrinsics.h"
 #include "llvm/IR/IntrinsicsRISCV.h"
 #include "llvm/IR/IntrinsicsX86.h"
@@ -1060,12 +1061,12 @@ Value *Nucleus::createMaskedLoad(Value *ptr, Type *elTy, Value *mask, unsigned i
 	ASSERT(V(ptr)->getType()->isPointerTy());
 	ASSERT(V(mask)->getType()->isVectorTy());
 
-	auto numEls = llvm::cast<llvm::FixedVectorType>(V(mask)->getType())->getNumElements();
+	auto numEls = llvm::cast<llvm::FixedVectorType>(V(mask)->getType())->getElementCount();
 	auto i1Ty = llvm::Type::getInt1Ty(*jit->context);
 	auto i32Ty = llvm::Type::getInt32Ty(*jit->context);
-	auto elVecTy = llvm::VectorType::get(T(elTy), numEls, false);
+	auto elVecTy = llvm::VectorType::get(T(elTy), numEls);
 	auto elVecPtrTy = elVecTy->getPointerTo();
-	auto i8Mask = jit->builder->CreateIntCast(V(mask), llvm::VectorType::get(i1Ty, numEls, false), false);  // vec<int, int, ...> -> vec<bool, bool, ...>
+	auto i8Mask = jit->builder->CreateIntCast(V(mask), llvm::VectorType::get(i1Ty, numEls), false);  // vec<int, int, ...> -> vec<bool, bool, ...>
 	auto passthrough = zeroMaskedLanes ? llvm::Constant::getNullValue(elVecTy) : llvm::UndefValue::get(elVecTy);
 	auto align = llvm::ConstantInt::get(i32Ty, alignment);
 	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::masked_load, { elVecTy, elVecPtrTy });
@@ -1080,12 +1081,12 @@ void Nucleus::createMaskedStore(Value *ptr, Value *val, Value *mask, unsigned in
 	ASSERT(V(val)->getType()->isVectorTy());
 	ASSERT(V(mask)->getType()->isVectorTy());
 
-	auto numEls = llvm::cast<llvm::FixedVectorType>(V(mask)->getType())->getNumElements();
+	auto numEls = llvm::cast<llvm::FixedVectorType>(V(mask)->getType())->getElementCount();
 	auto i1Ty = llvm::Type::getInt1Ty(*jit->context);
 	auto i32Ty = llvm::Type::getInt32Ty(*jit->context);
 	auto elVecTy = V(val)->getType();
 	auto elVecPtrTy = elVecTy->getPointerTo();
-	auto i1Mask = jit->builder->CreateIntCast(V(mask), llvm::VectorType::get(i1Ty, numEls, false), false);  // vec<int, int, ...> -> vec<bool, bool, ...>
+	auto i1Mask = jit->builder->CreateIntCast(V(mask), llvm::VectorType::get(i1Ty, numEls), false);  // vec<int, int, ...> -> vec<bool, bool, ...>
 	auto align = llvm::ConstantInt::get(i32Ty, alignment);
 	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::masked_store, { elVecTy, elVecPtrTy });
 	jit->builder->CreateCall(func, { V(val), V(ptr), align, i1Mask });
@@ -1101,7 +1102,8 @@ void Nucleus::createMaskedStore(Value *ptr, Value *val, Value *mask, unsigned in
 		auto func = jit->module->getOrInsertFunction("__msan_unpoison", funcTy);
 		auto size = jit->module->getDataLayout().getTypeStoreSize(llvm::cast<llvm::VectorType>(elVecTy)->getElementType());
 
-		for(unsigned i = 0; i < numEls; i++)
+		bool scalable = llvm::cast<llvm::FixedVectorType>(V(mask)->getType())->isScalableTy();
+		for(size_t i = 0; llvm::ElementCount::get(i, scalable) != numEls; i++)
 		{
 			// Check mask for this element
 			auto idx = llvm::ConstantInt::get(i32Ty, i);
@@ -1127,18 +1129,18 @@ static llvm::Value *createGather(llvm::Value *base, llvm::Type *elTy, llvm::Valu
 	ASSERT(offsets->getType()->isVectorTy());
 	ASSERT(mask->getType()->isVectorTy());
 
-	auto numEls = llvm::cast<llvm::FixedVectorType>(mask->getType())->getNumElements();
+	auto numEls = llvm::cast<llvm::FixedVectorType>(mask->getType())->getElementCount();
 	auto i1Ty = llvm::Type::getInt1Ty(*jit->context);
 	auto i32Ty = llvm::Type::getInt32Ty(*jit->context);
 	auto i8Ty = llvm::Type::getInt8Ty(*jit->context);
 	auto i8PtrTy = i8Ty->getPointerTo();
 	auto elPtrTy = elTy->getPointerTo();
-	auto elVecTy = llvm::VectorType::get(elTy, numEls, false);
-	auto elPtrVecTy = llvm::VectorType::get(elPtrTy, numEls, false);
+	auto elVecTy = llvm::VectorType::get(elTy, numEls);
+	auto elPtrVecTy = llvm::VectorType::get(elPtrTy, numEls);
 	auto i8Base = jit->builder->CreatePointerCast(base, i8PtrTy);
 	auto i8Ptrs = jit->builder->CreateGEP(i8Ty, i8Base, offsets);
 	auto elPtrs = jit->builder->CreatePointerCast(i8Ptrs, elPtrVecTy);
-	auto i1Mask = jit->builder->CreateIntCast(mask, llvm::VectorType::get(i1Ty, numEls, false), false);  // vec<int, int, ...> -> vec<bool, bool, ...>
+	auto i1Mask = jit->builder->CreateIntCast(mask, llvm::VectorType::get(i1Ty, numEls), false);  // vec<int, int, ...> -> vec<bool, bool, ...>
 	auto passthrough = zeroMaskedLanes ? llvm::Constant::getNullValue(elVecTy) : llvm::UndefValue::get(elVecTy);
 
 	if(!__has_feature(memory_sanitizer))
@@ -1156,7 +1158,8 @@ static llvm::Value *createGather(llvm::Value *base, llvm::Type *elTy, llvm::Valu
 		Value *result = Nucleus::allocateStackVariable(T(elVecTy));
 		Nucleus::createStore(V(passthrough), result, T(elVecTy));
 
-		for(unsigned i = 0; i < numEls; i++)
+		bool scalable = llvm::cast<llvm::FixedVectorType>(mask->getType())->isScalableTy();
+		for(size_t i = 0; llvm::ElementCount::get(i, scalable) != numEls; i++)
 		{
 			// Check mask for this element
 			Value *elementMask = Nucleus::createExtractElement(V(i1Mask), T(i1Ty), i);
@@ -1193,7 +1196,7 @@ static void createScatter(llvm::Value *base, llvm::Value *val, llvm::Value *offs
 	ASSERT(offsets->getType()->isVectorTy());
 	ASSERT(mask->getType()->isVectorTy());
 
-	auto numEls = llvm::cast<llvm::FixedVectorType>(mask->getType())->getNumElements();
+	auto numEls = llvm::cast<llvm::FixedVectorType>(mask->getType())->getElementCount();
 	auto i1Ty = llvm::Type::getInt1Ty(*jit->context);
 	auto i32Ty = llvm::Type::getInt32Ty(*jit->context);
 	auto i8Ty = llvm::Type::getInt8Ty(*jit->context);
@@ -1201,12 +1204,12 @@ static void createScatter(llvm::Value *base, llvm::Value *val, llvm::Value *offs
 	auto elVecTy = val->getType();
 	auto elTy = llvm::cast<llvm::VectorType>(elVecTy)->getElementType();
 	auto elPtrTy = elTy->getPointerTo();
-	auto elPtrVecTy = llvm::VectorType::get(elPtrTy, numEls, false);
+	auto elPtrVecTy = llvm::VectorType::get(elPtrTy, numEls);
 
 	auto i8Base = jit->builder->CreatePointerCast(base, i8PtrTy);
 	auto i8Ptrs = jit->builder->CreateGEP(i8Ty, i8Base, offsets);
 	auto elPtrs = jit->builder->CreatePointerCast(i8Ptrs, elPtrVecTy);
-	auto i1Mask = jit->builder->CreateIntCast(mask, llvm::VectorType::get(i1Ty, numEls, false), false);  // vec<int, int, ...> -> vec<bool, bool, ...>
+	auto i1Mask = jit->builder->CreateIntCast(mask, llvm::VectorType::get(i1Ty, numEls), false);  // vec<int, int, ...> -> vec<bool, bool, ...>
 
 	if(!__has_feature(memory_sanitizer))
 	{
@@ -1220,7 +1223,8 @@ static void createScatter(llvm::Value *base, llvm::Value *val, llvm::Value *offs
 		// Work around it by emulating scatter with element-wise stores.
 		// TODO(b/172238865): Remove when supported by MemorySanitizer.
 
-		for(unsigned i = 0; i < numEls; i++)
+		bool scalable = llvm::cast<llvm::FixedVectorType>(mask->getType())->isScalableTy();
+		for(size_t i = 0; llvm::ElementCount::get(i, scalable) != numEls; i++)
 		{
 			// Check mask for this element
 			auto idx = llvm::ConstantInt::get(i32Ty, i);
@@ -1642,12 +1646,13 @@ Value *Nucleus::createShuffleVector(Value *v1, Value *v2, std::vector<int> selec
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 
-	size_t size = llvm::cast<llvm::FixedVectorType>(V(v1)->getType())->getNumElements();
-	ASSERT(size == llvm::cast<llvm::FixedVectorType>(V(v2)->getType())->getNumElements());
+	llvm::ElementCount size = llvm::cast<llvm::FixedVectorType>(V(v1)->getType())->getElementCount();
+	ASSERT(size == llvm::cast<llvm::FixedVectorType>(V(v2)->getType())->getElementCount());
 
 	llvm::SmallVector<int, 16> mask;
 	const size_t selectSize = select.size();
-	for(size_t i = 0; i < size; i++)
+	bool scalable = llvm::cast<llvm::FixedVectorType>(V(v1)->getType())->isScalableTy();
+	for(size_t i = 0; llvm::ElementCount::get(i, scalable) != size; i++)
 	{
 		mask.push_back(select[i % selectSize]);
 	}
@@ -1786,11 +1791,12 @@ Value *Nucleus::createConstantVector(std::vector<int64_t> constants, Type *type)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	ASSERT(llvm::isa<llvm::VectorType>(T(type)));
-	const size_t numConstants = constants.size();                                             // Number of provided constants for the (emulated) type.
-	const size_t numElements = llvm::cast<llvm::FixedVectorType>(T(type))->getNumElements();  // Number of elements of the underlying vector type.
+	const size_t numConstants = constants.size();                                                          // Number of provided constants for the (emulated) type.
+	const llvm::ElementCount numElements = llvm::cast<llvm::FixedVectorType>(T(type))->getElementCount();  // Number of elements of the underlying vector type.
 	llvm::SmallVector<llvm::Constant *, 16> constantVector;
 
-	for(size_t i = 0; i < numElements; i++)
+	bool scalable = llvm::cast<llvm::FixedVectorType>(T(type))->isScalableTy();
+	for(size_t i = 0; llvm::ElementCount::get(i, scalable) != numElements; i++)
 	{
 		constantVector.push_back(llvm::ConstantInt::get(T(type)->getContainedType(0), constants[i % numConstants]));
 	}
@@ -1802,11 +1808,12 @@ Value *Nucleus::createConstantVector(std::vector<double> constants, Type *type)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	ASSERT(llvm::isa<llvm::VectorType>(T(type)));
-	const size_t numConstants = constants.size();                                             // Number of provided constants for the (emulated) type.
-	const size_t numElements = llvm::cast<llvm::FixedVectorType>(T(type))->getNumElements();  // Number of elements of the underlying vector type.
+	const size_t numConstants = constants.size();                                                          // Number of provided constants for the (emulated) type.
+	const llvm::ElementCount numElements = llvm::cast<llvm::FixedVectorType>(T(type))->getElementCount();  // Number of elements of the underlying vector type.
 	llvm::SmallVector<llvm::Constant *, 16> constantVector;
 
-	for(size_t i = 0; i < numElements; i++)
+	bool scalable = llvm::cast<llvm::FixedVectorType>(T(type))->isScalableTy();
+	for(size_t i = 0; llvm::ElementCount::get(i, scalable) != numElements; i++)
 	{
 		constantVector.push_back(llvm::ConstantFP::get(T(type)->getContainedType(0), constants[i % numConstants]));
 	}
@@ -2093,6 +2100,8 @@ RValue<Short4> MulHigh(RValue<Short4> x, RValue<Short4> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::pmulhw(x, y);
+#elif defined(__riscv_vector)
+	return riscv64::pmulhw(x, y);
 #else
 	return As<Short4>(V(lowerMulHigh(V(x.value()), V(y.value()), true)));
 #endif
@@ -2103,8 +2112,6 @@ RValue<Int2> MulAdd(RValue<Short4> x, RValue<Short4> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::pmaddwd(x, y);
-#elif defined(__riscv_vector)
-	return riscv64::pmaddwd(x, y);
 #else
 	return As<Int2>(V(lowerMulAdd(V(x.value()), V(y.value()))));
 #endif
@@ -2286,8 +2293,6 @@ RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::pmaddwd(x, y);
-#elif defined(__riscv_vector)
-	return riscv64::pmaddwd(x, y);
 #else
 	return As<Int4>(V(lowerMulAdd(V(x.value()), V(y.value()))));
 #endif
@@ -2298,6 +2303,8 @@ RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::pmulhw(x, y);
+#elif defined(__riscv_vector)
+	return riscv64::pmulhw(x, y);
 #else
 	return As<Short8>(V(lowerMulHigh(V(x.value()), V(y.value()), true)));
 #endif
@@ -3439,19 +3446,38 @@ namespace riscv64 {
 // implicit types, such as 'x86_sse_max_ps' operating on v4f32, while 'sadd_sat' requires explicitly specifying the operand types.
 static Value *createInstruction(llvm::Intrinsic::ID id, Value *x, Value *y)
 {
-	llvm::Function *intrinsic = llvm::Intrinsic::getDeclaration(jit->module.get(), id);
+	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 4));
+	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 1));
+	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
+	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
+	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
 
-	return V(jit->builder->CreateCall(intrinsic, { V(x), V(y) }));
+	auto SVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 16), 4);
+	llvm::Value *X = llvm::PoisonValue::get(SVTy);
+	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
+	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
+
+	llvm::Value *Y = llvm::PoisonValue::get(SVTy);
+	Y = jit->builder->CreateInsertVector(SVTy, Y, V(y), Idx);
+
+	llvm::Value *R = llvm::PoisonValue::get(SVTy);
+	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vmulh, { R->getType(), X->getType(), Y->getType(), Vl->getType() });
+	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, Y, Vl });
+
+	auto VTy = llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 16), 4);
+	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
+	return V(FixedVector);
 }
 
-RValue<Int2> pmaddwd(RValue<Short4> x, RValue<Short4> y)
+RValue<Short4> pmulhw(RValue<Short4> x, RValue<Short4> y)
 {
-	return As<Int2>(createInstruction(llvm::Intrinsic::riscv_vmadd, x.value(), y.value()));
+
+	return As<Short4>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value()));
 }
 
-RValue<Int4> pmaddwd(RValue<Short8> x, RValue<Short8> y)
+RValue<Short8> pmulhw(RValue<Short8> x, RValue<Short8> y)
 {
-	return RValue<Int4>(createInstruction(llvm::Intrinsic::riscv_vmadd, x.value(), y.value()));
+	return RValue<Short8>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value()));
 }
 
 }  // namespace riscv64

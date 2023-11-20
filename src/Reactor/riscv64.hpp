@@ -20,8 +20,8 @@
 namespace rr {
 namespace riscv64 {
 
-RValue<Int2> pmaddwd(RValue<Short4> x, RValue<Short4> y);
-RValue<Int4> pmaddwd(RValue<Short8> x, RValue<Short8> y);
+RValue<Short4> pmulhw(RValue<Short4> x, RValue<Short4> y);
+RValue<Short8> pmulhw(RValue<Short8> x, RValue<Short8> y);
 
 }  // namespace riscv64
 }  // namespace rr
