@@ -2988,6 +2988,8 @@ bool HasRcpSqrtApprox()
 {
 #if defined(__i386__) || defined(__x86_64__)
 	return true;
+#elif defined(__riscv_vector)
+	return true;
 #else
 	return false;
 #endif
@@ -2997,6 +2999,8 @@ RValue<Float4> RcpSqrtApprox(RValue<Float4> x)
 {
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::rsqrtps(x);
+#elif defined(__riscv_vector)
+	return riscv64::rsqrtps(x);
 #else
 	UNREACHABLE("RValue<Float4> RcpSqrtApprox() not available on this platform");
 	return { 0.0f };
@@ -3007,6 +3011,8 @@ RValue<Float> RcpSqrtApprox(RValue<Float> x)
 {
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::rsqrtss(x);
+#elif defined(__riscv_vector)
+	return riscv64::rsqrtss(x);
 #else
 	UNREACHABLE("RValue<Float4> RcpSqrtApprox() not available on this platform");
 	return { 0.0f };
@@ -3679,6 +3685,18 @@ RValue<Int4> pslld(RValue<Int4> x, unsigned char y)
 RValue<Int4> cvtps2dq(RValue<Float4> val)
 {
 	return RValue<Int4>(createInstructionFloat(llvm::Intrinsic::riscv_vfcvt_x_f_v, val.value(), 4));
+}
+
+RValue<Float4> rsqrtps(RValue<Float4> val)
+{
+	return RValue<Float4>(createInstructionFloat(llvm::Intrinsic::riscv_vfrsqrt7, val.value(), 4));
+}
+
+RValue<Float> rsqrtss(RValue<Float> val)
+{
+	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
+
+	return RValue<Float>(Nucleus::createExtractElement(createInstructionFloat(llvm::Intrinsic::riscv_vfrsqrt7, vector, 4), Float::type(), 0));
 }
 
 }  // namespace riscv64

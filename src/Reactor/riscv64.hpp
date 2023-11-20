@@ -43,6 +43,9 @@ RValue<Int4> psrad(RValue<Int4> x, unsigned char y);
 RValue<UInt2> psrld(RValue<UInt2> x, unsigned char y);
 RValue<UInt4> psrld(RValue<UInt4> x, unsigned char y);
 
+RValue<Float> rsqrtss(RValue<Float> val);
+RValue<Float4> rsqrtps(RValue<Float4> val);
+
 }  // namespace riscv64
 }  // namespace rr
 
