@@ -29,6 +29,19 @@ RValue<UShort4> pmulhuw(RValue<UShort4> x, RValue<UShort4> y);
 RValue<Short8> pmulhw(RValue<Short8> x, RValue<Short8> y);
 RValue<UShort8> pmulhuw(RValue<UShort8> x, RValue<UShort8> y);
 
+RValue<UShort4> psrlw(RValue<UShort4> x, unsigned char y);
+RValue<UShort8> psrlw(RValue<UShort8> x, unsigned char y);
+RValue<Short4> psraw(RValue<Short4> x, unsigned char y);
+RValue<Short8> psraw(RValue<Short8> x, unsigned char y);
+RValue<Short4> psllw(RValue<Short4> x, unsigned char y);
+RValue<Short8> psllw(RValue<Short8> x, unsigned char y);
+RValue<Int2> pslld(RValue<Int2> x, unsigned char y);
+RValue<Int4> pslld(RValue<Int4> x, unsigned char y);
+RValue<Int2> psrad(RValue<Int2> x, unsigned char y);
+RValue<Int4> psrad(RValue<Int4> x, unsigned char y);
+RValue<UInt2> psrld(RValue<UInt2> x, unsigned char y);
+RValue<UInt4> psrld(RValue<UInt4> x, unsigned char y);
+
 }  // namespace riscv64
 }  // namespace rr
 
