@@ -2949,6 +2949,8 @@ bool HasRcpApprox()
 {
 #if defined(__i386__) || defined(__x86_64__)
 	return true;
+#elif defined(__riscv_vector)
+	return true;
 #else
 	return false;
 #endif
@@ -2964,6 +2966,12 @@ RValue<Float4> RcpApprox(RValue<Float4> x, bool exactAtPow2)
 		return x86::rcpps(x) * Float4(1.0f / _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ps1(1.0f))));
 	}
 	return x86::rcpps(x);
+#elif defined(__riscv_vector)
+	if(exactAtPow2)
+	{
+		UNREACHABLE("RValue<Float4> RcpApprox() not exact on this platform for power-of-two values");
+	}
+	return riscv64::rcpps(x);
 #else
 	UNREACHABLE("RValue<Float4> RcpApprox() not available on this platform");
 	return { 0.0f };
@@ -2980,6 +2988,12 @@ RValue<Float> RcpApprox(RValue<Float> x, bool exactAtPow2)
 		return x86::rcpss(x) * Float(1.0f / _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ps1(1.0f))));
 	}
 	return x86::rcpss(x);
+#elif defined(__riscv_vector)
+	if(exactAtPow2)
+	{
+		UNREACHABLE("RValue<Float4> RcpApprox() not exact on this platform for power-of-two values");
+	}
+	return riscv64::rcpss(x);
 #else
 	UNREACHABLE("RValue<Float4> RcpApprox() not available on this platform");
 	return { 0.0f };
@@ -3706,6 +3720,18 @@ RValue<Float> rsqrtss(RValue<Float> val)
 	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
 
 	return RValue<Float>(Nucleus::createExtractElement(createInstructionFloat(llvm::Intrinsic::riscv_vfrsqrt7, vector, 4), Float::type(), 0));
+}
+
+RValue<Float> rcpss(RValue<Float> val)
+{
+	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
+
+	return RValue<Float>(Nucleus::createExtractElement(createInstructionFloat(llvm::Intrinsic::riscv_vfrec7, vector, 4), Float::type(), 0));
+}
+
+RValue<Float4> rcpps(RValue<Float4> val)
+{
+	return RValue<Float4>(createInstructionFloat(llvm::Intrinsic::riscv_vfrec7, val.value(), 4));
 }
 
 }  // namespace riscv64
