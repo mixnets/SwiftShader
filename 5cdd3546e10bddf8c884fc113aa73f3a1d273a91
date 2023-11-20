@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2ed32f3_d648cdd9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101296
+      },
+      "writtenOn": "2023-11-20T20:07:03Z",
+      "side": 1,
+      "message": "Hi everyone,\nas part of my thesis I have added support for the RISC-V vector instructions.\nAdditionally this chain of commits also improves the testing within Reactor.\nI\u0027m happy to consolidate the commits or split them up in a different way if that\u0027s easier to review.\n\n@bclayton@google.com I know you are not really working on the project. So if you know of other active contributors to SwiftShader feel free to remove yourself and add them instead.",
+      "revId": "5cdd3546e10bddf8c884fc113aa73f3a1d273a91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
