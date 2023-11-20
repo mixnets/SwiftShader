@@ -20,6 +20,9 @@
 namespace rr {
 namespace riscv64 {
 
+RValue<Float4> maxps(RValue<Float4> x, RValue<Float4> y);
+RValue<Float4> minps(RValue<Float4> x, RValue<Float4> y);
+
 RValue<Short4> pmulhw(RValue<Short4> x, RValue<Short4> y);
 RValue<UShort4> pmulhuw(RValue<UShort4> x, RValue<UShort4> y);
 

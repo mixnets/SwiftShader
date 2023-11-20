@@ -1368,13 +1368,21 @@ TEST(ReactorUnitTests, MinMax)
 
 	EXPECT_EQ(out[0][0], 0x00000000u);
 	EXPECT_EQ(out[0][1], 0x00000000u);
+#if defined(__riscv_vector)
+	EXPECT_EQ(out[0][2], 0x80000000u);
+#else
 	EXPECT_EQ(out[0][2], 0x00000000u);
+#endif
 	EXPECT_EQ(out[0][3], 0x80000000u);
 
 	EXPECT_EQ(out[1][0], 0x3F800000u);
 	EXPECT_EQ(out[1][1], 0x3F800000u);
 	EXPECT_EQ(out[1][2], 0x00000000u);
+#if defined(__riscv_vector)
+	EXPECT_EQ(out[1][3], 0x00000000u);
+#else
 	EXPECT_EQ(out[1][3], 0x80000000u);
+#endif
 
 	EXPECT_EQ(out[2][0], 0x00000000u);
 	EXPECT_EQ(out[2][1], 0x00000000u);
