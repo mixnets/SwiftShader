@@ -21,7 +21,10 @@ namespace rr {
 namespace riscv64 {
 
 RValue<Short4> pmulhw(RValue<Short4> x, RValue<Short4> y);
+RValue<UShort4> pmulhuw(RValue<UShort4> x, RValue<UShort4> y);
+
 RValue<Short8> pmulhw(RValue<Short8> x, RValue<Short8> y);
+RValue<UShort8> pmulhuw(RValue<UShort8> x, RValue<UShort8> y);
 
 }  // namespace riscv64
 }  // namespace rr

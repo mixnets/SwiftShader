@@ -2248,6 +2248,8 @@ RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::pmulhuw(x, y);
+#elif defined(__riscv_vector)
+	return riscv64::pmulhuw(x, y);
 #else
 	return As<UShort4>(V(lowerMulHigh(V(x.value()), V(y.value()), false)));
 #endif
@@ -2340,6 +2342,8 @@ RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::pmulhuw(x, y);
+#elif defined(__riscv_vector)
+	return riscv64::pmulhuw(x, y);
 #else
 	return As<UShort8>(V(lowerMulHigh(V(x.value()), V(y.value()), false)));
 #endif
@@ -3444,15 +3448,15 @@ namespace rr {
 namespace riscv64 {
 // Differs from IRBuilder<>::CreateBinaryIntrinsic() in that it only accepts native instruction intrinsics which have
 // implicit types, such as 'x86_sse_max_ps' operating on v4f32, while 'sadd_sat' requires explicitly specifying the operand types.
-static Value *createInstruction(llvm::Intrinsic::ID id, Value *x, Value *y)
+static Value *createInstruction(llvm::Intrinsic::ID id, Value *x, Value *y, int size)
 {
-	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 4));
+	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
 	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 1));
 	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
 	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
 	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
 
-	auto SVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 16), 4);
+	auto SVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 16), size);
 	llvm::Value *X = llvm::PoisonValue::get(SVTy);
 	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
 	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
@@ -3461,23 +3465,32 @@ static Value *createInstruction(llvm::Intrinsic::ID id, Value *x, Value *y)
 	Y = jit->builder->CreateInsertVector(SVTy, Y, V(y), Idx);
 
 	llvm::Value *R = llvm::PoisonValue::get(SVTy);
-	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vmulh, { R->getType(), X->getType(), Y->getType(), Vl->getType() });
+	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), Y->getType(), Vl->getType() });
 	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, Y, Vl });
 
-	auto VTy = llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 16), 4);
+	auto VTy = llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 16), size);
 	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
 	return V(FixedVector);
 }
 
 RValue<Short4> pmulhw(RValue<Short4> x, RValue<Short4> y)
 {
-
-	return As<Short4>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value()));
+	return As<Short4>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value(), 4));
 }
 
 RValue<Short8> pmulhw(RValue<Short8> x, RValue<Short8> y)
 {
-	return RValue<Short8>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value()));
+	return RValue<Short8>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value(), 8));
+}
+
+RValue<UShort4> pmulhuw(RValue<UShort4> x, RValue<UShort4> y)
+{
+	return As<UShort4>(createInstruction(llvm::Intrinsic::riscv_vmulhu, x.value(), y.value(), 4));
+}
+
+RValue<UShort8> pmulhuw(RValue<UShort8> x, RValue<UShort8> y)
+{
+	return RValue<UShort8>(createInstruction(llvm::Intrinsic::riscv_vmulhu, x.value(), y.value(), 8));
 }
 
 }  // namespace riscv64
