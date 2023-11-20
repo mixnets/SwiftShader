@@ -2967,10 +2967,7 @@ RValue<Float4> RcpApprox(RValue<Float4> x, bool exactAtPow2)
 	}
 	return x86::rcpps(x);
 #elif defined(__riscv_vector)
-	if(exactAtPow2)
-	{
-		UNREACHABLE("RValue<Float4> RcpApprox() not exact on this platform for power-of-two values");
-	}
+	// Might have the same accuracy issue as x86::rcpps()
 	return riscv64::rcpps(x);
 #else
 	UNREACHABLE("RValue<Float4> RcpApprox() not available on this platform");
@@ -2989,10 +2986,7 @@ RValue<Float> RcpApprox(RValue<Float> x, bool exactAtPow2)
 	}
 	return x86::rcpss(x);
 #elif defined(__riscv_vector)
-	if(exactAtPow2)
-	{
-		UNREACHABLE("RValue<Float4> RcpApprox() not exact on this platform for power-of-two values");
-	}
+	// Might have the same accuracy issue as x86::rcpss()
 	return riscv64::rcpss(x);
 #else
 	UNREACHABLE("RValue<Float4> RcpApprox() not available on this platform");
@@ -3608,6 +3602,30 @@ static Value *createInstructionFloat(llvm::Intrinsic::ID id, Value *x, int size)
 	return V(FixedVector);
 }
 
+static Value *createInstructionFloatFloat(llvm::Intrinsic::ID id, Value *x, int size)
+{
+	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
+	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 2));  // SEW 32bit
+	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));  // LMUL 1
+	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
+	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
+
+	auto SVTy = llvm::ScalableVectorType::get(llvm::Type::getFloatTy(*jit->context), size);
+	llvm::Value *X = llvm::PoisonValue::get(SVTy);
+	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
+	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
+
+	llvm::Value *R = llvm::PoisonValue::get(SVTy);
+	// Value 7 taken from vfrec7.c
+	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
+	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), RoundingMode->getType(), Vl->getType() });
+	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, RoundingMode, Vl });
+
+	auto VTy = llvm::FixedVectorType::get(llvm::Type::getFloatTy(*jit->context), size);
+	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
+	return V(FixedVector);
+}
+
 RValue<Short4> pmulhw(RValue<Short4> x, RValue<Short4> y)
 {
 	return As<Short4>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value(), 4));
@@ -3712,26 +3730,26 @@ RValue<Int> cvtss2si(RValue<Float> val)
 
 RValue<Float4> rsqrtps(RValue<Float4> val)
 {
-	return RValue<Float4>(createInstructionFloat(llvm::Intrinsic::riscv_vfrsqrt7, val.value(), 4));
+	return RValue<Float4>(createInstructionFloatFloat(llvm::Intrinsic::riscv_vfrsqrt7, val.value(), 4));
 }
 
 RValue<Float> rsqrtss(RValue<Float> val)
 {
 	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
 
-	return RValue<Float>(Nucleus::createExtractElement(createInstructionFloat(llvm::Intrinsic::riscv_vfrsqrt7, vector, 4), Float::type(), 0));
+	return RValue<Float>(Nucleus::createExtractElement(createInstructionFloatFloat(llvm::Intrinsic::riscv_vfrsqrt7, vector, 4), Float::type(), 0));
 }
 
 RValue<Float> rcpss(RValue<Float> val)
 {
 	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
 
-	return RValue<Float>(Nucleus::createExtractElement(createInstructionFloat(llvm::Intrinsic::riscv_vfrec7, vector, 4), Float::type(), 0));
+	return RValue<Float>(Nucleus::createExtractElement(createInstructionFloatFloat(llvm::Intrinsic::riscv_vfrec7, vector, 4), Float::type(), 0));
 }
 
 RValue<Float4> rcpps(RValue<Float4> val)
 {
-	return RValue<Float4>(createInstructionFloat(llvm::Intrinsic::riscv_vfrec7, val.value(), 4));
+	return RValue<Float4>(createInstructionFloatFloat(llvm::Intrinsic::riscv_vfrec7, val.value(), 4));
 }
 
 }  // namespace riscv64
