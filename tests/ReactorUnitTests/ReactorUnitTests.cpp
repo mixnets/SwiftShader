@@ -2026,6 +2026,66 @@ TEST(ReactorUnitTests, Shift)
 	EXPECT_EQ(out[15][3], 0xFFFF1FB0u);
 }
 
+TEST(ReactorUnitTests, RcpSqrtApprox)
+{
+	FunctionT<int(void *)> function;
+	{
+		Pointer<Byte> out = function.Arg<0>();
+
+		*Pointer<Float>(out + 16 * 0) =
+		    RcpSqrt(Float(0.384f), false);
+		*Pointer<Float4>(out + 16 * 1) =
+		    RcpSqrt(Float4(0.384f, 54343.0f, 54.54e10f, 54.54e-10f), false);
+
+		Return(0);
+	}
+
+	auto routine = function(testName().c_str());
+
+	float out[2][4];
+
+	memset(&out, 0, sizeof(out));
+
+	routine(&out);
+
+	ASSERT_NEAR(out[0][0], 1.61374f, 0.00002f);
+
+	ASSERT_NEAR(out[1][0], 1.61374f, 0.00002f);
+	ASSERT_NEAR(out[1][1], 0.00428971f, 0.0000002f);
+	ASSERT_NEAR(out[1][2], 1.35407e-06f, 0.00001e06f);
+	ASSERT_NEAR(out[1][3], 13540.74121f, 0.1f);
+}
+
+TEST(ReactorUnitTests, RcpApprox)
+{
+	FunctionT<int(void *)> function;
+	{
+		Pointer<Byte> out = function.Arg<0>();
+
+		*Pointer<Float>(out + 16 * 0) =
+		    Rcp(Float(0.384f), false);
+		*Pointer<Float4>(out + 16 * 1) =
+		    Rcp(Float4(0.384f, -0.384f, 54343.0f, -54343.0f), false);
+
+		Return(0);
+	}
+
+	auto routine = function(testName().c_str());
+
+	float out[2][4];
+
+	memset(&out, 0, sizeof(out));
+
+	routine(&out);
+
+	ASSERT_NEAR(out[0][0], 2.60416f, 0.00001f);
+
+	ASSERT_NEAR(out[1][0], 2.60416f, 0.00001f);
+	ASSERT_NEAR(out[1][1], -2.60416f, 0.00001f);
+	ASSERT_NEAR(out[1][2], 1.84016e-05f, 0.00001e05f);
+	ASSERT_NEAR(out[1][3], -1.84016e-05f, 0.00001e05f);
+}
+
 TEST(ReactorUnitTests, MulAdd)
 {
 	FunctionT<int(void *)> function;
