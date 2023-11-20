@@ -821,6 +821,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/TargetParser/AArch64TargetParser.cpp
     ${LLVM_DIR}/lib/TargetParser/ARMTargetParser.cpp
     ${LLVM_DIR}/lib/TargetParser/ARMTargetParserCommon.cpp
+    ${LLVM_DIR}/lib/TargetParser/RISCVTargetParser.cpp
     ${LLVM_DIR}/lib/TargetParser/Host.cpp
     ${LLVM_DIR}/lib/TargetParser/Triple.cpp
     ${LLVM_DIR}/lib/TextAPI/Architecture.cpp
@@ -878,6 +879,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/IPO/StripSymbols.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/SyntheticCountsPropagation.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/WholeProgramDevirt.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/BarrierNoopPass.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineAddSub.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineAndOrXor.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineAtomicRMW.cpp
@@ -1623,6 +1625,10 @@ target_compile_definitions(llvm
 # Add required libraries for LLVM
 if(LINUX OR APPLE)
     target_link_libraries(llvm dl)
+endif()
+
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "^riscv*")
+    target_link_libraries(llvm atomic) #explicitly use -latomic for RISC-V linking
 endif()
 
 if(SWIFTSHADER_EMIT_COVERAGE)
