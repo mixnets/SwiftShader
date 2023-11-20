@@ -2737,6 +2737,8 @@ RValue<Int4> RoundInt(RValue<Float4> cast)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if(defined(__i386__) || defined(__x86_64__)) && !__has_feature(memory_sanitizer)
 	return x86::cvtps2dq(cast);
+#elif defined(__riscv_vector)
+	return riscv64::cvtps2dq(cast);
 #else
 	return As<Int4>(V(lowerRoundInt(V(cast.value()), T(Int4::type()))));
 #endif
@@ -2752,6 +2754,8 @@ RValue<Int4> RoundIntClamped(RValue<Float4> cast)
 	// 2147483520.0, so clamp to 2147483520. Values less than -2147483520.0
 	// saturate to 0x80000000.
 	return x86::cvtps2dq(Min(cast, Float4(0x7FFFFF80)));
+#elif defined(__riscv_vector)
+	return riscv64::cvtps2dq(cast);
 #elif defined(__arm__) || defined(__aarch64__)
 	// ARM saturates to the largest positive or negative integer. Unit tests
 	// verify that lowerRoundInt() behaves as desired.
@@ -3557,6 +3561,31 @@ static Value *createInstructionImmediate(llvm::Intrinsic::ID id, Value *x, unsig
 	return V(FixedVector);
 }
 
+static Value *createInstructionFloat(llvm::Intrinsic::ID id, Value *x, int size)
+{
+	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
+	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 2));  // SEW 32bit
+	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));  // LMUL 1
+	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
+	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
+
+	auto SVTy = llvm::ScalableVectorType::get(llvm::Type::getFloatTy(*jit->context), size);
+	llvm::Value *X = llvm::PoisonValue::get(SVTy);
+	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
+	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
+
+	auto SRTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 32), size);
+	llvm::Value *R = llvm::PoisonValue::get(SRTy);
+	// Value 7 taken from vfadd.c
+	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
+	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), RoundingMode->getType(), Vl->getType() });
+	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, RoundingMode, Vl });
+
+	auto RTy = llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 32), size);
+	auto FixedVector = jit->builder->CreateExtractVector(RTy, R, Idx);
+	return V(FixedVector);
+}
+
 RValue<Short4> pmulhw(RValue<Short4> x, RValue<Short4> y)
 {
 	return As<Short4>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value(), 4));
@@ -3645,6 +3674,11 @@ RValue<Int2> pslld(RValue<Int2> x, unsigned char y)
 RValue<Int4> pslld(RValue<Int4> x, unsigned char y)
 {
 	return RValue<Int4>(createInstructionImmediate(llvm::Intrinsic::riscv_vsll, x.value(), y, 4, 2));
+}
+
+RValue<Int4> cvtps2dq(RValue<Float4> val)
+{
+	return RValue<Int4>(createInstructionFloat(llvm::Intrinsic::riscv_vfcvt_x_f_v, val.value(), 4));
 }
 
 }  // namespace riscv64
@@ -4488,7 +4522,7 @@ RValue<SIMD::Int> RoundIntClamped(RValue<SIMD::Float> cast)
 	RR_DEBUG_INFO_UPDATE_LOC();
 
 // TODO(b/165000222): Check if fptosi_sat produces optimal code for x86 and ARM.
-#if defined(__arm__) || defined(__aarch64__)
+#if defined(__arm__) || defined(__aarch64__) || defined(__riscv_vector)
 	// ARM saturates to the largest positive or negative integer. Unit tests
 	// verify that lowerRoundInt() behaves as desired.
 	return As<SIMD::Int>(V(lowerRoundInt(V(cast.value()), T(SIMD::Int::type()))));
