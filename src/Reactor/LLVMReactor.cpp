@@ -21,9 +21,11 @@
 #include "Print.hpp"
 #include "Reactor.hpp"
 #include "SIMD.hpp"
+#include "riscv64.hpp"
 #include "x86.hpp"
 
 #include "llvm/IR/Intrinsics.h"
+#include "llvm/IR/IntrinsicsRISCV.h"
 #include "llvm/IR/IntrinsicsX86.h"
 #include "llvm/Support/Alignment.h"
 #include "llvm/Support/Error.h"
@@ -38,6 +40,10 @@
 
 #if defined(__i386__) || defined(__x86_64__)
 #	include <xmmintrin.h>
+#endif
+
+#if defined(__riscv_vector)
+#	include <riscv_vector.h>
 #endif
 
 #include <math.h>
@@ -2097,6 +2103,8 @@ RValue<Int2> MulAdd(RValue<Short4> x, RValue<Short4> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::pmaddwd(x, y);
+#elif defined(__riscv_vector)
+	return riscv64::pmaddwd(x, y);
 #else
 	return As<Int2>(V(lowerMulAdd(V(x.value()), V(y.value()))));
 #endif
@@ -2278,6 +2286,8 @@ RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y)
 	RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	return x86::pmaddwd(x, y);
+#elif defined(__riscv_vector)
+	return riscv64::pmaddwd(x, y);
 #else
 	return As<Int4>(V(lowerMulAdd(V(x.value()), V(y.value()))));
 #endif
@@ -3422,6 +3432,30 @@ void Breakpoint()
 }  // namespace rr
 
 namespace rr {
+
+#if defined(__riscv_vector)
+namespace riscv64 {
+// Differs from IRBuilder<>::CreateBinaryIntrinsic() in that it only accepts native instruction intrinsics which have
+// implicit types, such as 'x86_sse_max_ps' operating on v4f32, while 'sadd_sat' requires explicitly specifying the operand types.
+static Value *createInstruction(llvm::Intrinsic::ID id, Value *x, Value *y)
+{
+	llvm::Function *intrinsic = llvm::Intrinsic::getDeclaration(jit->module.get(), id);
+
+	return V(jit->builder->CreateCall(intrinsic, { V(x), V(y) }));
+}
+
+RValue<Int2> pmaddwd(RValue<Short4> x, RValue<Short4> y)
+{
+	return As<Int2>(createInstruction(llvm::Intrinsic::riscv_vmadd, x.value(), y.value()));
+}
+
+RValue<Int4> pmaddwd(RValue<Short8> x, RValue<Short8> y)
+{
+	return RValue<Int4>(createInstruction(llvm::Intrinsic::riscv_vmadd, x.value(), y.value()));
+}
+
+}  // namespace riscv64
+#endif  // defined(__riscv_vector)
 
 #if defined(__i386__) || defined(__x86_64__)
 namespace x86 {

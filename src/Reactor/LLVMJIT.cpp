@@ -30,18 +30,18 @@ __pragma(warning(push))
 // for information about `RTDyldObjectLinkingLayer` vs `ObjectLinkingLayer`.
 // On RISC-V, only `ObjectLinkingLayer` is supported.
 #if defined(__riscv)
-#define USE_LEGACY_OBJECT_LINKING_LAYER 0
+#	define USE_LEGACY_OBJECT_LINKING_LAYER 0
 #else
-#define USE_LEGACY_OBJECT_LINKING_LAYER 1
+#	define USE_LEGACY_OBJECT_LINKING_LAYER 1
 #endif
 
 #include "llvm/ExecutionEngine/Orc/CompileUtils.h"
 #include "llvm/ExecutionEngine/Orc/IRCompileLayer.h"
 
 #if USE_LEGACY_OBJECT_LINKING_LAYER
-#include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
+#	include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
 #else
-#include "llvm/ExecutionEngine/Orc/ObjectLinkingLayer.h"
+#	include "llvm/ExecutionEngine/Orc/ObjectLinkingLayer.h"
 #endif
 #include "llvm/ExecutionEngine/SectionMemoryManager.h"
 #include "llvm/IR/DiagnosticInfo.h"
@@ -237,7 +237,7 @@ JITGlobals *JITGlobals::get()
 
 #if LLVM_VERSION_MAJOR >= 11 /* TODO(b/165000222): Unconditional after LLVM 11 upgrade */
 
-#if defined(__riscv) && __riscv_xlen == 64
+#	if defined(__riscv) && __riscv_xlen == 64
 		// jitTargetMachineBuilder.getFeatures() on RISC-V does
 		// not return the RISC-V CPU extensions, so they are
 		// manually added.
@@ -250,7 +250,7 @@ JITGlobals *JITGlobals::get()
 		// On RISC-V, using the default code model results in an
 		// "Unsupported riscv relocation" error.
 		jitTargetMachineBuilder.setCodeModel(llvm::CodeModel::Medium);
-#endif
+#	endif
 
 		jitTargetMachineBuilder.setCPU(std::string(llvm::sys::getHostCPUName()));
 #else
@@ -489,14 +489,38 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 
 #ifdef __ANDROID__
 	// forwarders since we can't take address of builtins
-	static void sync_synchronize() { __sync_synchronize(); }
-	static uint32_t sync_fetch_and_add_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_add_4(ptr, val); }
-	static uint32_t sync_fetch_and_and_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_and_4(ptr, val); }
-	static uint32_t sync_fetch_and_or_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_or_4(ptr, val); }
-	static uint32_t sync_fetch_and_xor_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_xor_4(ptr, val); }
-	static uint32_t sync_fetch_and_sub_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_sub_4(ptr, val); }
-	static uint32_t sync_lock_test_and_set_4(uint32_t *ptr, uint32_t val) { return __sync_lock_test_and_set_4(ptr, val); }
-	static uint32_t sync_val_compare_and_swap_4(uint32_t *ptr, uint32_t expected, uint32_t desired) { return __sync_val_compare_and_swap_4(ptr, expected, desired); }
+	static void sync_synchronize()
+	{
+		__sync_synchronize();
+	}
+	static uint32_t sync_fetch_and_add_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_add_4(ptr, val);
+	}
+	static uint32_t sync_fetch_and_and_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_and_4(ptr, val);
+	}
+	static uint32_t sync_fetch_and_or_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_or_4(ptr, val);
+	}
+	static uint32_t sync_fetch_and_xor_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_xor_4(ptr, val);
+	}
+	static uint32_t sync_fetch_and_sub_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_fetch_and_sub_4(ptr, val);
+	}
+	static uint32_t sync_lock_test_and_set_4(uint32_t *ptr, uint32_t val)
+	{
+		return __sync_lock_test_and_set_4(ptr, val);
+	}
+	static uint32_t sync_val_compare_and_swap_4(uint32_t *ptr, uint32_t expected, uint32_t desired)
+	{
+		return __sync_val_compare_and_swap_4(ptr, expected, desired);
+	}
 
 	static uint32_t sync_fetch_and_max_4(uint32_t *ptr, uint32_t val)
 	{
