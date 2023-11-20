@@ -3688,7 +3688,9 @@ static Value *createInstructionPackU(llvm::Intrinsic::ID id, Value *x, Value *y,
 
 	auto mi = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size * 2));
 	auto me = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, sew));  // SEW
-	auto mm = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));    // LMUL 1
+	int lmul = CPUID::getVlen() == 64 ? 2 : CPUID::getVlen() == 128 ? 1
+	                                                                : 0;
+	auto mm = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, lmul));
 	llvm::Function *MFnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { mi->getType(), me->getType(), mm->getType() });
 	llvm::Value *MVl = jit->builder->CreateCall(MFnVsetli->getFunctionType(), MFnVsetli, { mi, me, mm });
 

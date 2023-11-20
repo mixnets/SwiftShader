@@ -73,4 +73,16 @@ bool CPUID::supportsAVX2()
 	return (eax_ebx_ecx_edx[1] & 0x00000020) != 0;
 }
 
+long long int CPUID::getVlen()
+{
+	long long int vlen;
+#if defined(__riscv_vector)
+	asm volatile("csrr  %[n], vl"
+	             : [n] "=r"(vlen));
+#else
+	vlen = 0;
+#endif
+	return vlen;
+}
+
 }  // namespace rr
