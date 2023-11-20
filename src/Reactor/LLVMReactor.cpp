@@ -3523,160 +3523,62 @@ namespace rr {
 
 #if defined(__riscv_vector)
 namespace riscv64 {
-// Differs from IRBuilder<>::CreateBinaryIntrinsic() in that it only accepts native instruction intrinsics which have
-// implicit types, such as 'x86_sse_max_ps' operating on v4f32, while 'sadd_sat' requires explicitly specifying the operand types.
-static Value *createInstruction(llvm::Intrinsic::ID id, Value *x, Value *y, int size)
+static llvm::Value *vsetli(int size, int sew, int lmul)
 {
 	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
-	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 1));  // SEW 16bit
-	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));  // LMUL 1
+	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, sew));
+	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, lmul));
 	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
-	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
+	return jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
+}
 
-	auto SVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 16), size);
-	llvm::Value *X = llvm::PoisonValue::get(SVTy);
+static llvm::Value *createInstructionLLVM(llvm::Intrinsic::ID id, llvm::Type *returnType, int size, int sew, llvm::Value *X, llvm::Value *Y, llvm::Value *Z = nullptr)
+{
+	int lmul = ((8 << sew) * size) / CPUID::getVlen() >> 1;  // for example sew=1, size=8, VLENs -> 32: 2, 64: 1, 128: 0, <256: 0
+	llvm::Value *Vl = vsetli(size, sew, lmul);
+
+	auto SVTy = llvm::ScalableVectorType::get(returnType, size);
+	llvm::Value *R = llvm::PoisonValue::get(SVTy);
+	if(Z)
+	{
+		llvm::Function *Fn = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), Y->getType(), Z->getType(), Vl->getType() });
+		return jit->builder->CreateCall(Fn->getFunctionType(), Fn, { R, X, Y, Z, Vl });
+	}
+	llvm::Function *Fn = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), Y->getType(), Vl->getType() });
+	return jit->builder->CreateCall(Fn->getFunctionType(), Fn, { R, X, Y, Vl });
+}
+
+static Value *createInstruction(llvm::Intrinsic::ID id, llvm::Type *returnType, int size, int sew, llvm::Value *X, llvm::Value *Y, llvm::Value *Z = nullptr)
+{
+	llvm::Value *R = createInstructionLLVM(id, returnType, size, sew, X, Y, Z);
+
+	auto VTy = llvm::FixedVectorType::get(returnType, size);
 	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
+	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
+	return V(FixedVector);
+}
+
+static Value *createInstruction(llvm::Intrinsic::ID id, llvm::Type *type, int size, int sew, Value *x, llvm::Value *Y, llvm::Type *returnType = nullptr)
+{
+	auto SVTy = llvm::ScalableVectorType::get(type, size);
+	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
+	llvm::Value *X = llvm::PoisonValue::get(SVTy);
 	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
 
+	return createInstruction(id, returnType ? returnType : type, size, sew, X, Y);
+}
+
+static Value *createInstruction(llvm::Intrinsic::ID id, llvm::Type *type, int size, int sew, Value *x, Value *y)
+{
+	auto SVTy = llvm::ScalableVectorType::get(type, size);
+	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
 	llvm::Value *Y = llvm::PoisonValue::get(SVTy);
 	Y = jit->builder->CreateInsertVector(SVTy, Y, V(y), Idx);
 
-	llvm::Value *R = llvm::PoisonValue::get(SVTy);
-	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), Y->getType(), Vl->getType() });
-	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, Y, Vl });
-
-	auto VTy = llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 16), size);
-	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
-	return V(FixedVector);
+	return createInstruction(id, type, size, sew, x, Y);
 }
 
-static Value *createInstructionFloat(llvm::Intrinsic::ID id, Value *x, Value *y, int size)
-{
-	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
-	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 2));  // SEW 32bit
-	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));  // LMUL 1
-	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
-	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
-
-	auto SVTy = llvm::ScalableVectorType::get(llvm::Type::getFloatTy(*jit->context), size);
-	llvm::Value *X = llvm::PoisonValue::get(SVTy);
-	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
-	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
-
-	llvm::Value *Y = llvm::PoisonValue::get(SVTy);
-	Y = jit->builder->CreateInsertVector(SVTy, Y, V(y), Idx);
-
-	llvm::Value *R = llvm::PoisonValue::get(SVTy);
-	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), Y->getType(), Vl->getType() });
-	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, Y, Vl });
-
-	auto VTy = llvm::FixedVectorType::get(llvm::Type::getFloatTy(*jit->context), size);
-	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
-	return V(FixedVector);
-}
-
-static Value *createInstructionImmediate(llvm::Intrinsic::ID id, Value *x, unsigned char y, int size, int sew)
-{
-	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
-	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, sew));  // SEW 16bit
-	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));    // LMUL 1
-	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
-	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
-
-	auto SVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 8 << sew), size);
-	llvm::Value *X = llvm::PoisonValue::get(SVTy);
-	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
-	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
-
-	llvm::Value *R = llvm::PoisonValue::get(SVTy);
-	llvm::Value *Y = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y));
-	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), Y->getType(), Vl->getType() });
-	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, Y, Vl });
-
-	auto VTy = llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 8 << sew), size);
-	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
-	return V(FixedVector);
-}
-
-static Value *createInstructionFloat(llvm::Intrinsic::ID id, Value *x, int size)
-{
-	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
-	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 2));  // SEW 32bit
-	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));  // LMUL 1
-	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
-	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
-
-	auto SVTy = llvm::ScalableVectorType::get(llvm::Type::getFloatTy(*jit->context), size);
-	llvm::Value *X = llvm::PoisonValue::get(SVTy);
-	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
-	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
-
-	auto SRTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 32), size);
-	llvm::Value *R = llvm::PoisonValue::get(SRTy);
-	// Value 7 taken from vfadd.c
-	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
-	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), RoundingMode->getType(), Vl->getType() });
-	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, RoundingMode, Vl });
-
-	auto RTy = llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 32), size);
-	auto FixedVector = jit->builder->CreateExtractVector(RTy, R, Idx);
-	return V(FixedVector);
-}
-
-static Value *createInstructionFloatFloat(llvm::Intrinsic::ID id, Value *x, int size)
-{
-	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
-	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 2));  // SEW 32bit
-	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));  // LMUL 1
-	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
-	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
-
-	auto SVTy = llvm::ScalableVectorType::get(llvm::Type::getFloatTy(*jit->context), size);
-	llvm::Value *X = llvm::PoisonValue::get(SVTy);
-	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
-	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
-
-	llvm::Value *R = llvm::PoisonValue::get(SVTy);
-	// Value 7 taken from vfrec7.c
-	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
-	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), RoundingMode->getType(), Vl->getType() });
-	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, RoundingMode, Vl });
-
-	auto VTy = llvm::FixedVectorType::get(llvm::Type::getFloatTy(*jit->context), size);
-	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
-	return V(FixedVector);
-}
-
-static Value *createInstructionPack(llvm::Intrinsic::ID id, Value *x, Value *y, int size, int sew)
-{
-	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size * 2));
-	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, sew - 1));  // SEW
-	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));        // LMUL 1
-	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
-	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
-
-	auto SVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 8 << sew), size * 2);
-	llvm::Value *X = llvm::PoisonValue::get(SVTy);
-	auto Idx = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
-	X = jit->builder->CreateInsertVector(SVTy, X, V(x), Idx);
-
-	auto Idx2 = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
-	X = jit->builder->CreateInsertVector(SVTy, X, V(y), Idx2);
-
-	auto RVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 8 << (sew - 1)), size * 2);
-	llvm::Value *R = llvm::PoisonValue::get(RVTy);
-	// Value 0 taken from vnclipu.c
-	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
-	llvm::Value *Shift = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
-	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), X->getType(), Shift->getType(), RoundingMode->getType(), Vl->getType() });
-	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, X, Shift, RoundingMode, Vl });
-
-	auto VTy = llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 8 << (sew - 1)), size * 2);
-	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
-	return V(FixedVector);
-}
-
-static Value *createInstructionPackU(llvm::Intrinsic::ID id, Value *x, Value *y, int size, int sew)
+static Value *createInstructionPack(llvm::Intrinsic::ID id, int size, int sew, bool u, Value *x, Value *y)
 {
 	auto SVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 8 << sew), size * 2);
 	llvm::Value *X = llvm::PoisonValue::get(SVTy);
@@ -3686,188 +3588,181 @@ static Value *createInstructionPackU(llvm::Intrinsic::ID id, Value *x, Value *y,
 	auto Idx2 = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size));
 	X = jit->builder->CreateInsertVector(SVTy, X, V(y), Idx2);
 
-	auto mi = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size * 2));
-	auto me = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, sew));  // SEW
-	int lmul = CPUID::getVlen() == 64 ? 2 : CPUID::getVlen() == 128 ? 1
-	                                                                : 0;
-	auto mm = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, lmul));
-	llvm::Function *MFnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { mi->getType(), me->getType(), mm->getType() });
-	llvm::Value *MVl = jit->builder->CreateCall(MFnVsetli->getFunctionType(), MFnVsetli, { mi, me, mm });
+	llvm::Value *MR = nullptr;
+	if(u)
+	{
+		llvm::Value *Max = llvm::ConstantInt::get(*jit->context, llvm::APInt(8 << sew, 0));
+		MR = createInstructionLLVM(llvm::Intrinsic::riscv_vmax, llvm::IntegerType::get(*jit->context, 8 << sew), size * 2, sew, X, Max);
+	}
 
-	auto MRVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 8 << sew), size * 2);
-	llvm::Value *MR = llvm::PoisonValue::get(MRVTy);
-	llvm::Value *Max = llvm::ConstantInt::get(*jit->context, llvm::APInt(8 << sew, 0));
-	llvm::Function *MFnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vmax, { MR->getType(), X->getType(), Max->getType(), MVl->getType() });
-	MR = jit->builder->CreateCall(MFnVmulh->getFunctionType(), MFnVmulh, { MR, X, Max, MVl });
-
-	auto i = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, size * 2));
-	auto e = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, sew - 1));  // SEW
-	auto m = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));        // LMUL 1
-	llvm::Function *FnVsetli = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::riscv_vsetvli, { i->getType(), e->getType(), m->getType() });
-	llvm::Value *Vl = jit->builder->CreateCall(FnVsetli->getFunctionType(), FnVsetli, { i, e, m });
-
-	auto RVTy = llvm::ScalableVectorType::get(llvm::IntegerType::get(*jit->context, 8 << (sew - 1)), size * 2);
-	llvm::Value *R = llvm::PoisonValue::get(RVTy);
-	llvm::Value *Shift = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
 	// Value 0 taken from vnclipu.c
 	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
-	llvm::Function *FnVmulh = llvm::Intrinsic::getDeclaration(jit->module.get(), id, { R->getType(), MR->getType(), Shift->getType(), RoundingMode->getType(), Vl->getType() });
-	R = jit->builder->CreateCall(FnVmulh->getFunctionType(), FnVmulh, { R, MR, Shift, RoundingMode, Vl });
-
-	auto VTy = llvm::FixedVectorType::get(llvm::IntegerType::get(*jit->context, 8 << (sew - 1)), size * 2);
-	auto FixedVector = jit->builder->CreateExtractVector(VTy, R, Idx);
-	return V(FixedVector);
+	llvm::Value *Shift = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 0));
+	return createInstruction(id, llvm::IntegerType::get(*jit->context, 8 << (sew - 1)), size * 2, sew - 1, u ? MR : X, Shift, RoundingMode);
 }
 
 RValue<Short4> pmulhw(RValue<Short4> x, RValue<Short4> y)
 {
-	return As<Short4>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value(), 4));
+	return As<Short4>(createInstruction(llvm::Intrinsic::riscv_vmulh, llvm::IntegerType::get(*jit->context, 16), 4, 1, x.value(), y.value()));
 }
 
 RValue<Short8> pmulhw(RValue<Short8> x, RValue<Short8> y)
 {
-	return RValue<Short8>(createInstruction(llvm::Intrinsic::riscv_vmulh, x.value(), y.value(), 8));
+	return RValue<Short8>(createInstruction(llvm::Intrinsic::riscv_vmulh, llvm::IntegerType::get(*jit->context, 16), 8, 1, x.value(), y.value()));
 }
 
 RValue<UShort4> pmulhuw(RValue<UShort4> x, RValue<UShort4> y)
 {
-	return As<UShort4>(createInstruction(llvm::Intrinsic::riscv_vmulhu, x.value(), y.value(), 4));
+	return As<UShort4>(createInstruction(llvm::Intrinsic::riscv_vmulhu, llvm::IntegerType::get(*jit->context, 16), 4, 1, x.value(), y.value()));
 }
 
 RValue<UShort8> pmulhuw(RValue<UShort8> x, RValue<UShort8> y)
 {
-	return RValue<UShort8>(createInstruction(llvm::Intrinsic::riscv_vmulhu, x.value(), y.value(), 8));
+	return RValue<UShort8>(createInstruction(llvm::Intrinsic::riscv_vmulhu, llvm::IntegerType::get(*jit->context, 16), 8, 1, x.value(), y.value()));
 }
 
 RValue<Float4> maxps(RValue<Float4> x, RValue<Float4> y)
 {
-	return RValue<Float4>(createInstructionFloat(llvm::Intrinsic::riscv_vfmax, x.value(), y.value(), 4));
+	return RValue<Float4>(createInstruction(llvm::Intrinsic::riscv_vfmax, llvm::Type::getFloatTy(*jit->context), 4, 2, x.value(), y.value()));
 }
 
 RValue<Float4> minps(RValue<Float4> x, RValue<Float4> y)
 {
-	return RValue<Float4>(createInstructionFloat(llvm::Intrinsic::riscv_vfmin, x.value(), y.value(), 4));
+	return RValue<Float4>(createInstruction(llvm::Intrinsic::riscv_vfmin, llvm::Type::getFloatTy(*jit->context), 4, 2, x.value(), y.value()));
 }
 
 RValue<UShort4> psrlw(RValue<UShort4> x, unsigned char y)
 {
-	return As<UShort4>(createInstructionImmediate(llvm::Intrinsic::riscv_vsrl, x.value(), y, 4, 1));
+	return As<UShort4>(createInstruction(llvm::Intrinsic::riscv_vsrl, llvm::IntegerType::get(*jit->context, 16), 4, 1, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<UShort8> psrlw(RValue<UShort8> x, unsigned char y)
 {
-	return RValue<UShort8>(createInstructionImmediate(llvm::Intrinsic::riscv_vsrl, x.value(), y, 8, 1));
+	return RValue<UShort8>(createInstruction(llvm::Intrinsic::riscv_vsrl, llvm::IntegerType::get(*jit->context, 16), 8, 1, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<UInt2> psrld(RValue<UInt2> x, unsigned char y)
 {
-	return As<UInt2>(createInstructionImmediate(llvm::Intrinsic::riscv_vsrl, x.value(), y, 2, 2));
+	return As<UInt2>(createInstruction(llvm::Intrinsic::riscv_vsrl, llvm::IntegerType::get(*jit->context, 32), 2, 2, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<UInt4> psrld(RValue<UInt4> x, unsigned char y)
 {
-	return RValue<UInt4>(createInstructionImmediate(llvm::Intrinsic::riscv_vsrl, x.value(), y, 4, 2));
+	return RValue<UInt4>(createInstruction(llvm::Intrinsic::riscv_vsrl, llvm::IntegerType::get(*jit->context, 32), 4, 2, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<Short4> psraw(RValue<Short4> x, unsigned char y)
 {
-	return As<Short4>(createInstructionImmediate(llvm::Intrinsic::riscv_vsra, x.value(), y, 4, 1));
+	return As<Short4>(createInstruction(llvm::Intrinsic::riscv_vsra, llvm::IntegerType::get(*jit->context, 16), 4, 1, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<Short8> psraw(RValue<Short8> x, unsigned char y)
 {
-	return RValue<Short8>(createInstructionImmediate(llvm::Intrinsic::riscv_vsra, x.value(), y, 8, 1));
+	return RValue<Short8>(createInstruction(llvm::Intrinsic::riscv_vsra, llvm::IntegerType::get(*jit->context, 16), 8, 1, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<Int2> psrad(RValue<Int2> x, unsigned char y)
 {
-	return As<Int2>(createInstructionImmediate(llvm::Intrinsic::riscv_vsra, x.value(), y, 2, 2));
+	return As<Int2>(createInstruction(llvm::Intrinsic::riscv_vsra, llvm::IntegerType::get(*jit->context, 32), 2, 2, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<Int4> psrad(RValue<Int4> x, unsigned char y)
 {
-	return RValue<Int4>(createInstructionImmediate(llvm::Intrinsic::riscv_vsra, x.value(), y, 4, 2));
+	return RValue<Int4>(createInstruction(llvm::Intrinsic::riscv_vsra, llvm::IntegerType::get(*jit->context, 32), 4, 2, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<Short4> psllw(RValue<Short4> x, unsigned char y)
 {
-	return As<Short4>(createInstructionImmediate(llvm::Intrinsic::riscv_vsll, x.value(), y, 4, 1));
+	return As<Short4>(createInstruction(llvm::Intrinsic::riscv_vsll, llvm::IntegerType::get(*jit->context, 16), 4, 1, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<Short8> psllw(RValue<Short8> x, unsigned char y)
 {
-	return RValue<Short8>(createInstructionImmediate(llvm::Intrinsic::riscv_vsll, x.value(), y, 8, 1));
+	return RValue<Short8>(createInstruction(llvm::Intrinsic::riscv_vsll, llvm::IntegerType::get(*jit->context, 16), 8, 1, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<Int2> pslld(RValue<Int2> x, unsigned char y)
 {
-	return As<Int2>(createInstructionImmediate(llvm::Intrinsic::riscv_vsll, x.value(), y, 2, 2));
+	return As<Int2>(createInstruction(llvm::Intrinsic::riscv_vsll, llvm::IntegerType::get(*jit->context, 32), 2, 2, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<Int4> pslld(RValue<Int4> x, unsigned char y)
 {
-	return RValue<Int4>(createInstructionImmediate(llvm::Intrinsic::riscv_vsll, x.value(), y, 4, 2));
+	return RValue<Int4>(createInstruction(llvm::Intrinsic::riscv_vsll, llvm::IntegerType::get(*jit->context, 32), 4, 2, x.value(), llvm::ConstantInt::get(*jit->context, llvm::APInt(64, y))));
 }
 
 RValue<Int4> cvtps2dq(RValue<Float4> val)
 {
-	return RValue<Int4>(createInstructionFloat(llvm::Intrinsic::riscv_vfcvt_x_f_v, val.value(), 4));
+	// Value 7 taken from vfadd.c
+	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
+	return RValue<Int4>(createInstruction(llvm::Intrinsic::riscv_vfcvt_x_f_v, llvm::Type::getFloatTy(*jit->context), 4, 2, val.value(), RoundingMode, llvm::IntegerType::get(*jit->context, 32)));
 }
 
 RValue<Int> cvtss2si(RValue<Float> val)
 {
 	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
 
-	return RValue<Int>(Nucleus::createExtractElement(createInstructionFloat(llvm::Intrinsic::riscv_vfcvt_x_f_v, vector, 4), Int::type(), 0));
+	// Value 7 taken from vfadd.c
+	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
+	Value *instruction = createInstruction(llvm::Intrinsic::riscv_vfcvt_x_f_v, llvm::Type::getFloatTy(*jit->context), 4, 2, vector, RoundingMode, llvm::IntegerType::get(*jit->context, 32));
+	return RValue<Int>(Nucleus::createExtractElement(instruction, Int::type(), 0));
 }
 
 RValue<Float4> rsqrtps(RValue<Float4> val)
 {
-	return RValue<Float4>(createInstructionFloatFloat(llvm::Intrinsic::riscv_vfrsqrt7, val.value(), 4));
+	// Value 7 taken from vfrec7.c
+	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
+	return RValue<Float4>(createInstruction(llvm::Intrinsic::riscv_vfrsqrt7, llvm::Type::getFloatTy(*jit->context), 4, 2, val.value(), RoundingMode));
 }
 
 RValue<Float> rsqrtss(RValue<Float> val)
 {
 	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
 
-	return RValue<Float>(Nucleus::createExtractElement(createInstructionFloatFloat(llvm::Intrinsic::riscv_vfrsqrt7, vector, 4), Float::type(), 0));
+	// Value 7 taken from vfrec7.c
+	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
+	return RValue<Float>(Nucleus::createExtractElement(createInstruction(llvm::Intrinsic::riscv_vfrsqrt7, llvm::Type::getFloatTy(*jit->context), 4, 2, vector, RoundingMode), Float::type(), 0));
 }
 
 RValue<Float> rcpss(RValue<Float> val)
 {
 	Value *vector = Nucleus::createInsertElement(V(llvm::UndefValue::get(T(Float4::type()))), val.value(), 0);
 
-	return RValue<Float>(Nucleus::createExtractElement(createInstructionFloatFloat(llvm::Intrinsic::riscv_vfrec7, vector, 4), Float::type(), 0));
+	// Value 7 taken from vfrec7.c
+	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
+	return RValue<Float>(Nucleus::createExtractElement(createInstruction(llvm::Intrinsic::riscv_vfrec7, llvm::Type::getFloatTy(*jit->context), 4, 2, vector, RoundingMode), Float::type(), 0));
 }
 
 RValue<Float4> rcpps(RValue<Float4> val)
 {
-	return RValue<Float4>(createInstructionFloatFloat(llvm::Intrinsic::riscv_vfrec7, val.value(), 4));
+	// Value 7 taken from vfrec7.c
+	llvm::Value *RoundingMode = llvm::ConstantInt::get(*jit->context, llvm::APInt(64, 7));
+	return RValue<Float4>(createInstruction(llvm::Intrinsic::riscv_vfrec7, llvm::Type::getFloatTy(*jit->context), 4, 2, val.value(), RoundingMode));
 }
 
 RValue<Short4> packssdw(RValue<Int2> x, RValue<Int2> y)
 {
-	return As<Short4>(createInstructionPack(llvm::Intrinsic::riscv_vnclip, x.value(), y.value(), 2, 2));
+	return As<Short4>(createInstructionPack(llvm::Intrinsic::riscv_vnclip, 2, 2, false, x.value(), y.value()));
 }
 
 RValue<Short8> packssdw(RValue<Int4> x, RValue<Int4> y)
 {
-	return RValue<Short8>(createInstructionPack(llvm::Intrinsic::riscv_vnclip, x.value(), y.value(), 4, 2));
+	return RValue<Short8>(createInstructionPack(llvm::Intrinsic::riscv_vnclip, 4, 2, false, x.value(), y.value()));
 }
 
 RValue<SByte8> packsswb(RValue<Short4> x, RValue<Short4> y)
 {
-	return As<SByte8>(createInstructionPack(llvm::Intrinsic::riscv_vnclip, x.value(), y.value(), 4, 1));
+	return As<SByte8>(createInstructionPack(llvm::Intrinsic::riscv_vnclip, 4, 1, false, x.value(), y.value()));
 }
 
 RValue<Byte8> packuswb(RValue<Short4> x, RValue<Short4> y)
 {
-	return As<Byte8>(createInstructionPackU(llvm::Intrinsic::riscv_vnclipu, x.value(), y.value(), 4, 1));
+	return As<Byte8>(createInstructionPack(llvm::Intrinsic::riscv_vnclipu, 4, 1, true, x.value(), y.value()));
 }
 
 RValue<UShort8> packusdw(RValue<Int4> x, RValue<Int4> y)
 {
-	return RValue<UShort8>(createInstructionPackU(llvm::Intrinsic::riscv_vnclipu, x.value(), y.value(), 4, 2));
+	return RValue<UShort8>(createInstructionPack(llvm::Intrinsic::riscv_vnclipu, 4, 2, true, x.value(), y.value()));
 }
 
 }  // namespace riscv64
