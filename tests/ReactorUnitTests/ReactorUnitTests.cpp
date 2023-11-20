@@ -1904,6 +1904,128 @@ TEST(ReactorUnitTests, MulHigh)
 	EXPECT_EQ(out[7][3], 0xE8C0000Fu);
 }
 
+TEST(ReactorUnitTests, Shift)
+{
+	FunctionT<int(void *)> function;
+	{
+		Pointer<Byte> out = function.Arg<0>();
+
+		*Pointer<Short4>(out + 16 * 0) =
+		    Short4(0x01AA, 0xC7EC, 0x0000, 0xF422) >> 2;
+		*Pointer<UShort4>(out + 16 * 1) =
+		    UShort4(0x01AA, 0xC7EC, 0x0000, 0xF422) >> 2;
+
+		*Pointer<Short8>(out + 16 * 2) =
+		    Short8(0x01AA, 0xC7EC, 0x0000, 0xF422, 0x01AA, 0xC7EC, 0x0000, 0xF422) >> 2;
+		*Pointer<UShort8>(out + 16 * 3) =
+		    UShort8(0x01AA, 0xC7EC, 0x0000, 0xF422, 0x01AA, 0xC7EC, 0x0000, 0xF422) >> 2;
+
+		*Pointer<Int2>(out + 16 * 4) =
+		    Int2(0x000001AA, 0xFFFFC7EC) >> 2;
+		*Pointer<UInt2>(out + 16 * 5) =
+		    UInt2(0x000001AA, 0xFFFFC7EC) >> 2;
+
+		*Pointer<Int4>(out + 16 * 6) =
+		    Int4(0x000001AA, 0xFFFFC7EC, 0x000001AA, 0xFFFFC7EC) >> 2;
+		*Pointer<UInt4>(out + 16 * 7) =
+		    UInt4(0x000001AA, 0xFFFFC7EC, 0x000001AA, 0xFFFFC7EC) >> 2;
+
+		*Pointer<Short4>(out + 16 * 8) =
+		    Short4(0x01AA, 0xC7EC, 0x0000, 0xF422) << 2;
+		*Pointer<UShort4>(out + 16 * 9) =
+		    UShort4(0x01AA, 0xC7EC, 0x0000, 0xF422) << 2;
+
+		*Pointer<Short8>(out + 16 * 10) =
+		    Short8(0x01AA, 0xC7EC, 0x0000, 0xF422, 0x01AA, 0xC7EC, 0x0000, 0xF422) << 2;
+		*Pointer<UShort8>(out + 16 * 11) =
+		    UShort8(0x01AA, 0xC7EC, 0x0000, 0xF422, 0x01AA, 0xC7EC, 0x0000, 0xF422) << 2;
+
+		*Pointer<Int2>(out + 16 * 12) =
+		    Int2(0x000001AA, 0xFFFFC7EC) << 2;
+		*Pointer<UInt2>(out + 16 * 13) =
+		    UInt2(0x000001AA, 0xFFFFC7EC) << 2;
+
+		*Pointer<Int4>(out + 16 * 14) =
+		    Int4(0x000001AA, 0xFFFFC7EC, 0x000001AA, 0xFFFFC7EC) << 2;
+		*Pointer<UInt4>(out + 16 * 15) =
+		    UInt4(0x000001AA, 0xFFFFC7EC, 0x000001AA, 0xFFFFC7EC) << 2;
+
+		Return(0);
+	}
+
+	auto routine = function(testName().c_str());
+
+	unsigned int out[16][4];
+
+	memset(&out, 0, sizeof(out));
+
+	routine(&out);
+
+	EXPECT_EQ(out[0][0], 0xF1FB006Au);
+	EXPECT_EQ(out[0][1], 0xFD080000u);
+
+	EXPECT_EQ(out[1][0], 0x31FB006Au);
+	EXPECT_EQ(out[1][1], 0x3D080000u);
+
+	EXPECT_EQ(out[2][0], 0xF1FB006Au);
+	EXPECT_EQ(out[2][1], 0xFD080000u);
+	EXPECT_EQ(out[2][2], 0xF1FB006Au);
+	EXPECT_EQ(out[2][3], 0xFD080000u);
+
+	EXPECT_EQ(out[3][0], 0x31FB006Au);
+	EXPECT_EQ(out[3][1], 0x3D080000u);
+	EXPECT_EQ(out[3][2], 0x31FB006Au);
+	EXPECT_EQ(out[3][3], 0x3D080000u);
+
+	EXPECT_EQ(out[4][0], 0x0000006Au);
+	EXPECT_EQ(out[4][1], 0xFFFFF1FBu);
+
+	EXPECT_EQ(out[5][0], 0x0000006Au);
+	EXPECT_EQ(out[5][1], 0x3FFFF1FBu);
+
+	EXPECT_EQ(out[6][0], 0x0000006Au);
+	EXPECT_EQ(out[6][1], 0xFFFFF1FBu);
+	EXPECT_EQ(out[6][2], 0x0000006Au);
+	EXPECT_EQ(out[6][3], 0xFFFFF1FBu);
+
+	EXPECT_EQ(out[7][0], 0x0000006Au);
+	EXPECT_EQ(out[7][1], 0x3FFFF1FBu);
+	EXPECT_EQ(out[7][2], 0x0000006Au);
+	EXPECT_EQ(out[7][3], 0x3FFFF1FBu);
+
+	EXPECT_EQ(out[8][0], 0x1FB006A8u);
+	EXPECT_EQ(out[8][1], 0xD0880000u);
+
+	EXPECT_EQ(out[9][0], 0x1FB006A8u);
+	EXPECT_EQ(out[9][1], 0xD0880000u);
+
+	EXPECT_EQ(out[10][0], 0x1FB006A8u);
+	EXPECT_EQ(out[10][1], 0xD0880000u);
+	EXPECT_EQ(out[10][2], 0x1FB006A8u);
+	EXPECT_EQ(out[10][3], 0xD0880000u);
+
+	EXPECT_EQ(out[11][0], 0x1FB006A8u);
+	EXPECT_EQ(out[11][1], 0xD0880000u);
+	EXPECT_EQ(out[11][2], 0x1FB006A8u);
+	EXPECT_EQ(out[11][3], 0xD0880000u);
+
+	EXPECT_EQ(out[12][0], 0x000006A8u);
+	EXPECT_EQ(out[12][1], 0xFFFF1FB0u);
+
+	EXPECT_EQ(out[13][0], 0x000006A8u);
+	EXPECT_EQ(out[13][1], 0xFFFF1FB0u);
+
+	EXPECT_EQ(out[14][0], 0x000006A8u);
+	EXPECT_EQ(out[14][1], 0xFFFF1FB0u);
+	EXPECT_EQ(out[14][2], 0x000006A8u);
+	EXPECT_EQ(out[14][3], 0xFFFF1FB0u);
+
+	EXPECT_EQ(out[15][0], 0x000006A8u);
+	EXPECT_EQ(out[15][1], 0xFFFF1FB0u);
+	EXPECT_EQ(out[15][2], 0x000006A8u);
+	EXPECT_EQ(out[15][3], 0xFFFF1FB0u);
+}
+
 TEST(ReactorUnitTests, MulAdd)
 {
 	FunctionT<int(void *)> function;
