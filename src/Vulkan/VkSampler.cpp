@@ -17,7 +17,7 @@
 namespace vk {
 
 SamplerState::SamplerState(const VkSamplerCreateInfo *pCreateInfo, const vk::SamplerYcbcrConversion *ycbcrConversion,
-                           VkSamplerFilteringPrecisionModeGOOGLE filteringPrecision, const VkClearColorValue &customBorderColor)
+                           const VkClearColorValue &customBorderColor)
     : Memset(this, 0)
     , magFilter(pCreateInfo->magFilter)
     , minFilter(pCreateInfo->minFilter)
@@ -35,7 +35,6 @@ SamplerState::SamplerState(const VkSamplerCreateInfo *pCreateInfo, const vk::Sam
     , borderColor(pCreateInfo->borderColor)
     , customBorderColor(customBorderColor)
     , unnormalizedCoordinates(pCreateInfo->unnormalizedCoordinates)
-    , filteringPrecision(filteringPrecision)
 {
 	if(ycbcrConversion)
 	{
@@ -43,6 +42,9 @@ SamplerState::SamplerState(const VkSamplerCreateInfo *pCreateInfo, const vk::Sam
 		studioSwing = (ycbcrConversion->ycbcrRange == VK_SAMPLER_YCBCR_RANGE_ITU_NARROW);
 		swappedChroma = (ycbcrConversion->components.r != VK_COMPONENT_SWIZZLE_R);
 	}
+#ifdef SWIFTSHADER_HIGH_PRECISION_FILTERING
+	highPrecisionFiltering = true;
+#endif
 }
 
 Sampler::Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, const SamplerState &samplerState, uint32_t samplerID)
