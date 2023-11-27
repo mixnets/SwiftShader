@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e595fffd_71e7037e",
+        "filename": "src/Vulkan/VkSampler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-27T18:29:50Z",
+      "side": 1,
+      "message": "This member is marked `const`, so can\u0027t be assigned here. If this is the only place it\u0027s ever assigned, you might as well just remove the member and move the preprocessor conditional to where it\u0027s read.",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 0
+      },
+      "revId": "5b5b40f9abe11cdbc953fb69f1691afdbcf0597d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "623ff759_3819c660",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2503,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-27T18:29:50Z",
+      "side": 1,
+      "message": "It might be nice to warn users if they\u0027re still trying to use this, but didn\u0027t build with `SWIFTSHADER_HIGH_PRECISION_FILTERING`. Not sure if there\u0027s any existing precedent for a `NDEBUG` printf though.",
+      "range": {
+        "startLine": 2503,
+        "startChar": 3,
+        "endLine": 2503,
+        "endChar": 25
+      },
+      "revId": "5b5b40f9abe11cdbc953fb69f1691afdbcf0597d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
