@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e8693e7_55e08ca3",
+        "filename": "src/Vulkan/VkSampler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-11-27T18:57:39Z",
+      "side": 1,
+      "message": "Fixed the `const` thing, but I kept it here in case this sort of logic ever needs to come back. Logically, the `Pipeline/` directory executes stuff dictated by the `Vulkan/` directory; it felt appropriate to have `Vulkan/` decide what filtering to apply.",
+      "parentUuid": "e595fffd_71e7037e",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 0
+      },
+      "revId": "5b5b40f9abe11cdbc953fb69f1691afdbcf0597d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "623ff759_3819c660",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-11-27T18:29:50Z",
       "side": 1,
       "message": "It might be nice to warn users if they\u0027re still trying to use this, but didn\u0027t build with `SWIFTSHADER_HIGH_PRECISION_FILTERING`. Not sure if there\u0027s any existing precedent for a `NDEBUG` printf though.",
+      "range": {
+        "startLine": 2503,
+        "startChar": 3,
+        "endLine": 2503,
+        "endChar": 25
+      },
+      "revId": "5b5b40f9abe11cdbc953fb69f1691afdbcf0597d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35ebf185_00c83f46",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2503,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-11-27T18:57:39Z",
+      "side": 1,
+      "message": "I\u0027ll be deleting this code once this CL rolls into Chromium, so if there are any such users, they\u0027ll get a build error in a few days.",
+      "parentUuid": "623ff759_3819c660",
       "range": {
         "startLine": 2503,
         "startChar": 3,
