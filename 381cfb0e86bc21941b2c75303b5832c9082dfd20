@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e1c69ab_3df20121",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2973,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:27:44Z",
+      "side": 1,
+      "message": "This seems fragile, in that this `UNREACHABLE` could be hit on higher level logic.\nI think it might be preferable to split this into two functions - `RcpApprox()` and `RcpApproxExactAtPow2()`, and also splitting `HasRcpApprox()` and `HasRcpApproxAtPow2()`.",
+      "range": {
+        "startLine": 2970,
+        "startChar": 0,
+        "endLine": 2973,
+        "endChar": 2
+      },
+      "revId": "381cfb0e86bc21941b2c75303b5832c9082dfd20",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
