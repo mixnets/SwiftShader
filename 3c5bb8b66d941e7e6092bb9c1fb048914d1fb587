@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e22c47e8_77b846c9",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:08:39Z",
+      "side": 1,
+      "message": "did clang-format add these tabs?",
+      "range": {
+        "startLine": 33,
+        "startChar": 1,
+        "endLine": 33,
+        "endChar": 2
+      },
+      "revId": "3c5bb8b66d941e7e6092bb9c1fb048914d1fb587",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
