@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fdf6110_d47faa35",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:06:12Z",
+      "side": 1,
+      "message": "Aren\u0027t you missing a `.` before the `*`?",
+      "range": {
+        "startLine": 63,
+        "startChar": 45,
+        "endLine": 63,
+        "endChar": 46
+      },
+      "revId": "ed08bdbe637d4078cefca595fe9549e482f877ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4b3b76c_5e6a5d94",
+        "filename": "third_party/llvm-16.0/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1630,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:06:12Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 1630,
+        "startChar": 41,
+        "endLine": 1630,
+        "endChar": 42
+      },
+      "revId": "ed08bdbe637d4078cefca595fe9549e482f877ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
