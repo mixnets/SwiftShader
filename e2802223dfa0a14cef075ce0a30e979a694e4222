@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3bc3d5d7_145a549a",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3451,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:12:05Z",
+      "side": 1,
+      "message": "Please document what this is the size of and what units.",
+      "range": {
+        "startLine": 3451,
+        "startChar": 80,
+        "endLine": 3451,
+        "endChar": 84
+      },
+      "revId": "e2802223dfa0a14cef075ce0a30e979a694e4222",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
