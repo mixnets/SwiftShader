@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9dc6906b_9356255a",
+        "filename": "third_party/llvm-project",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:33:00Z",
+      "side": 1,
+      "message": "revert",
+      "revId": "669e2f88e2ed1a1ab3c44dfd427476b1ef456873",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
