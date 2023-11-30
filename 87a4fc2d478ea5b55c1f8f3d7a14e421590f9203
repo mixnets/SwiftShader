@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0737ec9_8dcad143",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1105,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:11:09Z",
+      "side": 1,
+      "message": "Looks like we have LLVM versioning issues here:\n\n```\nSwiftShader\\src\\Reactor\\LLVMReactor.cpp(1105): error C2039: \u0027isScalableTy\u0027: is not a member of \u0027llvm::VectorType\u0027\n```",
+      "revId": "87a4fc2d478ea5b55c1f8f3d7a14e421590f9203",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "50b42963_499ea926",
+        "filename": "tests/ReactorUnitTests/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:11:09Z",
+      "side": 1,
+      "message": "Why were these tests commented out?",
+      "revId": "87a4fc2d478ea5b55c1f8f3d7a14e421590f9203",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
