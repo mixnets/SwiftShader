@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe28820d_16d41b76",
+        "filename": "src/Reactor/riscv64.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:16:43Z",
+      "side": 1,
+      "message": "Would be nice to have comments for these, so the reader doesn\u0027t have to guess the acronym.",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 0
+      },
+      "revId": "5edc3fad227a113afe2d866394799e3bd510e69d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
