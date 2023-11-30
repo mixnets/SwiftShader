@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2eff376a_c9bad6da",
+        "filename": "src/Reactor/CPUID.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:32:22Z",
+      "side": 1,
+      "message": "Implemention for other architectures?",
+      "range": {
+        "startLine": 83,
+        "startChar": 1,
+        "endLine": 83,
+        "endChar": 10
+      },
+      "revId": "600d2d7663bd57abd6173d9a9dc4c27eb4d4bc08",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a60b08dc_06ce7069",
+        "filename": "src/Reactor/CPUID.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-11-30T13:32:22Z",
+      "side": 1,
+      "message": "Please add a comment explaining what this is returning.",
+      "revId": "600d2d7663bd57abd6173d9a9dc4c27eb4d4bc08",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
