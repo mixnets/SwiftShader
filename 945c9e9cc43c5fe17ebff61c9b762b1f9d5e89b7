@@ -16,6 +16,24 @@
       "message": "Will land after https://chromium-review.googlesource.com/c/chromium/src/+/5063693, https://chromium-review.googlesource.com/c/chromium/src/+/5063432 and https://chromium-review.googlesource.com/c/angle/angle/+/5063344 land",
       "revId": "945c9e9cc43c5fe17ebff61c9b762b1f9d5e89b7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9be88f1f_fca3a023",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-12-03T15:33:23Z",
+      "side": 1,
+      "message": "All done, this CL can now land",
+      "parentUuid": "09c918c6_bf11e509",
+      "revId": "945c9e9cc43c5fe17ebff61c9b762b1f9d5e89b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
