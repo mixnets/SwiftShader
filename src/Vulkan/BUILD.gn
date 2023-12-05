@@ -62,6 +62,12 @@ config("swiftshader_libvulkan_private_config") {
     "SWIFTSHADER_LEGACY_PRECISION=true",  # TODO(chromium:1299047)
     "SWIFTSHADER_ZERO_INITIALIZE_DEVICE_MEMORY",
   ]
+
+  if (build_with_chromium) {
+    # Chromium requires higher precision filtering to pass the layout tests with SwiftShader.
+    # http://crbug.com/726075
+    defines += [ "SWIFTSHADER_HIGH_PRECISION_FILTERING" ]
+  }
 }
 
 swiftshader_source_set("swiftshader_libvulkan_headers") {
@@ -192,8 +198,12 @@ swiftshader_source_set("_swiftshader_libvulkan") {
     ]
   }
 
+<<<<<<< HEAD   (d6c816 Support a static build of SwiftShader)
   public_deps = [
     ":swiftshader_libvulkan_headers",
+=======
+  deps = [
+>>>>>>> BRANCH (4befa3 Remove Jonah from OWNERS)
     "../../third_party/SPIRV-Tools:spvtools_headers",
     "../../third_party/SPIRV-Tools:spvtools_opt",
     "../../third_party/SPIRV-Tools:spvtools_val",
@@ -213,6 +223,7 @@ swiftshader_source_set("_swiftshader_libvulkan") {
   ]
 }
 
+<<<<<<< HEAD   (d6c816 Support a static build of SwiftShader)
 swiftshader_shared_library("swiftshader_libvulkan") {
   # TODO(capn): Use the same ICD name on both Windows and non-Windows.
   if (is_win) {
@@ -226,6 +237,9 @@ swiftshader_shared_library("swiftshader_libvulkan") {
 
 swiftshader_static_library("swiftshader_libvulkan_static") {
   deps = [ ":_swiftshader_libvulkan" ]
+=======
+  public_deps = [ ":swiftshader_libvulkan_headers" ]
+>>>>>>> BRANCH (4befa3 Remove Jonah from OWNERS)
 }
 
 # Generates an ICD JSON file that can be used by all targets in this GN build
