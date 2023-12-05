@@ -62,6 +62,12 @@ config("swiftshader_libvulkan_private_config") {
     "SWIFTSHADER_LEGACY_PRECISION=true",  # TODO(chromium:1299047)
     "SWIFTSHADER_ZERO_INITIALIZE_DEVICE_MEMORY",
   ]
+
+  if (build_with_chromium) {
+    # Chromium requires higher precision filtering to pass the layout tests with SwiftShader.
+    # http://crbug.com/726075
+    defines += [ "SWIFTSHADER_HIGH_PRECISION_FILTERING" ]
+  }
 }
 
 swiftshader_source_set("swiftshader_libvulkan_headers") {
