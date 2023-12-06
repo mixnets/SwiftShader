@@ -34,6 +34,24 @@
       "parentUuid": "95c0b67d_409ff300",
       "revId": "1e42bd15cb6892b783883e37b5a5ab22be093854",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f41d89b_d284b083",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101831
+      },
+      "writtenOn": "2023-12-06T15:16:24Z",
+      "side": 1,
+      "message": "Thanks for your guidance, I have rebased this CL to TOT",
+      "parentUuid": "50738610_6049991e",
+      "revId": "1e42bd15cb6892b783883e37b5a5ab22be093854",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
