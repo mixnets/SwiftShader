@@ -1,14 +1,28 @@
-# Ignored folders #
-/cache/
-/lib/
-/obj/
-/bin/
-/out/
-.vs
-.vscode/ipch
-CMakeFiles/
-.idea/
-cmake-build-debug/
+.clang_complete
+.ycm_extra_conf.py*
+*.pyc
+compile_commands.json
+/build*/
+/buildtools/
+/external/abseil_cpp/
+/external/googletest
+/external/SPIRV-Headers
+/external/spirv-headers
+/external/effcee
+/external/re2
+/external/protobuf
+/out
+/TAGS
+/third_party/llvm-build/
+/testing
+/tools/clang/
+/utils/clang-format-diff.py
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-spirv-tools
+bazel-SPIRV-Tools
+bazel-testlogs
 
 # Per user vscode config files.
 .vscode/launch.json

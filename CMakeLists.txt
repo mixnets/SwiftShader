@@ -16,28 +16,67 @@ cmake_minimum_required(VERSION 3.13)
 
 project(SwiftShader C CXX ASM)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CXX_STANDARD_REQUIRED ON)
-# MSVC doesn't define __cplusplus by default
-if(MSVC)
-    string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
+# Avoid a bug in CMake 3.22.1. By default it will set -std=c++11 for
+# targets in test/*, when those tests need -std=c++17.
+# https://github.com/KhronosGroup/SPIRV-Tools/issues/5340
+# The bug is fixed in CMake 3.22.2
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.22.1")
+  if (${CMAKE_VERSION} VERSION_LESS "3.22.2")
+    cmake_policy(SET CMP0128 NEW)
+  endif()
+endif()
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+enable_testing()
+set(SPIRV_TOOLS "SPIRV-Tools")
+
+include(GNUInstallDirs)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# Require at least C++17
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 ###########################################################
 # Detect system
 ###########################################################
 
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(LINUX TRUE)
-elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
-    set(ANDROID TRUE)
-    set(CMAKE_CXX_FLAGS "-DANDROID_NDK_BUILD")
-elseif(WIN32)
-elseif(APPLE)
-elseif(FUCHSIA)
-    # NOTE: Building for Fuchsia requires a Fuchsia CMake-based SDK.
-    # See https://fuchsia-review.googlesource.com/c/fuchsia/+/379673
-    find_package(FuchsiaLibraries)
+option(ENABLE_RTTI "Enables RTTI" OFF)
+option(SPIRV_ALLOW_TIMERS "Allow timers via clock_gettime on supported platforms" ON)
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  add_definitions(-DSPIRV_LINUX)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    add_definitions(-DSPIRV_EMSCRIPTEN)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "CYGWIN")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+  add_definitions(-DSPIRV_MAC)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS")
+  add_definitions(-DSPIRV_IOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "tvOS")
+  add_definitions(-DSPIRV_TVOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "visionOS")
+  add_definitions(-DSPIRV_VISIONOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
+  add_definitions(-DSPIRV_ANDROID)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
+  add_definitions(-DSPIRV_FREEBSD)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "OpenBSD")
+  add_definitions(-DSPIRV_OPENBSD)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
+  add_definitions(-DSPIRV_FUCHSIA)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
+  add_definitions(-DSPIRV_GNU)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "QNX")
+  add_definitions(-DSPIRV_QNX)
 else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
@@ -84,75 +123,12 @@ if(CMAKE_OSX_ARCHITECTURES)
     endif()
 endif()
 
-set(CMAKE_MACOSX_RPATH TRUE)
-
-if ((CMAKE_GENERATOR MATCHES "Visual Studio") AND (CMAKE_GENERATOR_TOOLSET STREQUAL ""))
-  message(WARNING "Visual Studio generators use the x86 host compiler by "
-                  "default, even for 64-bit targets. This can result in linker "
-                  "instability and out of memory errors. To use the 64-bit "
-                  "host compiler, pass -Thost=x64 on the CMake command line.")
-endif()
-
-# Use CCache if available
-find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
-    message(STATUS "Using ccache")
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif()
-
-###########################################################
-# Install Gerrit commit hook
-###########################################################
-
-if(NOT EXISTS ${CMAKE_SOURCE_DIR}/.git/hooks/commit-msg)
-    message(WARNING "
-        .git/hooks/commit-msg was not found.
-        Downloading from https://gerrit-review.googlesource.com/tools/hooks/commit-msg...
-    ")
-
-    file(DOWNLOAD https://gerrit-review.googlesource.com/tools/hooks/commit-msg ${CMAKE_SOURCE_DIR}/commit-msg)
-
-    file(COPY ${CMAKE_SOURCE_DIR}/commit-msg
-         DESTINATION ${CMAKE_SOURCE_DIR}/.git/hooks/
-         FILE_PERMISSIONS
-           OWNER_READ OWNER_WRITE OWNER_EXECUTE
-           GROUP_READ GROUP_WRITE GROUP_EXECUTE
-           WORLD_READ WORLD_EXECUTE)
-    file(REMOVE ${CMAKE_SOURCE_DIR}/commit-msg)
-endif()
-
-###########################################################
-# Host libraries
-###########################################################
-
-if(LINUX)
-    include(CheckSymbolExists)
-    check_symbol_exists(mallinfo malloc.h HAVE_MALLINFO)
-    check_symbol_exists(mallinfo2 malloc.h HAVE_MALLINFO2)
-endif()
-
-if(SWIFTSHADER_BUILD_WSI_DIRECTFB)
-    find_library(DIRECTFB directfb)
-    find_path(DIRECTFB_INCLUDE_DIR directfb/directfb.h)
-endif(SWIFTSHADER_BUILD_WSI_DIRECTFB)
-if(SWIFTSHADER_BUILD_WSI_D2D)
-    find_library(D2D drm)
-    find_path(D2D_INCLUDE_DIR libdrm/drm.h)
-endif(SWIFTSHADER_BUILD_WSI_D2D)
-
-###########################################################
-# Options
-###########################################################
-
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build: Debug Release MinSizeRel RelWithDebInfo." FORCE)
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release MinSizeRel RelWithDebInfo)
-endif()
-
-function(option_if_not_defined name description default)
-    if(NOT DEFINED ${name})
-        option(${name} ${description} ${default})
+  # For MinGW cross compile, statically link to the C++ runtime.
+  # But it still depends on MSVCRT.dll.
+  if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    if (NOT MSVC)
+      set_target_properties(${TARGET} PROPERTIES
+        LINK_FLAGS -static -static-libgcc -static-libstdc++)
     endif()
 endfunction()
 
@@ -163,88 +139,18 @@ if(LINUX)
     option_if_not_defined(SWIFTSHADER_BUILD_WSI_D2D "Build the Direct-to-Display WSI support" FALSE)
 endif()
 
-option_if_not_defined(SWIFTSHADER_BUILD_PVR "Build the PowerVR examples" FALSE)
-option_if_not_defined(SWIFTSHADER_BUILD_TESTS "Build unit tests" TRUE)
-option_if_not_defined(SWIFTSHADER_BUILD_BENCHMARKS "Build benchmarks" FALSE)
+# Tests require Python3
+find_host_package(Python3 REQUIRED)
 
-option_if_not_defined(SWIFTSHADER_USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Studio" TRUE)
-
-option_if_not_defined(SWIFTSHADER_MSAN "Build with memory sanitizer" FALSE)
-option_if_not_defined(SWIFTSHADER_ASAN "Build with address sanitizer" FALSE)
-option_if_not_defined(SWIFTSHADER_TSAN "Build with thread sanitizer" FALSE)
-option_if_not_defined(SWIFTSHADER_UBSAN "Build with undefined behavior sanitizer" FALSE)
-option_if_not_defined(SWIFTSHADER_EMIT_COVERAGE "Emit code coverage information" FALSE)
-option_if_not_defined(SWIFTSHADER_WARNINGS_AS_ERRORS "Treat all warnings as errors" TRUE)
-option_if_not_defined(SWIFTSHADER_DCHECK_ALWAYS_ON "Check validation macros even in release builds" FALSE)
-option_if_not_defined(REACTOR_EMIT_DEBUG_INFO "Emit debug info for JIT functions" FALSE)
-option_if_not_defined(REACTOR_EMIT_PRINT_LOCATION "Emit printing of location info for JIT functions" FALSE)
-option_if_not_defined(REACTOR_EMIT_ASM_FILE "Emit asm files for JIT functions" FALSE)
-option_if_not_defined(REACTOR_ENABLE_PRINT "Enable RR_PRINT macros" FALSE)
-option_if_not_defined(REACTOR_VERIFY_LLVM_IR "Check reactor-generated LLVM IR is valid even in release builds" FALSE)
-option_if_not_defined(SWIFTSHADER_LESS_DEBUG_INFO "Generate less debug info to reduce file size" FALSE)
-# option_if_not_defined(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER "Enable Vulkan debugger support" FALSE)  # TODO(b/251802301)
-option_if_not_defined(SWIFTSHADER_ENABLE_ASTC "Enable ASTC compressed textures support" TRUE)  # TODO(b/150130101)
-
-if(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER)
-    set(SWIFTSHADER_BUILD_CPPDAP TRUE)
-endif()
-
-set(DEFAULT_REACTOR_BACKEND "LLVM")
-set(REACTOR_BACKEND ${DEFAULT_REACTOR_BACKEND} CACHE STRING "JIT compiler back-end used by Reactor")
-set_property(CACHE REACTOR_BACKEND PROPERTY STRINGS LLVM LLVM-Submodule Subzero)
-
-set(DEFAULT_SWIFTSHADER_LLVM_VERSION "10.0")
-set(SWIFTSHADER_LLVM_VERSION ${DEFAULT_SWIFTSHADER_LLVM_VERSION} CACHE STRING "LLVM version to use")
-set_property(CACHE SWIFTSHADER_LLVM_VERSION PROPERTY STRINGS "10.0")
-
-# If defined, overrides the default optimization level of the current reactor backend.
-# Set to one of the rr::Optimization::Level enum values.
-set(REACTOR_DEFAULT_OPT_LEVEL "" CACHE STRING "Reactor default optimization level")
-set_property(CACHE REACTOR_DEFAULT_OPT_LEVEL PROPERTY STRINGS "None" "Less" "Default" "Aggressive")
-
-if(NOT DEFINED SWIFTSHADER_LOGGING_LEVEL)
-    set(SWIFTSHADER_LOGGING_LEVEL "Info" CACHE STRING "SwiftShader logging level")
-    set_property(CACHE SWIFTSHADER_LOGGING_LEVEL PROPERTY STRINGS "Verbose" "Debug" "Info" "Warn" "Error" "Fatal" "Disabled")
-endif()
-
-# LLVM disallows calling cmake . from the main LLVM dir, the reason is that
-# it builds header files that could overwrite the orignal ones. Here we
-# want to include LLVM as a subdirectory and even though it wouldn't cause
-# the problem, if cmake . is called from the main dir, the condition that
-# LLVM checkes, "CMAKE_CURRENT_SOURCE_DIR == CMAKE_CURRENT_BINARY_DIR" will be true. So we
-# disallow it ourselves too to. In addition if there are remining CMakeFiles
-# and CMakeCache in the directory, cmake .. from a subdirectory will still
-# try to build from the main directory so we instruct users to delete these
-# files when they get the error.
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
-    message(FATAL_ERROR "In source builds are not allowed by LLVM, please create a build/ directory and build from there. You may have to delete the CMakeCache.txt file and CMakeFiles directory that are next to the CMakeLists.txt.")
-endif()
-
-set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
-
-###########################################################
-# Directories
-###########################################################
-
-set(SWIFTSHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(SOURCE_DIR ${SWIFTSHADER_DIR}/src)
-set(THIRD_PARTY_DIR ${SWIFTSHADER_DIR}/third_party)
-set(TESTS_DIR ${SWIFTSHADER_DIR}/tests)
-
-###########################################################
-# Initialize submodules
-###########################################################
-
-function(InitSubmodule target submodule_dir)
-    if (NOT TARGET ${target})
-        if(NOT EXISTS ${submodule_dir}/.git)
-            message(WARNING "
-        Target ${target} from submodule ${submodule_dir} missing.
-        Running 'git submodule update --init' to download it:
-            ")
-
-            execute_process(COMMAND git -C ${SWIFTSHADER_DIR} submodule update --init ${submodule_dir})
-        endif()
+# Check for symbol exports on Linux.
+# At the moment, this check will fail on the OSX build machines for the Android NDK.
+# It appears they don't have objdump.
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  macro(spvtools_check_symbol_exports TARGET)
+    if (NOT "${SPIRV_SKIP_TESTS}")
+      add_test(NAME spirv-tools-symbol-exports-${TARGET}
+               COMMAND Python3::Interpreter
+               ${spirv-tools_SOURCE_DIR}/utils/check_symbol_exports.py "$<TARGET_FILE:${TARGET}>")
     endif()
 endfunction()
 
@@ -588,13 +494,23 @@ if(SWIFTSHADER_DCHECK_ALWAYS_ON)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DDCHECK_ALWAYS_ON")
 endif()
 
-if(SWIFTSHADER_WARNINGS_AS_ERRORS)
-    if(MSVC)
-        set(WARNINGS_AS_ERRORS "/WX")  # Treat all warnings as errors
-    else()
-        set(WARNINGS_AS_ERRORS "-Werror")  # Treat all warnings as errors
-    endif()
+# Currently iOS and Android are very similar.
+# They both have their own packaging (APP/APK).
+# Which makes regular executables/testing problematic.
+#
+# Currently the only deliverables for these platforms are
+# libraries (either STATIC or SHARED).
+#
+# Furthermore testing is equally problematic.
+if (IOS OR ANDROID)
+  set(SPIRV_SKIP_EXECUTABLES ON)
 endif()
+
+option(SPIRV_SKIP_EXECUTABLES "Skip building the executable and tests along with the library")
+if (SPIRV_SKIP_EXECUTABLES)
+  set(SPIRV_SKIP_TESTS ON)
+endif()
+option(SPIRV_SKIP_TESTS "Skip building tests along with the library")
 
 # Enable Reactor Print() functionality in Debug/RelWithDebInfo builds or when explicitly enabled.
 if(CMAKE_BUILD_TYPE MATCHES "Deb")
@@ -608,8 +524,28 @@ if(REACTOR_EMIT_PRINT_LOCATION)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_EMIT_PRINT_LOCATION")
 endif()
 
-if(REACTOR_EMIT_ASM_FILE)
-    list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_EMIT_ASM_FILE")
+add_subdirectory(source)
+add_subdirectory(tools)
+
+add_subdirectory(test)
+add_subdirectory(examples)
+
+if(ENABLE_SPIRV_TOOLS_INSTALL)
+  install(
+    FILES
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/libspirv.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/libspirv.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/optimizer.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/linker.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/instrument.hpp
+    DESTINATION
+      ${CMAKE_INSTALL_INCLUDEDIR}/spirv-tools/)
+endif(ENABLE_SPIRV_TOOLS_INSTALL)
+
+if (NOT "${SPIRV_SKIP_TESTS}")
+  add_test(NAME spirv-tools-copyrights
+           COMMAND Python3::Interpreter utils/check_copyright.py
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 if(REACTOR_EMIT_DEBUG_INFO)
