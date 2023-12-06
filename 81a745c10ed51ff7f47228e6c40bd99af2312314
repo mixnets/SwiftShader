@@ -16,6 +16,23 @@
       "message": "Hello, I want to fix the following warning mentioned in https://bugs.chromium.org/p/chromium/issues/detail?id\u003d1487454#c29\n\n```\n[115 processes, 26936/99136 @ 376.6/s : 71.530s ] ACTION //third_party/swift..._party/SPIRV-Tools:spvtools_build_version(//build/toolchain/linux:clang_x64)\n/home/ho/chromium/src/out/test/../../third_party/swiftshader/third_party/SPIRV-Tools/utils/update_build_version.py:135: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).\n   iso_date \u003d datetime.datetime.utcfromtimestamp(timestamp).isoformat()\n```\n\nI see that the warning has been fixed in upstream[1] and I now want to sync the modifications into the Chromium codebase.\n\n[1] https://github.com/KhronosGroup/SPIRV-Tools/commit/c8510a5e890efc019102f497992e395374f15129\n\nIn addition, I have a request: Could you grant tryjobs and other similar permissions to me?",
       "revId": "81a745c10ed51ff7f47228e6c40bd99af2312314",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "945d1b7a_2eddbf7f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101831
+      },
+      "writtenOn": "2023-12-06T18:15:49Z",
+      "side": 1,
+      "message": "+Ben\n\nBen, could you please take a look at these two CLs of mine related to updating SPIR-V Tools? Thanks!",
+      "revId": "81a745c10ed51ff7f47228e6c40bd99af2312314",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
