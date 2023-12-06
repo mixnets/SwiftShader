@@ -1,0 +1,8 @@
+<<<<<<< PATCH SET (b532dc Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
+APP_ABI := all
+APP_BUILD_SCRIPT := Android.mk
+APP_STL := c++_static
+APP_PLATFORM := android-24
+NDK_TOOLCHAIN_VERSION := 4.9
+=======
+>>>>>>> BASE      (4befa3 Remove Jonah from OWNERS)
