@@ -1,3 +1,30 @@
+<<<<<<< PATCH SET (1e42bd Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
+.clang_complete
+.ycm_extra_conf.py*
+*.pyc
+compile_commands.json
+/build*/
+/buildtools/
+/external/abseil_cpp/
+/external/googletest
+/external/SPIRV-Headers
+/external/spirv-headers
+/external/effcee
+/external/re2
+/external/protobuf
+/out
+/TAGS
+/third_party/llvm-build/
+/testing
+/tools/clang/
+/utils/clang-format-diff.py
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-spirv-tools
+bazel-SPIRV-Tools
+bazel-testlogs
+=======
 # Ignored folders #
 /cache/
 /lib/
@@ -9,6 +36,7 @@
 CMakeFiles/
 .idea/
 cmake-build-debug/
+>>>>>>> BASE      (4befa3 Remove Jonah from OWNERS)
 
 # Per user vscode config files.
 .vscode/launch.json
