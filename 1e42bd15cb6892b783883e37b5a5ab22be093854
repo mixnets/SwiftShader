@@ -52,6 +52,24 @@
       "parentUuid": "50738610_6049991e",
       "revId": "1e42bd15cb6892b783883e37b5a5ab22be093854",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d30a2afc_0fabf257",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-12-06T16:07:11Z",
+      "side": 1,
+      "message": "Thanks. Though it looks like the files outside `third_party/SPIRV-Tools` are not correctly merged. Like, the README of swiftshader is being replaced with that of SPIR-V Tools.\n\nIt might be easier to start from scratch rather than rebasing this CL to avoid such mistakes.",
+      "parentUuid": "0f41d89b_d284b083",
+      "revId": "1e42bd15cb6892b783883e37b5a5ab22be093854",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
