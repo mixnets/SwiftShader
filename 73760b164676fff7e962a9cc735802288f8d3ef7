@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1daa6310_722c05b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2023-12-06T13:39:08Z",
+      "side": 1,
+      "message": "As you\u0027ve noticed, this is breaking ANGLE tests. Is this being accompanied by an ANGEL change?",
+      "revId": "73760b164676fff7e962a9cc735802288f8d3ef7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
