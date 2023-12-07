@@ -16,6 +16,24 @@
       "message": "This should have been upstreamed [to SPIR-V Tools](https://github.com/KhronosGroup/SPIRV-Tools), as it\u0027ll get wiped out on the next roll of SPIR-V tools (e.g. now).",
       "revId": "a147f6c5192a41cea8f2e75bab3ac8176afb20f0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95420779_e9e26887",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-12-07T12:43:02Z",
+      "side": 1,
+      "message": "I just tried to upstream it, but it\u0027s already colliding.",
+      "parentUuid": "d859205c_654b35b7",
+      "revId": "a147f6c5192a41cea8f2e75bab3ac8176afb20f0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
