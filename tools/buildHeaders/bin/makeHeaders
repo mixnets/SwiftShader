@@ -1,0 +1,12 @@
+<<<<<<< HEAD   (cfadad Update SPIR-V Tools to 6b4f0c9d0)
+=======
+#!/usr/bin/env bash
+
+set -ex
+
+python3 bin/makeExtinstHeaders.py
+
+cd ../../include/spirv/unified1
+../../../tools/buildHeaders/build/install/bin/buildSpvHeaders -H spirv.core.grammar.json
+dos2unix spirv.* spv.*
+>>>>>>> BRANCH (8a9622 Squashed 'third_party/SPIRV-Headers/' changes from 268a06176)
