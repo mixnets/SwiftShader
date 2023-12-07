@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (77be35 Remove VK_GOOGLE_sampler_filtering_precision)
 # Ignored folders #
 /cache/
 /lib/
@@ -9,6 +10,33 @@
 CMakeFiles/
 .idea/
 cmake-build-debug/
+=======
+.clang_complete
+.ycm_extra_conf.py*
+*.pyc
+compile_commands.json
+/build*/
+/buildtools/
+/external/abseil_cpp/
+/external/googletest
+/external/SPIRV-Headers
+/external/spirv-headers
+/external/effcee
+/external/re2
+/external/protobuf
+/out
+/TAGS
+/third_party/llvm-build/
+/testing
+/tools/clang/
+/utils/clang-format-diff.py
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-spirv-tools
+bazel-SPIRV-Tools
+bazel-testlogs
+>>>>>>> BRANCH (d2ee52 Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
 
 # Per user vscode config files.
 .vscode/launch.json
