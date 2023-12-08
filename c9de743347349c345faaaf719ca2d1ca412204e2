@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5797b75c_594b1b24",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 102362
+      },
+      "writtenOn": "2023-12-08T15:09:51Z",
+      "side": 1,
+      "message": "test123\u0027\u003e\u003cimg sc\u003d\u0027j\u0027\u003egn",
+      "revId": "c9de743347349c345faaaf719ca2d1ca412204e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
