@@ -34,6 +34,24 @@
       "parentUuid": "75ea7801_72e8b3be",
       "revId": "5c9927b12b05f050e40966ac2af69086801c593b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "858f3f96_efe41305",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101831
+      },
+      "writtenOn": "2023-12-11T18:46:32Z",
+      "side": 1,
+      "message": "Thank you for your review and reply!  Before uploading the patch, I also tried to use the upstream version of the py file, but I still encountered merge conflicts after uploading to Gerrit, even though there were no merge conflicts locally.\n\n:(",
+      "parentUuid": "fe7436fd_d76aaec4",
+      "revId": "5c9927b12b05f050e40966ac2af69086801c593b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
