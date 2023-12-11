@@ -1,0 +1,12 @@
+<<<<<<< HEAD   (77be35 Remove VK_GOOGLE_sampler_filtering_precision)
+=======
+#!/usr/bin/env bash
+
+set -ex
+
+python3 bin/makeExtinstHeaders.py
+
+cd ../../include/spirv/unified1
+../../../tools/buildHeaders/build/install/bin/buildSpvHeaders -H spirv.core.grammar.json
+dos2unix spirv.* spv.*
+>>>>>>> BRANCH (14eb05 Squashed 'third_party/SPIRV-Headers/' changes from 268a06176)
