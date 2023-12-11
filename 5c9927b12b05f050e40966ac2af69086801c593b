@@ -16,6 +16,24 @@
       "message": "+Ben\n\nBen, could you please take a look at these two CLs of mine related to updating SPIR-V Tools? Thanks!",
       "revId": "5c9927b12b05f050e40966ac2af69086801c593b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe7436fd_d76aaec4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2023-12-11T15:10:22Z",
+      "side": 1,
+      "message": "Thank you for your contribution.\nI took a look at this, and found a few issues:\n(a) In order for this to compile, we also need to update SPIR-V Headers\n(b) Even with SPIR-V Headers updated, we get a warning-as-error about uninitialized variables (fix: https://github.com/KhronosGroup/SPIRV-Tools/pull/5501)\n(c) There was a change made to `third_party/SPIRV-Tools/utils/update_build_version.py` which was never upstreamed. I see you did some manual merging, but the general policy to to take the upstream version to avoid continued divergence and repeat merge conficts.\n\nWhen the SPIR-V Tools change lands, I\u0027ll try another import of both SPIR-V headers and tools.",
+      "parentUuid": "75ea7801_72e8b3be",
+      "revId": "5c9927b12b05f050e40966ac2af69086801c593b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
