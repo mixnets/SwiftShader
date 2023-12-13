@@ -16,6 +16,24 @@
       "message": "As you\u0027ve noticed, this is breaking ANGLE tests. Is this being accompanied by an ANGEL change?",
       "revId": "73760b164676fff7e962a9cc735802288f8d3ef7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "33a189b7_7621ca74",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101466
+      },
+      "writtenOn": "2023-12-13T23:58:19Z",
+      "side": 1,
+      "message": "It broke ANGLE tests because I messed up the build file, so the dynamic library on Windows was missing some symbol export information. That is fixed in the latest patchset.",
+      "parentUuid": "1daa6310_722c05b7",
+      "revId": "73760b164676fff7e962a9cc735802288f8d3ef7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
