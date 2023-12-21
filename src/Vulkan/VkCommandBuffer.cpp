@@ -911,6 +911,46 @@ private:
 	const VkBool32 primitiveRestartEnable;
 };
 
+class CmdSetVertexInput : public vk::CommandBuffer::Command
+{
+public:
+	CmdSetVertexInput(uint32_t vertexBindingDescriptionCount,
+	                  const VkVertexInputBindingDescription2EXT *pVertexBindingDescriptions,
+	                  uint32_t vertexAttributeDescriptionCount,
+	                  const VkVertexInputAttributeDescription2EXT *pVertexAttributeDescriptions)
+	    :  // Note: the pNext values are unused, so this copy is currently safe.
+	    vertexBindingDescriptions(pVertexBindingDescriptions, pVertexBindingDescriptions + vertexBindingDescriptionCount)
+	    , vertexAttributeDescriptions(pVertexAttributeDescriptions, pVertexAttributeDescriptions + vertexAttributeDescriptionCount)
+	{}
+
+	void execute(vk::CommandBuffer::ExecutionState &executionState) override
+	{
+		for(const auto &desc : vertexBindingDescriptions)
+		{
+			DynamicVertexInputBindingState &state = executionState.dynamicState.vertexInputBindings[desc.binding];
+			state.inputRate = desc.inputRate;
+			// TODO: fix interaction with dynamic vertex stride set through
+			// vkCmdBindVertexBuffers2.  Currently, CmdVertexBufferBind directly sets executionState.vertexInputBindings, either it should also set this dynamic state at the same time (and applyState would set executionState.vertexInputBindings), or we can set executionState.vertexInputBindings[binding].stride right here and not have to set it in applyState.  The latter should work given Inputs::getInstanceStride.  In that case, `stride` doesn't need to be set here and can be removed
+			state.stride = desc.stride;
+			state.divisor = desc.divisor;
+		}
+
+		for(const auto &desc : vertexAttributeDescriptions)
+		{
+			DynamicVertexInputAttributeState &state = executionState.dynamicState.vertexInputAttributes[desc.location];
+			state.format = desc.format;
+			state.offset = desc.offset;
+			state.binding = desc.binding;
+		}
+	}
+
+	std::string description() override { return "vkCmdSetVertexInputEXT()"; }
+
+private:
+	const std::vector<VkVertexInputBindingDescription2EXT> vertexBindingDescriptions;
+	const std::vector<VkVertexInputAttributeDescription2EXT> vertexAttributeDescriptions;
+};
+
 class CmdDrawBase : public vk::CommandBuffer::Command
 {
 public:
@@ -2083,6 +2123,15 @@ void CommandBuffer::setDepthBiasEnable(VkBool32 depthBiasEnable)
 void CommandBuffer::setPrimitiveRestartEnable(VkBool32 primitiveRestartEnable)
 {
 	addCommand<::CmdSetPrimitiveRestartEnable>(primitiveRestartEnable);
+}
+
+void CommandBuffer::setVertexInput(uint32_t vertexBindingDescriptionCount,
+                                   const VkVertexInputBindingDescription2EXT *pVertexBindingDescriptions,
+                                   uint32_t vertexAttributeDescriptionCount,
+                                   const VkVertexInputAttributeDescription2EXT *pVertexAttributeDescriptions)
+{
+	addCommand<::CmdSetVertexInput>(vertexBindingDescriptionCount, pVertexBindingDescriptions,
+	                                vertexAttributeDescriptionCount, pVertexAttributeDescriptions);
 }
 
 void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, const PipelineLayout *pipelineLayout,

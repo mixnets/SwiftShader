@@ -133,6 +133,20 @@ struct BlendState : sw::Memset<BlendState>
 	VkBlendOp blendOperationAlpha;
 };
 
+struct DynamicVertexInputBindingState
+{
+	VkVertexInputRate inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+	unsigned int stride = 0;
+	unsigned int divisor = 0;
+};
+
+struct DynamicVertexInputAttributeState
+{
+	VkFormat format = VK_FORMAT_UNDEFINED;
+	unsigned int offset = 0;
+	unsigned int binding = 0;
+};
+
 struct DynamicState
 {
 	VkViewport viewport = {};
@@ -163,6 +177,8 @@ struct DynamicState
 	VkBool32 rasterizerDiscardEnable = VK_FALSE;
 	VkBool32 depthBiasEnable = VK_FALSE;
 	VkBool32 primitiveRestartEnable = VK_FALSE;
+	DynamicVertexInputBindingState vertexInputBindings[MAX_VERTEX_INPUT_BINDINGS];
+	DynamicVertexInputAttributeState vertexInputAttributes[sw::MAX_INTERFACE_COMPONENTS / 4];
 };
 
 struct VertexInputInterfaceDynamicStateFlags

@@ -480,6 +480,8 @@ void VertexInputInterfaceState::applyState(const DynamicState &dynamicState)
 	{
 		topology = dynamicState.primitiveTopology;
 	}
+
+	// TODO: apply vertex input dynamic state
 }
 
 bool VertexInputInterfaceState::isDrawPoint(bool polygonModeAware, VkPolygonMode polygonMode) const
