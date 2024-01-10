@@ -52,6 +52,24 @@
       "parentUuid": "3e7300f4_5b6d8cf4",
       "revId": "02af31fe133a1631703bc5566eea064cb891f897",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e7e5f92_1d2bc685",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2024-01-10T18:22:01Z",
+      "side": 1,
+      "message": "Ahh thank you for pointing that out! I guess I just assumed that Gerrit would create the revert onto ToT.",
+      "parentUuid": "e56a7cb9_fb50d5d2",
+      "revId": "02af31fe133a1631703bc5566eea064cb891f897",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
