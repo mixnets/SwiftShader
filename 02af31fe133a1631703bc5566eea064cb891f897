@@ -16,6 +16,24 @@
       "message": "Logs show unrelated compile errors...\n\n```\n[  4%] Building CXX object third_party/astc-encoder/CMakeFiles/astc-encoder.dir/Source/astc_quantization.cpp.o\n/tmpfs/src/git/SwiftShader/third_party/astc-encoder/Source/astc_partition_tables.cpp:81:6: error: variable \u0027partition_tables_zapped\u0027 set but not used [-Werror,-Wunused-but-set-variable]\n        int partition_tables_zapped \u003d 0;\n            ^\n```\n\nNot sure what to do about that. Could you amend with a commit reword and try again, see if it goes away?",
       "revId": "02af31fe133a1631703bc5566eea064cb891f897",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e7300f4_5b6d8cf4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2024-01-10T17:07:26Z",
+      "side": 1,
+      "message": "I don\u0027t know anything about Kokoro but it looks like this should have been addressed by https://swiftshader-review.googlesource.com/c/SwiftShader/+/72508 . Does that need to be released/rolled-out somehow?",
+      "parentUuid": "0784ef5d_48479429",
+      "revId": "02af31fe133a1631703bc5566eea064cb891f897",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
