@@ -70,6 +70,24 @@
       "parentUuid": "e56a7cb9_fb50d5d2",
       "revId": "02af31fe133a1631703bc5566eea064cb891f897",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cec3cf75_f9ef5e76",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2024-01-10T18:24:45Z",
+      "side": 1,
+      "message": "No worries, that was surprising to me too!",
+      "parentUuid": "5e7e5f92_1d2bc685",
+      "revId": "02af31fe133a1631703bc5566eea064cb891f897",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
