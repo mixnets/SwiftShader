@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5454bd85_6f19bd72",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101646
+      },
+      "writtenOn": "2024-01-23T19:29:24Z",
+      "side": 1,
+      "message": "This appears to have broken SwS rolls into Chromium?\nhttps://crrev.com/c/5188616",
+      "revId": "f4819d2276b777e8d6dfb32b34c1130e7945f9b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
