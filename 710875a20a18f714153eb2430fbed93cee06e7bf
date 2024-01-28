@@ -16,6 +16,40 @@
       "message": "Hi, could anyone review my patch? Thanks very much!",
       "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d28487fa_be8a3890",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-01-28T19:47:42Z",
+      "side": 1,
+      "message": "Thank you for the contribution. I have a question to understand the context better.",
+      "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a07be702_8a67d9a7",
+        "filename": "src/Reactor/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-01-28T19:47:42Z",
+      "side": 1,
+      "message": "Why not use LLVM 16 everywhere? What\u0027s special about riscv64?",
+      "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
