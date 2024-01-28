@@ -50,6 +50,24 @@
       "message": "Why not use LLVM 16 everywhere? What\u0027s special about riscv64?",
       "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd00cf69_7ec093cf",
+        "filename": "src/Reactor/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-01-28T23:56:41Z",
+      "side": 1,
+      "message": "It\u0027s because swiftshader doesn\u0027t build on riscv with llvm 10 to 15(at least when building chromium). Previously I submitted a patch to fix build with llvm 15: https://swiftshader-review.googlesource.com/c/SwiftShader/+/72208\n\nOf course it would be better to use llvm 16 everywhere. But I don\u0027t know if it works for other platforms. I am just being too careful to not break anything.\n\nPlease let me know if I should make llvm16 the default for all platforms. Thanks for your review.",
+      "parentUuid": "a07be702_8a67d9a7",
+      "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
