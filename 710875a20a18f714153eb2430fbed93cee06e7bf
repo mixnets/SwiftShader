@@ -68,6 +68,24 @@
       "parentUuid": "a07be702_8a67d9a7",
       "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e699739a_d95ceb7e",
+        "filename": "src/Reactor/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-01-29T16:50:34Z",
+      "side": 1,
+      "message": "Thanks, let\u0027s give it a shot! My main concern is using a different LLVM for RISCV means we don\u0027t get any testing done with LLVM16 ourselves, so I suggest just going for LLVM16 everywhere and hope for the best.\n\nIn the process, if you happen to remove `#ifdef`s for LLVM\u003c16, that would be appreciated 😊",
+      "parentUuid": "fd00cf69_7ec093cf",
+      "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
