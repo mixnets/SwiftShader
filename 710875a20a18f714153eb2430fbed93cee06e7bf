@@ -104,6 +104,24 @@
       "parentUuid": "e699739a_d95ceb7e",
       "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68b5c368_a3a479cd",
+        "filename": "src/Reactor/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-01-30T02:03:39Z",
+      "side": 1,
+      "message": "That\u0027s probably just the path where LLVM is built, and someone\u0027s hardcoded it to 10. I\u0027m going to trigger CQ and CTS to make sure SwiftShader passes the tests with LLVM16.",
+      "parentUuid": "db38f890_853a92bc",
+      "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
