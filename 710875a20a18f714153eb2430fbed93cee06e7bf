@@ -86,6 +86,24 @@
       "parentUuid": "fd00cf69_7ec093cf",
       "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db38f890_853a92bc",
+        "filename": "src/Reactor/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-01-30T00:50:47Z",
+      "side": 1,
+      "message": "I modified the patch and it seems that kokoro is happy with that. But I see 10.0 in the kokoro logs. Does it means that the CI is still testing with llvm 10?",
+      "parentUuid": "e699739a_d95ceb7e",
+      "revId": "710875a20a18f714153eb2430fbed93cee06e7bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
