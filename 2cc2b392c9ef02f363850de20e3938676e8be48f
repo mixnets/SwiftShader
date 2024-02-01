@@ -34,6 +34,24 @@
       "parentUuid": "9726a5cf_b8fb570f",
       "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d1d4d94_5147e7b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-02-01T04:37:38Z",
+      "side": 1,
+      "message": "\u003e Can we take a look at how to fix this? If it is not easy to fix, can we consider reverting the change?\n\u003e \n\u003e Is it possible due to missing configs for windows/: https://swiftshader.googlesource.com/SwiftShader.git/+/2cc2b392c9ef02f363850de20e3938676e8be48f/third_party/llvm-16.0/configs/?\n\nLooks like it\u0027s easy to fix but we need someone with a Windows machine to run `third_party/llvm-16.0/scripts/update.py` for Windows platform and submit the generated files.",
+      "parentUuid": "2d124d96_dfa39686",
+      "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
