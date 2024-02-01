@@ -16,6 +16,23 @@
       "message": "PTAL!",
       "revId": "643f13688e27a623a09e1bf2d654bdc344018107",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5bf24cca_cc6a0ce1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-02-01T09:52:18Z",
+      "side": 1,
+      "message": "Sorry, I didn\u0027t see this one and opened another one here: https://swiftshader-review.googlesource.com/c/SwiftShader/+/73089\n\nBut BUILD.gn is a generated file not meant to be edited by hand.",
+      "revId": "643f13688e27a623a09e1bf2d654bdc344018107",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
