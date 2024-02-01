@@ -70,6 +70,24 @@
       "parentUuid": "8d1d4d94_5147e7b6",
       "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0fe0ab1_92833c02",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-02-01T05:01:33Z",
+      "side": 1,
+      "message": "Sorry, I don\u0027t work on SwiftShader. Maybe @syoussefi@chromium.org knows more about how to maintain these config files.",
+      "parentUuid": "41082cc9_d1ff83b1",
+      "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
