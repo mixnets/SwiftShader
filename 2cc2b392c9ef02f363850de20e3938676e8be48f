@@ -177,6 +177,23 @@
       "message": "I didn\u0027t realize this hadn\u0027t been done, but this also need to update SwiftShader\u0027s version of LLVM to LLVM 16 in third_party. It will also significantly increase the size of the library (which is why we hadn\u0027t done it before).",
       "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "47a4ef5d_f8a7900b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5885
+      },
+      "writtenOn": "2024-02-01T17:01:50Z",
+      "side": 1,
+      "message": "Could we revert this until we\u0027ve had a successful swiftshader roll? I\u0027m guessing this will be fairly hard to roll in (with reverts etc), and the autoroller has been stuck for weeks now.",
+      "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
