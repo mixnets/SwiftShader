@@ -124,6 +124,24 @@
       "parentUuid": "e3dcf46e_cda9ded9",
       "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7abc4dd2_88e39171",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-02-01T08:37:12Z",
+      "side": 1,
+      "message": "Looks like fuchsia is missing the generated config files as well.\n\nI don\u0027t know what exactly caused mac CI to fail.\n\nIn debug build, it looks like more source files are needed. I opened https://swiftshader-review.googlesource.com/c/SwiftShader/+/73088 to fix it.",
+      "parentUuid": "79a70815_f821a319",
+      "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
