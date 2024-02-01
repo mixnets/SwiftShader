@@ -16,6 +16,24 @@
       "message": "This change breaks the windows build on ANGLE: https://chromium-review.googlesource.com/c/angle/angle/+/5252496.\n\nCompilation error:\n\n```\nIn file included from ../../third_party/SwiftShader/third_party/llvm-16.0/llvm/lib/Target/ARM/TargetInfo/ARMTargetInfo.cpp:10:\nIn file included from ../../third_party/SwiftShader/third_party/llvm-16.0/llvm/include\\llvm/MC/TargetRegistry.h:22:\nIn file included from ../../third_party/SwiftShader/third_party/llvm-16.0/llvm/include\\llvm/ADT/StringRef.h:15:\n../../third_party/SwiftShader/third_party/llvm-16.0/llvm/include\\llvm/Support/Compiler.h(18,10): fatal error: \u0027llvm/Config/llvm-config.h\u0027 file not found\n   18 | #include \"llvm/Config/llvm-config.h\"\n      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~\n1 error generated.\n```\n\nCan we take a look at how to fix this? If it is not easy to fix, can we consider reverting the change?\n\nIs it possible due to missing configs for windows/: https://swiftshader.googlesource.com/SwiftShader.git/+/2cc2b392c9ef02f363850de20e3938676e8be48f/third_party/llvm-16.0/configs/?",
       "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d124d96_dfa39686",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-02-01T04:23:31Z",
+      "side": 1,
+      "message": "Maybe we should merge patchset 1 instead if some platforms are still not ready for llvm16.",
+      "parentUuid": "9726a5cf_b8fb570f",
+      "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
