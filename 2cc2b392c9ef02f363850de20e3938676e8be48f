@@ -194,6 +194,24 @@
       "message": "Could we revert this until we\u0027ve had a successful swiftshader roll? I\u0027m guessing this will be fairly hard to roll in (with reverts etc), and the autoroller has been stuck for weeks now.",
       "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d62ee2bc_b07c8240",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-02-01T19:04:53Z",
+      "side": 1,
+      "message": "I\u0027ve created a revert for this to unblock a Chromium roll. There\u0027s an MSAN fix that landed after this that\u0027s kind of important.\n\nNo need to be alarmed, and this is not an indication that we don\u0027t want this change (so, don\u0027t feel bad 😊). Let\u0027s reland this right after the roll, and you can continue fixing the build issues.",
+      "parentUuid": "93aacd70_62e7eb8a",
+      "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
