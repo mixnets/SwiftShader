@@ -1424,7 +1424,7 @@ Value *Nucleus::createSExt(Value *v, Type *destType)
 Value *Nucleus::createFPToUI(Value *v, Type *destType)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateFPToUI(V(v), T(destType)));
+	return V(jit->builder->CreateFreeze(jit->builder->CreateFPToUI(V(v), T(destType))));
 }
 
 Value *Nucleus::createFPToSI(Value *v, Type *destType)
@@ -1893,11 +1893,11 @@ RValue<Int> SignMask(RValue<Byte8> x)
 
 //	RValue<Byte8> CmpGT(RValue<Byte8> x, RValue<Byte8> y)
 //	{
-//#if defined(__i386__) || defined(__x86_64__)
+// #if defined(__i386__) || defined(__x86_64__)
 //		return x86::pcmpgtb(x, y);   // FIXME: Signedness
-//#else
+// #else
 //		return As<Byte8>(V(lowerPCMP(llvm::ICmpInst::ICMP_SGT, V(x.value()), V(y.value()), T(Byte8::type()))));
-//#endif
+// #endif
 //	}
 
 RValue<Byte8> CmpEQ(RValue<Byte8> x, RValue<Byte8> y)
@@ -2442,11 +2442,11 @@ const UInt &operator--(UInt &val)  // Pre-decrement
 
 //	RValue<UInt> RoundUInt(RValue<Float> cast)
 //	{
-//#if defined(__i386__) || defined(__x86_64__)
+// #if defined(__i386__) || defined(__x86_64__)
 //		return x86::cvtss2si(val);   // FIXME: Unsigned
-//#else
+// #else
 //		return IfThenElse(cast > 0.0f, Int(cast + 0.5f), Int(cast - 0.5f));
-//#endif
+// #endif
 //	}
 
 Type *UInt::type()
