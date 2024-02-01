@@ -142,6 +142,24 @@
       "parentUuid": "79a70815_f821a319",
       "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93aacd70_62e7eb8a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-02-01T09:45:59Z",
+      "side": 1,
+      "message": "About the mac CI failure, I guess that\u0027s related to filesystem case-insensitivity, which caused llvm/lib/DebugInfo/DWARF/DWARFCompileUnit.cpp and\nllvm/lib/CodeGen/AsmPrinter/DwarfCompileUnit.cpp compiles to the same object file. I am not sure.\n\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/73089 might fix it.",
+      "parentUuid": "7abc4dd2_88e39171",
+      "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
