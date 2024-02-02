@@ -212,6 +212,24 @@
       "parentUuid": "93aacd70_62e7eb8a",
       "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "280b2476_686acb8e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-02-02T01:11:43Z",
+      "side": 1,
+      "message": "Hi, I suppose 73089 and 73088 will fix most CI problems. The only CI problem left is fuchsia.\n\ndocs/LLVM.md mentions that\n\n\u003e Also note that for android and fuchsia, the config is\nclosest to that of Linux, but you will likely have to manually tweak the configs\n(in particular, `configs/\u003cplatform\u003e/include/llvm/Config/config.h`).\n\nI could run update.py for fuchsia on my linux machine. But I lack the expertise to tweak the configs for fuchsia. So this should probably be done by someone with fuchsia expertise.",
+      "parentUuid": "d62ee2bc_b07c8240",
+      "revId": "2cc2b392c9ef02f363850de20e3938676e8be48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
