@@ -552,6 +552,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo *pCre
 	TRACE("(const VkInstanceCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkInstance* pInstance = %p)",
 	      pCreateInfo, pAllocator, pInstance);
 
+	WARN("do not submit");
+
 	initializeLibrary();
 
 	// ICD interface rule for version 5 of the interface:
