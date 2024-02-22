@@ -51,6 +51,24 @@
       "parentUuid": "b9e33e59_3f178fb2",
       "revId": "067c329b119ee469db76fbb7c5453bd38a8ea6b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a813fba_c82e5d41",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2137,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2024-02-22T18:57:38Z",
+      "side": 1,
+      "message": "Spoke too soon. Dropping midpoint for now.",
+      "parentUuid": "0b3a5524_b7cd86cd",
+      "revId": "067c329b119ee469db76fbb7c5453bd38a8ea6b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
