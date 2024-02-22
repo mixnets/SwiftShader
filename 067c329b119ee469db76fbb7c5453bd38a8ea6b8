@@ -16,6 +16,23 @@
       "message": "Still need to look into the dEQP-VK.wsi.xcb.maintenance1.scaling.resize_window.continuous.aspect_stretch.center_min.same_size_and_aspect failure.",
       "revId": "067c329b119ee469db76fbb7c5453bd38a8ea6b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9e33e59_3f178fb2",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2137,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2024-02-22T01:02:23Z",
+      "side": 1,
+      "message": "From chat: should we be exposing midpoint feature as well given the sampler seems to be trying to account for?\n\nOK to deal with as followup as long as we understand whether there\u0027s a test bug etc.",
+      "revId": "067c329b119ee469db76fbb7c5453bd38a8ea6b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
