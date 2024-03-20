@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "df6e8e7e_135f115c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2024-03-20T15:56:44Z",
+      "side": 1,
+      "message": "Looks like this is failing to build with LLVM 10:\n```/src/swiftshader/src/Reactor/LLVMJIT.cpp:50:10: fatal error: llvm/TargetParser/Host.h: No such file or directory\n   50 | #include \"llvm/TargetParser/Host.h\"\n      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~\ncompilation terminated.```",
+      "revId": "d105168745400bfe6341da58e10c0e61942b5109",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
