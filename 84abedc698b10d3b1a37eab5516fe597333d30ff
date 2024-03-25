@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5959c123_17696eae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2024-03-25T17:34:01Z",
+      "side": 1,
+      "message": "Adding Ben to double-check things",
+      "revId": "84abedc698b10d3b1a37eab5516fe597333d30ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "311f5c0f_5f5d0820",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2024-03-25T17:34:01Z",
+      "side": 1,
+      "message": "Can this turn into a conditional typedef to minimize the macro usage blow? Something like:\n\n```\n#if LLVM_VERSION_MAJOR \u003c 18\nusing LLVMOptLevel \u003d llvm::CodeGenOpt::Level;\n#else\nusing LLVMOptLevel \u003d llvm::CodeGenOptLevel;\n#endif\n```",
+      "range": {
+        "startLine": 198,
+        "startChar": 0,
+        "endLine": 202,
+        "endChar": 6
+      },
+      "revId": "84abedc698b10d3b1a37eab5516fe597333d30ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "787d6641_f8a5fb98",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3800,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2024-03-25T17:34:01Z",
+      "side": 1,
+      "message": "Looks like this also has issues with LLVM 10. The prototype used to be:\n\n`lvm::PointerType* llvm::PointerType::getUnqual(llvm::Type*)`\n\n```\n/src/swiftshader/src/Reactor/LLVMReactor.cpp:3800:46: error: cannot convert \u0027llvm::LLVMContext\u0027 to \u0027llvm::Type*\u0027\n 3800 |  auto i8PtrTy \u003d llvm::PointerType::getUnqual(*jit-\u003econtext);\n      |                                              ^~~~~~~~~~~~~\n      |                                              |\n      |                                              llvm::LLVMContext\n```\n\nA wrapper for getting this function would help.",
+      "range": {
+        "startLine": 3800,
+        "startChar": 16,
+        "endLine": 3800,
+        "endChar": 60
+      },
+      "revId": "84abedc698b10d3b1a37eab5516fe597333d30ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
