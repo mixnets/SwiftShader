@@ -164,6 +164,11 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo2KHR *pCreateInfo, void *mem)
 					{
 						if(subpassDepthStencilResolves == nullptr)
 						{
+							// Align host memory to 8-bytes
+							const intptr_t memoryAsInt = reinterpret_cast<intptr_t>(hostMemory);
+							const intptr_t padding = memoryAsInt % sizeof(void *);
+							hostMemory += padding;
+
 							subpassDepthStencilResolves = reinterpret_cast<VkSubpassDescriptionDepthStencilResolve *>(hostMemory);
 							hostMemory += subpassCount * sizeof(VkSubpassDescriptionDepthStencilResolve);
 							for(uint32_t subpass = 0; subpass < subpassCount; subpass++)
@@ -401,7 +406,9 @@ size_t RenderPass::ComputeRequiredAllocationSize(const VkRenderPassCreateInfo2KH
 						{
 							// If any subpass uses DSR, then allocate a VkSubpassDescriptionDepthStencilResolve
 							// for all subpasses. This allows us to index into our DSR structs using the subpass index.
-							requiredMemory += sizeof(VkSubpassDescriptionDepthStencilResolve) * pCreateInfo->subpassCount;
+							//
+							// Add a few bytes for alignment if necessary
+							requiredMemory += sizeof(VkSubpassDescriptionDepthStencilResolve) * pCreateInfo->subpassCount + sizeof(void *);
 							usesDSR = true;
 						}
 						// For each subpass that actually uses DSR, allocate a VkAttachmentReference2.
