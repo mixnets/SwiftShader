@@ -16,6 +16,23 @@
       "message": "Gentle ping to reviewers.",
       "revId": "4683fd8c416e0661e93c80c2cd5b7e4620189ed5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69aa749e_d698c904",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-03-28T09:02:27Z",
+      "side": 1,
+      "message": "Any progress here? As I am an outside contributor, I can\u0027t vote verified +1.",
+      "revId": "4683fd8c416e0661e93c80c2cd5b7e4620189ed5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
