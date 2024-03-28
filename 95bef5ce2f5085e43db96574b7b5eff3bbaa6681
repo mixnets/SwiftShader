@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0985b965_c05b03fa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 21844
+      },
+      "writtenOn": "2024-03-28T13:58:43Z",
+      "side": 1,
+      "message": "I am not sure. how to test it?",
+      "parentUuid": "123d235c_e914f22d",
+      "revId": "95bef5ce2f5085e43db96574b7b5eff3bbaa6681",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9b19f66f_9f6fe3a2",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 1
@@ -48,6 +66,24 @@
       "writtenOn": "2024-03-28T03:47:44Z",
       "side": 1,
       "message": "You are now accidentally removing `VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT` support from these three formats.",
+      "revId": "95bef5ce2f5085e43db96574b7b5eff3bbaa6681",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "002ac513_7ceb2cc1",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2249,
+      "author": {
+        "id": 21844
+      },
+      "writtenOn": "2024-03-28T13:58:43Z",
+      "side": 1,
+      "message": "I don\u0027t understand. could you please explain?",
+      "parentUuid": "9b19f66f_9f6fe3a2",
       "revId": "95bef5ce2f5085e43db96574b7b5eff3bbaa6681",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
