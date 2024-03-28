@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "197be782_940b4aa7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-03-28T14:39:09Z",
+      "side": 1,
+      "message": "I believe @chrisforbes@google.com is looking into it",
+      "parentUuid": "0985b965_c05b03fa",
+      "revId": "95bef5ce2f5085e43db96574b7b5eff3bbaa6681",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9b19f66f_9f6fe3a2",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 1
@@ -84,6 +102,24 @@
       "side": 1,
       "message": "I don\u0027t understand. could you please explain?",
       "parentUuid": "9b19f66f_9f6fe3a2",
+      "revId": "95bef5ce2f5085e43db96574b7b5eff3bbaa6681",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be36908a_8f9a7190",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2249,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-03-28T14:39:09Z",
+      "side": 1,
+      "message": "Sorry my mistake, I accidentally read the body `return`ing instead of `|\u003d`",
+      "parentUuid": "002ac513_7ceb2cc1",
       "revId": "95bef5ce2f5085e43db96574b7b5eff3bbaa6681",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
