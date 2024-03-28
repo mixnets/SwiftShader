@@ -22,6 +22,30 @@
       },
       "revId": "f8ab6b743a66bc4b115d73bf899f400491079b69",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8a1e3e6_16023ea3",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-03-28T12:44:03Z",
+      "side": 1,
+      "message": "I found an `Align8` as a private helper in VkStructConversion.hpp, but didn\u0027t otherwise notice one with `git grep -i align`. Possible I missed it.\n\nI did realize the `padding`\u0027s name is wrong after I put it for review, I\u0027ll rename it 😊",
+      "parentUuid": "ee3a89ac_bd5756b3",
+      "range": {
+        "startLine": 170,
+        "startChar": 22,
+        "endLine": 170,
+        "endChar": 29
+      },
+      "revId": "f8ab6b743a66bc4b115d73bf899f400491079b69",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
