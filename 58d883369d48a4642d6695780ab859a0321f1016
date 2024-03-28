@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68e2417b_95804cf1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2024-03-28T19:17:03Z",
+      "side": 1,
+      "message": "While we\u0027re trying to fix regres -- have you verified locally that all the dEQP tests for these formats pass?\n\nI would expect to have to add support both in the sampler and in the color attachment handling.",
+      "revId": "58d883369d48a4642d6695780ab859a0321f1016",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
