@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee3a89ac_bd5756b3",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2024-03-28T09:10:16Z",
+      "side": 1,
+      "message": "übernit: Technically, this isn\u0027t padding but more misalignment. `alignment-padding` is padding. Not that it matters much. There\u0027s almost certainly an align function somewhere in swiftshader.",
+      "range": {
+        "startLine": 170,
+        "startChar": 22,
+        "endLine": 170,
+        "endChar": 29
+      },
+      "revId": "f8ab6b743a66bc4b115d73bf899f400491079b69",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
