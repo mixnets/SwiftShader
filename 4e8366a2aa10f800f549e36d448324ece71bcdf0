@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1d241ad_33fdf9fa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101981
+      },
+      "writtenOn": "2024-03-28T09:01:29Z",
+      "side": 1,
+      "message": "Any progress here? As I am an outside contributor, I can\u0027t vote verified +1.",
+      "revId": "4e8366a2aa10f800f549e36d448324ece71bcdf0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
