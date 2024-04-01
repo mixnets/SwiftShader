@@ -105,6 +105,7 @@ enum class Level
 	Fatal,
 };
 
+#ifndef SWIFTSHADER_DISABLE_TRACE
 #ifdef __ANDROID__
 void logv_android(Level level, const char *msg)
 {
@@ -143,6 +144,7 @@ void logv_std(Level level, const char *msg)
 		break;
 	}
 }
+#endif
 #endif
 
 void logv(Level level, const char *format, va_list args)

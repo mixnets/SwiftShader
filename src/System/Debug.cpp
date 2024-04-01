@@ -55,6 +55,7 @@ enum class Level
 	Disabled,
 };
 
+#ifndef SWIFTSHADER_DISABLE_TRACE
 #ifdef __ANDROID__
 void logv_android(Level level, const char *msg)
 {
@@ -98,6 +99,7 @@ void logv_std(Level level, const char *msg)
 	}
 }
 #endif
+#endif  // SWIFTSHADER_DISABLE_TRACE
 
 void logv(Level level, const char *format, va_list args)
 {
@@ -127,8 +129,8 @@ void logv(Level level, const char *format, va_list args)
 			vfprintf(file, format, args);
 			fclose(file);
 		}
-	}
 #endif  // SWIFTSHADER_DISABLE_TRACE
+	}
 }
 
 }  // anonymous namespace
