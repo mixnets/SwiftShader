@@ -16,6 +16,40 @@
       "message": "Not really critical, but I noticed this while fiddling around with MSan.",
       "revId": "9f17a7cc3b3cecb02a69d77ef398ffdf8da2d47e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e3aacae_910096fc",
+        "filename": "src/Reactor/Debug.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-04-02T17:05:08Z",
+      "side": 1,
+      "message": "Please use `[[maybe_unused]]` on the functions instead",
+      "revId": "9f17a7cc3b3cecb02a69d77ef398ffdf8da2d47e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4912170_f19669b0",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-04-02T17:05:08Z",
+      "side": 1,
+      "message": "Ditto",
+      "revId": "9f17a7cc3b3cecb02a69d77ef398ffdf8da2d47e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
