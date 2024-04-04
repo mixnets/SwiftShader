@@ -16,6 +16,24 @@
       "message": "Thank you for the contribution! Would you please point to the context of this fix (like a bug report, test failing, etc)?\n\nAlso, unfortunately the bot that runs the CTS tests is down at the moment. We\u0027re working on fixing it, but the change cannot land until that\u0027s done. Sorry about that.",
       "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ee89ff3_4269e301",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3362814
+      },
+      "writtenOn": "2024-04-04T05:58:40Z",
+      "side": 1,
+      "message": "One of applications I work on in my spare time did not render correctly with SwiftShader, so I decided to have a look. I\u0027ve actually been meaning to start contributing to the project a few years back but only recently has my 2yo reached a point where I have a spare hour or two in the evenings. Having contributed to ES, GL \u0026 Vulkan CTS and specs for a few years, it\u0027s a nice change to actually get a chance to work on a software rasterizer!\n\nIf there are any critical bugs I could focus on, or perhaps an issue tracker I could be granted access to, I\u0027d be more than delighted to help (in a non-commited manner).",
+      "parentUuid": "37fbe6e7_84c2e17b",
+      "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
