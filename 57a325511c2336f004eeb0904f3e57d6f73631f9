@@ -52,6 +52,24 @@
       "parentUuid": "4ee89ff3_4269e301",
       "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9501ac74_a0abeccb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3362814
+      },
+      "writtenOn": "2024-04-04T14:06:48Z",
+      "side": 1,
+      "message": "Truth be told, I\u0027m happy sticking to working with SwiftShader codebase, even if there are more powerful alternatives available out there, until the day the project flatlines. It\u0027s much thinner than Mesa and, while I have not confirmed this empirically, I suspect the latter is not as Windows developer-friendly as SwiftShader is.. 😊\n\nIf there are specific items or tickets that should not take more than a few hours to tackle, please feel free to shoot me an email with the details. Otherwise I\u0027ll just keep prodding the project\u0027s codebase and, once I get sufficiently familiar with the architecture, I might start working on some of the extensions we\u0027ve got CTS tests for.\n\nI\u0027ll see to posting a ticket with the request for a new test in Khronos CTS which would exercise this path sometime in the evening my local time. Thanks for suggesting!",
+      "parentUuid": "7da02c4d_aa88a0b7",
+      "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
