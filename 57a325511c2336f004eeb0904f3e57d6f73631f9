@@ -34,6 +34,24 @@
       "parentUuid": "37fbe6e7_84c2e17b",
       "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7da02c4d_aa88a0b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-04-04T13:02:57Z",
+      "side": 1,
+      "message": "Thank you, I +1ed the change already since it _looks_ ok, but again, we\u0027ll have to wait for the RegressionBot to get sorted out before landing it.\n\nI have to tell you that SwiftShader is on life support, so if you want to spend your energy somewhere maybe look into lavapipe as the Vulkan software renderer? The authors had grand plans for SwiftShader before leaving, so there\u0027s no shortage of things to be done, but it doesn\u0027t look like any of that is going to happen.\n\nI occasionally implement extensions in SwiftShader while we\u0027re still testing on it, so if you\u0027re still interested in hacking away at SwiftShader, those are great additions, and the ones that don\u0027t touch SPIR-V are fairly easy in comparison too. Obviously the closer to KHR, the better 😊\n\n---\n\nWhile you\u0027re at it, please consider requesting a CTS test to be added for this bug, and I can get someone to implement it.",
+      "parentUuid": "4ee89ff3_4269e301",
+      "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
