@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37fbe6e7_84c2e17b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-04-04T01:17:20Z",
+      "side": 1,
+      "message": "Thank you for the contribution! Would you please point to the context of this fix (like a bug report, test failing, etc)?\n\nAlso, unfortunately the bot that runs the CTS tests is down at the moment. We\u0027re working on fixing it, but the change cannot land until that\u0027s done. Sorry about that.",
+      "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
