@@ -88,6 +88,24 @@
       "parentUuid": "9501ac74_a0abeccb",
       "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4fdc3ae1_611cd2d9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3362814
+      },
+      "writtenOn": "2024-04-05T10:52:20Z",
+      "side": 1,
+      "message": "For the record, looks like there is at least one test case where the dynamic viewport state is indeed tested: https://github.com/KhronosGroup/VK-GL-CTS/blob/caf989d22e07aab117427b61276b7fe5ff29ca94/external/vulkancts/modules/vulkan/dynamic_state/vktDynamicStateRSTests.cpp#L406 . Decided not to open a ticket with a request to patch the coverage gap.",
+      "parentUuid": "641aba08_5454efe3",
+      "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
