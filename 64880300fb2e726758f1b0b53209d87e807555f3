@@ -34,6 +34,24 @@
       "parentUuid": "e8843a9e_e7de0f36",
       "revId": "64880300fb2e726758f1b0b53209d87e807555f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e4656d9e_7cd019ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3391360
+      },
+      "writtenOn": "2024-04-15T02:19:19Z",
+      "side": 1,
+      "message": "I created the change manually in Gerrit, then clicked \"edit\" in the top right, and manually uploaded each changed file while specifying the full path in the repository that it corresponds to. Yes, it was a bit awkward. 😅\n\n... which, of course, is why the line endings got messed up, come to think of it... the files were checked out as CRLF (per core.autocrlf) and I just uploaded them as-is. Will fix.",
+      "parentUuid": "b99d4c1c_1a399ae3",
+      "revId": "64880300fb2e726758f1b0b53209d87e807555f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
