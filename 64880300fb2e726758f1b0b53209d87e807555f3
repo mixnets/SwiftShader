@@ -16,6 +16,24 @@
       "message": "Hi,\n\nThis is my first time sending a patch through Gerrit, so apologies in advance for any mistakes made.\n\nJust to note, I tried going through the suggested `git push origin HEAD:refs/for/master` workflow, but \u003chttps://swiftshader.googlesource.com/new-password\u003e gives me a \"try again\" RPC error no matter how many times I try, so I decided to upload the patch manually. Maybe someone should have a look at that.",
       "revId": "64880300fb2e726758f1b0b53209d87e807555f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b99d4c1c_1a399ae3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-04-15T01:47:21Z",
+      "side": 1,
+      "message": "Hi, thank you for the contribution. I\u0027m not sure what the deal with that is, we\u0027ll keep an eye out for issues there. I\u0027m curious, how did you upload manually?\n\nAlso, it looks like this commit has changed the line ending of some files, could you please fix that? You should be able to set your git configs in such a way to not leak windows quirks.",
+      "parentUuid": "e8843a9e_e7de0f36",
+      "revId": "64880300fb2e726758f1b0b53209d87e807555f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
