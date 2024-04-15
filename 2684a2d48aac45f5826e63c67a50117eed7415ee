@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52be71de_8ef56b6c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-04-15T04:15:24Z",
+      "side": 1,
+      "message": "Per git\u0027s style, please add a short title followed by a blank line, such as:\n\n```\nFix ARM64 build on windows\n\n* CMake: Set ARCH correctly when using `cmake -A \u003carch\u003e` on Windows.\n* Add MSVC ARM64 support to the Windows llvm-config.h files.\n```",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 60
+      },
+      "revId": "2684a2d48aac45f5826e63c67a50117eed7415ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5a0fc7b_5276b41e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-04-15T04:15:24Z",
+      "side": 1,
+      "message": "No familiar with this stuff, but the change looks innocent",
+      "revId": "2684a2d48aac45f5826e63c67a50117eed7415ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9bb45a69_19a40250",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-04-15T04:15:24Z",
+      "side": 1,
+      "message": "nit: This cmake feature doesn\u0027t look specific to windows?\n\n```suggestion\n# Cross compiling with `cmake -A \u003carch\u003e`.\n```",
+      "revId": "2684a2d48aac45f5826e63c67a50117eed7415ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
