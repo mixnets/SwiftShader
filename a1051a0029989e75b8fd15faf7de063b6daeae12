@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c112738_b9883443",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101546
+      },
+      "writtenOn": "2024-04-18T02:08:41Z",
+      "side": 1,
+      "message": "@bclayton@google.com I just disabled the subzero in Loongarch architecture, why did the test fail?",
+      "revId": "a1051a0029989e75b8fd15faf7de063b6daeae12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
