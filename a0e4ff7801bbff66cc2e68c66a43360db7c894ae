@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab2cf69d_2500786a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101546
+      },
+      "writtenOn": "2024-04-22T02:11:36Z",
+      "side": 1,
+      "message": "Remove build dependencies for \u003cvalgrind/valgrind.h\u003e, due to https://swiftshader-review.googlesource.com/c/SwiftShader/+/73289",
+      "revId": "a0e4ff7801bbff66cc2e68c66a43360db7c894ae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
