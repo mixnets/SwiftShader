@@ -1,0 +1,12 @@
+<<<<<<< HEAD   (980b99 spirv-tools: revert hand-made changes in spirv-tools to upda)
+=======
+#!/usr/bin/env bash
+
+set -ex
+
+python3 bin/makeExtinstHeaders.py
+
+cd ../../include/spirv/unified1
+../../../tools/buildHeaders/build/install/bin/buildSpvHeaders -H spirv.core.grammar.json
+dos2unix spirv.* spv.*
+>>>>>>> BRANCH (cc60dc Squashed 'third_party/SPIRV-Headers/' changes from 268a06176)

@@ -1,4 +1,8 @@
+<<<<<<< HEAD   (980b99 spirv-tools: revert hand-made changes in spirv-tools to upda)
 ﻿# Copyright 2020 The SwiftShader Authors. All Rights Reserved.
+=======
+# Copyright (c) 2015-2024 The Khronos Group Inc.
+>>>>>>> BRANCH (cc60dc Squashed 'third_party/SPIRV-Headers/' changes from 268a06176)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +31,7 @@ endif()
 # Detect system
 ###########################################################
 
+<<<<<<< HEAD   (980b99 spirv-tools: revert hand-made changes in spirv-tools to upda)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(LINUX TRUE)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
@@ -41,10 +46,38 @@ elseif(FUCHSIA)
 else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
+=======
+option(SPIRV_HEADERS_ENABLE_TESTS "Test SPIRV-Headers" ${PROJECT_IS_TOP_LEVEL})
+option(SPIRV_HEADERS_ENABLE_INSTALL "Install SPIRV-Headers" ${PROJECT_IS_TOP_LEVEL})
+>>>>>>> BRANCH (cc60dc Squashed 'third_party/SPIRV-Headers/' changes from 268a06176)
 
+<<<<<<< HEAD   (980b99 spirv-tools: revert hand-made changes in spirv-tools to upda)
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(ARCH "aarch64")
+=======
+if(SPIRV_HEADERS_ENABLE_TESTS)
+    add_subdirectory(tests)
+endif()
+
+if(SPIRV_HEADERS_ENABLE_INSTALL)
+    include(GNUInstallDirs)
+    include(CMakePackageConfigHelpers)
+
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+    set(cmake_install_dir "${CMAKE_INSTALL_DATADIR}/cmake/SPIRV-Headers")
+    set(version_config "${CMAKE_CURRENT_BINARY_DIR}/generated/SPIRV-HeadersConfigVersion.cmake")
+
+    write_basic_package_version_file("${version_config}" COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)
+    install(FILES "${version_config}" DESTINATION "${cmake_install_dir}")
+
+    install(TARGETS SPIRV-Headers EXPORT "SPIRV-HeadersConfig" INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(EXPORT "SPIRV-HeadersConfig" NAMESPACE "SPIRV-Headers::" DESTINATION "${cmake_install_dir}")
+
+    if (IS_ABSOLUTE ${CMAKE_INSTALL_INCLUDEDIR})
+        set(SPIRV_HEADERS_PKGCONFIG_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+>>>>>>> BRANCH (cc60dc Squashed 'third_party/SPIRV-Headers/' changes from 268a06176)
     else()
         set(ARCH "arm")
     endif()
