@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0089a341_2bc36c4e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2024-04-29T13:35:46Z",
+      "side": 1,
+      "message": "This patch has a different relation chain then the previous ones, probably why it\u0027s failing to apply on the bots.",
+      "revId": "cf7eca7213eaafaa583b515fd35357fc300132ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
