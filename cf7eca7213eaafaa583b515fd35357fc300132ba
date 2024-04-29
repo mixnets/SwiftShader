@@ -34,6 +34,24 @@
       "parentUuid": "0089a341_2bc36c4e",
       "revId": "cf7eca7213eaafaa583b515fd35357fc300132ba",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "362b2199_4a6f4f5e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2024-04-29T15:18:47Z",
+      "side": 1,
+      "message": "I see a `Squashed \u0027third_party/SPIRV-Headers/\u0027 changes from 268a06176..5e3ad389e` commit ahead of this patch which has a merge conflict. \n\nYou probably need to rebase your patches locally and upload again.",
+      "parentUuid": "a59469b3_feca592b",
+      "revId": "cf7eca7213eaafaa583b515fd35357fc300132ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
