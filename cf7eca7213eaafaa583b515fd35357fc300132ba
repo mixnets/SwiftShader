@@ -70,6 +70,24 @@
       "parentUuid": "362b2199_4a6f4f5e",
       "revId": "cf7eca7213eaafaa583b515fd35357fc300132ba",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0cbfbac_a2d4f4b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2024-04-29T15:28:30Z",
+      "side": 1,
+      "message": "This commit may be ok but it was uploaded based on https://swiftshader-review.googlesource.com/c/SwiftShader/+/73370 which has a merge conflict so the bots can\u0027t apply this or the following patches.\n\nCan you check if that patch is needed? I think you need to either fix that merge conflict or rebase this on the master branch without the squash commit.",
+      "parentUuid": "ee13e259_ba608482",
+      "revId": "cf7eca7213eaafaa583b515fd35357fc300132ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
