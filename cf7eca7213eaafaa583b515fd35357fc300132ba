@@ -88,6 +88,24 @@
       "parentUuid": "ee13e259_ba608482",
       "revId": "cf7eca7213eaafaa583b515fd35357fc300132ba",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d099b4a7_af75c4a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101577
+      },
+      "writtenOn": "2024-05-07T06:03:56Z",
+      "side": 1,
+      "message": "I don\u0027t get how previous updates were made. The `Update SPIR-V Tools/Headers to xxxxx` commits are always merged commits. So the `Squashed` commits should always have merge conflit with the master branch.",
+      "parentUuid": "b0cbfbac_a2d4f4b7",
+      "revId": "cf7eca7213eaafaa583b515fd35357fc300132ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
