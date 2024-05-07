@@ -141,6 +141,24 @@
       "parentUuid": "5f41a92e_32e4d92b",
       "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e463e725_cda863cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-05-07T14:53:03Z",
+      "side": 1,
+      "message": "Ah FYI you need to put a `Tests: dEQP-VK.foo.*.bar.*` sort of tag in the description to make sure the relevant tests are run (whenever we fix the bot)",
+      "parentUuid": "9122a4fd_52949741",
+      "revId": "57a325511c2336f004eeb0904f3e57d6f73631f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
