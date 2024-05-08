@@ -1,4 +1,8 @@
+<<<<<<< HEAD   (10a5a7 spirv-tools: revert hand-made changes in spirv-tools to upda)
 # Copyright 2016 The SwiftShader Authors. All Rights Reserved.
+=======
+# Copyright (c) 2020-2024 Google LLC
+>>>>>>> BRANCH (cc60dc Squashed 'third_party/SPIRV-Headers/' changes from 268a06176)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -65,10 +69,26 @@ config("swiftshader_config") {
   }
 }
 
+<<<<<<< HEAD   (10a5a7 spirv-tools: revert hand-made changes in spirv-tools to upda)
 group("swiftshader") {
   data_deps = [
     "src/Vulkan:icd_file",
     "src/Vulkan:swiftshader_libvulkan",
+=======
+source_set("spv_headers") {
+  sources = [
+    "include/spirv/1.2/GLSL.std.450.h",
+    "include/spirv/1.2/OpenCL.std.h",
+    "include/spirv/1.2/spirv.h",
+    "include/spirv/1.2/spirv.hpp",
+    "include/spirv/unified1/GLSL.std.450.h",
+    "include/spirv/unified1/NonSemanticClspvReflection.h",
+    "include/spirv/unified1/NonSemanticDebugPrintf.h",
+    "include/spirv/unified1/NonSemanticVkspReflection.h",
+    "include/spirv/unified1/OpenCL.std.h",
+    "include/spirv/unified1/spirv.h",
+    "include/spirv/unified1/spirv.hpp",
+>>>>>>> BRANCH (cc60dc Squashed 'third_party/SPIRV-Headers/' changes from 268a06176)
   ]
 }
 
