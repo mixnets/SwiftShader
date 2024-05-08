@@ -16,17 +16,43 @@ cmake_minimum_required(VERSION 3.13)
 
 project(SwiftShader C CXX ASM)
 
+<<<<<<< HEAD   (8d227a Update SPIR-V Headers to 5e3ad389e)
 set(CMAKE_CXX_STANDARD 17)
 set(CXX_STANDARD_REQUIRED ON)
 # MSVC doesn't define __cplusplus by default
 if(MSVC)
     string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
+=======
+# Avoid a bug in CMake 3.22.1. By default it will set -std=c++11 for
+# targets in test/*, when those tests need -std=c++17.
+# https://github.com/KhronosGroup/SPIRV-Tools/issues/5340
+# The bug is fixed in CMake 3.22.2
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.22.1")
+  if (${CMAKE_VERSION} VERSION_LESS "3.22.2")
+    cmake_policy(SET CMP0128 NEW)
+  endif()
+endif()
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+enable_testing()
+set(SPIRV_TOOLS "SPIRV-Tools")
+
+include(GNUInstallDirs)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# Require at least C++17
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
+>>>>>>> BRANCH (495ec4 Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
 endif()
 
 ###########################################################
 # Detect system
 ###########################################################
 
+<<<<<<< HEAD   (8d227a Update SPIR-V Headers to 5e3ad389e)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(LINUX TRUE)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
@@ -38,6 +64,41 @@ elseif(FUCHSIA)
     # NOTE: Building for Fuchsia requires a Fuchsia CMake-based SDK.
     # See https://fuchsia-review.googlesource.com/c/fuchsia/+/379673
     find_package(FuchsiaLibraries)
+=======
+option(ENABLE_RTTI "Enables RTTI" OFF)
+option(SPIRV_ALLOW_TIMERS "Allow timers via clock_gettime on supported platforms" ON)
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  add_definitions(-DSPIRV_LINUX)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    add_definitions(-DSPIRV_EMSCRIPTEN)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "CYGWIN")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+  add_definitions(-DSPIRV_MAC)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS")
+  add_definitions(-DSPIRV_IOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "tvOS")
+  add_definitions(-DSPIRV_TVOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "visionOS")
+  add_definitions(-DSPIRV_VISIONOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
+  add_definitions(-DSPIRV_ANDROID)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
+  add_definitions(-DSPIRV_FREEBSD)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "OpenBSD")
+  add_definitions(-DSPIRV_OPENBSD)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
+  add_definitions(-DSPIRV_FUCHSIA)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
+  add_definitions(-DSPIRV_GNU)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "QNX")
+  add_definitions(-DSPIRV_QNX)
+>>>>>>> BRANCH (495ec4 Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
 else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
@@ -84,6 +145,7 @@ if(CMAKE_OSX_ARCHITECTURES)
     endif()
 endif()
 
+<<<<<<< HEAD   (8d227a Update SPIR-V Headers to 5e3ad389e)
 # Cross compiling with `cmake -A <arch>`.
 if(CMAKE_GENERATOR_PLATFORM)
     if(CMAKE_GENERATOR_PLATFORM MATCHES "^(Win32|win32|X86|x86)$")
@@ -92,6 +154,14 @@ if(CMAKE_GENERATOR_PLATFORM)
         set(ARCH "x86_64")
     elseif(CMAKE_GENERATOR_PLATFORM MATCHES "^(ARM64|Arm64|arm64)$")
         set(ARCH "aarch64")
+=======
+  # For MinGW cross compile, statically link to the C++ runtime.
+  # But it still depends on MSVCRT.dll.
+  if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    if (NOT MSVC)
+      set_target_properties(${TARGET} PROPERTIES
+        LINK_FLAGS -static -static-libgcc -static-libstdc++)
+>>>>>>> BRANCH (495ec4 Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
     endif()
 endif()
 
@@ -174,10 +244,16 @@ if(LINUX)
     option_if_not_defined(SWIFTSHADER_BUILD_WSI_D2D "Build the Direct-to-Display WSI support" FALSE)
 endif()
 
+<<<<<<< HEAD   (8d227a Update SPIR-V Headers to 5e3ad389e)
 option_if_not_defined(SWIFTSHADER_BUILD_PVR "Build the PowerVR examples" FALSE)
 option_if_not_defined(SWIFTSHADER_BUILD_TESTS "Build unit tests" TRUE)
 option_if_not_defined(SWIFTSHADER_BUILD_BENCHMARKS "Build benchmarks" FALSE)
+=======
+# Tests require Python3
+find_host_package(Python3 REQUIRED)
+>>>>>>> BRANCH (495ec4 Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
 
+<<<<<<< HEAD   (8d227a Update SPIR-V Headers to 5e3ad389e)
 option_if_not_defined(SWIFTSHADER_USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Studio" TRUE)
 
 option_if_not_defined(SWIFTSHADER_MSAN "Build with memory sanitizer" FALSE)
@@ -256,6 +332,17 @@ function(InitSubmodule target submodule_dir)
 
             execute_process(COMMAND git -C ${SWIFTSHADER_DIR} submodule update --init ${submodule_dir})
         endif()
+=======
+# Check for symbol exports on Linux.
+# At the moment, this check will fail on the OSX build machines for the Android NDK.
+# It appears they don't have objdump.
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  macro(spvtools_check_symbol_exports TARGET)
+    if (NOT "${SPIRV_SKIP_TESTS}")
+      add_test(NAME spirv-tools-symbol-exports-${TARGET}
+               COMMAND Python3::Interpreter
+               ${spirv-tools_SOURCE_DIR}/utils/check_symbol_exports.py "$<TARGET_FILE:${TARGET}>")
+>>>>>>> BRANCH (495ec4 Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
     endif()
 endfunction()
 
@@ -599,13 +686,32 @@ if(SWIFTSHADER_DCHECK_ALWAYS_ON)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DDCHECK_ALWAYS_ON")
 endif()
 
+<<<<<<< HEAD   (8d227a Update SPIR-V Headers to 5e3ad389e)
 if(SWIFTSHADER_WARNINGS_AS_ERRORS)
     if(MSVC)
         set(WARNINGS_AS_ERRORS "/WX")  # Treat all warnings as errors
     else()
         set(WARNINGS_AS_ERRORS "-Werror")  # Treat all warnings as errors
     endif()
+=======
+# Currently iOS and Android are very similar.
+# They both have their own packaging (APP/APK).
+# Which makes regular executables/testing problematic.
+#
+# Currently the only deliverables for these platforms are
+# libraries (either STATIC or SHARED).
+#
+# Furthermore testing is equally problematic.
+if (IOS OR ANDROID)
+  set(SPIRV_SKIP_EXECUTABLES ON)
 endif()
+
+option(SPIRV_SKIP_EXECUTABLES "Skip building the executable and tests along with the library")
+if (SPIRV_SKIP_EXECUTABLES)
+  set(SPIRV_SKIP_TESTS ON)
+>>>>>>> BRANCH (495ec4 Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
+endif()
+option(SPIRV_SKIP_TESTS "Skip building tests along with the library")
 
 # Enable Reactor Print() functionality in Debug/RelWithDebInfo builds or when explicitly enabled.
 if(CMAKE_BUILD_TYPE MATCHES "Deb")
@@ -619,8 +725,33 @@ if(REACTOR_EMIT_PRINT_LOCATION)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_EMIT_PRINT_LOCATION")
 endif()
 
+<<<<<<< HEAD   (8d227a Update SPIR-V Headers to 5e3ad389e)
 if(REACTOR_EMIT_ASM_FILE)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_EMIT_ASM_FILE")
+=======
+add_subdirectory(source)
+add_subdirectory(tools)
+
+add_subdirectory(test)
+add_subdirectory(examples)
+
+if(ENABLE_SPIRV_TOOLS_INSTALL)
+  install(
+    FILES
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/libspirv.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/libspirv.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/optimizer.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/linker.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/instrument.hpp
+    DESTINATION
+      ${CMAKE_INSTALL_INCLUDEDIR}/spirv-tools/)
+endif(ENABLE_SPIRV_TOOLS_INSTALL)
+
+if (NOT "${SPIRV_SKIP_TESTS}")
+  add_test(NAME spirv-tools-copyrights
+           COMMAND Python3::Interpreter utils/check_copyright.py
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+>>>>>>> BRANCH (495ec4 Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
 endif()
 
 if(REACTOR_EMIT_DEBUG_INFO)
@@ -628,9 +759,41 @@ if(REACTOR_EMIT_DEBUG_INFO)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_DEBUG_INFO")
 endif()
 
+<<<<<<< HEAD   (8d227a Update SPIR-V Headers to 5e3ad389e)
 if(REACTOR_ENABLE_PRINT)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_PRINT")
 endif()
+=======
+# Build pkg-config file
+# Use a first-class target so it's regenerated when relevant files are updated.
+add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools.pc
+        COMMAND ${CMAKE_COMMAND}
+                      -DCHANGES_FILE=${CMAKE_CURRENT_SOURCE_DIR}/CHANGES
+                      -DTEMPLATE_FILE=${CMAKE_CURRENT_SOURCE_DIR}/cmake/SPIRV-Tools.pc.in
+                      -DOUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools.pc
+                      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+                      -DCMAKE_INSTALL_LIBDIR=${CMAKE_INSTALL_LIBDIR}
+                      -DCMAKE_INSTALL_INCLUDEDIR=${CMAKE_INSTALL_INCLUDEDIR}
+                      -DSPIRV_LIBRARIES=${SPIRV_LIBRARIES}
+                      -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/write_pkg_config.cmake
+        DEPENDS "CHANGES" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/SPIRV-Tools.pc.in" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/write_pkg_config.cmake")
+add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools-shared.pc
+        COMMAND ${CMAKE_COMMAND}
+                      -DCHANGES_FILE=${CMAKE_CURRENT_SOURCE_DIR}/CHANGES
+                      -DTEMPLATE_FILE=${CMAKE_CURRENT_SOURCE_DIR}/cmake/SPIRV-Tools-shared.pc.in
+                      -DOUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools-shared.pc
+                      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+                      -DCMAKE_INSTALL_LIBDIR=${CMAKE_INSTALL_LIBDIR}
+                      -DCMAKE_INSTALL_INCLUDEDIR=${CMAKE_INSTALL_INCLUDEDIR}
+                      -DSPIRV_SHARED_LIBRARIES=${SPIRV_SHARED_LIBRARIES}
+                      -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/write_pkg_config.cmake
+        DEPENDS "CHANGES" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/SPIRV-Tools-shared.pc.in" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/write_pkg_config.cmake")
+add_custom_target(spirv-tools-pkg-config 
+        ALL 
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools-shared.pc ${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools.pc)
+>>>>>>> BRANCH (495ec4 Squashed 'third_party/SPIRV-Tools/' changes from 51892874b..)
 
 if(REACTOR_VERIFY_LLVM_IR)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_LLVM_IR_VERIFICATION")
