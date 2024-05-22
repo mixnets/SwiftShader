@@ -126,7 +126,7 @@ if (is_linux || is_chromeos) {
 } else if (is_mac) {
   llvm_include_dirs += [ "configs/darwin/include/" ]
 } else {
-  assert(false, "llvm-10.0 not configured for target platform")
+  assert(false, "llvm-16.0 not configured for target platform")
 }
 
 template("swiftshader_llvm_source_set") {
