@@ -39679,6 +39679,13 @@ bool X86GenSubtargetInfo::isZeroIdiom(const MachineInstr *MI, APInt &Mask) const
     }
     break;
 
+  case X86::PSUBUSWrr:
+    if (ProcessorID == 4 || ProcessorID == 6 || ProcessorID == 16) {
+      Mask.clearAllBits();
+      return MI->getOperand(1).getReg() == MI->getOperand(2).getReg();
+    }
+    break;
+
   case X86::VPANDNYrr:
     if (ProcessorID == 14 || ProcessorID == 15 || ProcessorID == 16) {
       Mask.clearAllBits();
@@ -39689,7 +39696,6 @@ bool X86GenSubtargetInfo::isZeroIdiom(const MachineInstr *MI, APInt &Mask) const
   case X86::PSUBSBrr:
   case X86::PSUBSWrr:
   case X86::PSUBUSBrr:
-  case X86::PSUBUSWrr:
   case X86::VPSUBSBrr:
   case X86::VPSUBSWrr:
   case X86::VPSUBUSBrr:
@@ -40030,6 +40036,13 @@ bool X86MCInstrAnalysis::isZeroIdiom(const MCInst &MI, APInt &Mask, unsigned Pro
     }
     break;
 
+  case X86::PSUBUSWrr:
+    if (ProcessorID == 4 || ProcessorID == 6 || ProcessorID == 16) {
+      Mask.clearAllBits();
+      return MI.getOperand(1).getReg() == MI.getOperand(2).getReg();
+    }
+    break;
+
   case X86::VPANDNYrr:
     if (ProcessorID == 14 || ProcessorID == 15 || ProcessorID == 16) {
       Mask.clearAllBits();
@@ -40040,7 +40053,6 @@ bool X86MCInstrAnalysis::isZeroIdiom(const MCInst &MI, APInt &Mask, unsigned Pro
   case X86::PSUBSBrr:
   case X86::PSUBSWrr:
   case X86::PSUBUSBrr:
-  case X86::PSUBUSWrr:
   case X86::VPSUBSBrr:
   case X86::VPSUBSWrr:
   case X86::VPSUBUSBrr:
