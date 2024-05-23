@@ -34,6 +34,23 @@
       "parentUuid": "97fddca9_9d8fd357",
       "revId": "378942d7edb4230d01fd174f4f9f0484053435da",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "acf35d29_f15da4e7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6650
+      },
+      "writtenOn": "2024-05-23T16:07:43Z",
+      "side": 1,
+      "message": "It doesn\u0027t want to submit because I\u0027ve uploaded from chromium account?",
+      "revId": "378942d7edb4230d01fd174f4f9f0484053435da",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
