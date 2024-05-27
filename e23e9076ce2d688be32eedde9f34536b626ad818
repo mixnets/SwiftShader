@@ -16,6 +16,24 @@
       "message": "Apologies for getting back so late.\n\nI don\u0027t follow CTS codebase too closely these days so I\u0027m not sure which test group exactly would be the most suitable to test this change against. I can try having a look at this if we need to narrow down the testing to something that should not be generating any failures.",
       "revId": "e23e9076ce2d688be32eedde9f34536b626ad818",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc16d43f_3b487bfe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-05-27T13:29:27Z",
+      "side": 1,
+      "message": "Looks like Regres already figured it out, the pattern looks like `dEQP-VK.pipeline.*.extended_dynamic_state.*full_viewport`\n\nThanks again for the fix!",
+      "parentUuid": "ffd6cc19_2707917f",
+      "revId": "e23e9076ce2d688be32eedde9f34536b626ad818",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
