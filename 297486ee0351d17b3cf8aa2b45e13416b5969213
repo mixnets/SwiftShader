@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11dcf7bd_85d8118c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101941
+      },
+      "writtenOn": "2024-06-05T02:54:02Z",
+      "side": 1,
+      "message": "This is somewhat speculative, as I am *unable* to reproduce the bot failures locally. But if you look at the test failures (e.g. https://luci-milo.appspot.com/ui/p/chromium/builders/ci/linux-exp-msan-fyi-rel/950/overview), the various browser tests are quite unhappy, and many of these are in Swiftshader.",
+      "revId": "297486ee0351d17b3cf8aa2b45e13416b5969213",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
