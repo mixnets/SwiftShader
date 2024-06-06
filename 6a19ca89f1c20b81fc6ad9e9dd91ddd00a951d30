@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "836427e3_ce724816",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2024-06-06T03:55:45Z",
+      "side": 1,
+      "message": "Looks like regres result is not quite perfect but a big step forward",
+      "revId": "6a19ca89f1c20b81fc6ad9e9dd91ddd00a951d30",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
