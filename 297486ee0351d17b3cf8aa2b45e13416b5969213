@@ -50,6 +50,24 @@
       "message": "Ok I guess if it isn\u0027t providing any value :/",
       "revId": "297486ee0351d17b3cf8aa2b45e13416b5969213",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be255abc_a78e6da0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101941
+      },
+      "writtenOn": "2024-06-06T17:28:49Z",
+      "side": 1,
+      "message": "It\u0027s not that it\u0027s not providing value. It\u0027s just that there are failures, and no one is committed to fixing them at this point. But because these failures exist, it prevents us from turning out stricter error detection overall.",
+      "parentUuid": "60ca809b_01cde565",
+      "revId": "297486ee0351d17b3cf8aa2b45e13416b5969213",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
