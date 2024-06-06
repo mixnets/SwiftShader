@@ -16,6 +16,24 @@
       "message": "Looks like regres result is not quite perfect but a big step forward",
       "revId": "6a19ca89f1c20b81fc6ad9e9dd91ddd00a951d30",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "33475d6f_eaaea70b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-06-06T13:06:07Z",
+      "side": 1,
+      "message": "For posterity, the sole failure is a test bug: https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/4519#note_473420",
+      "parentUuid": "836427e3_ce724816",
+      "revId": "6a19ca89f1c20b81fc6ad9e9dd91ddd00a951d30",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
