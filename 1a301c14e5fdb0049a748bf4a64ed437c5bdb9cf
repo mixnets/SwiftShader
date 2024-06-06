@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "92ffb13d_6ce6af7f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-06-06T03:03:12Z",
+      "side": 1,
+      "message": "The failure is due to a test bug: https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/4519#note_473420",
+      "revId": "1a301c14e5fdb0049a748bf4a64ed437c5bdb9cf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
