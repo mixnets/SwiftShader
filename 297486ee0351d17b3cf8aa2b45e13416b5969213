@@ -68,6 +68,23 @@
       "parentUuid": "60ca809b_01cde565",
       "revId": "297486ee0351d17b3cf8aa2b45e13416b5969213",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45a18dfc_14becc45",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-06-06T17:35:59Z",
+      "side": 1,
+      "message": "@ynovikov@chromium.org could you please be the second reviewer?",
+      "revId": "297486ee0351d17b3cf8aa2b45e13416b5969213",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
