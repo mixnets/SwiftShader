@@ -1,1 +1,2 @@
+dEQP-VK.memory_model.message_passing.ext.u32.noncoherent.fence_atomic.atomicwrite.workgroup.payload_local.physbuffer.guard_nonlocal.workgroup.comp
 dEQP-VK.pipeline.fast_linked_library.misc.interpolate_at_sample_no_sample_shading
