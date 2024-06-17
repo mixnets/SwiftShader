@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70cba9e1_f30b105c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6650
+      },
+      "writtenOn": "2024-06-17T09:13:57Z",
+      "side": 1,
+      "message": "It modified some files in PS10, so now this needs another review.\nPlease CQ+2 when you CR+2.",
+      "revId": "e41670eedf52567a7ed1ec3e1b22ddac9800788f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
