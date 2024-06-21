@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12c95568_f85a8461",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2024-06-21T02:32:56Z",
+      "side": 1,
+      "message": "From chat: this was completely broken and these tests passed by accident. Will accept and continue fixing in followup changes.",
+      "revId": "4d79859025e4266c654be6581c519169823fa5bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
