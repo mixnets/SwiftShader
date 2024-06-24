@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5fba8cd1_2e9164e6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6650
+      },
+      "writtenOn": "2024-06-24T12:42:35Z",
+      "side": 1,
+      "message": "Shabi, PTAL.",
+      "revId": "b51afcbbab38477f0cf97d9ba76e7f37eb049d29",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
