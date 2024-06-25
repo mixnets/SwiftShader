@@ -16,6 +16,24 @@
       "message": "I was thinking this would have been the right answer too, is there some code to show how you tried this? Isn\u0027t it strange that the `: 1` on the struct field not make this work out?!\n\nThere\u0027s a typo in `InstrinsicInfo` FYI",
       "revId": "404008157de945dfd8ffe857a11304411260d99c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31eabedd_f6fea85a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 3502319
+      },
+      "writtenOn": "2024-06-25T20:59:22Z",
+      "side": 1,
+      "message": "It definitely is strange! I also expected the `: 1` to just truncate it, but apparently the standard allows the compiler to choose its own layout, so it\u0027s allowed to store the bitfield using more than 1 bit (the extras are just padding). It did this any time I tried to specify the underlying type of the enum.\n\nA non-exhaustive list of things I tried\n`enum SideEffects : \u003ctype\u003e { ... }` for various types, including `uint8_t` and even `bool`\n`unsigned enum SideEffects { ... }` (invalid syntax)\n`... { SideEffects_F \u003d 0u, SideEffects_T \u003d 1u }`\nthe `packed` attribute (suggested here: https://stackoverflow.com/questions/73047713, not supported by clang)\n\nI also looked for ways to try to force the bitfield declaration `  enum SideEffects HasSideEffects : 1;` to actually only use 1 bit, but couldn\u0027t find anything.\n\nUltimately I gave up and just flipped the value to -1 in the code.\n\nFixed the typo.",
+      "parentUuid": "07daa523_fcf87017",
+      "revId": "404008157de945dfd8ffe857a11304411260d99c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
