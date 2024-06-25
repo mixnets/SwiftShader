@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07daa523_fcf87017",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-06-25T20:46:15Z",
+      "side": 1,
+      "message": "I was thinking this would have been the right answer too, is there some code to show how you tried this? Isn\u0027t it strange that the `: 1` on the struct field not make this work out?!\n\nThere\u0027s a typo in `InstrinsicInfo` FYI",
+      "revId": "404008157de945dfd8ffe857a11304411260d99c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
