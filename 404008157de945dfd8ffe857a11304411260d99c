@@ -34,6 +34,24 @@
       "parentUuid": "07daa523_fcf87017",
       "revId": "404008157de945dfd8ffe857a11304411260d99c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00675ee7_59ef8964",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 46365
+      },
+      "writtenOn": "2024-06-25T21:06:57Z",
+      "side": 1,
+      "message": "Ok, thanks. Weird indeed!",
+      "parentUuid": "31eabedd_f6fea85a",
+      "revId": "404008157de945dfd8ffe857a11304411260d99c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
