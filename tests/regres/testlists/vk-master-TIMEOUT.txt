@@ -1,0 +1,1 @@
+dEQP-VK.compute.pipeline.zero_initialize_workgroup_memory.max_workgroup_memory.4
